@@ -1,0 +1,95 @@
+body {
+  font-size: 24px;
+  margin: 0;
+  padding: 0;
+  background-color: hsl(0deg 0% 95%);
+}
+
+.note {
+  color: hsl(0deg 0% 95%);
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.7em;
+  height: 1.7em;
+}
+.note-C {
+  background-color: hsl(350deg 58% 50%);
+  border-radius: 0;
+}
+.note-G {
+  background-color: hsl(12deg 69% 55%);
+  border-radius: 50%;
+}
+.note-D {
+  background-color: hsl(27, 84%, 61%);
+  border-radius: 0;
+}
+.note-A {
+  background-color: hsl(69, 77%, 60%);
+  border-radius: 50%;
+  color: hsl(0, 0%, 5%);
+}
+.note-E {
+  background-color: hsl(100, 82%, 61%);
+  border-radius: 0;
+  color: hsl(0, 0%, 5%);
+}
+.note-B {
+  background-color: hsl(135deg 100% 65%);
+  border-radius: 50%;
+  color: hsl(0, 0%, 5%);
+}
+.note-Gb {
+  background-color: hsl(155deg 100% 65%);
+  border-radius: 0;
+  color: hsl(0, 0%, 5%);
+}
+.note-Db {
+  background-color: hsl(175deg 73% 38%);
+  border-radius: 50%;
+}
+.note-Ab {
+  background-color: hsl(198deg 87% 43%);
+  border-radius: 0;
+}
+.note-Eb {
+  background-color: hsl(199deg 81% 45%);
+  border-radius: 50%;
+}
+.note-Bb {
+  background-color: hsl(220deg 51% 47%);
+  border-radius: 0;
+}
+.note-F {
+  background-color: hsl(277deg 39% 44%);
+  border-radius: 50%;
+}
+
+.circle-of-fifths {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1em;
+  .major-key-circle {
+    display: flex;
+    position: absolute;
+    top: 100px;
+    left: 200px;
+    width: 500px;
+    height: 500px;
+    overflow: hidden;
+    .major-key {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .current-note {
+      z-index: 999;
+    }
+  }
+}
