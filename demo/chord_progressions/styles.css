@@ -1,0 +1,1479 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    width: 100vw;
+    overflow: hidden;
+    background: transparent;
+    position: relative;
+}
+
+.sound-controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: white;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+}
+
+.sound-controls.collapsed {
+    transform: translateX(-100%);
+}
+
+.sound-controls.collapsed + .sidebar-trigger {
+    left: 1rem;
+}
+
+.chord-display {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: transparent;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: hidden;
+}
+
+#visualizer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: transparent;
+}
+
+.chord-container {
+    position: relative;
+    z-index: 2;
+    width: 80%;
+    height: 80vh;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.connection-path {
+    fill: none;
+    stroke: rgba(128, 128, 128, 0.3);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.chord {
+    position: absolute;
+    width: 104px;
+    height: 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.chord .name {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1;
+    color: #2c3e50;
+}
+
+.chord .type {
+    font-size: 12px;
+    margin-top: 2px;
+    color: #666;
+    line-height: 1;
+}
+
+.chord:hover {
+    transform: scale(1.1);
+    z-index: 2;
+}
+
+.chord.playing {
+    animation: pulse-led var(--bpm-duration, 0.5s) infinite;
+    box-shadow: 0 0 12px #ff9800;
+}
+
+@keyframes pulse-led {
+    0% {
+        box-shadow: 0 0 8px #ff9800;
+        filter: brightness(1);
+    }
+    50% {
+        box-shadow: 0 0 16px #ff9800;
+        filter: brightness(1.1);
+    }
+    100% {
+        box-shadow: 0 0 8px #ff9800;
+        filter: brightness(1);
+    }
+}
+
+.progression-positive {
+    background: linear-gradient(135deg, #e74c3c, #e67e22);
+    color: white;
+}
+
+.progression-positive .name,
+.progression-positive .type {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.progression-sad {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.progression-sad .name,
+.progression-sad .type {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.progression-dark {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    color: white;
+}
+
+.progression-dark .name,
+.progression-dark .type {
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.root-note {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 72px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+@media (max-width: 500px) {
+    .chord {
+        width: 64px;
+        height: 74px;
+    }
+
+    .chord .name {
+        font-size: 20px;
+    }
+
+    .chord .type {
+        font-size: 11px;
+    }
+
+    .root-note {
+        width: 48px;
+        height: 55px;
+    }
+}
+
+.chord-hexagon {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    transform-origin: center center;
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+}
+
+.chord-hexagon.nested {
+    position: absolute;
+    margin: 0;
+    transform-origin: center center;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.chord-hexagon > * {
+    pointer-events: auto;
+}
+
+.root-note-display {
+    position: absolute;
+    width: clamp(80px, calc(104px * var(--scale-factor, 1)), 104px);
+    height: clamp(92px, calc(120px * var(--scale-factor, 1)), 120px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    color: white;
+    font-size: clamp(1.5rem, calc(2.5rem * var(--scale-factor, 1)), 2.5rem);
+    font-weight: bold;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    transform-origin: center center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease-in-out;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.connection {
+    position: absolute;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.1);
+    transform-origin: left center;
+    pointer-events: none;
+    transition: all 0.3s ease-in-out;
+    z-index: 1;
+}
+
+.synth-header {
+    padding: 1rem;
+    padding-left: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.title-group h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.rand-button,
+.fun-button,
+.loop-button {
+    background: white;
+    color: #2c3e50;
+    border: 1px solid #2c3e50;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.rand-button:hover,
+.fun-button:hover,
+.loop-button:hover {
+    background: #2c3e50;
+    color: white;
+}
+
+.fun-button.active {
+    background: #ff3b3b;
+    color: white;
+    border-color: #ff3b3b;
+}
+
+.control-group {
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #eee;
+    overflow: hidden;
+}
+
+.control-group:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0.4rem;
+}
+
+.group-toggle {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 18px;
+    color: var(--accent-color);
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.group-toggle::before {
+    content: '+';
+}
+
+.control-group.collapsed .group-toggle::before {
+    content: '+';
+}
+
+.control-group:not(.collapsed) .group-toggle::before {
+    content: '-';
+}
+
+.control-group.collapsed .group-toggle {
+    transform: rotate(0);
+}
+
+.group-label {
+    color: #666;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    flex: 1;
+}
+
+.control-group.collapsed .group-content {
+    display: none;
+}
+
+.group-content {
+    transition: all 0.3s ease;
+}
+
+.osc-shapes {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+}
+
+.shape-btn,
+.prog-btn,
+.scale-btn,
+.arp-btn,
+.noise-btn,
+.control-button {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    margin: 2px;
+}
+
+.shape-btn:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.shape-btn.active {
+    background: #2c3e50;
+    color: #FFFFFF;
+    border-color: #2c3e50;
+}
+
+.shape-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.prog-btn svg,
+.arp-btn svg,
+.noise-btn svg {
+    stroke: #666;
+    stroke-width: 2;
+    fill: none;
+}
+
+.prog-btn.active svg,
+.arp-btn.active svg,
+.noise-btn.active svg {
+    stroke: var(--active-color);
+}
+
+/* Remove any overrides that might make buttons circular */
+.scale-btn,
+.prog-btn,
+.arp-btn,
+.noise-btn {
+    border-radius: 4px !important;
+    width: 40px !important;
+    height: 40px !important;
+    margin: 2px !important;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.scale-selector,
+.progression-selector,
+.arp-styles {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+    justify-content: flex-start;
+}
+
+.env-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.env-controls .mini-control {
+    margin-bottom: 0;
+}
+
+.env-controls .mini-control span:first-child {
+    width: 16px;
+}
+
+.env-controls .mini-control .value {
+    width: 24px;
+    min-width: 24px;
+}
+
+.mini-control {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.4rem;
+    height: 24px;
+}
+
+.mini-control:last-child {
+    margin-bottom: 0;
+}
+
+.mini-control span:first-child {
+    width: 36px;
+    font-size: 0.7rem;
+    color: #666;
+    letter-spacing: 1px;
+}
+
+.mini-control input[type="range"] {
+    flex: 1;
+    min-width: 0;
+    height: 3px;
+    -webkit-appearance: none;
+    background: #eee;
+    border-radius: 2px;
+    outline: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mini-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #2c3e50;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: -6.5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.mini-control input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.mini-control input[type="range"]::-webkit-slider-thumb:active {
+    transform: scale(1.1);
+    background: #34495e;
+}
+
+.mini-control .value {
+    width: 28px;
+    min-width: 28px;
+    font-size: 0.7rem;
+    color: #2c3e50;
+    text-align: right;
+}
+
+.arp-styles {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    justify-content: center;
+}
+
+.arp-btn {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    margin: 2px;
+}
+
+.arp-btn:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.arp-btn.active {
+    background: #34495e;
+    color: #FFFFFF;
+    border-color: #34495e;
+}
+
+.arp-btn svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--text-color);
+    stroke-width: 2;
+    fill: none;
+    transition: all 0.2s ease;
+}
+
+.arp-btn.active svg {
+    stroke: var(--active-color);
+}
+
+.note-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.note-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 4px;
+    margin: 2px;
+    font-size: 14px;
+}
+
+.note-btn:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.note-btn.active {
+    background: #34495e;
+    color: #FFFFFF;
+    border-color: #34495e;
+}
+
+.scale-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    justify-content: center;
+}
+
+.scale-btn {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    margin: 2px;
+}
+
+.scale-btn:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.scale-btn.active {
+    background: #34495e;
+    color: #FFFFFF;
+    border-color: #34495e;
+}
+
+.scale-btn svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--text-color);
+    transition: all 0.2s ease;
+}
+
+.scale-btn.active svg {
+    fill: var(--active-color);
+}
+
+.progression-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    justify-content: center;
+}
+
+.prog-btn {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    margin: 2px;
+}
+
+.prog-btn:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.prog-btn.active {
+    background: #34495e;
+    color: #FFFFFF;
+    border-color: #34495e;
+}
+
+.prog-btn svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: var(--text-color);
+    stroke-width: 2;
+    transition: all 0.2s ease;
+}
+
+.prog-btn.active svg {
+    stroke: var(--active-color);
+}
+
+/* Improve focus visibility for accessibility */
+.prog-btn:focus,
+.note-btn:focus,
+.scale-btn:focus,
+.shape-btn:focus,
+.arp-btn:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Add keyboard focus styles */
+.prog-btn:focus-visible,
+.note-btn:focus-visible,
+.scale-btn:focus-visible,
+.shape-btn:focus-visible,
+.arp-btn:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px rgba(52, 73, 94, 0.2);
+}
+
+/* Improve contrast for better accessibility */
+.group-label {
+    color: #444;
+    font-weight: 500;
+}
+
+.description {
+    color: #555;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* Add skip link for keyboard navigation */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent-color);
+    color: white;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.2s;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Improve hover states for better interaction */
+.chord:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+}
+
+.chord:focus-visible {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 3px;
+    transform: scale(1.1);
+    z-index: 3;
+}
+
+/* Add CSS variables for consistent theming */
+:root {
+    --accent-color: #2c3e50;
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --border-color: #dddddd;
+    --hover-color: #f5f5f5;
+    --focus-color: #3498db;
+    --active-color: #ff3b3b;
+    --button-bg: rgba(255, 255, 255, 0.1);
+    --button-hover-bg: rgba(255, 255, 255, 0.2);
+    --button-active-bg: rgba(255, 255, 255, 0.3);
+    --primary-color: #6200EE;
+    --secondary-color: #FF0080;
+    --background-color: #121212;
+    --surface-color: #2D2D2D;
+    --button-size: 40px;
+    --button-padding: 8px;
+    --button-border-radius: 4px;
+    --button-border-width: 1px;
+    --button-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --button-shadow: 0 0 8px rgba(98, 0, 238, 0.3);
+    --button-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(98, 0, 238, 0.5);
+    --icon-size: 24px;
+    --icon-stroke-width: 2px;
+    --chord-bg: rgba(30, 30, 30, 0.8);
+    --chord-border: rgba(255, 255, 255, 0.2);
+    --connection-color: rgba(255, 255, 255, 0.3);
+    --root-note-bg: rgba(40, 40, 40, 0.9);
+    --root-note-color: #fff;
+    --root-note-border: rgba(255, 255, 255, 0.4);
+}
+
+/* Improve contrast for mini-control values */
+.mini-control .value {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Add transition for smoother interactions */
+.chord,
+.connection,
+.root-note-display {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Improve mobile responsiveness */
+@media (max-width: 1200px) {
+    .container {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .sound-controls {
+        width: 240px;
+        padding: 0.8rem;
+    }
+
+    .chord-display {
+        padding: 0.5rem;
+    }
+
+    .chord-hexagon {
+        width: 500px;
+        height: 500px;
+    }
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sound-controls {
+        width: 100%;
+        position: relative;
+        top: 0;
+        max-height: none;
+    }
+
+    .chord-display {
+        min-height: 50vh;
+        padding: 0.5rem;
+    }
+
+    .chord-hexagon {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 500px) {
+    .chord {
+        --chord-size: 72px;
+        padding: 10px;
+    }
+
+    .chord .name {
+        font-size: 20px;
+    }
+
+    .chord .type {
+        font-size: 11px;
+    }
+
+    .root-note {
+        width: 48px;
+        height: 55px;
+        font-size: 20px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --accent-color: #000000;
+        --text-color: #000000;
+        --border-color: #000000;
+    }
+
+    .chord,
+    .connection,
+    .root-note-display {
+        border: 2px solid black;
+    }
+
+    .mini-control input[type="range"] {
+        border: 1px solid black;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Add transition for depth changes */
+.chord-hexagon, .chord, .root-note-display, .connection {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Adjust opacity for nested levels */
+.chord-hexagon.nested .connection {
+    opacity: 0.6;
+}
+
+.chord-hexagon.nested .chord {
+    opacity: 0.9;
+}
+
+.chord-hexagon.nested .root-note-display {
+    opacity: 0.8;
+}
+
+/* Mobile-friendly styles */
+@media (max-width: 768px) {
+    .sound-controls {
+        transform: translateX(-100%);
+    }
+
+    .sound-controls.collapsed {
+        transform: translateX(-100%);
+    }
+
+    .sound-controls:not(.collapsed) {
+        transform: translateX(0);
+    }
+
+    .sidebar-trigger {
+        top: 1rem;
+        left: 1rem !important;
+    }
+
+    .container {
+        flex-direction: column;
+    }
+
+    .chord-display {
+        height: calc(100vh - var(--header-height, 60px));
+        margin-top: var(--header-height, 60px);
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    :root {
+        --scale-factor: 0.85;
+    }
+
+    .sound-controls {
+        width: 240px;
+    }
+
+    .chord-container {
+        transform: scale(var(--scale-factor));
+    }
+}
+
+/* Larger screens */
+@media (min-width: 1025px) {
+    :root {
+        --scale-factor: 1;
+    }
+}
+
+/* Remove sidebar toggle button styles */
+.sidebar-toggle {
+    display: flex;
+}
+
+/* Improve scrolling on iOS */
+.sound-controls {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #2c3e50 transparent;
+}
+
+.sound-controls::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sound-controls::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sound-controls::-webkit-scrollbar-thumb {
+    background-color: #2c3e50;
+    border-radius: 3px;
+}
+
+/* Add safe area insets for modern mobile browsers */
+@supports (padding: max(0px)) {
+    .sound-controls {
+        padding-top: max(20px, env(safe-area-inset-top));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+    }
+}
+
+/* Ensure proper z-index stacking */
+.chord-hexagon {
+    z-index: 1;
+}
+
+.sound-controls {
+    z-index: 1000;
+}
+
+/* Prevent text selection on touch */
+.sound-controls {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Improve visibility on mobile */
+.chord .name,
+.chord .type {
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Fix for iOS audio */
+html {
+    cursor: pointer;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.rand-button,
+.fun-button {
+    background: white;
+    color: black;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fun-button.active {
+    background: #ff3b3b;
+    color: white;
+    border-color: #ff3b3b;
+}
+
+.chord.upcoming {
+    opacity: 0.6;
+    position: relative;
+}
+
+.chord.upcoming::after {
+    content: attr(data-sequence);
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+/* Noise controls */
+.noise-types {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.noise-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--button-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 8px;
+}
+
+.noise-btn svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--text-color);
+    transition: fill 0.2s ease;
+}
+
+.noise-btn:hover {
+    border-color: var(--hover-color);
+    background: var(--button-hover-bg);
+}
+
+.noise-btn.active {
+    background: #34495e;
+    color: #FFFFFF;
+    border-color: #34495e;
+}
+
+.noise-btn.active svg {
+    fill: var(--active-color);
+}
+
+/* Button group layouts */
+.button-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+}
+
+/* Base control button styles */
+.control-button {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    padding: 8px;
+    margin: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.control-button:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.control-button.active {
+    background: #34495e;
+    color: #FFFFFF;
+}
+
+.control-button svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.control-button.active svg {
+    stroke: currentColor;
+}
+
+/* Ensure ARP buttons match other controls */
+.arp-btn {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    margin: 2px;
+}
+
+.arp-btn:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.arp-btn.active {
+    background: #34495e;
+    color: #FFFFFF;
+    border-color: #34495e;
+}
+
+/* Root note buttons - smaller size */
+.note-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 4px;
+    margin: 2px;
+    font-size: 14px;
+}
+
+.note-btn:hover {
+    background: rgba(52, 73, 94, 0.1);
+}
+
+.note-btn.active {
+    background: #34495e;
+    color: #FFFFFF;
+    border-color: #34495e;
+}
+
+/* Ensure consistent icon sizing */
+.control-button svg,
+.shape-btn svg,
+.prog-btn svg,
+.scale-btn svg,
+.arp-btn svg,
+.noise-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.control-button.active svg {
+    stroke: currentColor;
+}
+
+/* Button groups with consistent spacing */
+.osc-shapes,
+.progression-selector,
+.scale-selector,
+.arp-styles,
+.noise-types {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+/* Updated noise type icons */
+.noise-btn[data-noise="white"] svg,
+.noise-btn[data-noise="pink"] svg,
+.noise-btn[data-noise="brown"] svg {
+    fill: none;
+    stroke: currentColor;
+}
+
+/* Media query for touch devices */
+@media (hover: none) {
+    .control-button,
+    .shape-btn,
+    .prog-btn,
+    .scale-btn,
+    .arp-btn,
+    .noise-btn,
+    .note-btn {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+.control-button.active,
+.shape-btn.active,
+.prog-btn.active,
+.scale-btn.active,
+.arp-btn.active,
+.noise-btn.active {
+    background: #1a2634;
+    color: #FFFFFF;
+    border-color: #1a2634;
+}
+
+.control-button.active svg,
+.shape-btn.active svg,
+.prog-btn.active svg,
+.scale-btn.active svg,
+.arp-btn.active svg,
+.noise-btn.active svg {
+    stroke: currentColor;
+    fill: var(--active-color);
+    fill-opacity: 0.3;
+}
+
+/* Remove any conflicting active states */
+.shape-btn.active,
+.prog-btn.active,
+.scale-btn.active,
+.arp-btn.active,
+.noise-btn.active {
+    background: #1a2634;
+    color: #FFFFFF;
+    border-color: #1a2634;
+}
+
+.shape-btn.active svg,
+.prog-btn.active svg,
+.scale-btn.active svg,
+.arp-btn.active svg,
+.noise-btn.active svg {
+    stroke: currentColor;
+    fill: var(--active-color);
+    fill-opacity: 0.3;
+}
+
+/* Shake animations for FUN mode */
+@keyframes shake-light {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(1px, 1px) rotate(0.5deg); }
+    50% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+    75% { transform: translate(1px, -1px) rotate(0.5deg); }
+}
+
+@keyframes shake-medium {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(2px, 2px) rotate(1deg); }
+    50% { transform: translate(-2px, -2px) rotate(-1deg); }
+    75% { transform: translate(2px, -2px) rotate(1deg); }
+}
+
+@keyframes shake-strong {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(3px, 3px) rotate(1.5deg); }
+    50% { transform: translate(-3px, -3px) rotate(-1.5deg); }
+    75% { transform: translate(3px, -3px) rotate(1.5deg); }
+}
+
+/* Add iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+    html, body {
+        height: -webkit-fill-available;
+    }
+
+    .container {
+        min-height: -webkit-fill-available;
+    }
+
+    /* Prevent elastic scrolling */
+    body {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Improve touch response */
+    .chord,
+    .control-button,
+    .shape-btn,
+    .prog-btn,
+    .scale-btn,
+    .arp-btn,
+    .noise-btn {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Fix input range styling */
+    input[type="range"] {
+        -webkit-appearance: none;
+        background: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+    }
+}
+
+/* Firefox specific fixes */
+@-moz-document url-prefix() {
+    .sound-controls {
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-color) transparent;
+    }
+
+    input[type="range"] {
+        background: #eee;
+    }
+}
+
+/* Chrome specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .sound-controls::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sound-controls::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sound-controls::-webkit-scrollbar-thumb {
+        background-color: var(--accent-color);
+        border-radius: 3px;
+    }
+}
+
+.oscilloscope-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 1rem;
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+.oscilloscope {
+    width: 100%;
+    height: 32px;
+    border-radius: 2px;
+    opacity: 0.9;
+}
+
+.sidebar-trigger {
+    position: fixed;
+    top: 2rem;
+    left: 1rem;
+    z-index: 1000;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 4px;
+    background: rgba(44, 62, 80, 0.9);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.sidebar-trigger:hover {
+    background: rgba(44, 62, 80, 1);
+    transform: scale(1.05);
+}
