@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Chord Progressions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sound-controls collapsed" aria-label="Sound and chord controls">
+            <div class="synth-header">
+                <div class="title-group">
+                    <h2>SYNÄ</h2>
+                </div>
+            </div>
+
+            <div class="control-buttons">
+                <button type="button" id="randomize" class="rand-button" aria-label="Randomize all controls">RAND</button>
+                <button type="button" id="fun" class="fun-button" aria-label="Start fun mode">FUN</button>
+                <button type="button" id="loop" class="loop-button" aria-label="Toggle loop mode">LOOP</button>
+            </div>
+
+            <div class="oscilloscope-container">
+                <canvas id="left-oscilloscope" class="oscilloscope" width="120" height="40"></canvas>
+                <canvas id="right-oscilloscope" class="oscilloscope" width="120" height="40"></canvas>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">ROOT</div>
+                </div>
+                <div class="group-content">
+                    <div class="note-selector" role="radiogroup" aria-label="Root note selection">
+                        <button type="button" class="note-btn control-button active" data-note="C" aria-label="C note" aria-pressed="true">C</button>
+                        <button type="button" class="note-btn control-button" data-note="C#" aria-label="C sharp note" aria-pressed="false">C#</button>
+                        <button type="button" class="note-btn control-button" data-note="D" aria-label="D note" aria-pressed="false">D</button>
+                        <button type="button" class="note-btn control-button" data-note="D#" aria-label="D sharp note" aria-pressed="false">D#</button>
+                        <button type="button" class="note-btn control-button" data-note="E" aria-label="E note" aria-pressed="false">E</button>
+                        <button type="button" class="note-btn control-button" data-note="F" aria-label="F note" aria-pressed="false">F</button>
+                        <button type="button" class="note-btn control-button" data-note="F#" aria-label="F sharp note" aria-pressed="false">F#</button>
+                        <button type="button" class="note-btn control-button" data-note="G" aria-label="G note" aria-pressed="false">G</button>
+                        <button type="button" class="note-btn control-button" data-note="G#" aria-label="G sharp note" aria-pressed="false">G#</button>
+                        <button type="button" class="note-btn control-button" data-note="A" aria-label="A note" aria-pressed="false">A</button>
+                        <button type="button" class="note-btn control-button" data-note="A#" aria-label="A sharp note" aria-pressed="false">A#</button>
+                        <button type="button" class="note-btn control-button" data-note="B" aria-label="B note" aria-pressed="false">B</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">PROGRESSION</div>
+                </div>
+                <div class="group-content">
+                    <div class="progression-selector">
+                        <button type="button" class="prog-btn control-button active" data-progression="free" aria-label="Free progression">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"/></svg>
+                        </button>
+                        <button type="button" class="prog-btn control-button" data-progression="twoFive" aria-label="Two-Five-One progression">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l8 16 8-16"/></svg>
+                        </button>
+                        <button type="button" class="prog-btn control-button" data-progression="bird" aria-label="Bird changes">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12c8-8 8 8 16 0"/></svg>
+                        </button>
+                        <button type="button" class="prog-btn control-button" data-progression="coltrane" aria-label="Coltrane changes">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l16 8-16 8z"/></svg>
+                        </button>
+                    </div>
+                    <div class="mini-control">
+                        <span>NODES</span>
+                        <input type="range" id="progression-nodes" min="3" max="7" value="6" step="1">
+                        <span class="value">6</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>OCT</span>
+                        <input type="range" id="oscillator-octave" min="-2" max="2" value="0" step="0.05">
+                        <span class="value">0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">SCALE</div>
+                </div>
+                <div class="group-content">
+                    <div class="scale-selector" role="radiogroup" aria-label="Scale selection">
+                        <button type="button" class="scale-btn control-button active" data-scale="major" aria-label="Major scale" aria-pressed="true">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4v4H4v-4zm6-6h4v10h-4V6zm6 3h4v7h-4V9z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="minor" aria-label="Minor scale" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4v7H4V9zm6 3h4v4h-4v-4zm6-6h4v10h-4V6z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="harmonicMinor" aria-label="Harmonic Minor scale" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h4v12H4V6zm6 4h4v8h-4v-8zm6 0h4v8h-4v-8z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="melodicMinor" aria-label="Melodic Minor scale" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h4v12H4V6zm6 2h4v10h-4V8zm6 0h4v10h-4V8z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="dorian" aria-label="Dorian mode" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h4v12H4V6zm6 4h4v8h-4v-8zm6-2h4v10h-4V8z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="mixolydian" aria-label="Mixolydian mode" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h4v8H4V8zm6-2h4v10h-4V6zm6 4h4v8h-4v-8z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="lydian" aria-label="Lydian mode" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h4v8H4V8zm6-2h4v10h-4V6zm6 0h4v10h-4V6z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="phrygian" aria-label="Phrygian mode" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h4v12H4V6zm6 6h4v6h-4v-6zm6-4h4v10h-4V8z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="locrian" aria-label="Locrian mode" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4v8H4v-8zm6-6h4v14h-4V6zm6 3h4v11h-4V9z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="altered" aria-label="Altered scale" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h4v6H4v-6zm6 6h4v6h-4v-6zm6-3h4v9h-4V9z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="wholeTone" aria-label="Whole Tone scale" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h4v12H4V6zm6 0h4v12h-4V6zm6 0h4v12h-4V6z"/></svg>
+                        </button>
+                        <button type="button" class="scale-btn" data-scale="diminished" aria-label="Diminished scale" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4v4H4v-4zm6-6h4v4h-4V6zm6 6h4v4h-4v-12z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">SHAPE</div>
+                </div>
+                <div class="group-content">
+                    <div class="osc-shapes">
+                        <button type="button" class="shape-btn control-button active" data-shape="triangle" aria-label="Triangle wave">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4L4 20h16L12 4z"/></svg>
+                        </button>
+                        <button type="button" class="shape-btn control-button" data-shape="sine" aria-label="Sine wave">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c4-8 16-8 20 0s-16 8-20 0z"/></svg>
+                        </button>
+                        <button type="button" class="shape-btn control-button" data-shape="square" aria-label="Square wave">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8h4v8H2V8zm8 0h4v8h-4V8zm8 0h4v8h-4V8z"/></svg>
+                        </button>
+                        <button type="button" class="shape-btn control-button" data-shape="sawtooth" aria-label="Sawtooth wave">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 18V6l10 12V6l10 12"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="mini-control">
+                        <span>DTUNE</span>
+                        <input type="range" id="osc-detune" min="0" max="24" value="12" step="1">
+                        <span class="value">12</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>MIX</span>
+                        <input type="range" id="osc-mix" min="0" max="100" value="30" step="1">
+                        <span class="value">30</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>RES</span>
+                        <input type="range" id="osc-resonance" min="0" max="20" value="2" step="0.1">
+                        <span class="value">2.0</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>GLIDE</span>
+                        <input type="range" id="osc-glide" min="0" max="1000" value="0" step="1">
+                        <span class="value">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">NOISE</div>
+                </div>
+                <div class="group-content">
+                    <div class="noise-types">
+                        <button type="button" class="noise-btn control-button" data-noise="white" aria-label="White noise">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 4h16v16H4z M4 12h16 M8 8h8 M8 16h8"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="noise-btn control-button" data-noise="pink" aria-label="Pink noise">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 20L20 4 M4 12L20 12 M4 4L20 20"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="noise-btn control-button" data-noise="brown" aria-label="Brown noise">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 20c4-16 12-16 16 0"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mini-control">
+                        <span>NOISE</span>
+                        <input type="range" id="noise-mix" min="0" max="100" value="0" step="1">
+                        <span class="value">0</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>LPF</span>
+                        <input type="range" id="noise-lpf" min="20" max="20000" value="20000" step="1">
+                        <span class="value">20k</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>HPF</span>
+                        <input type="range" id="noise-hpf" min="20" max="20000" value="20" step="1">
+                        <span class="value">20</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">ENV</div>
+                </div>
+                <div class="group-content">
+                    <div class="env-controls">
+                        <div class="mini-control">
+                            <span>A</span>
+                            <input type="range" id="env-attack" min="0" max="2000" value="20" step="1">
+                            <span class="value">20</span>
+                        </div>
+                        <div class="mini-control">
+                            <span>D</span>
+                            <input type="range" id="env-decay" min="0" max="3000" value="150" step="1">
+                            <span class="value">150</span>
+                        </div>
+                        <div class="mini-control">
+                            <span>S</span>
+                            <input type="range" id="env-sustain" min="0" max="100" value="50" step="1">
+                            <span class="value">50</span>
+                        </div>
+                        <div class="mini-control">
+                            <span>R</span>
+                            <input type="range" id="env-release" min="0" max="5000" value="1000" step="10">
+                            <span class="value">1.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">REV</div>
+                </div>
+                <div class="group-content">
+                    <div class="mini-control">
+                        <span>TIME</span>
+                        <input type="range" id="reverb-time" min="0.1" max="20.0" value="2.0" step="0.1">
+                        <span class="value">2.0</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>DEC</span>
+                        <input type="range" id="reverb-decay" min="0" max="100" value="80" step="1">
+                        <span class="value">80</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>MIX</span>
+                        <input type="range" id="reverb-mix" min="0" max="100" value="50" step="1">
+                        <span class="value">50</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">DLY</div>
+                </div>
+                <div class="group-content">
+                    <div class="mini-control">
+                        <span>TIME</span>
+                        <input type="range" id="delay-time" min="0" max="2000" value="150" step="1">
+                        <span class="value">150</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>FB</span>
+                        <input type="range" id="delay-feedback" min="0" max="95" value="30" step="1">
+                        <span class="value">30</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>MIX</span>
+                        <input type="range" id="delay-mix" min="0" max="100" value="50" step="1">
+                        <span class="value">50</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="group-header">
+                    <div class="group-toggle"></div>
+                    <div class="group-label">ARP</div>
+                </div>
+                <div class="group-content">
+                    <div class="arp-styles">
+                        <button type="button" class="arp-btn active" data-pattern="up" aria-label="Up pattern">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4l16 16"/></svg>
+                        </button>
+                        <button type="button" class="arp-btn" data-pattern="down" aria-label="Down pattern">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16l16-16"/></svg>
+                        </button>
+                        <button type="button" class="arp-btn" data-pattern="updown" aria-label="Up-Down pattern">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16V8l8 8 8-8"/></svg>
+                        </button>
+                        <button type="button" class="arp-btn" data-pattern="random" aria-label="Random pattern">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l4 8-4 8 16-8-16-8z"/></svg>
+                        </button>
+                    </div>
+                    <div class="mini-control">
+                        <span>BPM</span>
+                        <input type="range" id="arp-bpm" min="20" max="1000" value="120" step="1">
+                        <span class="value">120</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>GATE</span>
+                        <input type="range" id="arp-gate" min="0.1" max="1.0" value="0.5" step="0.1">
+                        <span class="value">0.5</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>SWING</span>
+                        <input type="range" id="arp-swing" min="0" max="1" value="0" step="0.1">
+                        <span class="value">0</span>
+                    </div>
+                    <div class="mini-control">
+                        <span>OCT</span>
+                        <input type="range" id="arp-octave" min="-2" max="2" value="0" step="1">
+                        <span class="value">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <button type="button" class="sidebar-trigger" aria-label="Toggle sidebar">☰</button>
+
+        <main class="chord-display">
+            <div id="chord-container" class="chord-container"></div>
+        </main>
+    </div>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
