@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="RUNNING ENTROPY - Interactive WebGL Demoscene Experience">
+    <meta name="keywords" content="WebGL, demoscene, interactive, entropy, particles, geometry">
+    <meta name="author" content="RUNNING ENTROPY Team">
+
+    <title>RUNNING ENTROPY</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="js/app.js" as="script">
+    <link rel="preload" href="js/webgl-renderer.js" as="script">
+    <link rel="preload" href="js/input-manager.js" as="script">
+    <link rel="preload" href="js/gamepad-handler.js" as="script">
+</head>
+<body>
+    <!-- Main canvas -->
+    <canvas id="gl-canvas" class="gl-canvas"></canvas>
+
+    <!-- Scene information overlay -->
+    <div id="scene-info" class="scene-info-overlay" style="display: none;">
+        <div class="scene-info-content">
+            <div class="scene-name">ENTROPY MAGMA</div>
+            <div class="scene-progress">1/3 - 0%</div>
+            <div class="scene-time">0s / 180s</div>
+        </div>
+    </div>
+
+    <!-- Statistics overlay -->
+    <div id="stats" class="stats-overlay" style="display: none;">
+        <div class="stats-content">
+            <div>FPS: 60.0</div>
+            <div>Frame: 0</div>
+            <div>Time: 0.0s</div>
+            <div>Scene: Entropy Magma</div>
+            <div>Progress: 0.0%</div>
+        </div>
+    </div>
+
+    <!-- Controls overlay -->
+    <div id="controls" class="controls-overlay">
+        <div class="controls-content">
+            <div class="control-group">
+                <div class="control-title">Navigation</div>
+                <div class="control-item">← → Arrow Keys: Change Scene</div>
+                <div class="control-item">1, 2, 3: Jump to Scene</div>
+                <div class="control-item">Space: Next Scene</div>
+            </div>
+            <div class="control-group">
+                <div class="control-title">Display</div>
+                <div class="control-item">I: Toggle Scene Info</div>
+                <div class="control-item">S: Toggle Statistics</div>
+                <div class="control-item">Q: Toggle Sequencer</div>
+                <div class="control-item">F: Toggle Fullscreen</div>
+            </div>
+            <div class="control-group">
+                <div class="control-title">Development</div>
+                <div class="control-item">D: Toggle Development Mode</div>
+                <div class="control-item">Click Sequencer: Jump to Scene</div>
+                <div class="control-item">Dev Mode: No Auto-Transition</div>
+            </div>
+            <div class="control-group">
+                <div class="control-title">Interaction</div>
+                <div class="control-item">Mouse/Touch: Add Attractors</div>
+                <div class="control-item">Drag: Distort Field</div>
+                <div class="control-item">Gamepad: A/B for Navigation</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading screen -->
+    <div id="loading" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-title">RUNNING ENTROPY</div>
+            <div class="loading-subtitle">Demoscene Experience</div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Initializing...</div>
+        </div>
+    </div>
+
+    <!-- Error modal -->
+    <div id="error-modal" class="error-modal" style="display: none;">
+        <div class="error-content">
+            <div class="error-title">Error</div>
+            <div class="error-message">An error occurred</div>
+            <button type="button" class="error-button" onclick="Utils.hideError()">OK</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/webgl-renderer.js"></script>
+    <script src="js/input-manager.js"></script>
+    <script src="js/gamepad-handler.js"></script>
+    <script src="js/noise-generator.js"></script>
+
+    <!-- Scene system -->
+    <script src="js/scenes/Scene.js"></script>
+    <script src="js/scenes/SceneManager.js"></script>
+    <script src="js/scenes/EntropyMagmaScene.js"></script>
+    <script src="js/scenes/GeometricEntropyScene.js"></script>
+    <script src="js/scenes/ParticleEntropyScene.js"></script>
+
+    <!-- Main application -->
+    <script src="js/app.js"></script>
+</body>
+</html>

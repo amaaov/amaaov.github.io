@@ -1,0 +1,6 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+This is RUNNING ENTROPY project, it is following demoscene approach and rendered in browser with webgl, full mobile support. Project has set of scenes which are separately implemented as javascript functions and sequenced in main app javascript file. There might be possibilities for user interactivity within a scene, in general all scenes have duration, each scene should be from 1 minute to 5 minutes. Scene content should be playful, intellectually rich, and textured with obscure visuals, invented terminology, and evocative graphics. The tone blends retro-futurism, jazz-inspired rhythm, and speculative techno-philosophy. Writing and graphics may include multilingual expressions (especially Russian, Finnish, Japanese, and French), poetic metaphors, and references from electronics, synthesizers, surrealism, or vintage science fiction. Visuals may oscillate between satirical, erudite, and emotionally resonant tones — sometimes theatrical, sometimes dryly analytical. Language should embrace ambiguity when appropriate and reject corporate blandness. Concepts like embodiment, noise-as-signal, and post-consumerist values are welcome.
