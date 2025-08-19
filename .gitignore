@@ -8,3 +8,15 @@ vendor/
 node_modules/
 test-results/
 playwright-report/
+
+.env.local*
+.env.dev*
+
+# Media uploader generated files
+index.m3u
+media_catalog.html
+rss.xml
+atom.xml
+
+tmp
+tmp/*/**
