@@ -1,0 +1,7 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+Do not generate summary or changelog or list of fixes or list of issues or anything similar after generation, only short DONE is enough.
+
