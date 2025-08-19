@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://amaaov.github.io/sitemap.xml
+
+# Feed location
+Sitemap: https://amaaov.github.io/feed.xml
