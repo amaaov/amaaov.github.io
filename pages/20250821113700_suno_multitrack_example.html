@@ -2684,7 +2684,7 @@
         // 1. Force stop all audio sources
         this.forceStopAllAudio();
 
-        // 2. Disconnect all gain nodes from audio chain
+        // 2. Disconnect all gain nodes from audio chain and clear all audio data
         this.tracks.forEach(track => {
           if (track.gainNode) {
             track.gainNode.disconnect();
@@ -2693,13 +2693,31 @@
           }
           // Also clear any lingering sources
           if (track.source) {
+            try {
+              track.source.stop();
+              logger.log(`Stopped source for track ${track.id}`);
+            } catch (e) {
+              logger.log(`Source for track ${track.id} already stopped`);
+            }
             track.source = null;
             logger.log(`Cleared source for track ${track.id}`);
           }
+          // Clear audio buffer to prevent old audio from playing
+          track.audioBuffer = null;
+          track.isDownloaded = false;
+          logger.log(`Cleared audio buffer for track ${track.id}`);
         });
 
         // 3. Stop all progress updates and reset playback state
         this.stopProgressUpdate();
+
+        // Ensure progress update is completely stopped
+        if (this.progressInterval) {
+          cancelAnimationFrame(this.progressInterval);
+          this.progressInterval = null;
+          logger.log('Progress update completely stopped');
+        }
+
         this.isPlaying = false;
         this.currentTime = 0;
         this.duration = 0;
@@ -2715,7 +2733,7 @@
           logger.log('Master gain connections reset to clean state');
         }
 
-        // 5. Force audio context to stop all processing
+                // 5. Force audio context to stop all processing
         if (this.audioContext) {
           try {
             // Suspend audio context to stop all audio processing
@@ -2724,14 +2742,19 @@
               logger.log('Audio context suspended to stop all audio');
             }
 
-            // Create a silent buffer to force stop any lingering audio
-            const silentBuffer = this.audioContext.createBuffer(2, 1, 22050);
-            const silentSource = this.audioContext.createBufferSource();
-            silentSource.buffer = silentBuffer;
-            silentSource.connect(this.audioContext.destination);
-            silentSource.start();
-            silentSource.stop();
-            logger.log('Forced audio context cleanup with silent buffer');
+            // Create multiple silent buffers to force stop any lingering audio
+            for (let i = 0; i < 5; i++) {
+              const silentBuffer = this.audioContext.createBuffer(2, 1, 22050);
+              const silentSource = this.audioContext.createBufferSource();
+              silentSource.buffer = silentBuffer;
+              silentSource.connect(this.audioContext.destination);
+              silentSource.start();
+              silentSource.stop();
+            }
+            logger.log('Forced audio context cleanup with multiple silent buffers');
+
+            // Small delay to ensure audio processing stops
+            await new Promise(resolve => setTimeout(resolve, 50));
           } catch (e) {
             logger.log('Audio context cleanup failed:', e);
           }
@@ -2775,11 +2798,19 @@
         if (progressFill) {
           progressFill.style.width = '0%';
           logger.log('Progress bar reset to 0%');
+        } else {
+          logger.error('Progress fill element not found during reset');
         }
         if (progressHandle) {
           progressHandle.style.left = '0%';
           logger.log('Progress handle reset to 0%');
+        } else {
+          logger.error('Progress handle element not found during reset');
         }
+
+        // Force update progress to ensure UI is synchronized
+        this.updateProgress();
+        logger.log('Progress UI forced update after reset');
 
         // Reset time display
         const currentTimeElement = document.getElementById('currentTime');
@@ -2813,8 +2844,26 @@
         });
 
         // Clear current tracks but preserve states
+        logger.log('Clearing all track references and audio data');
+        this.tracks.forEach(track => {
+          // Ensure all audio sources are stopped and disconnected
+          if (track.source) {
+            try {
+              track.source.stop();
+              logger.log(`Stopped source for track ${track.id} during cleanup`);
+            } catch (e) {
+              logger.log(`Source for track ${track.id} already stopped during cleanup`);
+            }
+          }
+          if (track.gainNode) {
+            track.gainNode.disconnect();
+            logger.log(`Disconnected gain node for track ${track.id} during cleanup`);
+          }
+        });
+
         this.tracks = [];
         this.soloedTracks.clear();
+        logger.log('All track references cleared');
 
         // Reset all effects to ensure clean audio chain
         Object.keys(this.effects).forEach(effectType => {
@@ -2847,6 +2896,16 @@
 
         // Ensure play controls are disabled until tracks are downloaded
         this.setPlayControlsEnabled(false);
+
+        // Resume audio context after loading new tracks
+        if (this.audioContext && this.audioContext.state === 'suspended') {
+          try {
+            await this.audioContext.resume();
+            logger.log('Audio context resumed after song change');
+          } catch (e) {
+            logger.log('Failed to resume audio context:', e);
+          }
+        }
 
         logger.log(`Song changed to ${song}, all states reset`);
       }
@@ -4864,8 +4923,17 @@
 
       startProgressUpdate() {
         logger.log('startProgressUpdate called');
-        // Reference point for sync
-        const startRef = this.audioContext ? this.audioContext.currentTime - this.currentTime : 0;
+
+        // CRITICAL FIX: Reset reference point when starting from 0
+        let startRef = 0;
+        if (this.audioContext && this.currentTime > 0) {
+          startRef = this.audioContext.currentTime - this.currentTime;
+        } else {
+          // Starting from beginning, use current audio context time as reference
+          startRef = this.audioContext ? this.audioContext.currentTime : 0;
+          logger.log('Starting progress update from beginning, using current audio context time as reference');
+        }
+
         logger.log(`Progress update started with startRef: ${startRef}, currentTime: ${this.currentTime}, duration: ${this.duration}`);
         logger.log(`AudioContext currentTime: ${this.audioContext?.currentTime}`);
 
@@ -5129,12 +5197,23 @@
         const effect = this.effects[effectType];
         const button = document.getElementById(`${effectType}Btn`);
 
+        if (!button) {
+          logger.error(`Effect button not found for ${effectType}`);
+          return;
+        }
+
         if (effect.active) {
+          logger.log(`Disabling ${effectType} effect`);
           this.disableEffect(effectType);
           button.classList.remove('active');
         } else {
+          logger.log(`Enabling ${effectType} effect`);
           this.enableEffect(effectType);
-          button.classList.add('active');
+          if (this.effects[effectType].active) {
+            button.classList.add('active');
+          } else {
+            logger.log(`Effect ${effectType} was not enabled, keeping button inactive`);
+          }
         }
 
         // Debug: log effect state
@@ -5143,22 +5222,50 @@
       }
 
       enableEffect(effectType) {
-        if (!this.audioContext) return;
+        if (!this.audioContext) {
+          logger.log(`Cannot enable effect ${effectType}: audio context not available`);
+          return;
+        }
+
+        if (this.audioContext.state !== 'running') {
+          logger.log(`Cannot enable effect ${effectType}: audio context not running (state: ${this.audioContext.state})`);
+          return;
+        }
 
         const effect = this.effects[effectType];
-        if (effect.active) return;
+        if (effect.active) {
+          logger.log(`Effect ${effectType} is already active`);
+          return;
+        }
 
-        effect.active = true;
-        effect.node = this.createEffectNode(effectType);
+        // Check if we have tracks loaded
+        if (this.tracks.length === 0) {
+          logger.log(`Cannot enable effect ${effectType}: no tracks loaded`);
+          return;
+        }
 
-        if (effect.node) {
-          // Insert effect into audio chain
-          this.insertEffectIntoChain(effectType);
+        try {
+          effect.active = true;
+          effect.node = this.createEffectNode(effectType);
 
-          // Ensure tracks are properly connected to master gain
-          this.ensureTracksConnectedToMaster();
+          if (effect.node) {
+            // Insert effect into audio chain
+            this.insertEffectIntoChain(effectType);
 
-          logger.log(`${effectType} effect enabled`);
+            // Ensure tracks are properly connected to master gain
+            this.ensureTracksConnectedToMaster();
+
+            // Validate the effect chain
+            this.validateEffectChain();
+
+            logger.log(`${effectType} effect enabled successfully`);
+          } else {
+            logger.error(`Failed to create effect node for ${effectType}`);
+            effect.active = false;
+          }
+        } catch (error) {
+          logger.error(`Failed to enable effect ${effectType}:`, error);
+          effect.active = false;
         }
       }
 
@@ -5633,60 +5740,139 @@
 
       insertEffectIntoChain(effectType) {
         const effect = this.effects[effectType];
-        if (!effect || !effect.node) return;
-
-        // Disconnect masterGain from destination temporarily
-        this.masterGain.disconnect();
-
-        if (effectType === 'reverb') {
-          // Reverb: masterGain -> reverb -> destination
-          this.masterGain.connect(effect.node.convolver);
-          effect.node.convolver.connect(this.audioContext.destination);
-        } else if (effectType === 'scatter') {
-          // Scatter: masterGain -> scatter -> destination
-          this.masterGain.connect(effect.node.main);
-          effect.node.main.connect(this.audioContext.destination);
-          if (effect.node.startScatter) {
-            effect.node.startScatter();
-          }
-        } else if (effectType === 'pitch') {
-          // Pitch: masterGain -> pitch -> destination
-          this.masterGain.connect(effect.node.delay);
-          effect.node.delay.connect(this.audioContext.destination);
-        } else if (effectType === 'ringmod') {
-          // Ring mod: masterGain -> ringmod -> destination
-          this.masterGain.connect(effect.node.main);
-          effect.node.main.connect(this.audioContext.destination);
-        } else if (effectType === 'noise') {
-          // Noise: masterGain -> noise -> destination
-          this.masterGain.connect(effect.node.main);
-          effect.node.main.connect(this.audioContext.destination);
-          if (effect.node.startNoise) {
-            effect.node.startNoise();
-          }
+        if (!effect || !effect.node) {
+          logger.log(`Cannot insert effect ${effectType}: effect or node not found`);
+          return;
         }
 
-        logger.log(`Effect ${effectType} inserted into audio chain`);
+        // Ensure audio context is running
+        if (this.audioContext.state !== 'running') {
+          logger.log(`Cannot insert effect ${effectType}: audio context not running`);
+          return;
+        }
+
+        try {
+          // Disconnect masterGain from destination temporarily
+          this.masterGain.disconnect();
+
+          if (effectType === 'reverb') {
+            // Reverb: masterGain -> reverb -> destination
+            if (effect.node.convolver) {
+              this.masterGain.connect(effect.node.convolver);
+              effect.node.convolver.connect(this.audioContext.destination);
+              logger.log(`Reverb effect connected: masterGain -> convolver -> destination`);
+            } else {
+              logger.error('Reverb node missing convolver');
+            }
+          } else if (effectType === 'scatter') {
+            // Scatter: masterGain -> scatter -> destination
+            if (effect.node.main) {
+              this.masterGain.connect(effect.node.main);
+              effect.node.main.connect(this.audioContext.destination);
+              if (effect.node.startScatter) {
+                effect.node.startScatter();
+              }
+              logger.log(`Scatter effect connected: masterGain -> main -> destination`);
+            } else {
+              logger.error('Scatter node missing main');
+            }
+          } else if (effectType === 'pitch') {
+            // Pitch: masterGain -> pitch -> destination
+            if (effect.node.main) {
+              this.masterGain.connect(effect.node.main);
+              effect.node.main.connect(this.audioContext.destination);
+              logger.log(`Pitch effect connected: masterGain -> main -> destination`);
+            } else {
+              logger.error('Pitch node missing main');
+            }
+          } else if (effectType === 'ringmod') {
+            // Ring mod: masterGain -> ringmod -> destination
+            if (effect.node.main) {
+              this.masterGain.connect(effect.node.main);
+              effect.node.main.connect(this.audioContext.destination);
+              logger.log(`Ring mod effect connected: masterGain -> main -> destination`);
+            } else {
+              logger.error('Ring mod node missing main');
+            }
+          } else if (effectType === 'noise') {
+            // Noise: masterGain -> noise -> destination
+            if (effect.node.main) {
+              this.masterGain.connect(effect.node.main);
+              effect.node.main.connect(this.audioContext.destination);
+              if (effect.node.startNoise) {
+                effect.node.startNoise();
+              }
+              logger.log(`Noise effect connected: masterGain -> main -> destination`);
+            } else {
+              logger.error('Noise node missing main');
+            }
+          }
+
+          logger.log(`Effect ${effectType} successfully inserted into audio chain`);
+        } catch (error) {
+          logger.error(`Failed to insert effect ${effectType}:`, error);
+          // Restore normal audio chain on error
+          this.restoreNormalAudioChain();
+        }
+      }
+
+      restoreNormalAudioChain() {
+        try {
+          logger.log('Restoring normal audio chain after effect error');
+
+          // Disconnect master gain from any effects
+          this.masterGain.disconnect();
+
+          // Disconnect stereo panner from destination
+          if (this.stereoPanner) {
+            this.stereoPanner.disconnect();
+          }
+
+          // Restore normal chain: masterGain -> stereoPanner -> destination
+          this.masterGain.connect(this.stereoPanner);
+          this.stereoPanner.connect(this.audioContext.destination);
+
+          logger.log('Normal audio chain restored: masterGain -> stereoPanner -> destination');
+        } catch (error) {
+          logger.error('Failed to restore normal audio chain:', error);
+        }
       }
 
       ensureTracksConnectedToMaster() {
+        if (!this.audioContext || this.audioContext.state !== 'running') {
+          logger.log('Cannot ensure tracks connected: audio context not ready');
+          return;
+        }
+
         // Ensure all tracks are connected to master gain
         this.tracks.forEach(track => {
           if (track.gainNode && !track.gainNode.connectedToMaster) {
-            track.gainNode.connect(this.masterGain);
-            track.gainNode.connectedToMaster = true;
+            try {
+              track.gainNode.connect(this.masterGain);
+              track.gainNode.connectedToMaster = true;
+              logger.log(`Track ${track.id} gain node connected to master`);
+            } catch (error) {
+              logger.error(`Failed to connect track ${track.id} to master:`, error);
+            }
           }
         });
 
-        // Ensure master gain is connected to destination (either directly or through effects)
+        // Check if we have active effects
         const hasActiveEffects = Object.values(this.effects).some(effect => effect.active);
+        logger.log(`Active effects: ${hasActiveEffects ? 'yes' : 'no'}`);
 
         if (!hasActiveEffects) {
-          // No effects active, connect normally: masterGain -> stereoPanner -> destination
-          this.masterGain.disconnect();
-          this.masterGain.connect(this.stereoPanner);
-          this.stereoPanner.connect(this.audioContext.destination);
-          logger.log('Audio chain restored to normal: masterGain -> stereoPanner -> destination');
+          // No effects active, ensure normal audio chain: masterGain -> stereoPanner -> destination
+          try {
+            this.masterGain.disconnect();
+            this.masterGain.connect(this.stereoPanner);
+            this.stereoPanner.connect(this.audioContext.destination);
+            logger.log('Audio chain restored to normal: masterGain -> stereoPanner -> destination');
+          } catch (error) {
+            logger.error('Failed to restore normal audio chain:', error);
+          }
+        } else {
+          logger.log('Effects are active, audio chain managed by effects');
         }
       }
 
@@ -5703,7 +5889,7 @@
             effect.node.stopScatter();
           }
         } else if (effectType === 'pitch') {
-          effect.node.delay.disconnect();
+          effect.node.main.disconnect();
         } else if (effectType === 'ringmod') {
           effect.node.main.disconnect();
         } else if (effectType === 'noise') {
@@ -5721,7 +5907,43 @@
         // Ensure tracks are properly connected after effect removal
         this.ensureTracksConnectedToMaster();
 
+        // Validate the effect chain after removal
+        this.validateEffectChain();
+
         logger.log(`Effect ${effectType} removed from audio chain`);
+      }
+
+      validateEffectChain() {
+        logger.log('=== VALIDATING EFFECT CHAIN ===');
+
+        // Check if master gain is connected to the right destination
+        const masterGainInputs = this.masterGain.numberOfInputs;
+        const masterGainOutputs = this.masterGain.numberOfOutputs;
+        logger.log(`Master gain: ${masterGainInputs} inputs, ${masterGainOutputs} outputs`);
+
+        // Check if we have active effects
+        const activeEffects = Object.entries(this.effects).filter(([type, effect]) => effect.active);
+        logger.log(`Active effects: ${activeEffects.length}`);
+
+        activeEffects.forEach(([type, effect]) => {
+          if (effect.node) {
+            logger.log(`Effect ${type}: node exists, checking connections`);
+            // Log the effect node structure
+            logger.log(`Effect ${type} node:`, effect.node);
+          } else {
+            logger.log(`Effect ${type}: no node found`);
+          }
+        });
+
+        // Check if master gain is connected to destination through effects or normal chain
+        const hasActiveEffects = activeEffects.length > 0;
+        if (hasActiveEffects) {
+          logger.log('Effects are active - master gain should be connected to effect nodes');
+        } else {
+          logger.log('No effects active - master gain should be connected to stereo panner');
+        }
+
+        logger.log('=== EFFECT CHAIN VALIDATION COMPLETE ===');
       }
     }
 
