@@ -1777,7 +1777,7 @@
             </div>
           </div>
 
-          <div class="progress-container">
+          <div class="progress-container" id="mainProgress">
             <div class="progress-bar">
               <div class="progress-fill" id="main-progress-fill"></div>
               <div class="progress-handle" id="main-progress-handle"></div>
@@ -2209,23 +2209,37 @@
           this.stop();
         });
 
-        // Progress bar seeking
-        document.querySelector('.progress-bar').addEventListener('click', (e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const percentage = clickX / rect.width;
-          const seekTime = percentage * this.duration;
-          this.seekToTime(seekTime);
-        });
+        // Progress bar seeking - use more specific selector
+        const mainProgressBar = document.querySelector('#mainProgress .progress-bar');
+        if (mainProgressBar) {
+          mainProgressBar.addEventListener('click', (e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            const seekTime = percentage * this.duration;
+
+            logger.log(`Progress bar click: ${clickX}px, ${percentage * 100}%, seeking to ${seekTime}s`);
+            this.seekToTime(seekTime);
+          });
+        } else {
+          logger.warn('Main progress bar not found for seeking');
+        }
 
         // Master waveform seeking
-        document.getElementById('masterWaveform').addEventListener('click', (e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const percentage = clickX / rect.width;
-          const seekTime = percentage * this.duration;
-          this.seekToTime(seekTime);
-        });
+        const masterWaveform = document.getElementById('masterWaveform');
+        if (masterWaveform) {
+          masterWaveform.addEventListener('click', (e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            const seekTime = percentage * this.duration;
+
+            logger.log(`Master waveform click: ${clickX}px, ${percentage * 100}%, seeking to ${seekTime}s`);
+            this.seekToTime(seekTime);
+          });
+        } else {
+          logger.warn('Master waveform not found for seeking');
+        }
 
         // Volume slider with sticky positions
         const volumeSlider = document.getElementById('masterVolume');
@@ -2328,9 +2342,8 @@
           logger.log('Download all button not found');
         }
 
-        // Cache controls
-        document.getElementById('clearCacheBtn').addEventListener('click', () => this.clearCache());
-        document.getElementById('cacheInfoBtn').addEventListener('click', () => this.showCacheInfo());
+        // Cache controls are now handled in initializeCacheControls()
+        // No duplicate event listeners here
 
         // Keyboard shortcuts - removed for now
       }
@@ -2364,14 +2377,12 @@
 
         for (let i = 0; i < songData.length; i++) {
           const track = this.tracks[i];
-          if (track && !track.isDownloaded) {
-            logger.log(`Checking cache for track ${track.id} (not downloaded)`);
-            // Check if track is cached
+          if (track) {
+            // Always check cache for all tracks, regardless of isDownloaded state
+            // This ensures that after cache clearing, we properly re-check all tracks
+            logger.log(`Checking cache for track ${track.id} (force check)`);
             const cachePromise = this.checkAndRenderCachedTrack(songData[i], i);
             cachePromises.push(cachePromise);
-          } else if (track && track.isDownloaded) {
-            logger.log(`Skipping track ${track.id} (already downloaded)`);
-            skippedCount++;
           } else {
             logger.log(`No track found at index ${i}`);
           }
@@ -2465,9 +2476,10 @@
           return;
         }
 
+        // Note: We now check cache for all tracks, even if they think they're downloaded
+        // This ensures proper behavior after cache clearing
         if (track.isDownloaded) {
-          logger.log(`Track ${trackId} already downloaded, skipping cache check`);
-          return;
+          logger.log(`Track ${trackId} thinks it's downloaded, but checking cache anyway`);
         }
 
         try {
@@ -2538,8 +2550,13 @@
             // CRITICAL: Update duration after loading from cache
             this.updateDuration();
           } else {
-            // Track not cached - hide placeholder and show download
-            logger.log(`Track ${trackId} not cached, showing download button`);
+            // Track not cached - reset track state and show download
+            logger.log(`Track ${trackId} not cached, resetting state and showing download button`);
+
+            // Reset track state since it's not actually cached
+            track.isDownloaded = false;
+            track.audioBuffer = null;
+
             const trackElement = track.element;
             if (trackElement) {
               const placeholder = trackElement.querySelector('.placeholder-waveform');
@@ -2552,6 +2569,13 @@
               if (downloadOverlay) {
                 downloadOverlay.style.display = 'flex';
                 logger.log(`✓ ${trackId}: Showed download overlay (cache miss)`);
+              }
+
+              // Hide waveform if it was showing
+              const canvas = trackElement.querySelector('.waveform-canvas');
+              if (canvas) {
+                canvas.style.display = 'none';
+                logger.log(`✓ ${trackId}: Hidden waveform (cache miss)`);
               }
             }
           }
@@ -2811,6 +2835,13 @@
         // Force update progress to ensure UI is synchronized
         this.updateProgress();
         logger.log('Progress UI forced update after reset');
+
+        // Validate progress state after reset
+        logger.log(`Progress state validation: currentTime=${this.currentTime}, duration=${this.duration}, isPlaying=${this.isPlaying}`);
+        if (this.currentTime !== 0) {
+          logger.warn('Current time not properly reset to 0');
+          this.currentTime = 0;
+        }
 
         // Reset time display
         const currentTimeElement = document.getElementById('currentTime');
@@ -3200,9 +3231,9 @@
               });
             }
 
-            // Check for cached tracks and render them (only for non-downloaded tracks)
-            logger.log('Starting cache check for remaining non-downloaded tracks...');
-            await this.checkAndRenderCachedTracks();
+                    // Check for cached tracks and render them (check ALL tracks after cache clearing)
+        logger.log('Starting cache check for all tracks...');
+        await this.checkAndRenderCachedTracks();
 
             // Don't enable play controls here - let updatePlayButtonState handle it
             logger.log('About to update play button state...');
@@ -3426,8 +3457,21 @@
 
             if (cachedAudio) {
               logger.log(`Track ${trackId} found in cache, loading directly`);
+              // Show loading progress for cache loading
+              this.updateTrackLoadingProgress(trackId, 0, 'Loading from cache...');
+              this.updateTrackLoadingProgress(trackId, 50, 'Decoding audio...');
+              this.updateTrackLoadingProgress(trackId, 100, 'Processing...');
+
               // Load from cache
               await this.loadTrackAudio(trackData, index);
+
+              // Hide loader and show waveform
+              loadingOverlay.style.display = 'none';
+              const canvas = track.element.querySelector('.waveform-canvas');
+              if (canvas) {
+                canvas.style.display = 'block';
+              }
+
               // Update play button state after successful load
               this.updatePlayButtonState();
             } else {
@@ -3436,8 +3480,16 @@
               downloadBtn.classList.add('downloading');
               downloadBtn.disabled = true;
 
-              // Download the track
+              // Download the track with progress tracking
               await this.loadTrackAudio(trackData, index);
+
+              // Hide loader and show waveform after successful download
+              loadingOverlay.style.display = 'none';
+              const canvas = track.element.querySelector('.waveform-canvas');
+              if (canvas) {
+                canvas.style.display = 'block';
+              }
+
               // Update play button state after successful download
               this.updatePlayButtonState();
             }
@@ -3448,6 +3500,9 @@
             downloadBtn.disabled = false;
             downloadOverlay.style.display = 'flex';
             loadingOverlay.style.display = 'none';
+
+            // Show error in loading overlay
+            this.updateTrackLoadingProgress(trackId, 0, 'Download failed - click to retry');
           }
         }
       }
@@ -3652,11 +3707,14 @@
           const songData = this.getSongData();
           const downloadPromises = [];
 
-          // Start downloading all tracks
+          // Start downloading all missing tracks directly (skip cache check)
           for (let i = 0; i < songData.length; i++) {
             const track = this.tracks[i];
             if (track && !track.isDownloaded) {
-              downloadPromises.push(this.downloadTrack(songData[i], i));
+              logger.log(`Downloading missing track ${track.id} directly`);
+              downloadPromises.push(this.loadTrackAudio(songData[i], i));
+            } else if (track && track.isDownloaded) {
+              logger.log(`Skipping track ${track.id} (already downloaded)`);
             }
           }
 
@@ -3856,18 +3914,59 @@
       }
 
       updateTrackLoadingProgress(trackId, progress, text) {
+        // Find the track element first
+        const trackElement = document.querySelector(`[data-track-id="${trackId}"]`);
+        if (!trackElement) {
+          logger.warn(`Track element not found for ${trackId}`);
+          return;
+        }
+
+        // Use the correct ID selectors based on the track HTML structure
         const progressFill = document.getElementById(`progress-${trackId}`);
         const progressText = document.getElementById(`progress-text-${trackId}`);
-        const loadingText = document.querySelector(`#loading-${trackId} .loading-text`);
+        const loadingText = trackElement.querySelector('.loading-text');
+        const loadingOverlay = document.getElementById(`loading-${trackId}`);
+        const downloadBtn = trackElement.querySelector('.track-download-btn');
 
-        if (progressFill) progressFill.style.width = `${progress}%`;
-        if (progressText) progressText.textContent = `${progress}%`;
-        if (loadingText) loadingText.textContent = text;
+        // Show loading overlay when progress starts
+        if (loadingOverlay && progress > 0) {
+          loadingOverlay.style.display = 'flex';
+        }
+
+        // Hide download button when loading starts
+        if (downloadBtn && progress > 0) {
+          downloadBtn.style.display = 'none';
+        }
+
+        // Update progress bar
+        if (progressFill) {
+          progressFill.style.width = `${progress}%`;
+        }
+
+        // Update progress text
+        if (progressText) {
+          progressText.textContent = `${progress}%`;
+        }
+
+        // Update loading text
+        if (loadingText) {
+          loadingText.textContent = text;
+        }
+
+        logger.log(`Progress update for ${trackId}: ${progress}% - ${text}`);
       }
 
       hideTrackLoadingOverlay(trackId) {
+        // Find the track element first
+        const trackElement = document.querySelector(`[data-track-id="${trackId}"]`);
+        if (!trackElement) {
+          logger.warn(`Track element not found for ${trackId}`);
+          return;
+        }
+
         const loadingOverlay = document.getElementById(`loading-${trackId}`);
-        const canvas = document.querySelector(`[data-track-id="${trackId}"] .waveform-canvas`);
+        const canvas = trackElement.querySelector('.waveform-canvas');
+        const downloadBtn = trackElement.querySelector('.track-download-btn');
 
         if (loadingOverlay) {
           loadingOverlay.style.display = 'none';
@@ -3875,6 +3974,11 @@
         if (canvas) {
           canvas.style.display = 'block';
         }
+        if (downloadBtn) {
+          downloadBtn.style.display = 'inline-flex';
+        }
+
+        logger.log(`Loading overlay hidden for ${trackId}, showing waveform and download button`);
       }
 
       enableTrackControls(trackId) {
@@ -3976,8 +4080,9 @@
             self.seekToTime(seekTime);
           };
 
-          // Use mousedown for immediate seeking, remove click to avoid double events
+          // Use mousedown for immediate seeking, prevent double events
           wf.addEventListener('mousedown', (e) => {
+            e.preventDefault(); // Prevent default to avoid conflicts
             seeking = true;
             seekEvent(e);
           });
@@ -3987,33 +4092,41 @@
           wf.addEventListener('mousemove', (e) => {
             if (seeking) {
               const now = Date.now();
-              if (now - lastSeekTime > 50) { // Only seek every 50ms during drag
+              if (now - lastSeekTime > 100) { // Increased to 100ms for smoother seeking
                 seekEvent(e);
                 lastSeekTime = now;
               }
             }
           });
-          wf.addEventListener('mouseup', () => { seeking = false; });
+          wf.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            seeking = false;
+          });
           wf.addEventListener('mouseleave', () => { seeking = false; });
 
-          // Touch events for mobile
+          // Touch events for mobile with better handling
           wf.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent default touch behavior
             seeking = true;
             seekEvent(e);
-          }, { passive: true });
+          }, { passive: false });
 
           // Throttle touchmove as well
           let lastTouchSeekTime = 0;
           wf.addEventListener('touchmove', (e) => {
             if (seeking) {
+              e.preventDefault(); // Prevent scrolling during seek
               const now = Date.now();
-              if (now - lastTouchSeekTime > 50) { // Only seek every 50ms during touch drag
+              if (now - lastTouchSeekTime > 100) { // Increased to 100ms for smoother seeking
                 seekEvent(e);
                 lastTouchSeekTime = now;
               }
             }
-          }, { passive: true });
-          wf.addEventListener('touchend', () => { seeking = false; });
+          }, { passive: false });
+          wf.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            seeking = false;
+          });
         }
 
         logger.log(`Event listeners set up for track ${trackId}`);
@@ -4178,40 +4291,199 @@
         });
       }
 
-      async clearAudioCache() {
-        // Clear memory cache
-        this.audioCache.clear();
+                  async clearAudioCache() {
+        logger.log('=== CLEARING AUDIO CACHE ===');
 
-        // Clear IndexedDB cache
+        // Simple memory cache clearing (this was working)
+        this.audioCache.clear();
+        logger.log('✓ Memory cache cleared');
+
+        // Clear IndexedDB entries individually (more efficient than deleting entire DB)
         if ('indexedDB' in window) {
-          const request = indexedDB.deleteDatabase('AudioCache');
-          request.onsuccess = () => {
-            logger.log('Audio cache cleared');
-            // Recreate the database
-            indexedDB.open('AudioCache', 1);
-          };
+          try {
+            logger.log('Clearing IndexedDB entries individually...');
+
+            // Open the database
+            const request = indexedDB.open('AudioCache', 1);
+
+            request.onsuccess = (event) => {
+              const db = event.target.result;
+              const transaction = db.transaction(['audio'], 'readwrite');
+              const store = transaction.objectStore('audio');
+
+              // Get all keys (URLs) from the store
+              const getAllKeysRequest = store.getAllKeys();
+
+              getAllKeysRequest.onsuccess = () => {
+                const keys = getAllKeysRequest.result;
+                logger.log(`Found ${keys.length} cached entries to delete`);
+
+                if (keys.length === 0) {
+                  logger.log('✓ No cached entries found in IndexedDB');
+                  db.close();
+                  return;
+                }
+
+                // Delete each entry individually
+                let deletedCount = 0;
+                keys.forEach((key, index) => {
+                  const deleteRequest = store.delete(key);
+                  deleteRequest.onsuccess = () => {
+                    deletedCount++;
+                    logger.log(`✓ Deleted cached entry ${index + 1}/${keys.length}: ${key}`);
+
+                    // Check if all entries have been deleted
+                    if (deletedCount === keys.length) {
+                      logger.log(`✓ IndexedDB cache cleared: ${deletedCount} entries deleted`);
+                      db.close();
+                    }
+                  };
+                  deleteRequest.onerror = () => {
+                    logger.error(`Failed to delete cached entry: ${key}`);
+                    deletedCount++;
+
+                    // Still close DB even if some deletions failed
+                    if (deletedCount === keys.length) {
+                      logger.log(`IndexedDB cache partially cleared: ${deletedCount} entries processed`);
+                      db.close();
+                    }
+                  };
+                });
+              };
+
+              getAllKeysRequest.onerror = () => {
+                logger.error('Failed to get cached entries from IndexedDB');
+                db.close();
+              };
+            };
+
+            request.onerror = () => {
+              logger.error('Failed to open IndexedDB for clearing');
+            };
+
+          } catch (error) {
+            logger.error('Error clearing IndexedDB entries:', error);
+          }
+        }
+
+        // Reset all track states to force re-download
+        if (this.tracks && this.tracks.length > 0) {
+          logger.log('Resetting track states...');
+          this.tracks.forEach(track => {
+            if (track) {
+              // Reset download state
+              track.isDownloaded = false;
+              track.audioBuffer = null;
+
+              // Reset UI elements
+              if (track.element) {
+                const placeholder = track.element.querySelector('.placeholder-waveform');
+                const canvas = track.element.querySelector('.waveform-canvas');
+                const downloadOverlay = track.element.querySelector('.download-overlay');
+
+                // Show placeholder (loading state)
+                if (placeholder) {
+                  placeholder.style.display = 'flex';
+                  placeholder.textContent = 'Checking cache...';
+                }
+
+                // Hide waveform
+                if (canvas) {
+                  canvas.style.display = 'none';
+                }
+
+                // Show download button
+                if (downloadOverlay) {
+                  downloadOverlay.style.display = 'block';
+                }
+
+                logger.log(`✓ Track ${track.id}: Reset to downloadable state`);
+              }
+            }
+          });
+
+          // Update download all button state
+          const downloadAllBtn = document.getElementById('downloadAll');
+          if (downloadAllBtn) {
+            downloadAllBtn.classList.remove('downloaded');
+            downloadAllBtn.innerHTML = '⬇';
+            downloadAllBtn.title = 'Download all tracks';
+            downloadAllBtn.disabled = false;
+          }
+
+          // Update play button state
+          this.updatePlayButtonState();
+
+          logger.log(`✓ All ${this.tracks.length} tracks reset to downloadable state`);
         }
 
         // Update cache status
         this.updateCacheStatus();
+
+                // Force cache check to show all tracks as downloadable
+        if (this.tracks && this.tracks.length > 0) {
+          logger.log('Forcing cache check after clearing...');
+          // Force all tracks to show as downloadable
+          this.tracks.forEach(track => {
+            if (track && track.element) {
+              const placeholder = track.element.querySelector('.placeholder-waveform');
+              const canvas = track.element.querySelector('.waveform-canvas');
+              const downloadOverlay = track.element.querySelector('.download-overlay');
+
+              // Ensure download button is visible
+              if (downloadOverlay) {
+                downloadOverlay.style.display = 'block';
+              }
+
+              // Hide waveform
+              if (canvas) {
+                canvas.style.display = 'none';
+              }
+
+              // Show placeholder with "Checking cache..." text
+              if (placeholder) {
+                placeholder.style.display = 'flex';
+                placeholder.textContent = 'Checking cache...';
+              }
+            }
+          });
+
+          // Update playlist cache indicators
+          this.updatePlaylistCacheIndicators();
+        }
+
+        // Update cache status with current sizes
+        setTimeout(async () => {
+          const indexedDBSize = await this.getIndexedDBCacheSize();
+          logger.log(`Cache status after clearing - Memory: ${this.audioCache.size}, IndexedDB: ${indexedDBSize}`);
+        }, 100);
+
+        logger.log('=== AUDIO CACHE CLEARED SUCCESSFULLY ===');
       }
 
-      updateCacheStatus() {
+            // Simple cache clearing - back to what was working
+
+            updateCacheStatus() {
         const cacheStatus = document.getElementById('cacheStatus');
         if (cacheStatus) {
           const memoryCacheSize = this.audioCache.size;
-          const indicator = memoryCacheSize > 0 ? '🟢' : '🟡';
-          const status = memoryCacheSize > 0 ? `Cache enabled (${memoryCacheSize} tracks)` : 'Cache ready';
+          const indicator = memoryCacheSize > 0 ? '🟢' : '🔴';
+          const status = memoryCacheSize > 0 ? `Cache enabled (${memoryCacheSize} tracks)` : 'Cache cleared - all tracks downloadable';
           cacheStatus.innerHTML = `<span class="cache-indicator">${indicator}</span> ${status}`;
+
+          // Also update the cache info button if it exists
+          const cacheInfoBtn = document.getElementById('cacheInfoBtn');
+          if (cacheInfoBtn) {
+            cacheInfoBtn.title = memoryCacheSize > 0 ? 'View cache information' : 'Cache cleared - no tracks cached';
+          }
         }
       }
 
-      async showCacheInfo() {
-        const memoryCacheSize = this.audioCache.size;
-        let indexedDBSize = 0;
+      // Get IndexedDB cache size for better status reporting
+      async getIndexedDBCacheSize() {
+        if (!('indexedDB' in window)) return 0;
 
-        // Get IndexedDB cache size
-        if ('indexedDB' in window) {
+        return new Promise((resolve) => {
           try {
             const request = indexedDB.open('AudioCache', 1);
             request.onsuccess = (event) => {
@@ -4221,28 +4493,82 @@
               const countRequest = store.count();
 
               countRequest.onsuccess = () => {
-                indexedDBSize = countRequest.result;
-                this.displayCacheInfo(memoryCacheSize, indexedDBSize);
+                db.close();
+                resolve(countRequest.result);
+              };
+
+              countRequest.onerror = () => {
+                db.close();
+                resolve(0);
               };
             };
-          } catch (e) {
-            logger.error('Error getting cache info:', e);
+
+            request.onerror = () => {
+              resolve(0);
+            };
+          } catch (error) {
+            logger.error('Error getting IndexedDB cache size:', error);
+            resolve(0);
           }
-        }
+        });
+      }
+
+      async showCacheInfo() {
+        const memoryCacheSize = this.audioCache.size;
+        const indexedDBSize = await this.getIndexedDBCacheSize();
 
         this.displayCacheInfo(memoryCacheSize, indexedDBSize);
       }
 
-      displayCacheInfo(memorySize, indexedDBSize) {
+      async displayCacheInfo(memorySize, indexedDBSize) {
         const totalSize = memorySize + indexedDBSize;
-        const message = `Audio Cache Info:\n\n` +
-                       `Memory Cache: ${memorySize} tracks\n` +
-                       `Persistent Cache: ${indexedDBSize} tracks\n` +
-                       `Total Cached: ${totalSize} tracks\n\n` +
-                       `Cache Expiry: 30 minutes\n` +
-                       `Estimated Savings: ${totalSize * 2}MB+`;
 
-        alert(message);
+        // Get some sample cached URLs for more detailed info
+        let sampleUrls = [];
+        if (indexedDBSize > 0) {
+          try {
+            const request = indexedDB.open('AudioCache', 1);
+            request.onsuccess = (event) => {
+              const db = event.target.result;
+              const transaction = db.transaction(['audio'], 'readonly');
+              const store = transaction.objectStore('audio');
+              const getAllRequest = store.getAll();
+
+              getAllRequest.onsuccess = () => {
+                const entries = getAllRequest.result;
+                sampleUrls = entries.slice(0, 3).map(entry => {
+                  const fileName = entry.url.split('/').pop();
+                  return fileName || 'Unknown file';
+                });
+
+                const message = `Audio Cache Info:\n\n` +
+                               `Memory Cache: ${memorySize} tracks\n` +
+                               `Persistent Cache: ${indexedDBSize} tracks\n` +
+                               `Total Cached: ${totalSize} tracks\n\n` +
+                               `Sample Cached Files:\n${sampleUrls.map(name => `• ${name}`).join('\n')}\n\n` +
+                               `Cache Expiry: 30 minutes\n` +
+                               `Estimated Savings: ${totalSize * 2}MB+`;
+
+                alert(message);
+                db.close();
+              };
+            };
+          } catch (e) {
+            logger.error('Error getting cache details:', e);
+          }
+        }
+
+        // Fallback message if we can't get detailed info
+        if (sampleUrls.length === 0) {
+          const message = `Audio Cache Info:\n\n` +
+                         `Memory Cache: ${memorySize} tracks\n` +
+                         `Persistent Cache: ${indexedDBSize} tracks\n` +
+                         `Total Cached: ${totalSize} tracks\n\n` +
+                         `Cache Expiry: 30 minutes\n` +
+                         `Estimated Savings: ${totalSize * 2}MB+`;
+
+          alert(message);
+        }
       }
 
       async registerServiceWorker() {
@@ -4535,11 +4861,14 @@
 
         // Prevent seeking to the same time multiple times
         if (Math.abs(this.currentTime - seekTime) < 0.1) {
-                  logger.log(`Seek skipped: too close to current time (${this.currentTime}s -> ${seekTime}s)`);
-        return;
-      }
+          logger.log(`Seek skipped: too close to current time (${this.currentTime}s -> ${seekTime}s)`);
+          return;
+        }
 
-      logger.log(`Seeking to time: ${seekTime}s (was: ${this.currentTime}s)`);
+        logger.log(`Seeking to time: ${seekTime}s (was: ${this.currentTime}s)`);
+
+        // Stop current progress update to prevent conflicts
+        this.stopProgressUpdate();
 
         // Update current time
         this.currentTime = seekTime;
@@ -4551,47 +4880,54 @@
         if (this.isPlaying) {
           // Ensure audio context is running
           if (this.audioContext && this.audioContext.state === 'suspended') {
-                      logger.log('Audio context suspended, resuming...');
-          this.audioContext.resume();
-        }
+            logger.log('Audio context suspended, resuming...');
+            this.audioContext.resume();
+          }
 
-        logger.log('Restarting playback after seek...');
+          logger.log('Restarting playback after seek...');
 
           // Stop scatter effect temporarily during seek
           if (this.effects.scatter.active && this.effects.scatter.node) {
             this.effects.scatter.node.stopScatter();
           }
 
-          // Stop current progress update
-          this.stopProgressUpdate();
-
-          // Small delay to ensure UI updates before restarting audio
-          setTimeout(() => {
+          // CRITICAL: Wait for audio restart to complete before starting progress update
+          setTimeout(async () => {
             try {
-              this.restartPlayback();
+              await this.restartPlayback();
 
-              // Restart progress update with new reference point
-              this.startProgressUpdate();
-
-              // Restart scatter effect after audio restart
+                            // Small delay to ensure audio is fully started
               setTimeout(() => {
-                if (this.effects.scatter.active && this.effects.scatter.node) {
-                  this.effects.scatter.node.startScatter();
-                }
+                // Restart progress update with new reference point
+                this.startProgressUpdate();
+
+                // Validate progress update state after restart
+                setTimeout(() => {
+                  this.validateProgressUpdateState();
+                }, 50);
+
+                // Restart scatter effect after audio restart
+                setTimeout(() => {
+                  if (this.effects.scatter.active && this.effects.scatter.node) {
+                    this.effects.scatter.node.startScatter();
+                  }
+                }, 100);
               }, 100);
             } catch (error) {
               logger.error('Error during seek restart:', error);
               // Fallback: try to play again
-              setTimeout(() => {
+              setTimeout(async () => {
                 try {
-                  this.restartPlayback();
-                  this.startProgressUpdate();
+                  await this.restartPlayback();
+                  setTimeout(() => {
+                    this.startProgressUpdate();
+                  }, 100);
                 } catch (e) {
                   logger.error('Fallback restart also failed:', e);
                 }
               }, 100);
             }
-          }, 50);
+          }, 100);
         } else {
           logger.log('Not playing, only updating UI');
         }
@@ -4924,20 +5260,14 @@
       startProgressUpdate() {
         logger.log('startProgressUpdate called');
 
-        // CRITICAL FIX: Reset reference point when starting from 0
-        let startRef = 0;
-        if (this.audioContext && this.currentTime > 0) {
-          startRef = this.audioContext.currentTime - this.currentTime;
-        } else {
-          // Starting from beginning, use current audio context time as reference
-          startRef = this.audioContext ? this.audioContext.currentTime : 0;
-          logger.log('Starting progress update from beginning, using current audio context time as reference');
-        }
+        // CRITICAL FIX: Always use current audio context time as reference
+        // This ensures smooth progress updates after seeking
+        const startRef = this.audioContext ? this.audioContext.currentTime : 0;
 
         logger.log(`Progress update started with startRef: ${startRef}, currentTime: ${this.currentTime}, duration: ${this.duration}`);
         logger.log(`AudioContext currentTime: ${this.audioContext?.currentTime}`);
 
-        const tick = () => {
+                const tick = () => {
           if (!this.isPlaying) {
             logger.log('Progress update stopped: not playing');
             return;
@@ -4951,10 +5281,19 @@
 
           // Use AudioContext timebase for accuracy on mobile
           if (this.audioContext) {
-            const newTime = Math.max(0, this.audioContext.currentTime - startRef);
-            if (newTime !== this.currentTime) {
-              logger.log(`Progress update: currentTime changed from ${this.currentTime} to ${newTime}`);
-              this.currentTime = newTime;
+            // Calculate time based on elapsed time since start + current seek position
+            const elapsedTime = this.audioContext.currentTime - startRef;
+            const newTime = Math.max(0, this.currentTime + elapsedTime);
+
+            // Validate the new time to prevent jumping
+            if (Math.abs(newTime - this.currentTime) > 0.01) {
+              // Additional validation: ensure we're not jumping backwards unless it's a small correction
+              if (newTime >= this.currentTime - 0.1) {
+                logger.log(`Progress update: currentTime changed from ${this.currentTime} to ${newTime}`);
+                this.currentTime = newTime;
+              } else {
+                logger.warn(`Progress update: skipping backward jump from ${this.currentTime} to ${newTime}`);
+              }
             }
           } else {
             this.currentTime += 0.016;
@@ -4983,25 +5322,46 @@
         if (this.progressInterval) {
           cancelAnimationFrame(this.progressInterval);
           this.progressInterval = null;
+          logger.log('Progress update stopped');
         }
+      }
+
+      validateProgressUpdateState() {
+        logger.log('=== VALIDATING PROGRESS UPDATE STATE ===');
+        logger.log(`isPlaying: ${this.isPlaying}`);
+        logger.log(`currentTime: ${this.currentTime}`);
+        logger.log(`duration: ${this.duration}`);
+        logger.log(`progressInterval: ${this.progressInterval ? 'active' : 'null'}`);
+        logger.log(`audioContext state: ${this.audioContext?.state}`);
+        logger.log(`audioContext currentTime: ${this.audioContext?.currentTime}`);
+        logger.log('=== PROGRESS UPDATE STATE VALIDATION COMPLETE ===');
       }
 
       updateProgress() {
         if (this.duration <= 0) return;
 
         const percentage = (this.currentTime / this.duration) * 100;
+        const clampedPercentage = Math.max(0, Math.min(100, percentage));
 
         // Update simple progress bar
         const progressFill = document.getElementById('main-progress-fill');
         const progressHandle = document.getElementById('main-progress-handle');
+
         if (progressFill) {
-          progressFill.style.width = `${percentage}%`;
-          logger.log(`Progress bar updated: ${percentage.toFixed(1)}%`);
+          // Prevent unnecessary updates that could cause jumping
+          const currentWidth = parseFloat(progressFill.style.width) || 0;
+          if (Math.abs(currentWidth - clampedPercentage) < 0.1) {
+            return; // Skip update if change is too small
+          }
+
+          progressFill.style.width = `${clampedPercentage}%`;
+          logger.log(`Progress bar updated: ${clampedPercentage.toFixed(1)}%`);
         } else {
           logger.error('Progress fill element not found!');
         }
+
         if (progressHandle) {
-          progressHandle.style.left = `${percentage}%`;
+          progressHandle.style.left = `${clampedPercentage}%`;
         } else {
           logger.error('Progress handle element not found!');
         }
@@ -5009,15 +5369,13 @@
         // Update simple time display
         this.updateSimpleTimeDisplay();
 
-
-
         // Update waveform playheads to sync with master progress
         this.updateWaveformPlayheads();
 
         // Update master waveform with current position
-        this.updateMasterWaveformPosition(percentage);
+        this.updateMasterWaveformPosition(clampedPercentage);
 
-        logger.log(`Progress updated: ${this.currentTime.toFixed(2)}s / ${this.duration.toFixed(2)}s (${percentage.toFixed(1)}%)`);
+        logger.log(`Progress updated: ${this.currentTime.toFixed(2)}s / ${this.duration.toFixed(2)}s (${clampedPercentage.toFixed(1)}%)`);
       }
 
       updateSimpleTimeDisplay() {
@@ -5193,7 +5551,7 @@
       }
 
       // Effects methods
-      toggleEffect(effectType) {
+      async toggleEffect(effectType) {
         const effect = this.effects[effectType];
         const button = document.getElementById(`${effectType}Btn`);
 
@@ -5208,7 +5566,7 @@
           button.classList.remove('active');
         } else {
           logger.log(`Enabling ${effectType} effect`);
-          this.enableEffect(effectType);
+          await this.enableEffect(effectType);
           if (this.effects[effectType].active) {
             button.classList.add('active');
           } else {
@@ -5221,7 +5579,7 @@
         logger.log(`${effectType} effect node:`, this.effects[effectType].node);
       }
 
-      enableEffect(effectType) {
+      async enableEffect(effectType) {
         if (!this.audioContext) {
           logger.log(`Cannot enable effect ${effectType}: audio context not available`);
           return;
@@ -5249,8 +5607,8 @@
           effect.node = this.createEffectNode(effectType);
 
           if (effect.node) {
-            // Insert effect into audio chain
-            this.insertEffectIntoChain(effectType);
+                      // Insert effect into audio chain
+          await this.insertEffectIntoChain(effectType);
 
             // Ensure tracks are properly connected to master gain
             this.ensureTracksConnectedToMaster();
@@ -5407,15 +5765,15 @@
           logger.log(`Reverb Krazy: decay=${decayMultiplier.toFixed(2)}x, distortion=${distortionAmount.toFixed(2)}, lowpass=${adjustedFreq.toFixed(0)}Hz`);
         };
 
-        // Connect reverb chain: reverb -> high-pass -> distortion -> low-pass -> gain -> master
+        // Connect reverb chain: reverb -> high-pass -> distortion -> low-pass -> gain
+        // This creates the complete reverb effect chain
         reverbNode.connect(highPass);
         highPass.connect(distortion);
         distortion.connect(lowPass);
         lowPass.connect(reverbGain);
-        reverbGain.connect(this.masterGain);
 
         return {
-          convolver: reverbNode,
+          convolver: reverbGain, // Use the final output (reverbGain) as the main node
           gain: reverbGain,
           highPass: highPass,
           distortion: distortion,
@@ -5433,9 +5791,9 @@
         const gainNode = this.audioContext.createGain();
         gainNode.gain.value = 1;
 
-        // Connect scatter to master gain
+        // Connect scatter chain: scatter -> gain
+        // This creates the complete scatter effect chain
         scatterNode.connect(gainNode);
-        gainNode.connect(this.masterGain);
 
         // Store reference to current audio buffer for manipulation
         let currentBuffer = null;
@@ -5590,8 +5948,9 @@
           logger.log(`Pitch Krazy: delay=${(adjustedDelay*1000).toFixed(1)}ms, lfo=${adjustedLfoFreq.toFixed(1)}Hz, mod=${(adjustedModDepth*1000).toFixed(1)}ms`);
         };
 
-        // Connect pitch output to master gain
-        pitchNode.connect(this.masterGain);
+        // Connect pitch output chain
+        // This creates the complete pitch effect chain
+        // The main output is pitchNode which will be connected by insertEffectIntoChain
 
         return { main: pitchNode, delay, feedback, lfo, lfoGain, setKrazyLevel };
       }
@@ -5642,10 +6001,10 @@
         const bitcrusherGain = this.audioContext.createGain();
         bitcrusherGain.gain.value = 1;
 
-        // Connect bitcrusher chain: input -> waveShaper -> filter -> gain -> master
+        // Connect bitcrusher chain: input -> waveShaper -> filter -> gain
+        // This creates the complete bitcrusher effect chain
         waveShaper.connect(filter);
         filter.connect(bitcrusherGain);
-        bitcrusherGain.connect(this.masterGain);
 
         // Set krazy level function
         const setKrazyLevel = (level) => {
@@ -5659,7 +6018,7 @@
         };
 
         return {
-          main: bitcrusherNode,
+          main: bitcrusherGain, // Use the final output (bitcrusherGain) as the main node
           waveShaper: waveShaper,
           filter: filter,
           gain: bitcrusherGain,
@@ -5672,16 +6031,20 @@
       }
 
       createNoiseNode() {
-        // Create noise generator
+        // Create a mixer to combine master audio with noise
+        const mixer = this.audioContext.createGain();
+        mixer.gain.value = 1;
+
+        // Create white noise generator (true white noise)
         const noise = this.audioContext.createOscillator();
         noise.type = 'sawtooth';
-        noise.frequency.value = 100;
+        noise.frequency.value = 2000; // Higher frequency for more noise-like sound
 
-        // Create flanger effect
+        // Create flanger effect for the master audio
         const flanger = this.audioContext.createDelay();
         flanger.delayTime.value = 0.01;
 
-        // Create LFO for flanger
+        // Create LFO for flanger time modulation
         const lfo = this.audioContext.createOscillator();
         lfo.type = 'sine';
         lfo.frequency.value = 0.5;
@@ -5690,44 +6053,80 @@
         const lfoGain = this.audioContext.createGain();
         lfoGain.gain.value = 0.005;
 
-        // Create distortion for heavy effect
+        // Create distortion for heavy effect on master mix
         const distortion = this.audioContext.createWaveShaper();
         const curve = new Float32Array(4096);
         for (let i = 0; i < 4096; i++) {
           const x = (i * 2) / 4096 - 1;
-          curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * 10));
+          curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * 15)); // More aggressive distortion
         }
         distortion.curve = curve;
         distortion.oversample = '4x';
 
-        // Create gain node for output
+        // Create gain node for noise mix
         const noiseGain = this.audioContext.createGain();
-        noiseGain.gain.value = 0.3;
+        noiseGain.gain.value = 0.2; // 20% noise mix
+
+        // Create stereo panner for noise LFO panning
+        const noisePanner = this.audioContext.createStereoPanner();
+        noisePanner.pan.value = 0;
+
+        // Create LFO for noise panning
+        const panLFO = this.audioContext.createOscillator();
+        panLFO.type = 'sine';
+        panLFO.frequency.value = 0.3; // Slower panning
+
+        // Create LFO gain for panning depth
+        const panLfoGain = this.audioContext.createGain();
+        panLfoGain.gain.value = 0.8; // Full stereo width
+
+        // Connect panning LFO
+        panLFO.connect(panLfoGain);
+        panLfoGain.connect(noisePanner.pan);
 
         // Connect flanger chain: LFO -> LFO gain -> flanger delay
         lfo.connect(lfoGain);
         lfoGain.connect(flanger.delayTime);
 
-        // Connect noise chain: noise -> flanger -> distortion -> gain -> master
-        noise.connect(flanger);
-        flanger.connect(distortion);
-        distortion.connect(noiseGain);
-        noiseGain.connect(this.masterGain);
+        // Connect noise: noise -> noise gain -> panner -> mixer
+        noise.connect(noiseGain);
+        noiseGain.connect(noisePanner);
+        noisePanner.connect(mixer);
 
         // Start oscillators
         noise.start();
         lfo.start();
+        panLFO.start();
 
         // Set krazy level function
         const setKrazyLevel = (level) => {
           const krazyLevel = Math.max(0, Math.min(100, level));
-          // Adjust flanger depth and distortion intensity based on krazy level
-          lfoGain.gain.value = 0.005 + (krazyLevel * 0.01);
-          noiseGain.gain.value = 0.3 + (krazyLevel * 0.002);
+
+          // Adjust flanger depth based on krazy level
+          lfoGain.gain.value = 0.005 + (krazyLevel * 0.03); // 0.005 to 0.035
+
+          // Adjust noise mix based on krazy level
+          noiseGain.gain.value = 0.1 + (krazyLevel * 0.006); // 0.1 to 0.7
+
+          // Adjust distortion intensity based on krazy level
+          const distortionIntensity = 10 + (krazyLevel * 0.3); // 10 to 40
+          for (let i = 0; i < 4096; i++) {
+            const x = (i * 2) / 4096 - 1;
+            curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * distortionIntensity));
+          }
+          distortion.curve = curve;
+
+          // Adjust flanger frequency based on krazy level
+          lfo.frequency.value = 0.3 + (krazyLevel * 0.02); // 0.3 to 2.3 Hz
+
+          // Adjust panning speed based on krazy level
+          panLFO.frequency.value = 0.2 + (krazyLevel * 0.015); // 0.2 to 1.7 Hz
+
+          logger.log(`Noise Flanger Krazy: flangerDepth=${lfoGain.gain.value.toFixed(3)}, noiseMix=${noiseGain.gain.value.toFixed(3)}, distortionIntensity=${distortionIntensity.toFixed(1)}, lfoFreq=${lfo.frequency.value.toFixed(1)}Hz, panFreq=${panLFO.frequency.value.toFixed(1)}Hz`);
         };
 
         return {
-          main: noise,
+          main: mixer, // Main output is the mixer
           noise: noise,
           flanger: flanger,
           distortion: distortion,
@@ -5738,7 +6137,7 @@
         };
       }
 
-      insertEffectIntoChain(effectType) {
+      async insertEffectIntoChain(effectType) {
         const effect = this.effects[effectType];
         if (!effect || !effect.node) {
           logger.log(`Cannot insert effect ${effectType}: effect or node not found`);
@@ -5747,70 +6146,91 @@
 
         // Ensure audio context is running
         if (this.audioContext.state !== 'running') {
-          logger.log(`Cannot insert effect ${effectType}: audio context not running`);
-          return;
+          logger.log(`Cannot insert effect ${effectType}: audio context not running, attempting to resume...`);
+          try {
+            await this.audioContext.resume();
+            logger.log(`Audio context resumed, state: ${this.audioContext.state}`);
+          } catch (resumeError) {
+            logger.error(`Failed to resume audio context:`, resumeError);
+            return;
+          }
         }
 
         try {
+          logger.log(`=== INSERTING EFFECT ${effectType.toUpperCase()} ===`);
+          logger.log(`Effect node:`, effect.node);
+          logger.log(`Audio context state: ${this.audioContext.state}`);
+          logger.log(`Master gain connections:`, this.masterGain.numberOfOutputs);
+
           // Disconnect masterGain from destination temporarily
           this.masterGain.disconnect();
+          logger.log(`Master gain disconnected from destination`);
 
           if (effectType === 'reverb') {
-            // Reverb: masterGain -> reverb -> destination
+            // Reverb: masterGain -> reverb chain -> destination
             if (effect.node.convolver) {
               this.masterGain.connect(effect.node.convolver);
               effect.node.convolver.connect(this.audioContext.destination);
-              logger.log(`Reverb effect connected: masterGain -> convolver -> destination`);
+              logger.log(`✅ Reverb effect connected: masterGain -> convolver -> destination`);
             } else {
-              logger.error('Reverb node missing convolver');
+              logger.error('❌ Reverb node missing convolver');
             }
           } else if (effectType === 'scatter') {
-            // Scatter: masterGain -> scatter -> destination
+            // Scatter: masterGain -> scatter chain -> destination
             if (effect.node.main) {
               this.masterGain.connect(effect.node.main);
               effect.node.main.connect(this.audioContext.destination);
               if (effect.node.startScatter) {
                 effect.node.startScatter();
               }
-              logger.log(`Scatter effect connected: masterGain -> main -> destination`);
+              logger.log(`✅ Scatter effect connected: masterGain -> main -> destination`);
             } else {
-              logger.error('Scatter node missing main');
+              logger.error('❌ Scatter node missing main');
             }
           } else if (effectType === 'pitch') {
-            // Pitch: masterGain -> pitch -> destination
+            // Pitch: masterGain -> pitch chain -> destination
             if (effect.node.main) {
               this.masterGain.connect(effect.node.main);
               effect.node.main.connect(this.audioContext.destination);
-              logger.log(`Pitch effect connected: masterGain -> main -> destination`);
+              logger.log(`✅ Pitch effect connected: masterGain -> main -> destination`);
             } else {
-              logger.error('Pitch node missing main');
+              logger.error('❌ Pitch node missing main');
             }
           } else if (effectType === 'ringmod') {
-            // Ring mod: masterGain -> ringmod -> destination
+            // Bitcrusher: masterGain -> bitcrusher chain -> destination
             if (effect.node.main) {
               this.masterGain.connect(effect.node.main);
               effect.node.main.connect(this.audioContext.destination);
-              logger.log(`Ring mod effect connected: masterGain -> main -> destination`);
+              logger.log(`✅ Ring mod effect connected: masterGain -> main -> destination`);
             } else {
-              logger.error('Ring mod node missing main');
+              logger.error('❌ Ring mod node missing main');
             }
           } else if (effectType === 'noise') {
-            // Noise: masterGain -> noise -> destination
-            if (effect.node.main) {
-              this.masterGain.connect(effect.node.main);
+            // Noise Flanger: masterGain -> flanger -> distortion -> mixer + noise -> mixer -> destination
+            if (effect.node.main && effect.node.flanger && effect.node.distortion) {
+              // Connect master audio through flanger and distortion to mixer
+              this.masterGain.connect(effect.node.flanger);
+              effect.node.flanger.connect(effect.node.distortion);
+              effect.node.distortion.connect(effect.node.main);
+
+              // Connect noise to mixer
+              effect.node.noise.connect(effect.node.gain);
+              effect.node.gain.connect(effect.node.main);
+
+              // Connect mixer to destination
               effect.node.main.connect(this.audioContext.destination);
-              if (effect.node.startNoise) {
-                effect.node.startNoise();
-              }
-              logger.log(`Noise effect connected: masterGain -> main -> destination`);
+
+              logger.log(`✅ Noise Flanger effect connected: masterGain -> flanger -> distortion -> mixer + noise -> mixer -> destination`);
             } else {
-              logger.error('Noise node missing main');
+              logger.error('❌ Noise Flanger node missing required components');
+              logger.error('Available nodes:', Object.keys(effect.node));
             }
           }
 
-          logger.log(`Effect ${effectType} successfully inserted into audio chain`);
+          logger.log(`✅ Effect ${effectType} successfully inserted into audio chain`);
+          logger.log(`=== EFFECT ${effectType.toUpperCase()} INSERTION COMPLETE ===`);
         } catch (error) {
-          logger.error(`Failed to insert effect ${effectType}:`, error);
+          logger.error(`❌ Failed to insert effect ${effectType}:`, error);
           // Restore normal audio chain on error
           this.restoreNormalAudioChain();
         }
@@ -5893,10 +6313,15 @@
         } else if (effectType === 'ringmod') {
           effect.node.main.disconnect();
         } else if (effectType === 'noise') {
-          effect.node.main.disconnect();
-          if (effect.node.stopNoise) {
-            effect.node.stopNoise();
-          }
+          // Disconnect all components of the Noise Flanger
+          if (effect.node.main) effect.node.main.disconnect();
+          if (effect.node.flanger) effect.node.flanger.disconnect();
+          if (effect.node.distortion) effect.node.distortion.disconnect();
+          if (effect.node.gain) effect.node.gain.disconnect();
+
+          // Stop oscillators
+          if (effect.node.noise && effect.node.noise.stop) effect.node.noise.stop();
+          if (effect.node.lfo && effect.node.lfo.stop) effect.node.lfo.stop();
         }
 
         // Restore normal audio chain: masterGain -> stereoPanner -> destination
@@ -5930,6 +6355,9 @@
             logger.log(`Effect ${type}: node exists, checking connections`);
             // Log the effect node structure
             logger.log(`Effect ${type} node:`, effect.node);
+
+            // Test effect audio routing
+            this.testEffectAudioRouting(type, effect);
           } else {
             logger.log(`Effect ${type}: no node found`);
           }
@@ -5944,6 +6372,43 @@
         }
 
         logger.log('=== EFFECT CHAIN VALIDATION COMPLETE ===');
+      }
+
+            testEffectAudioRouting(effectType, effect) {
+        logger.log(`=== TESTING ${effectType.toUpperCase()} AUDIO ROUTING ===`);
+        
+        try {
+          if (effectType === 'reverb' && effect.node.convolver) {
+            logger.log(`✅ Reverb convolver connected to destination: ${effect.node.convolver.numberOfOutputs > 0}`);
+            logger.log(`✅ Reverb gain node: ${effect.node.gain ? 'exists' : 'missing'}`);
+            logger.log(`✅ Reverb high-pass filter: ${effect.node.highPass ? 'exists' : 'missing'}`);
+            logger.log(`✅ Reverb distortion: ${effect.node.distortion ? 'exists' : 'missing'}`);
+            logger.log(`✅ Reverb low-pass filter: ${effect.node.lowPass ? 'exists' : 'missing'}`);
+          } else if (effectType === 'scatter' && effect.node.main) {
+            logger.log(`✅ Scatter main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
+            logger.log(`✅ Scatter gain node: ${effect.node.gain ? 'exists' : 'missing'}`);
+            logger.log(`✅ Scatter startScatter function: ${effect.node.startScatter ? 'exists' : 'missing'}`);
+          } else if (effectType === 'pitch' && effect.node.main) {
+            logger.log(`✅ Pitch main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
+            logger.log(`✅ Pitch delay node: ${effect.node.delay ? 'exists' : 'missing'}`);
+            logger.log(`✅ Pitch feedback node: ${effect.node.feedback ? 'exists' : 'missing'}`);
+            logger.log(`✅ Pitch LFO: ${effect.node.lfo ? 'exists' : 'missing'}`);
+          } else if (effectType === 'ringmod' && effect.node.main) {
+            logger.log(`✅ Bitcrusher main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
+            logger.log(`✅ Bitcrusher waveShaper: ${effect.node.waveShaper ? 'exists' : 'missing'}`);
+            logger.log(`✅ Bitcrusher filter: ${effect.node.filter ? 'exists' : 'missing'}`);
+            logger.log(`✅ Bitcrusher gain: ${effect.node.gain ? 'exists' : 'missing'}`);
+          } else if (effectType === 'noise' && effect.node.main) {
+            logger.log(`✅ Noise main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
+            logger.log(`✅ Noise flanger connected: ${effect.node.flanger ? 'yes' : 'no'}`);
+            logger.log(`✅ Noise distortion connected: ${effect.node.distortion ? 'yes' : 'no'}`);
+            logger.log(`✅ Noise gain: ${effect.node.gain ? 'exists' : 'missing'}`);
+          }
+        } catch (error) {
+          logger.error(`❌ Error testing ${effectType} routing:`, error);
+        }
+        
+        logger.log(`=== ${effectType.toUpperCase()} ROUTING TEST COMPLETE ===`);
       }
     }
 
