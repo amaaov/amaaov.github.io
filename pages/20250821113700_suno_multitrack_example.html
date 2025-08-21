@@ -664,6 +664,17 @@
       font-size: 0.75rem;
     }
 
+    /* Bottom controls styling */
+    .bottom-controls {
+      margin-top: 30px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
     /* Effects controls styling */
     .effects-controls {
       margin-top: 20px;
@@ -736,6 +747,40 @@
         gap: 8px;
       }
     }
+
+    /* Responsive bottom controls */
+    @media (max-width: 768px) {
+      .bottom-controls {
+        margin-top: 20px;
+        padding: 20px;
+      }
+
+      .master-volume {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .volume-slider {
+        width: 120px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .bottom-controls {
+        margin-top: 15px;
+        padding: 15px;
+      }
+
+      .keyboard-info {
+        font-size: 0.75rem;
+      }
+
+      .key {
+        padding: 1px 4px;
+        font-size: 0.7rem;
+      }
+    }
   </style>
 </head>
 
@@ -772,6 +817,15 @@
         </div>
       </div>
 
+    </div>
+
+    <div class="tracks-container">
+      <div id="tracksList">
+        <div class="loading">Loading tracks...</div>
+      </div>
+    </div>
+
+    <div class="bottom-controls">
       <div class="master-volume">
         <span class="volume-label">Master Volume</span>
         <input type="range" class="volume-slider" id="masterVolume" min="0" max="100" value="80">
@@ -793,12 +847,6 @@
         <span class="key">←</span> <span class="key">→</span> Skip 5s •
         <span class="key">K</span> Add Mark •
         <span class="key">Shift</span>+<span class="key">←</span> <span class="key">Shift</span>+<span class="key">→</span> Jump Between Marks
-      </div>
-    </div>
-
-        <div class="tracks-container">
-      <div id="tracksList">
-        <div class="loading">Loading tracks...</div>
       </div>
     </div>
   </div>
@@ -1602,7 +1650,7 @@
           marksContainer = document.createElement('div');
           marksContainer.id = 'marksContainer';
           marksContainer.className = 'marks-container';
-          document.querySelector('.player-controls').appendChild(marksContainer);
+          document.querySelector('.bottom-controls').appendChild(marksContainer);
         }
 
         marksContainer.innerHTML = '';
@@ -1689,9 +1737,10 @@
             break;
           case 'scatter':
             if (effectNode.delays) {
-              effectNode.delays.forEach(({ delay, gain }) => {
+              effectNode.delays.forEach(({ delay, gain, pan }) => {
                 delay.disconnect();
                 gain.disconnect();
+                pan.disconnect();
               });
             }
             if (effectNode.main) effectNode.main.disconnect();
@@ -1704,11 +1753,14 @@
             if (effectNode.main) effectNode.main.disconnect();
             break;
           case 'ringmod':
-            if (effectNode.carrier) {
-              effectNode.carrier.stop();
-              effectNode.carrier.disconnect();
+            if (effectNode.carriers) {
+              effectNode.carriers.forEach(({ carrier, carrierGain, pan }) => {
+                carrier.stop();
+                carrier.disconnect();
+                carrierGain.disconnect();
+                pan.disconnect();
+              });
             }
-            if (effectNode.carrierGain) effectNode.carrierGain.disconnect();
             if (effectNode.main) effectNode.main.disconnect();
             break;
         }
@@ -1729,19 +1781,22 @@
         }
       }
 
-            createReverbNode() {
+                  createReverbNode() {
         // Create a convolution reverb using impulse response
         const reverbNode = this.audioContext.createConvolver();
 
-        // Create a simple impulse response for heavy reverb
+        // Create a more realistic impulse response for heavy reverb
         const sampleRate = this.audioContext.sampleRate;
-        const length = sampleRate * 2; // 2 second reverb
+        const length = sampleRate * 3; // 3 second reverb
         const impulse = this.audioContext.createBuffer(2, length, sampleRate);
 
         for (let channel = 0; channel < 2; channel++) {
           const channelData = impulse.getChannelData(channel);
           for (let i = 0; i < length; i++) {
-            channelData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sampleRate * 0.1));
+            // Create a more natural decay curve
+            const decay = Math.exp(-i / (sampleRate * 0.2));
+            const noise = (Math.random() * 2 - 1) * 0.5;
+            channelData[i] = noise * decay;
           }
         }
 
@@ -1749,7 +1804,7 @@
 
         // Add a gain node for wet/dry mix
         const reverbGain = this.audioContext.createGain();
-        reverbGain.gain.value = 0.3; // 30% wet
+        reverbGain.gain.value = 0.4; // 40% wet for more noticeable effect
 
         // Connect reverb chain to master gain
         reverbNode.connect(reverbGain);
@@ -1758,22 +1813,31 @@
         return { convolver: reverbNode, gain: reverbGain };
       }
 
-            createScatterNode() {
-        // Create a granular synthesis effect
+                  createScatterNode() {
+        // Create a granular synthesis effect with forward-backward playback
         const scatterNode = this.audioContext.createGain();
         scatterNode.gain.value = 1;
 
-        // Create a delay line with random taps
+        // Create multiple delay lines with different timing for scatter effect
         const delays = [];
+        const delayTimes = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]; // Progressive delays
+
         for (let i = 0; i < 8; i++) {
-          const delay = this.audioContext.createDelay(0.1); // 100ms max delay
+          const delay = this.audioContext.createDelay(0.5); // 500ms max delay
           const gain = this.audioContext.createGain();
-          delay.delayTime.value = Math.random() * 0.1;
-          gain.gain.value = 0.1 + Math.random() * 0.2;
+          const pan = this.audioContext.createStereoPanner();
+
+          // Set progressive delay times for forward-backward effect
+          delay.delayTime.value = delayTimes[i];
+          gain.gain.value = 0.15 + (i * 0.05); // Progressive volume increase
+
+          // Pan delays across stereo field for spatial effect
+          pan.pan.value = (i / 7) * 2 - 1; // -1 to 1 stereo spread
 
           delay.connect(gain);
-          gain.connect(scatterNode);
-          delays.push({ delay, gain });
+          gain.connect(pan);
+          pan.connect(scatterNode);
+          delays.push({ delay, gain, pan });
         }
 
         // Connect scatter output to master gain
@@ -1812,25 +1876,39 @@
         return { main: pitchNode, delay, feedback, lfo, lfoGain };
       }
 
-            createRingModNode() {
-        // Create a ring modulator
+                  createRingModNode() {
+        // Create a heavy ring modulator with multiple carriers
         const ringModNode = this.audioContext.createGain();
-        ringModNode.gain.value = 1;
+        ringModNode.gain.value = 1.2; // Boost output for heavier effect
 
-        // Create carrier oscillator
-        const carrier = this.audioContext.createOscillator();
-        const carrierGain = this.audioContext.createGain();
-        carrier.frequency.value = 50; // 50Hz carrier
-        carrierGain.gain.value = 0.5;
+        // Create multiple carrier oscillators for more complex modulation
+        const carriers = [];
+        const frequencies = [30, 50, 80, 120]; // Multiple carrier frequencies
 
-        carrier.connect(carrierGain);
-        carrierGain.connect(ringModNode);
-        carrier.start();
+        frequencies.forEach((freq, index) => {
+          const carrier = this.audioContext.createOscillator();
+          const carrierGain = this.audioContext.createGain();
+          const pan = this.audioContext.createStereoPanner();
+
+          carrier.frequency.value = freq;
+          carrierGain.gain.value = 0.3 + (index * 0.1); // Progressive gain
+
+          // Pan carriers across stereo field
+          pan.pan.value = (index / (frequencies.length - 1)) * 2 - 1;
+
+          carrier.connect(carrierGain);
+          carrierGain.connect(pan);
+          pan.connect(ringModNode);
+          carriers.push({ carrier, carrierGain, pan });
+        });
+
+        // Start all carriers
+        carriers.forEach(({ carrier }) => carrier.start());
 
         // Connect ring mod output to master gain
         ringModNode.connect(this.masterGain);
 
-        return { main: ringModNode, carrier, carrierGain };
+        return { main: ringModNode, carriers };
       }
 
                   insertEffectIntoChain(effectType) {
@@ -1857,15 +1935,50 @@
             }
           }
         });
+
+        // Ensure tracks maintain connection to master gain
+        this.ensureTracksConnectedToMaster();
+
         console.log(`Effect ${effectType} inserted into audio chain`);
       }
 
-      removeEffectFromChain(effectType) {
-        // Reconnect all tracks directly to master gain
+      ensureTracksConnectedToMaster() {
+        // Check if tracks are connected to master gain, if not, connect them
         this.tracks.forEach(track => {
           if (track.gainNode) {
-            track.gainNode.disconnect();
-            track.gainNode.connect(this.masterGain);
+            // Check if track is already connected to master gain
+            let connectedToMaster = false;
+            try {
+              // This is a simple check - in a real implementation you'd need to track connections
+              // For now, we'll always ensure the connection
+              track.gainNode.connect(this.masterGain);
+              connectedToMaster = true;
+            } catch (e) {
+              // If already connected, this will throw an error, which is fine
+              connectedToMaster = true;
+            }
+          }
+        });
+      }
+
+      removeEffectFromChain(effectType) {
+        // Remove only the specific effect connections
+        this.tracks.forEach(track => {
+          if (track.gainNode) {
+            const effect = this.effects[effectType];
+            if (effect && effect.node) {
+              if (effectType === 'reverb') {
+                track.gainNode.disconnect(effect.node.convolver);
+              } else if (effectType === 'scatter') {
+                effect.node.delays.forEach(({ delay }) => {
+                  track.gainNode.disconnect(delay);
+                });
+              } else if (effectType === 'pitch') {
+                track.gainNode.disconnect(effect.node.delay);
+              } else if (effectType === 'ringmod') {
+                track.gainNode.disconnect(effect.node.main);
+              }
+            }
           }
         });
         console.log(`Effect ${effectType} removed from audio chain`);
