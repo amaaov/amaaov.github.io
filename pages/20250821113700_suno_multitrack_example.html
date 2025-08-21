@@ -26,7 +26,7 @@
       box-sizing: border-box;
     }
 
-    body {
+        body {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
       line-height: 1.6;
       color: #f8f9fa;
@@ -38,7 +38,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .container {
+        .container {
       max-width: 1200px;
       margin: 40px auto;
       padding: 60px 40px;
@@ -51,11 +51,6 @@
 
     .container::before {
       content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%, rgba(255, 255, 255, 0.01) 100%);
       border-radius: 24px;
       pointer-events: none;
@@ -93,7 +88,7 @@
       margin: 0 auto;
     }
 
-    .song-selector {
+        .song-selector {
       background: rgba(255, 255, 255, 0.01);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -141,7 +136,7 @@
       color: #64ffda;
     }
 
-    .player-controls {
+        .player-controls {
       background: rgba(255, 255, 255, 0.01);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -158,7 +153,7 @@
       margin-bottom: 25px;
     }
 
-    .control-btn {
+        .control-btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: rgba(255, 255, 255, 0.8);
@@ -177,6 +172,19 @@
       color: #64ffda;
     }
 
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .control-btn:disabled:hover {
+      background: rgba(100, 255, 255, 0.1);
+      transform: none;
+      box-shadow: none;
+    }
+
     .control-btn:active {
       transform: scale(0.98);
     }
@@ -191,7 +199,13 @@
       background: rgba(100, 255, 218, 0.2);
     }
 
-    .progress-container {
+    .control-btn.audio-ready {
+      background: rgba(100, 255, 218, 0.3);
+      border-color: rgba(100, 255, 218, 0.7);
+      box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+    }
+
+        .progress-container {
       background: rgba(255, 255, 255, 0.05);
       border-radius: 8px;
       padding: 20px;
@@ -216,7 +230,7 @@
       overflow: hidden;
     }
 
-    .progress-fill {
+        .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #64ffda, #00d4ff);
       border-radius: 4px;
@@ -225,16 +239,14 @@
     }
 
     .progress-handle {
-      position: absolute;
-      top: 50%;
-      left: 0%;
       width: 16px;
       height: 16px;
       background: #64ffda;
       border-radius: 50%;
-      transform: translate(-50%, -50%);
       cursor: pointer;
       box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .master-volume {
@@ -264,7 +276,7 @@
       width: 18px;
       height: 18px;
       background: #64ffda;
-      border-radius: 50%;
+      border-radius: 2px;
       cursor: pointer;
       box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
     }
@@ -273,13 +285,13 @@
       width: 18px;
       height: 18px;
       background: #64ffda;
-      border-radius: 50%;
+      border-radius: 2px;
       cursor: pointer;
       border: none;
       box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
     }
 
-    .tracks-container {
+        .tracks-container {
       background: rgba(255, 255, 255, 0.01);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -289,7 +301,7 @@
 
 
 
-    .track {
+        .track {
       display: grid;
       grid-template-columns: 100px 1fr 120px;
       gap: 20px;
@@ -362,6 +374,117 @@
       justify-content: center;
     }
 
+    /* Placeholder loading waveform */
+    .placeholder-waveform {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 15;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      /* Ensure placeholder is visible by default */
+      display: flex !important;
+    }
+
+    .placeholder-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+
+    .placeholder-bar {
+      width: 3px;
+      background: linear-gradient(to top, #64ffda, rgba(100, 255, 218, 0.6));
+      border-radius: 2px;
+      animation: placeholderPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes placeholderPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    .placeholder-text {
+      color: rgba(100, 255, 218, 0.8);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    /* Loading overlay styling */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      border-radius: 8px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(100, 255, 218, 0.3);
+      border-top: 3px solid #64ffda;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: #64ffda;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 15px;
+    }
+
+    .loading-progress {
+      width: 80%;
+      text-align: center;
+    }
+
+    .loading-progress .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .loading-progress .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #64ffda, #64ffda);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+
     .waveform-canvas {
       width: 100%;
       height: 100%;
@@ -386,75 +509,174 @@
     .track-controls {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 4px;
       align-items: center;
+    }
+
+    .download-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      border-radius: 8px;
+    }
+
+    .track-download-btn {
+      background: #4CAF50;
+      border: 1px solid #45a049;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .track-download-btn:hover {
+      background: #45a049;
+      border-color: #64ffda;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+
+    .track-download-btn.downloading {
+      background: #ff9800;
+      border-color: #f57c00;
+      cursor: not-allowed;
+    }
+
+    .track-download-btn.downloaded {
+      background: #2196F3;
+      border-color: #1976D2;
+      cursor: default;
+    }
+
+    .download-icon {
+      font-size: 16px;
+    }
+
+    .download-text {
+      font-size: 10px;
     }
 
     .control-group {
       display: flex;
-      gap: 8px;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
     }
 
     .track-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.7);
+      width: 24px;
+      height: 24px;
+      border-radius: 2px;
+      border: 1px solid #555;
+      background: #333;
+      color: #fff;
       cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 12px;
-      font-weight: 600;
+      transition: all 0.1s ease;
+      font-size: 10px;
+      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .track-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.3);
+      background: #555;
+      border-color: #777;
     }
 
     .track-btn.active {
-      background: rgba(100, 255, 218, 0.2);
-      border-color: #64ffda;
-      color: #64ffda;
+      background: #0066ff;
+      border-color: #0066ff;
+      color: #fff;
     }
 
     .track-btn.muted {
-      background: rgba(255, 107, 107, 0.2);
-      border-color: #ff6b6b;
-      color: #ff6b6b;
+      background: #cc0000;
+      border-color: #cc0000;
+      color: #fff;
     }
 
     .track-volume {
-      width: 80px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
+      width: 60px;
+      height: 6px;
+      background: #333;
+      border-radius: 0;
       outline: none;
       cursor: pointer;
+      border: 1px solid #555;
+      position: relative;
+    }
+
+    /* Add sticky position indicators for track volume sliders */
+    .track-volume::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent calc(25% - 1px),
+        rgba(255, 255, 255, 0.2) calc(25% - 1px),
+        rgba(255, 255, 255, 0.2) calc(25% + 1px),
+        transparent calc(25% + 1px)
+      );
+      pointer-events: none;
+      z-index: 1;
     }
 
     .track-volume::-webkit-slider-thumb {
       appearance: none;
-      width: 14px;
-      height: 14px;
-      background: #64ffda;
-      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 0;
       cursor: pointer;
-      box-shadow: 0 0 8px rgba(100, 255, 218, 0.5);
+      border: 1px solid #555;
     }
 
     .track-volume::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      background: #64ffda;
-      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 0;
       cursor: pointer;
-      border: none;
-      box-shadow: 0 0 8px rgba(100, 255, 218, 0.5);
+      border: 1px solid #555;
+    }
+
+    /* Disabled state styling */
+    .track-btn:disabled,
+    .track-volume:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .track-btn:disabled:hover {
+      background: rgba(100, 255, 218, 0.1);
+      transform: none;
     }
 
     .track-info {
@@ -467,6 +689,12 @@
       font-weight: 600;
       color: rgba(255, 255, 255, 0.9);
       font-size: 1rem;
+    }
+
+    .download-status {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
     }
 
     .track-duration {
@@ -642,7 +870,7 @@
     }
 
     /* Keyboard shortcuts info */
-    .keyboard-info {
+        .keyboard-info {
       margin-top: 15px;
       padding: 12px;
       background: rgba(255, 255, 255, 0.02);
@@ -676,7 +904,7 @@
     }
 
     /* Effects controls styling */
-    .effects-controls {
+        .effects-controls {
       margin-top: 20px;
       padding: 20px;
       background: rgba(255, 255, 255, 0.02);
@@ -697,7 +925,7 @@
       gap: 12px;
     }
 
-    .effect-btn {
+        .effect-btn {
       background: rgba(100, 255, 218, 0.1);
       border: 1px solid rgba(100, 255, 218, 0.3);
       color: #64ffda;
@@ -781,6 +1009,744 @@
         font-size: 0.7rem;
       }
     }
+
+        /* Krazy slider styling within effects controls */
+    .krazy-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+      justify-content: center;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+    }
+
+    .krazy-slider {
+      flex: 1;
+      max-width: 120px;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(255, 100, 100, 0.3), rgba(255, 150, 100, 0.6));
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    /* Add sticky position indicators for krazy slider */
+    .krazy-slider::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent calc(25% - 1px),
+        rgba(255, 100, 100, 0.4) calc(25% - 1px),
+        rgba(255, 100, 100, 0.4) calc(25% + 1px),
+        transparent calc(25% + 1px)
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .krazy-slider:hover {
+      background: linear-gradient(90deg, rgba(255, 100, 100, 0.5), rgba(255, 150, 100, 0.8));
+      transform: scaleY(1.2);
+    }
+
+    .krazy-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      background: linear-gradient(135deg, #ff6b6b, #ff8e8e, #ffb366);
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 12px rgba(255, 100, 100, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .krazy-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 100, 100, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    }
+
+    .krazy-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      background: linear-gradient(135deg, #ff6b6b, #ff8e8e, #ffb366);
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 12px rgba(255, 100, 100, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .krazy-value {
+      color: #ff6b6b;
+      font-weight: 600;
+      font-size: 0.8rem;
+      min-width: 20px;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(255, 100, 100, 0.5);
+      font-family: 'Courier New', monospace;
+    }
+
+    @media (max-width: 768px) {
+      .krazy-slider-container {
+        flex-direction: row;
+        gap: 6px;
+        margin: 6px 0;
+      }
+
+      .krazy-slider {
+        max-width: 100px;
+      }
+
+      .krazy-value {
+        font-size: 0.75rem;
+        min-width: 18px;
+      }
+    }
+
+    /* Cache controls styling */
+        .cache-controls {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cache-controls h4 {
+      margin: 0 0 15px 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .cache-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .cache-btn {
+      background: rgba(100, 255, 218, 0.1);
+      border: 1px solid rgba(100, 255, 218, 0.3);
+      color: #64ffda;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .cache-btn:hover {
+      background: rgba(100, 255, 218, 0.2);
+      border-color: rgba(100, 255, 218, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .cache-status {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    .cache-indicator {
+      margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .cache-buttons {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .cache-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+        /* Simple Player Interface */
+    .webamp-container {
+      margin-bottom: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .window {
+      background: transparent;
+      color: #ffffff;
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+      margin: 0 auto;
+      box-shadow: none;
+      position: relative;
+    }
+
+    /* Main Player Window */
+    #webamp #main-window {
+      width: 320px;
+      padding: 8px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .player-main {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 12px;
+      height: 40px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+
+    }
+
+    .visualizer {
+      background: #000;
+      border: 1px solid #555;
+      padding: 4px;
+      position: relative;
+      width: 120px;
+      height: 40px;
+      min-width: 120px;
+      min-height: 40px;
+      max-width: 120px;
+      max-height: 40px;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .time-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: #ff6b6b;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 3px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      margin: 8px 0;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b6b, #ff4757);
+      border-radius: 1px;
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+
+    .progress-handle {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border: 1px solid #555;
+      border-radius: 2px;
+      position: absolute;
+      top: -2px;
+      left: 0%;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+
+
+    .control-btn {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      min-height: 40px;
+      max-width: 40px;
+      max-height: 40px;
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 2px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.1s ease;
+      margin: 0;
+      padding: 0;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .control-btn:hover {
+      background: #555;
+      border-color: #777;
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 2px;
+      justify-content: center;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .control-btn.play-btn {
+      background: #4CAF50;
+      border-color: #45a049;
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    }
+
+    .control-btn.play-btn:hover {
+      background: #45a049;
+      border-color: #64ffda;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+
+    .control-btn.selected {
+      background: #64ffda;
+      border-color: #64ffda;
+      color: #1a1a2e;
+      box-shadow: 0 4px 12px rgba(100, 255, 218, 0.4);
+    }
+
+    .control-btn.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #1a1a2e;
+      border-color: #333;
+      position: relative;
+    }
+
+    .control-btn.disabled:hover {
+      transform: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+
+
+    .download-btn {
+      background: #4CAF50;
+      border-color: #45a049;
+      color: #fff;
+    }
+
+    .download-btn:hover {
+      background: #45a049;
+      border-color: #64ffda;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+
+    .download-btn.downloading {
+      background: #ff9800;
+      border-color: #f57c00;
+      animation: pulse 1.5s infinite;
+    }
+
+    .download-btn.downloaded {
+      background: #2196F3;
+      border-color: #1976D2;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* Song Title */
+    .song-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #ff6b6b;
+      white-space: nowrap;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+
+
+
+
+    .time-display {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+      font-size: 16px;
+      color: #64ffda;
+      font-weight: 500;
+    }
+
+    .slider {
+      width: 60px;
+      height: 8px;
+      background: #2a2a3e;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      border: 1px solid #444;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Add sticky position indicators for sliders */
+    .slider::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      right: 0;
+      height: 12px;
+      background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent calc(25% - 1px),
+        rgba(255, 107, 107, 0.3) calc(25% - 1px),
+        rgba(255, 107, 107, 0.3) calc(25% + 1px),
+        transparent calc(25% + 1px)
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .volume-slider {
+      background: #ff6b6b;
+    }
+
+    .balance-slider {
+      background: #4ecdc4;
+    }
+
+    /* Special styling for balance slider to show center position */
+    .balance-slider::before {
+      background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent calc(50% - 1px),
+        rgba(78, 205, 196, 0.5) calc(50% - 1px),
+        rgba(78, 205, 196, 0.5) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      );
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #64ffda;
+      border-radius: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(100, 255, 218, 0.6);
+      border: 2px solid #fff;
+    }
+
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #64ffda;
+      border-radius: 2px;
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0 0 12px rgba(100, 255, 218, 0.6);
+    }
+
+
+
+    /* Playlist Window */
+    #webamp #playlist-window {
+      width: 280px;
+      padding: 8px;
+    }
+
+    .playlist-content {
+      background: transparent;
+      padding: 0;
+      min-height: auto;
+    }
+
+    .track-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      color: #ff6b6b;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+    }
+
+    .track-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .track-item.current {
+      background: #4ecdc4;
+      color: #fff;
+    }
+
+    .track-number {
+      width: 20px;
+      color: #ff6b6b;
+    }
+
+    .track-name {
+      flex: 1;
+      color: inherit;
+    }
+
+
+
+
+
+
+
+    .track-name {
+      flex: 1;
+      font-weight: 600;
+      color: #fff;
+      font-size: 15px;
+    }
+
+
+
+
+
+
+
+
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .webamp-container {
+        gap: 16px;
+      }
+
+      .window {
+        margin: 0 auto;
+      }
+
+      #main-window {
+        width: 280px;
+        padding: 6px;
+      }
+
+      #playlist-window {
+        width: 240px;
+        padding: 6px;
+      }
+
+      .visualizer {
+        width: 100px;
+        height: 35px;
+        min-width: 100px;
+        min-height: 35px;
+        max-width: 100px;
+        max-height: 35px;
+      }
+
+      .slider {
+        width: 50px;
+      }
+
+      /* Adjust sticky indicators for mobile */
+      .slider::before {
+        height: 10px;
+        top: -1px;
+      }
+
+      .track-volume::before {
+        height: 8px;
+        top: -1px;
+      }
+
+      .krazy-slider::before {
+        height: 6px;
+        top: -1px;
+      }
+
+      .control-btn {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        max-width: 32px;
+        max-height: 32px;
+        font-size: 12px;
+        box-sizing: border-box;
+      }
+
+      .download-btn {
+        font-size: 10px;
+      }
+
+      .track-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 9px;
+      }
+
+      .progress-bar {
+        height: 6px;
+      }
+
+      .progress-handle {
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .webamp-container {
+        gap: 12px;
+      }
+
+      #main-window {
+        width: 260px;
+        padding: 4px;
+      }
+
+      #playlist-window {
+        width: 220px;
+        padding: 4px;
+      }
+
+      .visualizer {
+        width: 90px;
+        height: 30px;
+        min-width: 90px;
+        min-height: 30px;
+        max-width: 90px;
+        max-height: 30px;
+      }
+
+      .slider {
+        width: 45px;
+      }
+
+      /* Adjust sticky indicators for small mobile */
+      .slider::before {
+        height: 8px;
+        top: -1px;
+      }
+
+      .track-volume::before {
+        height: 6px;
+        top: -1px;
+      }
+
+      .krazy-slider::before {
+        height: 5px;
+        top: -1px;
+      }
+
+      .control-btn {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        min-height: 28px;
+        max-width: 28px;
+        max-height: 28px;
+        font-size: 10px;
+        box-sizing: border-box;
+      }
+
+      .download-btn {
+        font-size: 8px;
+      }
+
+      .track-btn {
+        width: 18px;
+        height: 18px;
+        font-size: 8px;
+      }
+
+      .progress-bar {
+        height: 5px;
+      }
+
+      .progress-handle {
+        width: 8px;
+        height: 8px;
+      }
+    }
   </style>
 </head>
 
@@ -791,33 +1757,73 @@
       <p class="subtitle">Multi-track audio player for Suno-generated music with individual track controls</p>
     </header>
 
-    <div class="song-selector">
-      <h3>Select Song</h3>
-      <div class="song-buttons">
-        <button class="song-btn active" data-song="dacha">🏡 На старой даче</button>
-        <button class="song-btn" data-song="ulitsa">🏙️ Улица знает всё</button>
-      </div>
-    </div>
+        <div id="webamp" class="webamp-container">
+            <!-- Compact Player Window -->
+      <div id="main-window" class="window">
+        <div class="player-main">
+                    <div class="top-row">
+            <div class="visualizer">
+              <canvas id="masterWaveform" width="120" height="40"></canvas>
+              <div class="time-overlay">
+                <span id="currentTime">0:00</span>
+              </div>
+            </div>
+            <div class="right-panel">
+              <div id="currentSongTitle" class="song-title">🏠 На старой даче</div>
+              <div class="controls-row">
+                <input id="masterVolume" type="range" min="0" max="100" value="80" class="slider volume-slider">
+                <input id="balance" type="range" min="-100" max="100" value="0" class="slider balance-slider">
+              </div>
+            </div>
+          </div>
 
-    <div class="player-controls">
-      <div class="control-buttons">
-        <button class="control-btn play" id="playBtn">▶ Play</button>
-        <button class="control-btn" id="pauseBtn">⏸ Pause</button>
-        <button class="control-btn" id="stopBtn">⏹ Stop</button>
-      </div>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="main-progress-fill"></div>
+              <div class="progress-handle" id="main-progress-handle"></div>
+            </div>
+          </div>
 
-      <div class="progress-container">
-        <div class="time-display">
-          <span id="currentTime">0:00</span>
-          <span id="totalTime">0:00</span>
+          <div class="control-buttons">
+            <button class="control-btn download-btn" id="downloadAll" title="Download all tracks">⬇</button>
+            <button class="control-btn" id="previous">⏮</button>
+            <button class="control-btn play-btn" id="play">▶</button>
+            <button class="control-btn" id="pause">⏸</button>
+            <button class="control-btn" id="stop">⏹</button>
+            <button class="control-btn" id="next">⏭</button>
+          </div>
+
         </div>
-        <div class="progress-bar" id="progressBar">
-          <div class="progress-fill" id="progressFill"></div>
-          <div class="progress-handle" id="progressHandle"></div>
+      </div>
+
+            <!-- Compact Playlist Window -->
+      <div id="playlist-window" class="window">
+        <div class="playlist-content">
+          <div class="track-item" data-song="dacha">
+            <span class="track-number">1.</span>
+            <span class="track-name">🏠 На старой даче</span>
+          </div>
+          <div class="track-item" data-song="ulitsa">
+            <span class="track-number">2.</span>
+            <span class="track-name">🌃 Улица знает всё</span>
+          </div>
+          <div class="track-item" data-song="pukersy">
+            <span class="track-number">3.</span>
+            <span class="track-name">🎰 Пукерсы</span>
+          </div>
+          <div class="track-item" data-song="jongler">
+            <span class="track-number">4.</span>
+            <span class="track-name">🤹 Жонглёр Серёга</span>
+          </div>
+          <div class="track-item" data-song="kaskadny">
+            <span class="track-number">5.</span>
+            <span class="track-name">🌊 Каскадный бит</span>
+          </div>
         </div>
       </div>
 
-    </div>
+
+
 
     <div class="tracks-container">
       <div id="tracksList">
@@ -826,18 +1832,19 @@
     </div>
 
     <div class="bottom-controls">
-      <div class="master-volume">
-        <span class="volume-label">Master Volume</span>
-        <input type="range" class="volume-slider" id="masterVolume" min="0" max="100" value="80">
-      </div>
 
       <div class="effects-controls">
         <h4>Fun Effects</h4>
+        <div class="krazy-slider-container">
+          <input type="range" class="krazy-slider" id="krazySlider" min="0" max="100" value="50">
+          <span class="krazy-value" id="krazyValue">50</span>
+        </div>
         <div class="effects-buttons">
           <button class="effect-btn" id="reverbBtn" data-effect="reverb">🌊 Heavy Reverb</button>
           <button class="effect-btn" id="scatterBtn" data-effect="scatter">🌀 Scatter</button>
           <button class="effect-btn" id="pitchBtn" data-effect="pitch">🎵 Pitch Shift</button>
-          <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Ring Mod</button>
+          <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Bitcrusher</button>
+          <button class="effect-btn" id="noiseBtn" data-effect="noise">🎭 Noise Flanger</button>
         </div>
       </div>
 
@@ -848,10 +1855,54 @@
         <span class="key">K</span> Add Mark •
         <span class="key">Shift</span>+<span class="key">←</span> <span class="key">Shift</span>+<span class="key">→</span> Jump Between Marks
       </div>
+
+      <div class="cache-controls">
+        <h4>Audio Cache</h4>
+        <div class="cache-buttons">
+          <button class="cache-btn" id="clearCacheBtn">🗑️ Clear Cache</button>
+          <button class="cache-btn" id="cacheInfoBtn">ℹ️ Cache Info</button>
+        </div>
+        <div class="cache-status" id="cacheStatus">
+          <span class="cache-indicator">🟢</span> Cache enabled
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
+    // Console logging class that only outputs on localhost
+    class ConsoleLogger {
+      constructor() {
+        this.isLocalhost = window.location.hostname === 'localhost' ||
+                           window.location.hostname === '127.0.0.1' ||
+                           window.location.hostname.includes('localhost');
+      }
+
+      isEnabled() {
+        return this.isLocalhost;
+      }
+
+      log(...args) {
+        if (this.isLocalhost) {
+          console.log(...args);
+        }
+      }
+
+      error(...args) {
+        if (this.isLocalhost) {
+          console.error(...args);
+        }
+      }
+
+      warn(...args) {
+        if (this.isLocalhost) {
+          console.warn(...args);
+        }
+      }
+    }
+
+    const logger = new ConsoleLogger();
+
     class MultitrackPlayer {
       constructor() {
         this.audioContext = null;
@@ -869,30 +1920,228 @@
           reverb: { active: false, node: null },
           scatter: { active: false, node: null },
           pitch: { active: false, node: null },
-          ringmod: { active: false, node: null }
+          ringmod: { active: false, node: null },
+          noise: { active: false, node: null }
         };
+
+        // Audio caching properties
+        this.audioCache = new Map(); // In-memory cache
+        this.cacheExpiry = 30 * 60 * 1000; // 30 minutes cache expiry
 
         this.initializeAudio();
         this.setupEventListeners();
-        this.loadTracks();
+        this.initializeComponents();
+
+        // Load initial tracks and check cache on startup
+        setTimeout(async () => {
+          await this.loadTracks();
+          await this.updatePlaylistCacheIndicators();
+          this.updatePlayButtonState();
+        }, 200);
       }
 
       async initializeAudio() {
         try {
           this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
           this.masterGain = this.audioContext.createGain();
-          this.masterGain.connect(this.audioContext.destination);
+          this.stereoPanner = this.audioContext.createStereoPanner();
+          this.stereoPanner.pan.value = 0;
+
+          // Connect: masterGain -> stereoPanner -> destination
+          this.masterGain.connect(this.stereoPanner);
+          this.stereoPanner.connect(this.audioContext.destination);
           this.masterGain.gain.value = 0.8;
 
-          // Resume audio context on first user interaction
-          document.addEventListener('click', () => {
-            if (this.audioContext.state === 'suspended') {
-              this.audioContext.resume();
-            }
-          }, { once: true });
+          // Mark that master gain is connected to destination
+          this.masterGain.connectedToDestination = true;
+
+
+
+          logger.log('Audio context created, state:', this.audioContext.state);
+
+          // iOS Safari audio context handling
+          if (this.audioContext.state === 'suspended') {
+            logger.log('Audio context suspended, waiting for user interaction...');
+
+            // Create a one-time click handler to resume audio context
+            const resumeAudioContext = async () => {
+              try {
+                await this.audioContext.resume();
+                logger.log('Audio context resumed successfully, state:', this.audioContext.state);
+
+                // Remove the event listeners after successful resume
+                document.removeEventListener('touchstart', resumeAudioContext);
+                document.removeEventListener('mousedown', resumeAudioContext);
+                document.removeEventListener('keydown', resumeAudioContext);
+
+                // Update UI to show audio is ready
+                this.updateAudioReadyState();
+              } catch (error) {
+                logger.error('Failed to resume audio context:', error);
+              }
+            };
+
+            // Add event listeners for iOS audio context resume
+            document.addEventListener('touchstart', resumeAudioContext, { once: true });
+            document.addEventListener('mousedown', resumeAudioContext, { once: true });
+            document.addEventListener('keydown', resumeAudioContext, { once: true });
+          }
 
         } catch (error) {
-          console.error('Failed to initialize audio context:', error);
+          logger.error('Failed to initialize audio context:', error);
+        }
+
+        // Initialize master waveform
+        this.initializeMasterWaveform();
+
+        // Handle responsive canvas sizing
+        this.handleResponsiveCanvas();
+        window.addEventListener('resize', () => this.handleResponsiveCanvas());
+      }
+
+      initializeMasterWaveform() {
+        const canvas = document.getElementById('masterWaveform');
+        if (!canvas) return;
+
+        this.masterWaveformCtx = canvas.getContext('2d');
+        this.masterWaveformCanvas = canvas;
+
+        // Set canvas size
+        canvas.width = 120;
+        canvas.height = 40;
+
+        // Initialize oscilloscope
+        this.oscilloscopeData = new Float32Array(400);
+        this.oscilloscopeIndex = 0;
+
+        // Create analyser node for real-time audio data
+        this.oscilloscopeAnalyser = this.audioContext.createAnalyser();
+        this.oscilloscopeAnalyser.fftSize = 512;
+        this.oscilloscopeAnalyser.smoothingTimeConstant = 0.3;
+
+        // Connect stereo panner to analyser for balance visualization
+        this.stereoPanner.connect(this.oscilloscopeAnalyser);
+
+        // Start oscilloscope animation
+        this.startOscilloscope();
+      }
+
+      startOscilloscope() {
+        const updateOscilloscope = () => {
+          if (this.isPlaying && this.oscilloscopeAnalyser) {
+            this.updateOscilloscope();
+          }
+          requestAnimationFrame(updateOscilloscope);
+        };
+        updateOscilloscope();
+      }
+
+      handleResponsiveCanvas() {
+        const canvas = document.getElementById('masterWaveform');
+        if (!canvas) return;
+
+        let width = 120;
+        let height = 40;
+
+        if (window.innerWidth <= 480) {
+          width = 90;
+          height = 30;
+        } else if (window.innerWidth <= 768) {
+          width = 100;
+          height = 35;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Update visualizer container dimensions
+        const visualizer = document.querySelector('.visualizer');
+        if (visualizer) {
+          visualizer.style.width = width + 'px';
+          visualizer.style.height = height + 'px';
+          visualizer.style.minWidth = width + 'px';
+          visualizer.style.minHeight = height + 'px';
+          visualizer.style.maxWidth = width + 'px';
+          visualizer.style.maxHeight = height + 'px';
+        }
+      }
+
+      updateOscilloscope() {
+        if (!this.masterWaveformCtx || !this.masterWaveformCanvas || !this.oscilloscopeAnalyser) return;
+
+        const ctx = this.masterWaveformCtx;
+        const canvas = this.masterWaveformCanvas;
+
+        // Get real-time audio data
+        const dataArray = new Float32Array(this.oscilloscopeAnalyser.frequencyBinCount);
+        this.oscilloscopeAnalyser.getFloatTimeDomainData(dataArray);
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw background
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw grid lines
+        ctx.strokeStyle = 'rgba(255, 107, 107, 0.2)';
+        ctx.lineWidth = 1;
+
+        // Vertical grid lines - scale based on canvas width
+        const gridSpacingX = Math.max(20, Math.floor(canvas.width / 3));
+        for (let x = 0; x < canvas.width; x += gridSpacingX) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvas.height);
+          ctx.stroke();
+        }
+
+        // Horizontal grid lines - scale based on canvas height
+        const gridSpacingY = Math.max(10, Math.floor(canvas.height / 2));
+        for (let y = 0; y < canvas.height; y += gridSpacingY) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y);
+          ctx.stroke();
+        }
+
+        // Draw oscilloscope trace
+        ctx.strokeStyle = '#ff6b6b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        const centerY = canvas.height / 2;
+        const scale = canvas.height / 2;
+
+        for (let i = 0; i < canvas.width; i++) {
+          const dataIndex = Math.floor((i / canvas.width) * dataArray.length);
+          if (dataIndex < dataArray.length) {
+            const x = i;
+            const y = centerY + (dataArray[dataIndex] * scale);
+
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+        }
+
+        ctx.stroke();
+
+        // Draw center line
+        ctx.strokeStyle = 'rgba(255, 107, 107, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(canvas.width, centerY);
+        ctx.stroke();
+      }
+
+      updateMasterWaveformPosition(percentage) {
+        // No position indicator needed - just update the oscilloscope
+        if (this.oscilloscopeAnalyser) {
+          this.updateOscilloscope();
         }
       }
 
@@ -912,65 +2161,776 @@
           if (document.visibilityState === 'visible') unlock();
         });
 
-        // Song selection
-        document.querySelectorAll('.song-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.song-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            this.currentSong = e.target.dataset.song;
-            this.loadTracks();
+        // Simple playlist event listeners
+        document.querySelectorAll('.track-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const song = item.dataset.song;
+            if (song) {
+              this.changeSong(song);
+
+              // Update active state
+              document.querySelectorAll('.track-item').forEach(i => i.classList.remove('current'));
+              item.classList.add('current');
+            }
           });
         });
 
-        // Player controls
-        document.getElementById('playBtn').addEventListener('click', () => {
-          console.log('Play button clicked');
+        // Control buttons
+        document.getElementById('previous').addEventListener('click', () => {
+          const currentSong = this.currentSong;
+          const songs = ['dacha', 'ulitsa', 'pukersy', 'jongler', 'kaskadny'];
+          const currentIndex = songs.indexOf(currentSong);
+          const prevIndex = (currentIndex - 1 + songs.length) % songs.length;
+          this.changeSong(songs[prevIndex]);
+        });
+
+        document.getElementById('next').addEventListener('click', () => {
+          const currentSong = this.currentSong;
+          const songs = ['dacha', 'ulitsa', 'pukersy', 'jongler', 'kaskadny'];
+          const currentIndex = songs.indexOf(currentSong);
+          const nextIndex = (currentIndex + 1) % songs.length;
+          this.changeSong(songs[nextIndex]);
+        });
+
+                // Action buttons
+        document.getElementById('play').addEventListener('click', () => {
+          const playBtn = document.getElementById('play');
+          if (playBtn.disabled) return;
           this.play();
         });
-        document.getElementById('pauseBtn').addEventListener('click', () => {
-          console.log('Pause button clicked');
+
+        document.getElementById('pause').addEventListener('click', () => {
+          logger.log('Pause button clicked');
           this.pause();
         });
-        document.getElementById('stopBtn').addEventListener('click', () => {
-          console.log('Stop button clicked');
+
+        document.getElementById('stop').addEventListener('click', () => {
+          logger.log('Stop button clicked');
           this.stop();
         });
 
-        // Progress bar
-        const progressBar = document.getElementById('progressBar');
-        // Passive click-to-seek for Safari mobile
-        progressBar.addEventListener('click', (e) => this.seek(e), { passive: true });
-        // Support dragging the handle for finer seeking
-        let isScrubbing = false;
-        const onMove = (e) => {
-          if (!isScrubbing) return;
-          this.seek(e.changedTouches ? { currentTarget: progressBar, clientX: e.changedTouches[0].clientX } : e);
-        };
-        progressBar.addEventListener('mousedown', (e) => { isScrubbing = true; onMove(e); });
-        progressBar.addEventListener('touchstart', (e) => { isScrubbing = true; onMove(e); }, { passive: true });
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('touchmove', onMove, { passive: true });
-        const endScrub = () => { isScrubbing = false; };
-        window.addEventListener('mouseup', endScrub);
-        window.addEventListener('touchend', endScrub, { passive: true });
+        // Progress bar seeking
+        document.querySelector('.progress-bar').addEventListener('click', (e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const percentage = clickX / rect.width;
+          const seekTime = percentage * this.duration;
+          this.seekToTime(seekTime);
+        });
 
-        // Master volume (input + change for iOS sliders)
-        const vol = document.getElementById('masterVolume');
-        const setVol = (e) => {
+        // Master waveform seeking
+        document.getElementById('masterWaveform').addEventListener('click', (e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const percentage = clickX / rect.width;
+          const seekTime = percentage * this.duration;
+          this.seekToTime(seekTime);
+        });
+
+        // Volume slider with sticky positions
+        const volumeSlider = document.getElementById('masterVolume');
+        volumeSlider.addEventListener('input', (e) => {
           if (this.masterGain) {
             this.masterGain.gain.value = e.target.value / 100;
           }
-        };
-        vol.addEventListener('input', setVol, { passive: true });
-        vol.addEventListener('change', setVol, { passive: true });
+        });
 
+        // Add sticky positions for volume slider
+        volumeSlider.addEventListener('change', (e) => {
+          const value = parseInt(e.target.value);
+          const stickyPositions = [0, 25, 50, 75, 100];
+          const closest = stickyPositions.reduce((prev, curr) => {
+            return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+          });
+
+          if (Math.abs(closest - value) <= 5) { // 5% tolerance
+            e.target.value = closest;
+            if (this.masterGain) {
+              this.masterGain.gain.value = closest / 100;
+            }
+          }
+        });
+
+        // Balance slider with sticky positions
+        const balanceSlider = document.getElementById('balance');
+        balanceSlider.addEventListener('input', (e) => {
+          const balanceValue = parseFloat(e.target.value);
+          if (this.stereoPanner) {
+            this.stereoPanner.pan.value = balanceValue / 100;
+          }
+          logger.log('Balance changed to:', balanceValue);
+        });
+
+        // Add sticky positions for balance slider
+        balanceSlider.addEventListener('change', (e) => {
+          const value = parseInt(e.target.value);
+          const stickyPositions = [-100, -50, 0, 50, 100];
+          const closest = stickyPositions.reduce((prev, curr) => {
+            return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+          });
+
+          if (Math.abs(closest - value) <= 10) { // 10% tolerance for balance
+            e.target.value = closest;
+            if (this.stereoPanner) {
+              this.stereoPanner.pan.value = closest / 100;
+            }
+          }
+        });
+
+        // Effects
+        document.getElementById('reverbBtn').addEventListener('click', () => this.toggleEffect('reverb'));
+        document.getElementById('scatterBtn').addEventListener('click', () => this.toggleEffect('scatter'));
+        document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
+        document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
+        document.getElementById('noiseBtn').addEventListener('click', () => this.toggleEffect('noise'));
+
+        // Krazy parameter
+        document.getElementById('krazySlider').addEventListener('input', (e) => {
+          this.setKrazyLevel(e.target.value);
+        });
+
+        // Add sticky positions for krazy slider
+        document.getElementById('krazySlider').addEventListener('change', (e) => {
+          const value = parseInt(e.target.value);
+          const stickyPositions = [0, 25, 50, 75, 100];
+          const closest = stickyPositions.reduce((prev, curr) => {
+            return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+          });
+
+          if (Math.abs(closest - value) <= 5) { // 5% tolerance
+            e.target.value = closest;
+            this.setKrazyLevel(closest);
+            // Update the display value
+            const krazyValue = document.getElementById('krazyValue');
+            if (krazyValue) {
+              krazyValue.textContent = closest;
+            }
+          }
+        });
+
+        // Update krazy value display on input
+        document.getElementById('krazySlider').addEventListener('input', (e) => {
+          const krazyValue = document.getElementById('krazyValue');
+          if (krazyValue) {
+            krazyValue.textContent = e.target.value;
+          }
+        });
+
+        // Download all tracks button
+        const downloadAllBtn = document.getElementById('downloadAll');
+        if (downloadAllBtn) {
+          logger.log('Setting up download all button event listener');
+          downloadAllBtn.addEventListener('click', () => {
+            logger.log('Download all button clicked');
+            this.downloadAllTracks();
+          });
+        } else {
+          logger.log('Download all button not found');
+        }
+
+        // Cache controls
+        document.getElementById('clearCacheBtn').addEventListener('click', () => this.clearCache());
+        document.getElementById('cacheInfoBtn').addEventListener('click', () => this.showCacheInfo());
+
+        // Keyboard shortcuts - removed for now
+      }
+
+      // Initialize additional components
+      initializeComponents() {
         // Initialize keyboard shortcuts
         this.initializeKeyboardShortcuts();
 
         // Initialize effects controls
         this.initializeEffectsControls();
 
-        // (testAudio button removed)
+        // Initialize cache controls
+        this.initializeCacheControls();
+
+        // Register service worker for enhanced caching
+        this.registerServiceWorker();
+
+        // Check for cached tracks and render them immediately
+        this.checkAndRenderCachedTracks();
+      }
+
+      async checkAndRenderCachedTracks() {
+        // This method is called after tracks are initialized
+        // Check if any tracks are already cached and render them
+        const songData = this.getSongData();
+        const cachePromises = [];
+        let skippedCount = 0;
+
+        logger.log('Starting cache check for tracks...');
+
+        for (let i = 0; i < songData.length; i++) {
+          const track = this.tracks[i];
+          if (track && !track.isDownloaded) {
+            logger.log(`Checking cache for track ${track.id} (not downloaded)`);
+            // Check if track is cached
+            const cachePromise = this.checkAndRenderCachedTrack(songData[i], i);
+            cachePromises.push(cachePromise);
+          } else if (track && track.isDownloaded) {
+            logger.log(`Skipping track ${track.id} (already downloaded)`);
+            skippedCount++;
+          } else {
+            logger.log(`No track found at index ${i}`);
+          }
+        }
+
+        // Wait for all cache checks to complete
+        if (cachePromises.length > 0) {
+          await Promise.all(cachePromises);
+          logger.log(`Cache checking completed. Processed: ${cachePromises.length}, Skipped: ${skippedCount}`);
+        } else {
+          logger.log(`No tracks need cache checking. All tracks are already downloaded.`);
+        }
+
+        // Force hide all placeholders for downloaded tracks
+        this.tracks.forEach(track => {
+          if (track.isDownloaded && track.element) {
+            const placeholder = track.element.querySelector('.placeholder-waveform');
+            if (placeholder) {
+              placeholder.style.display = 'none';
+              logger.log(`Force hidden placeholder for downloaded track ${track.id}`);
+            }
+
+            const canvas = track.element.querySelector('.waveform-canvas');
+            if (canvas) {
+              canvas.style.display = 'block';
+              logger.log(`Force showed waveform for downloaded track ${track.id}`);
+            }
+
+            const downloadOverlay = track.element.querySelector('.download-overlay');
+            if (downloadOverlay) {
+              downloadOverlay.style.display = 'none';
+              logger.log(`Force hidden download overlay for downloaded track ${track.id}`);
+            }
+          }
+        });
+      }
+
+      async checkAndRenderCachedTrack(trackData, index) {
+        const trackId = `track-${index}`;
+        const track = this.tracks[index];
+
+        if (!track) {
+          logger.log(`No track found at index ${index}`);
+          return;
+        }
+
+        if (track.isDownloaded) {
+          logger.log(`Track ${trackId} already downloaded, skipping cache check`);
+          return;
+        }
+
+        try {
+          // Check if track is cached
+          const cachedAudio = await this.getCachedAudio(trackData.file);
+
+          if (cachedAudio) {
+            logger.log(`Track ${trackId} found in cache, rendering immediately`);
+
+            // Decode the cached audio
+            const audioBuffer = await this.decodeAudioData(cachedAudio);
+
+            // Update track with cached data
+            track.audioBuffer = audioBuffer;
+            track.isDownloaded = true;
+
+            // Create gain node
+            track.gainNode = this.audioContext.createGain();
+            track.gainNode.gain.value = track.volume;
+            track.gainNode.connectedToMaster = true;
+            track.gainNode.connect(this.masterGain);
+
+            // Generate waveform
+            this.generateWaveform(track, trackData.color);
+
+            // Hide loading overlay and show waveform
+            this.hideTrackLoadingOverlay(trackId);
+
+            // Hide placeholder waveform and show real waveform
+            const trackElement = track.element;
+            if (trackElement) {
+              const placeholder = trackElement.querySelector('.placeholder-waveform');
+              if (placeholder) {
+                placeholder.style.display = 'none';
+                logger.log(`Hidden placeholder for track ${trackId}`);
+              }
+
+              const canvas = trackElement.querySelector('.waveform-canvas');
+              if (canvas) {
+                canvas.style.display = 'block';
+                logger.log(`Showed waveform canvas for track ${trackId}`);
+              }
+
+              // Also hide download overlay since track is cached
+              const downloadOverlay = trackElement.querySelector('.download-overlay');
+              if (downloadOverlay) {
+                downloadOverlay.style.display = 'none';
+                logger.log(`Hidden download overlay for track ${trackId}`);
+              }
+            }
+
+            // Enable track controls
+            this.enableTrackControls(trackId);
+
+            // Update download status and hide download button
+            if (trackElement) {
+              const downloadStatus = trackElement.querySelector('.download-status');
+              if (downloadStatus) {
+                const duration = audioBuffer.duration;
+                const minutes = Math.floor(duration / 60);
+                const seconds = Math.floor(duration % 60);
+                downloadStatus.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                downloadStatus.style.color = '#64ffda';
+              }
+
+              // Hide download button since track is cached
+              const downloadBtn = trackElement.querySelector('.track-download-btn');
+              const downloadOverlay = trackElement.querySelector('.download-overlay');
+              if (downloadBtn) {
+                downloadBtn.style.display = 'none';
+              }
+              if (downloadOverlay) {
+                downloadOverlay.style.display = 'none';
+              }
+            }
+
+            logger.log(`Track ${trackId} restored from cache successfully`);
+          } else {
+            // Track not cached - hide placeholder and show download button
+            logger.log(`Track ${trackId} not cached, showing download button`);
+            const trackElement = track.element;
+            if (trackElement) {
+              const placeholder = trackElement.querySelector('.placeholder-waveform');
+              if (placeholder) {
+                placeholder.style.display = 'none';
+              }
+
+              // Show download overlay for non-cached tracks
+              const downloadOverlay = trackElement.querySelector('.download-overlay');
+              if (downloadOverlay) {
+                downloadOverlay.style.display = 'flex';
+              }
+            }
+          }
+        } catch (error) {
+          logger.error(`Failed to restore cached track ${trackId}:`, error);
+
+          // On error, also hide placeholder and show download button
+          const trackElement = track.element;
+          if (trackElement) {
+            const placeholder = trackElement.querySelector('.placeholder-waveform');
+            if (placeholder) {
+              placeholder.style.display = 'none';
+            }
+
+            const downloadOverlay = trackElement.querySelector('.download-overlay');
+            if (downloadOverlay) {
+              downloadOverlay.style.display = 'flex';
+            }
+          }
+        }
+      }
+
+      async decodeAudioData(arrayBuffer) {
+        // Safari-safe decode path: try promise decode first, fall back to callback API
+        const decodeWithFallback = (ctx, buf) => new Promise((resolve, reject) => {
+          try {
+            const maybePromise = ctx.decodeAudioData(buf, resolve, reject);
+            // If decodeAudioData returns a promise (modern spec), chain it
+            if (maybePromise && typeof maybePromise.then === 'function') {
+              maybePromise.then(resolve).catch(reject);
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+
+        return await decodeWithFallback(this.audioContext, arrayBuffer);
+      }
+
+      async hasCachedTracksForSong(song) {
+        const songData = this.getSongDataForSong(song);
+        if (!songData) return false;
+
+        for (const track of songData) {
+          const cachedAudio = await this.getCachedAudio(track.file);
+          if (cachedAudio) {
+            return true; // At least one track is cached
+          }
+        }
+        return false;
+      }
+
+      getSongDataForSong(song) {
+        const songs = {
+          ulitsa: [
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё Stems/Улица знает всё (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё Stems/Улица знает всё (Bass).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё Stems/Улица знает всё (Synth).wav' }
+          ],
+          dacha: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Vocals).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Bass).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Synth).wav' }
+          ],
+          pukersy: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Vocals).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Synth).wav' },
+            { name: 'Percussion', icon: '🥁', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Percussion).wav' },
+            { name: 'FX', icon: '🎛️', color: '#9c27b0', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (FX).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Bass).wav' }
+          ],
+          jongler: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Vocals).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Synth).wav' },
+            { name: 'FX', icon: '🎛️', color: '#9c27b0', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (FX).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Bass).wav' },
+            { name: 'Backing Vocals', icon: '🎤', color: '#e91e63', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Backing Vocals).wav' }
+          ],
+          kaskadny: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Vocals).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Synth).wav' },
+            { name: 'Percussion', icon: '🥁', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Percussion).wav' },
+            { name: 'Keyboard', icon: '🎹', color: '#00bcd4', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Keyboard).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Bass).wav' },
+            { name: 'Backing Vocals', icon: '🎤', color: '#e91e63', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Backing Vocals).wav' }
+          ]
+        };
+
+        return songs[song] || [];
+      }
+
+      async updatePlaylistCacheIndicators() {
+        const songs = ['dacha', 'ulitsa', 'pukersy', 'jongler', 'kaskadny'];
+
+        for (const song of songs) {
+          const hasCached = await this.hasCachedTracksForSong(song);
+          const playlistItem = document.querySelector(`[data-song="${song}"]`);
+
+          if (playlistItem) {
+            // Remove existing cache indicators
+            playlistItem.querySelectorAll('.cache-indicator').forEach(indicator => indicator.remove());
+
+            if (hasCached) {
+              // Add cache indicator
+              const cacheIndicator = document.createElement('span');
+              cacheIndicator.className = 'cache-indicator';
+              cacheIndicator.textContent = ' 💾';
+              cacheIndicator.title = 'Some tracks cached';
+              cacheIndicator.style.color = '#64ffda';
+              cacheIndicator.style.fontSize = '0.8em';
+              cacheIndicator.style.marginLeft = '5px';
+
+              playlistItem.appendChild(cacheIndicator);
+            }
+          }
+        }
+      }
+
+      changeSong(song) {
+        logger.log(`Changing song from ${this.currentSong} to ${song}`);
+
+                        // ALWAYS stop all audio sources regardless of isPlaying state
+        this.tracks.forEach(track => {
+          if (track.source) {
+            try {
+              track.source.stop();
+              logger.log(`Stopped audio source for track ${track.id}`);
+            } catch (e) {
+              logger.log(`Track ${track.id} source already stopped`);
+            }
+            track.source = null;
+          }
+          if (track.gainNode) {
+            track.gainNode.disconnect();
+            track.gainNode = null;
+          }
+        });
+
+        // Always stop progress update and reset playback state
+        this.stopProgressUpdate();
+        this.isPlaying = false;
+        this.currentTime = 0;
+
+        // Force stop all audio context sources
+        if (this.audioContext && this.audioContext.state === 'running') {
+          // Don't suspend immediately - let the sources stop naturally
+          logger.log('Audio sources stopped, audio context remains running');
+        }
+
+        // Reset all playback state
+        this.currentSong = song;
+        this.duration = 0;
+
+        // Clear any existing progress
+        this.stopProgressUpdate();
+
+        // Reset play button states
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        const stopBtn = document.getElementById('stop');
+
+        if (playBtn) {
+          playBtn.classList.remove('selected');
+          playBtn.disabled = true;
+        }
+        if (pauseBtn) {
+          pauseBtn.classList.remove('selected');
+          pauseBtn.disabled = true;
+        }
+        if (stopBtn) {
+          stopBtn.disabled = true;
+        }
+
+        // Reset progress bar
+        const progressFill = document.getElementById('main-progress-fill');
+        const progressHandle = document.getElementById('main-progress-handle');
+        if (progressFill) progressFill.style.width = '0%';
+        if (progressHandle) progressHandle.style.left = '0%';
+
+        // Reset time display
+        const currentTimeElement = document.getElementById('currentTime');
+        if (currentTimeElement) currentTimeElement.textContent = '0:00';
+
+        // Reset download all button
+        const downloadAllBtn = document.getElementById('downloadAll');
+        if (downloadAllBtn) {
+          downloadAllBtn.classList.remove('downloading', 'downloaded');
+          downloadAllBtn.disabled = false;
+          downloadAllBtn.innerHTML = '⬇';
+          downloadAllBtn.title = 'Download all tracks';
+        }
+
+        // Store current track states before clearing
+        const trackStates = new Map();
+        this.tracks.forEach(track => {
+          trackStates.set(track.id, {
+            isDownloaded: track.isDownloaded,
+            isMuted: track.isMuted,
+            isSoloed: track.isSoloed,
+            volume: track.volume,
+            audioBuffer: track.audioBuffer
+          });
+        });
+
+        // Clear current tracks but preserve states
+        this.tracks = [];
+        this.soloedTracks.clear();
+
+        // Update simple UI
+        const songTitle = document.getElementById('currentSongTitle');
+        if (songTitle) {
+          songTitle.textContent = this.getSongDisplayName(song);
+        }
+
+        // Update playlist selection
+        document.querySelectorAll('.track-item').forEach((item) => {
+          if (item.dataset.song === song) {
+            item.classList.add('current');
+          } else {
+            item.classList.remove('current');
+          }
+        });
+
+                  // Store track states for restoration
+          this.pendingTrackStates = trackStates;
+
+          // Load new tracks
+          this.loadTracks();
+
+        // Ensure play controls are disabled until tracks are downloaded
+        this.setPlayControlsEnabled(false);
+
+        logger.log(`Song changed to ${song}, all states reset`);
+      }
+
+      resetAllTrackControls() {
+        // Reset all track-specific controls to their initial state
+        this.tracks.forEach(track => {
+          if (track.element) {
+            // Reset mute/solo buttons
+            const muteBtn = track.element.querySelector('[data-action="mute"]');
+            const soloBtn = track.element.querySelector('[data-action="solo"]');
+            const volumeSlider = track.element.querySelector('.track-volume');
+
+            if (muteBtn) {
+              muteBtn.disabled = true;
+              muteBtn.classList.remove('muted');
+            }
+            if (soloBtn) {
+              soloBtn.disabled = true;
+              soloBtn.classList.remove('active');
+            }
+            if (volumeSlider) {
+              volumeSlider.disabled = true;
+              volumeSlider.value = 80; // Reset to default volume
+            }
+
+            // Reset track states
+            track.isMuted = false;
+            track.isSoloed = false;
+            track.volume = 0.8;
+            track.isDownloaded = false;
+            track.audioBuffer = null;
+            track.source = null;
+            track.gainNode = null;
+          }
+        });
+
+        logger.log('All track controls reset to initial state');
+      }
+
+      restoreTrackStates() {
+        if (!this.pendingTrackStates) return;
+
+        logger.log('Restoring track states from previous song');
+
+        this.tracks.forEach(track => {
+          const savedState = this.pendingTrackStates.get(track.id);
+          if (savedState) {
+            // Restore track properties
+            track.isMuted = savedState.isMuted;
+            track.isSoloed = savedState.isSoloed;
+            track.volume = savedState.volume;
+
+            // If track was downloaded, restore audio buffer and mark as downloaded
+            if (savedState.isDownloaded && savedState.audioBuffer) {
+              track.audioBuffer = savedState.audioBuffer;
+              track.isDownloaded = true;
+
+              // Create gain node and restore audio setup
+              track.gainNode = this.audioContext.createGain();
+              track.gainNode.gain.value = track.volume;
+              track.gainNode.connectedToMaster = true;
+              track.gainNode.connect(this.masterGain);
+
+              // Generate waveform
+              const trackData = this.getSongData().find((_, index) => `track-${index}` === track.id);
+              if (trackData) {
+                this.generateWaveform(track, trackData.color);
+              }
+
+              // Enable controls for this track
+              this.enableTrackControls(track.id);
+
+              // Update UI to show downloaded state
+              const trackElement = track.element;
+              if (trackElement) {
+                const downloadStatus = trackElement.querySelector('.download-status');
+                if (downloadStatus && track.audioBuffer) {
+                  const duration = track.audioBuffer.duration;
+                  const minutes = Math.floor(duration / 60);
+                  const seconds = Math.floor(duration % 60);
+                  downloadStatus.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                  downloadStatus.style.color = '#64ffda';
+                }
+
+                // Hide loading overlay and show waveform
+                this.hideTrackLoadingOverlay(track.id);
+
+                                // Hide placeholder waveform and show real waveform
+                const placeholder = trackElement.querySelector('.placeholder-waveform');
+                if (placeholder) {
+                  placeholder.style.display = 'none';
+                }
+
+                const canvas = trackElement.querySelector('.waveform-canvas');
+                if (canvas) {
+                  canvas.style.display = 'block';
+                }
+
+                // Hide download overlay since track is already downloaded
+                const downloadOverlay = trackElement.querySelector('.download-overlay');
+                if (downloadOverlay) {
+                  downloadOverlay.style.display = 'none';
+                }
+              }
+
+              logger.log(`Track ${track.id} restored with audio buffer`);
+            }
+
+            // Restore solo state
+            if (track.isSoloed) {
+              this.soloedTracks.add(track.id);
+            }
+          }
+        });
+
+        // Clear pending states
+        this.pendingTrackStates = null;
+
+        // Update track visibility and play button state
+        this.updateTrackVisibility();
+        this.updatePlayButtonState();
+        this.updateDuration();
+
+        // Ensure all restored tracks have proper UI state
+        this.tracks.forEach(track => {
+          if (track.isDownloaded && track.element) {
+            // Hide placeholder for downloaded tracks
+            const placeholder = track.element.querySelector('.placeholder-waveform');
+            if (placeholder) {
+              placeholder.style.display = 'none';
+            }
+
+            // Show waveform for downloaded tracks
+            const canvas = track.element.querySelector('.waveform-canvas');
+            if (canvas) {
+              canvas.style.display = 'block';
+            }
+
+            // Hide download overlay for downloaded tracks
+            const downloadOverlay = track.element.querySelector('.download-overlay');
+            if (downloadOverlay) {
+              downloadOverlay.style.display = 'none';
+            }
+          }
+        });
+
+        logger.log('Track states restored successfully');
+      }
+
+      getSongDisplayName(song) {
+        const songNames = {
+          'dacha': '🏠 На старой даче',
+          'ulitsa': '🌃 Улица знает всё',
+          'pukersy': '🎰 Пукерсы',
+          'jongler': '🤹 Жонглёр Серёга',
+          'kaskadny': '🌊 Каскадный бит'
+        };
+        return songNames[song] || song;
+      }
+
+
+
+      setPlayControlsEnabled(enabled) {
+        logger.log(`setPlayControlsEnabled called with: ${enabled}`);
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        const stopBtn = document.getElementById('stop');
+
+        if (playBtn) playBtn.disabled = !enabled;
+        if (pauseBtn) pauseBtn.disabled = !enabled;
+        if (stopBtn) stopBtn.disabled = !enabled;
+
+        // Update visual state
+        if (!enabled) {
+          playBtn?.classList.add('disabled');
+          pauseBtn?.classList.add('disabled');
+          stopBtn?.classList.add('disabled');
+        } else {
+          playBtn?.classList.remove('disabled');
+          pauseBtn?.classList.remove('disabled');
+          stopBtn?.classList.remove('disabled');
+        }
+
+        logger.log(`Play button disabled state after setPlayControlsEnabled: ${playBtn?.disabled}`);
       }
 
       initializeKeyboardShortcuts() {
@@ -1028,9 +2988,22 @@
         document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
       }
 
-            async loadTracks() {
+      initializeCacheControls() {
+        // Add event listeners for cache control buttons
+        document.getElementById('clearCacheBtn').addEventListener('click', () => this.clearAudioCache());
+        document.getElementById('cacheInfoBtn').addEventListener('click', () => this.showCacheInfo());
+
+        // Update cache status
+        this.updateCacheStatus();
+      }
+
+            loadTracks() {
+        logger.log('loadTracks called - preparing track structure without downloading');
         const tracksList = document.getElementById('tracksList');
-        tracksList.innerHTML = '<div class="loading">Loading tracks...</div>';
+        tracksList.innerHTML = '<div class="loading">Preparing tracks...</div>';
+
+        // Disable play controls while loading
+        this.setPlayControlsEnabled(false);
 
         try {
           const songData = this.getSongData();
@@ -1043,43 +3016,110 @@
 
           tracksList.innerHTML = tracksHTML;
 
-          // Initialize tracks
-          for (let i = 0; i < songData.length; i++) {
-            await this.initializeTrack(songData[i], i);
-          }
+                                        // Wait a bit for DOM to be ready, then initialize track structure without downloading
+          setTimeout(async () => {
+            for (let i = 0; i < songData.length; i++) {
+              this.initializeTrackStructure(songData[i], i);
+            }
 
-          console.log('All tracks loaded:', this.tracks);
-          this.setupTrackEventListeners();
-          this.updateDuration();
+            this.updateDuration();
+            this.updateOscilloscope();
+
+                        // Restore track states if available (this should happen BEFORE cache checking)
+            if (this.pendingTrackStates) {
+              logger.log('Restoring track states from previous song...');
+              this.restoreTrackStates();
+              logger.log('Track states restored, checking which tracks are already downloaded...');
+
+              // Log the state of all tracks after restoration
+              this.tracks.forEach(track => {
+                logger.log(`Track ${track.id}: downloaded=${track.isDownloaded}, hasAudioBuffer=${!!track.audioBuffer}`);
+              });
+            }
+
+            // Check for cached tracks and render them (only for non-downloaded tracks)
+            logger.log('Starting cache check for remaining non-downloaded tracks...');
+            await this.checkAndRenderCachedTracks();
+
+            // Don't enable play controls here - let updatePlayButtonState handle it
+            logger.log('About to update play button state...');
+            this.updatePlayButtonState();
+            logger.log('Play button state updated');
+            this.updateCacheStatus();
+
+            // Update cache indicators for all songs after tracks are loaded
+            this.updatePlaylistCacheIndicators();
+
+            // Resume audio context if it was suspended during song change
+            if (this.audioContext && this.audioContext.state === 'suspended') {
+              this.audioContext.resume().then(() => {
+                logger.log('Audio context resumed after song change');
+              }).catch(e => {
+                logger.log('Failed to resume audio context after song change:', e);
+              });
+            }
+          }, 100);
+
+          logger.log('Track structure preparation completed');
         } catch (error) {
-          console.error('Failed to load tracks:', error);
+          logger.log('Failed to load tracks:', error);
           tracksList.innerHTML = '<div class="error">Failed to load tracks. Please try again.</div>';
+          // Re-enable controls even on error
+          this.setPlayControlsEnabled(true);
         }
       }
 
                   getSongData() {
         const songs = {
           ulitsa: [
-            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё (Drums).wav' },
-            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё (Bass).wav' },
-            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё (Synth).wav' }
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё Stems/Улица знает всё (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё Stems/Улица знает всё (Bass).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё Stems/Улица знает всё (Synth).wav' }
           ],
           dacha: [
-            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Vocals).wav' },
-            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Drums).wav' },
-            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Bass).wav' },
-            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Synth).wav' }
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Vocals).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Bass).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/На старой даче Stems/На старой даче (Synth).wav' }
+          ],
+          pukersy: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Vocals).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Synth).wav' },
+            { name: 'Percussion', icon: '🥁', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Percussion).wav' },
+            { name: 'FX', icon: '🎛️', color: '#9c27b0', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (FX).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Пукерсы Stems/Пукерсы (Bass).wav' }
+          ],
+          jongler: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Vocals).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Synth).wav' },
+            { name: 'FX', icon: '🎛️', color: '#9c27b0', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (FX).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Bass).wav' },
+            { name: 'Backing Vocals', icon: '🎤', color: '#e91e63', file: '/pages/20250821113700_suno_multitrack_example/Жонглёр Серёга Stems/Жонглёр Серёга (Backing Vocals).wav' }
+          ],
+          kaskadny: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Vocals).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Synth).wav' },
+            { name: 'Percussion', icon: '🥁', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Percussion).wav' },
+            { name: 'Keyboard', icon: '🎹', color: '#00bcd4', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Keyboard).wav' },
+            { name: 'FX', icon: '🎛️', color: '#9c27b0', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (FX).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Bass).wav' },
+            { name: 'Backing Vocals', icon: '🎤', color: '#e91e63', file: '/pages/20250821113700_suno_multitrack_example/Каскадный бит Stems/Каскадный бит (Backing Vocals).wav' }
           ]
         };
 
-        console.log('Song data for', this.currentSong, ':', songs[this.currentSong]);
         return songs[this.currentSong] || [];
       }
 
       createTrackHTML(track, trackId) {
         const iconClass = track.name.toLowerCase().includes('vocals') ? 'vocals' :
                          track.name.toLowerCase().includes('drums') ? 'drums' :
-                         track.name.toLowerCase().includes('bass') ? 'bass' : 'synth';
+                         track.name.toLowerCase().includes('bass') ? 'bass' :
+                         track.name.toLowerCase().includes('percussion') ? 'drums' :
+                         track.name.toLowerCase().includes('keyboard') ? 'synth' :
+                         track.name.toLowerCase().includes('fx') ? 'synth' : 'synth';
 
         return `
           <div class="track" data-track-id="${trackId}">
@@ -1087,40 +3127,231 @@
               <div class="track-icon ${iconClass}">${track.icon}</div>
               <div class="track-info">
                 <div class="track-name">${track.name}</div>
-                <div class="track-duration">0:00</div>
+
               </div>
             </div>
             <div class="track-waveform" data-track-id="${trackId}">
-              <canvas class="waveform-canvas" width="400" height="60"></canvas>
+              <div class="download-overlay" id="download-${trackId}">
+                <button class="track-download-btn" data-track-id="${trackId}" title="Download track">
+                  <span class="download-icon">⬇</span>
+                  <span class="download-text">Download</span>
+                </button>
+                <div class="loading-overlay" id="loading-${trackId}" style="display: none;">
+                  <div class="loading-spinner"></div>
+                  <div class="loading-text">Downloading...</div>
+                  <div class="loading-progress">
+                    <div class="progress-bar">
+                      <div class="progress-fill" id="progress-${trackId}"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text-${trackId}">0%</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Placeholder loading waveform -->
+              <div class="placeholder-waveform" id="placeholder-${trackId}">
+                <div class="placeholder-bars">
+                  ${Array.from({length: 20}, (_, i) =>
+                    `<div class="placeholder-bar" style="height: ${20 + Math.random() * 40}%; animation-delay: ${i * 0.1}s;"></div>`
+                  ).join('')}
+                </div>
+                <div class="placeholder-text">Checking cache...</div>
+              </div>
+
+              <canvas class="waveform-canvas" width="400" height="60" style="display: none;"></canvas>
               <div class="playhead" style="position: absolute; top: 0; left: 0%; width: 2px; height: 100%; background: #64ffda; pointer-events: none; z-index: 10;"></div>
             </div>
             <div class="track-controls">
               <div class="control-group">
-                <button class="track-btn" data-action="mute" title="Mute">M</button>
-                <button class="track-btn" data-action="solo" title="Solo">S</button>
+                <div class="button-row">
+                  <button class="track-btn" data-action="mute" title="Mute" disabled>M</button>
+                  <button class="track-btn" data-action="solo" title="Solo" disabled>S</button>
+                </div>
+                <input type="range" class="track-volume" min="0" max="100" value="80" title="Volume" disabled>
               </div>
-              <input type="range" class="track-volume" min="0" max="100" value="80" title="Volume">
             </div>
           </div>
         `;
       }
 
-                  async initializeTrack(trackData, index) {
+      initializeTrackStructure(trackData, index) {
+        const trackId = `track-${index}`;
+        const trackElement = document.querySelector(`[data-track-id="${trackId}"]`);
+
+        if (!trackElement) return;
+
+        const track = {
+          id: trackId,
+          name: trackData.name,
+          element: trackElement,
+          audioBuffer: null,
+          source: null,
+          gainNode: null,
+          isMuted: false,
+          isSoloed: false,
+          volume: 0.8,
+          isDownloaded: false
+        };
+
+        this.tracks.push(track);
+
+        // Show placeholder waveform immediately
+        const placeholder = trackElement.querySelector('.placeholder-waveform');
+        if (placeholder) {
+          placeholder.style.display = 'flex';
+        }
+
+        // Add download button event listener
+        const downloadBtn = trackElement.querySelector('.track-download-btn');
+        if (downloadBtn) {
+          downloadBtn.addEventListener('click', () => {
+            this.downloadTrack(trackData, index);
+          });
+        }
+      }
+
+            async downloadTrack(trackData, index) {
+        const trackId = `track-${index}`;
+
+        const track = this.tracks[index];
+        if (!track) return;
+
+        if (track.isDownloaded) return;
+
+        const downloadBtn = track.element.querySelector('.track-download-btn');
+        const downloadOverlay = track.element.querySelector('.download-overlay');
+        const loadingOverlay = track.element.querySelector('.loading-overlay');
+
+        if (downloadBtn && downloadOverlay && loadingOverlay) {
+          // Check cache first before showing loading state
+          const cachedAudio = await this.getCachedAudio(trackData.file);
+
+          if (cachedAudio) {
+            logger.log(`Track ${trackId} found in cache, loading directly`);
+            // Hide download button and show cached status
+            downloadBtn.style.display = 'none';
+            downloadOverlay.style.display = 'none';
+            loadingOverlay.style.display = 'flex';
+
+            // Hide placeholder since we're loading from cache
+            const placeholder = trackElement.querySelector('.placeholder-waveform');
+            if (placeholder) {
+              placeholder.style.display = 'none';
+            }
+
+            try {
+              // Load from cache
+              await this.loadTrackAudio(trackData, index);
+              // Update play button state after successful load
+              this.updatePlayButtonState();
+            } catch (error) {
+              logger.log(`Failed to load cached track ${trackData.name}:`, error);
+              // Reset to download state on error
+              downloadBtn.style.display = 'block';
+              downloadOverlay.style.display = 'flex';
+              loadingOverlay.style.display = 'none';
+            }
+          } else {
+            // Cache miss - show loading state and download
+            downloadBtn.classList.add('downloading');
+            downloadBtn.disabled = true;
+            downloadOverlay.style.display = 'none';
+            loadingOverlay.style.display = 'flex';
+
+            // Hide placeholder since we're downloading
+            const placeholder = trackElement.querySelector('.placeholder-waveform');
+            if (placeholder) {
+              placeholder.style.display = 'none';
+            }
+
+            try {
+              // Download the track
+              await this.loadTrackAudio(trackData, index);
+              // Update play button state after successful download
+              this.updatePlayButtonState();
+            } catch (error) {
+              logger.log(`Failed to download track ${trackData.name}:`, error);
+              // Reset to download state on error
+              downloadBtn.classList.remove('downloading');
+              downloadBtn.disabled = false;
+              downloadOverlay.style.display = 'flex';
+              loadingOverlay.style.display = 'none';
+            }
+          }
+        }
+      }
+
+      async loadTrackAudio(trackData, index) {
         const trackId = `track-${index}`;
         const trackElement = document.querySelector(`[data-track-id="${trackId}"]`);
 
         try {
-          console.log(`Loading track: ${trackData.file}`);
-          const filePath = trackData.file; // Use absolute path directly
-          console.log(`Full file path: ${filePath}`);
-          const response = await fetch(filePath);
-          console.log(`Response status: ${response.status} ${response.statusText}`);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          logger.log(`Loading track audio: ${trackData.file}`);
+          const filePath = trackData.file;
+          logger.log(`Full file path: ${filePath}`);
+
+          // Test if the file exists by making a HEAD request first
+          try {
+            const testResponse = await fetch(filePath, { method: 'HEAD' });
+            logger.log(`File test response: ${testResponse.status} ${testResponse.statusText}`);
+            if (!testResponse.ok) {
+              throw new Error(`File not accessible: ${testResponse.status} ${testResponse.statusText}`);
+            }
+          } catch (testError) {
+            logger.error(`File test failed: ${testError.message}`);
+            throw new Error(`File not accessible: ${testError.message}`);
           }
 
-          const arrayBuffer = await response.arrayBuffer();
-          console.log(`Audio data loaded, size: ${arrayBuffer.byteLength} bytes`);
+          // Check cache first
+          let arrayBuffer = await this.getCachedAudio(filePath);
+
+          if (arrayBuffer) {
+            // Cache hit - show cached status
+            this.updateTrackLoadingProgress(trackId, 100, 'Loading from cache...');
+          } else {
+            // Cache miss - download the file
+            this.updateTrackLoadingProgress(trackId, 0, 'Starting download...');
+
+            const response = await fetch(filePath);
+            logger.log(`Response status: ${response.status} ${response.statusText}`);
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            // Track download progress
+            const reader = response.body.getReader();
+            const contentLength = +response.headers.get('content-length');
+            let receivedLength = 0;
+
+            const chunks = [];
+            while (true) {
+              const { done, value } = await reader.read();
+
+              if (done) break;
+
+              chunks.push(value);
+              receivedLength += value.length;
+
+              // Update progress
+              const progress = contentLength ? Math.round((receivedLength / contentLength) * 100) : 0;
+              this.updateTrackLoadingProgress(trackId, progress, `Downloading... ${progress}%`);
+            }
+
+            // Combine chunks into array buffer
+            arrayBuffer = new ArrayBuffer(receivedLength);
+            const uint8Array = new Uint8Array(arrayBuffer);
+            let position = 0;
+            for (const chunk of chunks) {
+              uint8Array.set(chunk, position);
+              position += chunk.length;
+            }
+
+            // Cache the downloaded audio
+            await this.setCachedAudio(filePath, arrayBuffer);
+          }
+
+          logger.log(`Audio data loaded, size: ${arrayBuffer.byteLength} bytes`);
+          this.updateTrackLoadingProgress(trackId, 100, 'Decoding audio...');
 
           // Safari-safe decode path: try promise decode first, fall back to callback API
           const decodeWithFallback = (ctx, buf) => new Promise((resolve, reject) => {
@@ -1135,44 +3366,748 @@
             }
           });
           const audioBuffer = await decodeWithFallback(this.audioContext, arrayBuffer);
-          console.log(`Audio decoded, duration: ${audioBuffer.duration}s, channels: ${audioBuffer.numberOfChannels}`);
+          logger.log(`Audio decoded, duration: ${audioBuffer.duration}s, channels: ${audioBuffer.numberOfChannels}`);
 
-          const track = {
-            id: trackId,
-            name: trackData.name,
-            element: trackElement,
-            audioBuffer: audioBuffer,
-            source: null,
-            gainNode: null,
-            isMuted: false,
-            isSoloed: false,
-            volume: 0.8
-          };
+          // Update existing track object
+          const track = this.tracks[index];
+          track.audioBuffer = audioBuffer;
+          track.isDownloaded = true;
+
+          logger.log(`Track ${trackId} marked as downloaded`);
+          logger.log(`Track ${trackId} download status:`, track.isDownloaded);
+          logger.log(`Track ${trackId} full object:`, track);
+
+          // Verify the track is in the tracks array
+          const trackIndex = this.tracks.findIndex(t => t.id === trackId);
+          logger.log(`Track ${trackId} found at index ${trackIndex} in tracks array`);
+          logger.log(`Tracks array length: ${this.tracks.length}`);
+          logger.log(`Tracks array contents:`, this.tracks.map(t => ({ id: t.id, name: t.name, isDownloaded: t.isDownloaded })));
 
           // Create gain node
           track.gainNode = this.audioContext.createGain();
           track.gainNode.gain.value = track.volume;
+          track.gainNode.connectedToMaster = true;
 
           // Connect gain node to master gain immediately
           track.gainNode.connect(this.masterGain);
 
-          this.tracks.push(track);
+          // Update download status
+          const downloadStatus = trackElement.querySelector('.download-status');
+          if (downloadStatus) {
+            const duration = audioBuffer.duration;
+            const minutes = Math.floor(duration / 60);
+            const seconds = Math.floor(duration % 60);
+            downloadStatus.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            downloadStatus.style.color = '#64ffda';
+          }
 
-          // Update duration
-          const duration = audioBuffer.duration;
-          const minutes = Math.floor(duration / 60);
-          const seconds = Math.floor(duration % 60);
-          trackElement.querySelector('.track-duration').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+          // Track visibility will be updated after all tracks are downloaded
 
           // Generate waveform
           this.generateWaveform(track, trackData.color);
 
-          console.log(`Track ${trackData.name} loaded successfully:`, track);
+          // Hide loading overlay and show waveform
+          this.hideTrackLoadingOverlay(trackId);
+
+          // Enable track controls
+          this.enableTrackControls(trackId);
+
+          // Set buffer for scatter effect if it's active
+          if (this.effects.scatter.active && this.effects.scatter.node) {
+            this.effects.scatter.node.setBuffer(audioBuffer);
+          }
+
+          // Set buffer for all tracks to scatter effect
+          if (this.effects.scatter.node) {
+            this.effects.scatter.node.setBuffer(audioBuffer);
+          }
+
+          // Hide placeholder waveform and show real waveform
+          const placeholder = trackElement.querySelector('.placeholder-waveform');
+          if (placeholder) {
+            placeholder.style.display = 'none';
+          }
+
+          const canvas = trackElement.querySelector('.waveform-canvas');
+          if (canvas) {
+            canvas.style.display = 'block';
+          }
+
+          logger.log(`Track ${trackData.name} loaded successfully:`, track);
+
+          // Update play button state after each track download
+          this.updatePlayButtonState();
+
+          // Update duration after track is loaded
+          this.updateDuration();
 
         } catch (error) {
-          console.error(`Failed to load track ${trackData.name}:`, error);
-          trackElement.querySelector('.track-duration').textContent = 'Error';
+          logger.log(`Failed to load track ${trackData.name}:`, error);
+          logger.log(`Track file path: ${trackData.file}`);
+          logger.log(`Track index: ${index}`);
+          logger.log(`Track element:`, trackElement);
+
+          const downloadStatus = trackElement.querySelector('.download-status');
+          if (downloadStatus) {
+            downloadStatus.textContent = 'Download failed';
+            downloadStatus.style.color = '#ff6b6b';
+          }
+          this.updateTrackLoadingProgress(trackId, 0, 'Error loading track');
+
+          // Re-throw the error so it can be caught by the caller
+          throw error;
         }
+      }
+
+      async downloadAllTracks() {
+        const downloadBtn = document.getElementById('downloadAll');
+        if (!downloadBtn) return;
+
+        // Show downloading state
+        downloadBtn.classList.add('downloading');
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = '⏳';
+
+        try {
+          const songData = this.getSongData();
+          const downloadPromises = [];
+
+          // Start downloading all tracks
+          for (let i = 0; i < songData.length; i++) {
+            const track = this.tracks[i];
+            if (track && !track.isDownloaded) {
+              downloadPromises.push(this.downloadTrack(songData[i], i));
+            }
+          }
+
+          // Wait for all downloads to complete
+          await Promise.all(downloadPromises);
+
+          // Update download all button state
+          downloadBtn.classList.remove('downloading');
+          downloadBtn.classList.add('downloaded');
+          downloadBtn.innerHTML = '✓';
+          downloadBtn.title = 'All tracks downloaded';
+
+          // Update play button state
+          this.updatePlayButtonState();
+
+          // Ensure all tracks have proper volume settings
+          this.updateTrackVisibility();
+
+          // Update duration after all tracks are downloaded
+          this.updateDuration();
+
+          logger.log('All tracks downloaded successfully');
+        } catch (error) {
+          logger.log('Failed to download all tracks:', error);
+
+          // Reset download all button state
+          downloadBtn.classList.remove('downloading');
+          downloadBtn.disabled = false;
+          downloadBtn.innerHTML = '⬇';
+          downloadBtn.title = 'Download all tracks';
+        }
+      }
+
+                  async initializeTrack(trackData, index) {
+        const trackId = `track-${index}`;
+        const trackElement = document.querySelector(`[data-track-id="${trackId}"]`);
+
+        try {
+          logger.log(`Loading track: ${trackData.file}`);
+          const filePath = trackData.file; // Use absolute path directly
+          logger.log(`Full file path: ${filePath}`);
+
+          // Test if the file exists by making a HEAD request first
+          try {
+            const testResponse = await fetch(filePath, { method: 'HEAD' });
+            logger.log(`File test response: ${testResponse.status} ${testResponse.statusText}`);
+            if (!testResponse.ok) {
+              throw new Error(`File not accessible: ${testResponse.status} ${testResponse.statusText}`);
+            }
+          } catch (testError) {
+            logger.error(`File test failed: ${testError.message}`);
+            throw new Error(`File not accessible: ${testError.message}`);
+          }
+
+                    // Check cache first
+          let arrayBuffer = await this.getCachedAudio(filePath);
+
+          if (arrayBuffer) {
+            // Cache hit - show cached status
+            this.updateTrackLoadingProgress(trackId, 100, 'Loading from cache...');
+          } else {
+            // Cache miss - download the file
+            this.updateTrackLoadingProgress(trackId, 0, 'Starting download...');
+
+            const response = await fetch(filePath);
+            logger.log(`Response status: ${response.status} ${response.statusText}`);
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            // Track download progress
+            const reader = response.body.getReader();
+            const contentLength = +response.headers.get('content-length');
+            let receivedLength = 0;
+
+            const chunks = [];
+            while (true) {
+              const { done, value } = await reader.read();
+
+              if (done) break;
+
+              chunks.push(value);
+              receivedLength += value.length;
+
+              // Update progress
+              const progress = contentLength ? Math.round((receivedLength / contentLength) * 100) : 0;
+              this.updateTrackLoadingProgress(trackId, progress, `Downloading... ${progress}%`);
+            }
+
+            // Combine chunks into array buffer
+            arrayBuffer = new ArrayBuffer(receivedLength);
+            const uint8Array = new Uint8Array(arrayBuffer);
+            let position = 0;
+            for (const chunk of chunks) {
+              uint8Array.set(chunk, position);
+              position += chunk.length;
+            }
+
+            // Cache the downloaded audio
+            await this.setCachedAudio(filePath, arrayBuffer);
+          }
+
+                      logger.log(`Audio data loaded, size: ${arrayBuffer.byteLength} bytes`);
+          this.updateTrackLoadingProgress(trackId, 100, 'Decoding audio...');
+
+          // Safari-safe decode path: try promise decode first, fall back to callback API
+          const decodeWithFallback = (ctx, buf) => new Promise((resolve, reject) => {
+            try {
+              const maybePromise = ctx.decodeAudioData(buf, resolve, reject);
+              // If decodeAudioData returns a promise (modern spec), chain it
+              if (maybePromise && typeof maybePromise.then === 'function') {
+                maybePromise.then(resolve).catch(reject);
+              }
+            } catch (e) {
+              reject(e);
+            }
+          });
+          const audioBuffer = await decodeWithFallback(this.audioContext, arrayBuffer);
+                      logger.log(`Audio decoded, duration: ${audioBuffer.duration}s, channels: ${audioBuffer.numberOfChannels}`);
+
+                    // Update existing track object
+          const track = this.tracks[index];
+          track.audioBuffer = audioBuffer;
+          track.isDownloaded = true;
+
+          logger.log(`Track ${trackId} marked as downloaded`);
+          logger.log(`Track ${trackId} download status:`, track.isDownloaded);
+          logger.log(`Track ${trackId} full object:`, track);
+
+          // Verify the track is in the tracks array
+          const trackIndex = this.tracks.findIndex(t => t.id === trackId);
+          logger.log(`Track ${trackId} found at index ${trackIndex} in tracks array`);
+          logger.log(`Tracks array length: ${this.tracks.length}`);
+          logger.log(`Tracks array contents:`, this.tracks.map(t => ({ id: t.id, name: t.name, isDownloaded: t.isDownloaded })));
+
+          // Create gain node
+          track.gainNode = this.audioContext.createGain();
+          track.gainNode.gain.value = track.volume;
+          track.gainNode.connectedToMaster = true;
+
+          // Connect gain node to master gain immediately
+          track.gainNode.connect(this.masterGain);
+
+          // Update download status
+          const downloadStatus = trackElement.querySelector('.download-status');
+          if (downloadStatus) {
+            const duration = audioBuffer.duration;
+            const minutes = Math.floor(duration / 60);
+            const seconds = Math.floor(duration % 60);
+            downloadStatus.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            downloadStatus.style.color = '#64ffda';
+          }
+
+          // Update track visibility to ensure proper volume settings
+          this.updateTrackVisibility();
+
+                    // Generate waveform
+          this.generateWaveform(track, trackData.color);
+
+          // Hide loading overlay and show waveform
+          this.hideTrackLoadingOverlay(trackId);
+
+          // Enable track controls
+          this.enableTrackControls(trackId);
+
+          // Set buffer for scatter effect if it's active
+          if (this.effects.scatter.active && this.effects.scatter.node) {
+            this.effects.scatter.node.setBuffer(audioBuffer);
+          }
+
+          // Set buffer for all tracks to scatter effect
+          if (this.effects.scatter.node) {
+            this.effects.scatter.node.setBuffer(audioBuffer);
+          }
+
+          logger.log(`Track ${trackData.name} loaded successfully:`, track);
+
+                    // Update play button state after each track download
+          this.updatePlayButtonState();
+
+        } catch (error) {
+          logger.log(`Failed to load track ${trackData.name}:`, error);
+          logger.log(`Track file path: ${trackData.file}`);
+          logger.log(`Track index: ${index}`);
+          logger.log(`Track element:`, trackElement);
+
+          const downloadStatus = trackElement.querySelector('.download-status');
+          if (downloadStatus) {
+            downloadStatus.textContent = 'Download failed';
+            downloadStatus.style.color = '#ff6b6b';
+          }
+          this.updateTrackLoadingProgress(trackId, 0, 'Error loading track');
+
+          // Re-throw the error so it can be caught by the caller
+          throw error;
+        }
+      }
+
+      updateTrackLoadingProgress(trackId, progress, text) {
+        const progressFill = document.getElementById(`progress-${trackId}`);
+        const progressText = document.getElementById(`progress-text-${trackId}`);
+        const loadingText = document.querySelector(`#loading-${trackId} .loading-text`);
+
+        if (progressFill) progressFill.style.width = `${progress}%`;
+        if (progressText) progressText.textContent = `${progress}%`;
+        if (loadingText) loadingText.textContent = text;
+      }
+
+      hideTrackLoadingOverlay(trackId) {
+        const loadingOverlay = document.getElementById(`loading-${trackId}`);
+        const canvas = document.querySelector(`[data-track-id="${trackId}"] .waveform-canvas`);
+
+        if (loadingOverlay) {
+          loadingOverlay.style.display = 'none';
+        }
+        if (canvas) {
+          canvas.style.display = 'block';
+        }
+      }
+
+      enableTrackControls(trackId) {
+        logger.log(`enableTrackControls called for ${trackId}`);
+        const trackElement = document.querySelector(`[data-track-id="${trackId}"]`);
+        if (trackElement) {
+          const muteBtn = trackElement.querySelector('[data-action="mute"]');
+          const soloBtn = trackElement.querySelector('[data-action="solo"]');
+          const volumeSlider = trackElement.querySelector('.track-volume');
+
+          logger.log(`Found controls for ${trackId}:`, { muteBtn: !!muteBtn, soloBtn: !!soloBtn, volumeSlider: !!volumeSlider });
+
+          if (muteBtn) muteBtn.disabled = false;
+          if (soloBtn) soloBtn.disabled = false;
+          if (volumeSlider) volumeSlider.disabled = false;
+
+          // Add event listeners for this track
+          this.setupTrackEventListenersForTrack(trackId);
+
+          logger.log(`Controls enabled for ${trackId}`);
+        } else {
+          logger.log(`Track element not found for ${trackId}`);
+        }
+      }
+
+      setupTrackEventListenersForTrack(trackId) {
+        const track = this.tracks.find(t => t.id === trackId);
+        if (!track || !track.element) return;
+
+        const element = track.element;
+
+        // Mute button
+        const muteBtn = element.querySelector('[data-action="mute"]');
+        if (muteBtn) {
+          muteBtn.addEventListener('click', () => {
+            this.toggleMute(track);
+          });
+        }
+
+        // Solo button
+        const soloBtn = element.querySelector('[data-action="solo"]');
+        if (soloBtn) {
+          soloBtn.addEventListener('click', () => {
+            this.toggleSolo(track);
+          });
+        }
+
+        // Volume slider
+        const volumeSlider = element.querySelector('.track-volume');
+        if (volumeSlider) {
+          volumeSlider.addEventListener('input', (e) => {
+            this.setTrackVolume(track, e.target.value / 100);
+          });
+
+          // Add sticky positions for track volume slider
+          volumeSlider.addEventListener('change', (e) => {
+            const value = parseInt(e.target.value);
+            const stickyPositions = [0, 25, 50, 75, 100];
+            const closest = stickyPositions.reduce((prev, curr) => {
+              return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+            });
+
+            if (Math.abs(closest - value) <= 5) { // 5% tolerance
+              e.target.value = closest;
+              this.setTrackVolume(track, closest / 100);
+            }
+          });
+        }
+
+        // Waveform click
+        const wf = element.querySelector('.track-waveform');
+        if (wf) {
+          // Click & drag seek on waveform (mobile-friendly)
+          let seeking = false;
+          let lastClickSeekTime = 0;
+
+          // Store reference to 'this' for use in event handlers
+          const self = this;
+
+          const seekEvent = (event) => {
+            const now = Date.now();
+            // Prevent rapid seeking (debounce)
+            if (now - lastClickSeekTime < 100) {
+              return;
+            }
+            lastClickSeekTime = now;
+
+            const clientX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
+            const rect = wf.getBoundingClientRect();
+            const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+            const percentage = x / rect.width;
+
+            // Use the main duration for consistency
+            const seekTime = percentage * self.duration;
+
+            logger.log(`Waveform seek: x=${x}, width=${rect.width}, percentage=${(percentage*100).toFixed(1)}%, time=${seekTime.toFixed(2)}s`);
+            logger.log(`Current time before waveform seek: ${self.currentTime}s, duration: ${self.duration}s`);
+
+            self.seekToTime(seekTime);
+          };
+
+          // Use mousedown for immediate seeking, remove click to avoid double events
+          wf.addEventListener('mousedown', (e) => {
+            seeking = true;
+            seekEvent(e);
+          });
+
+          // Throttle mousemove to prevent excessive seeking during drag
+          let lastSeekTime = 0;
+          wf.addEventListener('mousemove', (e) => {
+            if (seeking) {
+              const now = Date.now();
+              if (now - lastSeekTime > 50) { // Only seek every 50ms during drag
+                seekEvent(e);
+                lastSeekTime = now;
+              }
+            }
+          });
+          wf.addEventListener('mouseup', () => { seeking = false; });
+          wf.addEventListener('mouseleave', () => { seeking = false; });
+
+          // Touch events for mobile
+          wf.addEventListener('touchstart', (e) => {
+            seeking = true;
+            seekEvent(e);
+          }, { passive: true });
+
+          // Throttle touchmove as well
+          let lastTouchSeekTime = 0;
+          wf.addEventListener('touchmove', (e) => {
+            if (seeking) {
+              const now = Date.now();
+              if (now - lastTouchSeekTime > 50) { // Only seek every 50ms during touch drag
+                seekEvent(e);
+                lastTouchSeekTime = now;
+              }
+            }
+          }, { passive: true });
+          wf.addEventListener('touchend', () => { seeking = false; });
+        }
+
+        logger.log(`Event listeners set up for track ${trackId}`);
+      }
+
+      updateTrackControls(trackId, enabled) {
+        if (enabled) {
+          this.enableTrackControls(trackId);
+        }
+      }
+
+                  updatePlayButtonState() {
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        const stopBtn = document.getElementById('stop');
+
+        const hasDownloadedTracks = this.tracks.some(track => track.isDownloaded);
+
+        logger.log(`updatePlayButtonState: hasDownloadedTracks=${hasDownloadedTracks}, total tracks=${this.tracks.length}`);
+        this.tracks.forEach(track => {
+          logger.log(`Track ${track.id}: isDownloaded=${track.isDownloaded}, hasAudioBuffer=${!!track.audioBuffer}`);
+        });
+
+        if (playBtn) playBtn.disabled = !hasDownloadedTracks;
+        if (pauseBtn) pauseBtn.disabled = !hasDownloadedTracks;
+        if (stopBtn) stopBtn.disabled = !hasDownloadedTracks;
+
+        // Update visual state
+        if (!hasDownloadedTracks) {
+          playBtn?.classList.add('disabled');
+          pauseBtn?.classList.add('disabled');
+          stopBtn?.classList.add('disabled');
+          logger.log('Play controls disabled - no downloaded tracks');
+        } else {
+          playBtn?.classList.remove('disabled');
+          pauseBtn?.classList.remove('disabled');
+          stopBtn?.classList.remove('disabled');
+          logger.log('Play controls enabled - tracks available');
+        }
+      }
+
+      // Audio caching methods
+      async getCachedAudio(url) {
+        const cacheKey = this.generateCacheKey(url);
+        const cached = this.audioCache.get(cacheKey);
+
+        if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
+          logger.log(`Audio cache hit for: ${url}`);
+          return cached.arrayBuffer;
+        }
+
+        // Check IndexedDB for persistent cache
+        const indexedDBCache = await this.getIndexedDBCache(url);
+        if (indexedDBCache) {
+          logger.log(`IndexedDB cache hit for: ${url}`);
+          this.audioCache.set(cacheKey, {
+            arrayBuffer: indexedDBCache,
+            timestamp: Date.now()
+          });
+          return indexedDBCache;
+        }
+
+        logger.log(`Audio cache miss for: ${url}`);
+        return null;
+      }
+
+      async setCachedAudio(url, arrayBuffer) {
+        const cacheKey = this.generateCacheKey(url);
+
+        // Store in memory cache
+        this.audioCache.set(cacheKey, {
+          arrayBuffer: arrayBuffer,
+          timestamp: Date.now()
+        });
+
+        // Store in IndexedDB for persistence
+        await this.setIndexedDBCache(url, arrayBuffer);
+
+        logger.log(`Audio cached for: ${url}`);
+      }
+
+      generateCacheKey(url) {
+        // Create a simple hash for the URL
+        let hash = 0;
+        for (let i = 0; i < url.length; i++) {
+          const char = url.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash; // Convert to 32-bit integer
+        }
+        return `audio_${Math.abs(hash)}`;
+      }
+
+      async getIndexedDBCache(url) {
+        return new Promise((resolve) => {
+          if (!('indexedDB' in window)) {
+            resolve(null);
+            return;
+          }
+
+          const request = indexedDB.open('AudioCache', 1);
+
+          request.onerror = () => resolve(null);
+
+          request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(['audio'], 'readonly');
+            const store = transaction.objectStore('audio');
+            const getRequest = store.get(url);
+
+            getRequest.onsuccess = () => {
+              if (getRequest.result) {
+                resolve(getRequest.result.arrayBuffer);
+              } else {
+                resolve(null);
+              }
+            };
+
+            getRequest.onerror = () => resolve(null);
+          };
+
+          request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('audio')) {
+              db.createObjectStore('audio', { keyPath: 'url' });
+            }
+          };
+        });
+      }
+
+      async setIndexedDBCache(url, arrayBuffer) {
+        return new Promise((resolve) => {
+          if (!('indexedDB' in window)) {
+            resolve();
+            return;
+          }
+
+          const request = indexedDB.open('AudioCache', 1);
+
+          request.onerror = () => resolve();
+
+          request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(['audio'], 'readwrite');
+            const store = transaction.objectStore('audio');
+
+            const putRequest = store.put({
+              url: url,
+              arrayBuffer: arrayBuffer,
+              timestamp: Date.now()
+            });
+
+            putRequest.onsuccess = () => resolve();
+            putRequest.onerror = () => resolve();
+          };
+
+          request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('audio')) {
+              db.createObjectStore('audio', { keyPath: 'url' });
+            }
+          };
+        });
+      }
+
+      async clearAudioCache() {
+        // Clear memory cache
+        this.audioCache.clear();
+
+        // Clear IndexedDB cache
+        if ('indexedDB' in window) {
+          const request = indexedDB.deleteDatabase('AudioCache');
+          request.onsuccess = () => {
+            logger.log('Audio cache cleared');
+            // Recreate the database
+            indexedDB.open('AudioCache', 1);
+          };
+        }
+
+        // Update cache status
+        this.updateCacheStatus();
+      }
+
+      updateCacheStatus() {
+        const cacheStatus = document.getElementById('cacheStatus');
+        if (cacheStatus) {
+          const memoryCacheSize = this.audioCache.size;
+          const indicator = memoryCacheSize > 0 ? '🟢' : '🟡';
+          const status = memoryCacheSize > 0 ? `Cache enabled (${memoryCacheSize} tracks)` : 'Cache ready';
+          cacheStatus.innerHTML = `<span class="cache-indicator">${indicator}</span> ${status}`;
+        }
+      }
+
+      async showCacheInfo() {
+        const memoryCacheSize = this.audioCache.size;
+        let indexedDBSize = 0;
+
+        // Get IndexedDB cache size
+        if ('indexedDB' in window) {
+          try {
+            const request = indexedDB.open('AudioCache', 1);
+            request.onsuccess = (event) => {
+              const db = event.target.result;
+              const transaction = db.transaction(['audio'], 'readonly');
+              const store = transaction.objectStore('audio');
+              const countRequest = store.count();
+
+              countRequest.onsuccess = () => {
+                indexedDBSize = countRequest.result;
+                this.displayCacheInfo(memoryCacheSize, indexedDBSize);
+              };
+            };
+          } catch (e) {
+            logger.error('Error getting cache info:', e);
+          }
+        }
+
+        this.displayCacheInfo(memoryCacheSize, indexedDBSize);
+      }
+
+      displayCacheInfo(memorySize, indexedDBSize) {
+        const totalSize = memorySize + indexedDBSize;
+        const message = `Audio Cache Info:\n\n` +
+                       `Memory Cache: ${memorySize} tracks\n` +
+                       `Persistent Cache: ${indexedDBSize} tracks\n` +
+                       `Total Cached: ${totalSize} tracks\n\n` +
+                       `Cache Expiry: 30 minutes\n` +
+                       `Estimated Savings: ${totalSize * 2}MB+`;
+
+        alert(message);
+      }
+
+      async registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+          try {
+            const registration = await navigator.serviceWorker.register('./20250821113700_suno_multitrack_example/sw.js');
+            logger.log('Service Worker registered successfully:', registration);
+
+            // Update cache status to show service worker is active
+            const cacheStatus = document.getElementById('cacheStatus');
+            if (cacheStatus) {
+              const indicator = '🟢';
+              const status = 'Cache enabled + Service Worker';
+              cacheStatus.innerHTML = `<span class="cache-indicator">${indicator}</span> ${status}`;
+            }
+          } catch (error) {
+            logger.log('Service Worker registration failed:', error);
+          }
+                }
+      }
+
+      updateAudioReadyState() {
+        // Update UI to show audio is ready
+        const playBtn = document.getElementById('play');
+        if (playBtn) {
+          playBtn.classList.add('audio-ready');
+          logger.log('Audio ready state updated');
+        }
+      }
+
+      setKrazyLevel(level) {
+        logger.log(`Setting Krazy level to: ${level}`);
+
+        // Apply krazy level to all active effects
+        Object.keys(this.effects).forEach(effectType => {
+          const effect = this.effects[effectType];
+          if (effect.active && effect.node && effect.node.setKrazyLevel) {
+            try {
+              effect.node.setKrazyLevel(level);
+              logger.log(`Applied Krazy level ${level} to ${effectType} effect`);
+            } catch (error) {
+              logger.error(`Failed to apply Krazy level to ${effectType}:`, error);
+            }
+          }
+        });
       }
 
             generateWaveform(track, color) {
@@ -1229,6 +4164,9 @@
         this.tracks.forEach(track => {
           const element = track.element;
 
+          // Skip tracks that aren't downloaded yet
+          if (!track.isDownloaded) return;
+
           // Mute button
           element.querySelector('[data-action="mute"]').addEventListener('click', () => {
             this.toggleMute(track);
@@ -1244,17 +4182,49 @@
             this.setTrackVolume(track, e.target.value / 100);
           });
 
+          // Add sticky positions for track volume slider
+          element.querySelector('.track-volume').addEventListener('change', (e) => {
+            const value = parseInt(e.target.value);
+            const stickyPositions = [0, 25, 50, 75, 100];
+            const closest = stickyPositions.reduce((prev, curr) => {
+              return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+            });
+
+            if (Math.abs(closest - value) <= 5) { // 5% tolerance
+              e.target.value = closest;
+              this.setTrackVolume(track, closest / 100);
+            }
+          });
+
           // Waveform click
           const wf = element.querySelector('.track-waveform');
           // Click & drag seek on waveform (mobile-friendly)
           let seeking = false;
+          let lastClickSeekTime = 0;
+
+          // Store reference to 'this' for use in event handlers
+          const self = this;
+
           const seekEvent = (event) => {
+            const now = Date.now();
+            // Prevent rapid seeking (debounce)
+            if (now - lastClickSeekTime < 100) {
+              return;
+            }
+            lastClickSeekTime = now;
+
             const clientX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
             const rect = wf.getBoundingClientRect();
             const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
             const percentage = x / rect.width;
-            const seekTime = percentage * (this.duration || track.audioBuffer.duration);
-            this.seekToTime(seekTime);
+
+            // Use the main duration for consistency
+            const seekTime = percentage * self.duration;
+
+            logger.log(`Waveform seek: x=${x}, width=${rect.width}, percentage=${(percentage*100).toFixed(1)}%, time=${seekTime.toFixed(2)}s`);
+            logger.log(`Current time before waveform seek: ${self.currentTime}s, duration: ${self.duration}s`);
+
+            self.seekToTime(seekTime);
           };
 
           // Use mousedown for immediate seeking, remove click to avoid double events
@@ -1326,29 +4296,40 @@
         this.updateTrackVisibility();
       }
 
-      updateTrackVisibility() {
+                  updateTrackVisibility() {
+        logger.log('updateTrackVisibility called');
         this.tracks.forEach(track => {
+          // Only update tracks that have gain nodes
+          if (!track.gainNode) return;
+
+          let newVolume = 0;
           if (this.soloedTracks.size > 0) {
             // Some tracks are soloed
             if (track.isSoloed) {
-              track.gainNode.gain.value = track.volume;
+              newVolume = track.volume;
             } else {
-              track.gainNode.gain.value = 0;
+              newVolume = 0;
             }
           } else {
             // No solo tracks, respect mute state
             if (track.isMuted) {
-              track.gainNode.gain.value = 0;
+              newVolume = 0;
             } else {
-              track.gainNode.gain.value = track.volume;
+              newVolume = track.volume;
             }
           }
+
+          track.gainNode.gain.value = newVolume;
+          logger.log(`Track ${track.id} volume set to ${newVolume} (original: ${track.volume}, muted: ${track.isMuted}, soloed: ${track.isSoloed})`);
         });
       }
 
       setTrackVolume(track, volume) {
         track.volume = volume;
-        console.log(`Setting track ${track.id} volume to ${volume}`);
+        logger.log(`Setting track ${track.id} volume to ${volume}`);
+
+        // Only update if gain node exists
+        if (!track.gainNode) return;
 
         if (this.soloedTracks.size > 0) {
           // Some tracks are soloed
@@ -1369,81 +4350,243 @@
 
 
 
-                        seekToTime(time) {
+                              seekToTime(time) {
         const seekTime = Math.max(0, Math.min(time, this.duration));
 
         // Prevent seeking to the same time multiple times
         if (Math.abs(this.currentTime - seekTime) < 0.1) {
-          return;
-        }
+                  logger.log(`Seek skipped: too close to current time (${this.currentTime}s -> ${seekTime}s)`);
+        return;
+      }
 
-        console.log(`Seeking to time: ${seekTime}s`);
+      logger.log(`Seeking to time: ${seekTime}s (was: ${this.currentTime}s)`);
 
         // Update current time
         this.currentTime = seekTime;
 
-        if (this.isPlaying) {
-          // Restart playback from that position
-          this.restartPlayback();
-        }
-
-        // Always update progress and waveform playheads
+        // Always update progress and waveform playheads immediately
         this.updateProgress();
         this.updateWaveformPlayheads();
-      }
 
-                        play() {
-        console.log('Play method called');
-        if (!this.audioContext || this.tracks.length === 0) {
-          console.log('Cannot play: audioContext or tracks not ready');
-          return;
-        }
-
-        console.log('Audio context state:', this.audioContext.state);
-        if (this.audioContext.state === 'suspended') {
-          console.log('Resuming audio context...');
+        if (this.isPlaying) {
+          // Ensure audio context is running
+          if (this.audioContext && this.audioContext.state === 'suspended') {
+                      logger.log('Audio context suspended, resuming...');
           this.audioContext.resume();
         }
 
-        this.isPlaying = true;
-        document.getElementById('playBtn').classList.add('play');
-        document.getElementById('pauseBtn').classList.remove('play');
+        logger.log('Restarting playback after seek...');
 
-        console.log(`Starting ${this.tracks.length} tracks from time ${this.currentTime}`);
+          // Stop scatter effect temporarily during seek
+          if (this.effects.scatter.active && this.effects.scatter.node) {
+            this.effects.scatter.node.stopScatter();
+          }
 
-        this.tracks.forEach((track, index) => {
-          console.log(`Starting track ${index}: ${track.id}`);
+          // Stop current progress update
+          this.stopProgressUpdate();
+
+          // Small delay to ensure UI updates before restarting audio
+          setTimeout(() => {
+            try {
+              this.restartPlayback();
+
+              // Restart progress update with new reference point
+              this.startProgressUpdate();
+
+              // Restart scatter effect after audio restart
+              setTimeout(() => {
+                if (this.effects.scatter.active && this.effects.scatter.node) {
+                  this.effects.scatter.node.startScatter();
+                }
+              }, 100);
+            } catch (error) {
+              logger.error('Error during seek restart:', error);
+              // Fallback: try to play again
+              setTimeout(() => {
+                try {
+                  this.restartPlayback();
+                  this.startProgressUpdate();
+                } catch (e) {
+                  logger.error('Fallback restart also failed:', e);
+                }
+              }, 100);
+            }
+          }, 50);
+        } else {
+          logger.log('Not playing, only updating UI');
+        }
+      }
+
+                        async play() {
+        logger.log('Play method called');
+        if (!this.audioContext || this.tracks.length === 0) {
+          logger.log('Cannot play: audioContext or tracks not ready');
+          return;
+        }
+
+        logger.log('Audio context state:', this.audioContext.state);
+
+        // iOS Safari audio context handling
+        if (this.audioContext.state === 'suspended') {
+          logger.log('Audio context suspended, attempting to resume...');
+          try {
+            await this.audioContext.resume();
+            logger.log('Audio context resumed successfully, state:', this.audioContext.state);
+          } catch (error) {
+            logger.error('Failed to resume audio context:', error);
+            // Show user message for iOS
+            alert('Please tap the screen to enable audio playback (iOS requirement)');
+            return;
+          }
+        }
+
+        // Check if audio context is muted
+        if (this.audioContext.state === 'running') {
+          logger.log('Audio context is running, checking for mute state...');
+          // Check if the destination is muted
+          const destination = this.audioContext.destination;
+          logger.log('Audio destination muted:', destination.muted);
+          logger.log('Audio destination channelCount:', destination.channelCount);
+          logger.log('Audio destination sampleRate:', destination.sampleRate);
+        }
+
+        // Additional iOS check
+        if (this.audioContext.state !== 'running') {
+          logger.log('Audio context not running, current state:', this.audioContext.state);
+          alert('Audio not ready. Please tap the screen to enable audio playback.');
+          return;
+        }
+
+                this.isPlaying = true;
+                logger.log('isPlaying set to true');
+
+        // Update simple display
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        if (playBtn) playBtn.classList.add('selected');
+        if (pauseBtn) pauseBtn.classList.remove('selected');
+
+                // Filter only downloaded tracks
+        const downloadedTracks = this.tracks.filter(track => track.isDownloaded);
+
+        if (downloadedTracks.length === 0) {
+          alert('No tracks downloaded yet. Please download tracks first.');
+          this.isPlaying = false;
+          return;
+        }
+
+        downloadedTracks.forEach((track, index) => {
+          logger.log(`Processing track ${index}:`, {
+            id: track.id,
+            name: track.name,
+            hasGainNode: !!track.gainNode,
+            hasAudioBuffer: !!track.audioBuffer,
+            gainNodeConnected: track.gainNode?.connectedToMaster,
+            volume: track.volume,
+            isMuted: track.isMuted
+          });
 
           if (track.source) {
             try {
               track.source.stop();
             } catch (e) {
-              console.log('Track source already stopped');
+              logger.log('Track source already stopped');
             }
+          }
+
+          if (!track.gainNode) {
+            logger.error(`Track ${index} has no gain node!`);
+            return;
+          }
+
+          if (!track.audioBuffer) {
+            logger.error(`Track ${index} has no audio buffer!`);
+            return;
           }
 
           track.source = this.audioContext.createBufferSource();
           track.source.buffer = track.audioBuffer;
           track.source.connect(track.gainNode);
-          // ensure connection
-          try { track.gainNode.disconnect(); } catch (_) {}
-          track.gainNode.connect(this.masterGain);
+
+          // Set onended handler to detect when source ends
+          track.source.onended = () => {
+            logger.log(`Track ${index} source ended naturally`);
+          };
+
+          // Keep a reference to prevent garbage collection
+          logger.log(`Track ${index} source created and connected:`, {
+            source: track.source,
+            buffer: track.source.buffer,
+            gainNode: track.gainNode
+          });
+
+          // Ensure gain node is connected to master gain (only if not already connected)
+          if (track.gainNode && !track.gainNode.connectedToMaster) {
+            track.gainNode.connect(this.masterGain);
+            track.gainNode.connectedToMaster = true;
+            logger.log(`Track ${index} gain node connected to master`);
+          }
 
           try {
             // Start each buffer at the same offset to keep them aligned
             const offset = Math.min(this.currentTime, track.audioBuffer.duration - 0.001);
+            logger.log(`Track ${index} starting with offset: ${offset}, currentTime: ${this.currentTime}, bufferDuration: ${track.audioBuffer.duration}`);
             track.source.start(0, offset);
-            console.log(`Track ${index} started successfully`);
-          } catch (e) {
-            console.error(`Failed to start track ${index}:`, e);
+            logger.log(`Track ${index} started successfully at offset ${offset}`);
+            logger.log(`Track ${index} source details:`, {
+              buffer: track.source.buffer,
+              bufferDuration: track.source.buffer?.duration,
+              startTime: track.source.startTime,
+              playbackRate: track.source.playbackRate
+            });
+
+            // Check if source is actually playing
+            setTimeout(() => {
+              if (track.source && track.source.playbackState === 'playing') {
+                logger.log(`Track ${index} is still playing after 100ms`);
+              } else {
+                logger.log(`Track ${index} stopped playing after 100ms`);
+              }
+            }, 100);
+          } catch (error) {
+            logger.log(`Failed to start track ${index}:`, error);
           }
         });
 
+        // Ensure track volumes are set correctly before playback
+        logger.log('About to call updateTrackVisibility, soloed tracks:', this.soloedTracks.size);
+        this.updateTrackVisibility();
+
+                // Debug audio context and master gain
+        logger.log('Audio context state after starting tracks:', this.audioContext.state);
+        logger.log('Master gain value:', this.masterGain.gain.value);
+        logger.log('Master gain connected:', this.masterGain.numberOfInputs, 'inputs,', this.masterGain.numberOfInputs, 'outputs');
+        logger.log('Current duration:', this.duration);
+        logger.log('Current time:', this.currentTime);
+
+        // Check if master gain is connected to destination
+        logger.log('Master gain connected to destination:', this.masterGain.connectedToDestination);
+        logger.log('Audio destination muted:', this.audioContext.destination.muted);
+
+        // Check volume slider value
+        const volumeSlider = document.getElementById('masterVolume');
+        if (volumeSlider) {
+          logger.log('Volume slider value:', volumeSlider.value);
+          logger.log('Volume slider calculated gain:', volumeSlider.value / 100);
+        }
+
+        // Test beep removed to avoid interference
+
         this.startProgressUpdate();
+
+        // Start scatter effect if active
+        if (this.effects.scatter.active && this.effects.scatter.node) {
+          this.effects.scatter.node.startScatter();
+        }
       }
 
       restartPlayback() {
-        console.log(`Restarting playback from time ${this.currentTime}s`);
+        logger.log(`Restarting playback from time ${this.currentTime}s`);
 
         // Stop current sources without resetting currentTime
         this.tracks.forEach(track => {
@@ -1451,34 +4594,43 @@
             try {
               track.source.stop();
             } catch (e) {
-              console.log('Track source already stopped');
+              logger.log('Track source already stopped');
             }
             track.source = null;
           }
         });
 
-        // Restart from current position
-        this.tracks.forEach((track, index) => {
-          console.log(`Restarting track ${index}: ${track.id} from ${this.currentTime}s`);
+        // Restart from current position (only downloaded tracks)
+        const downloadedTracks = this.tracks.filter(track => track.isDownloaded);
 
+        downloadedTracks.forEach((track, index) => {
           track.source = this.audioContext.createBufferSource();
           track.source.buffer = track.audioBuffer;
           track.source.connect(track.gainNode);
 
+          // Ensure gain node is connected to master gain (only if not already connected)
+          if (track.gainNode && !track.gainNode.connectedToMaster) {
+            track.gainNode.connect(this.masterGain);
+            track.gainNode.connectedToMaster = true;
+          }
+
           try {
             const offset = Math.min(this.currentTime, track.audioBuffer.duration - 0.001);
             track.source.start(0, offset);
-            console.log(`Track ${index} restarted successfully from ${offset}s`);
           } catch (e) {
-            console.error(`Failed to restart track ${index}:`, e);
+            logger.error(`Failed to restart track ${index}:`, e);
           }
         });
       }
 
-      pause() {
+            pause() {
         this.isPlaying = false;
-        document.getElementById('playBtn').classList.remove('play');
-        document.getElementById('pauseBtn').classList.add('play');
+
+        // Update simple display
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        if (playBtn) playBtn.classList.remove('selected');
+        if (pauseBtn) pauseBtn.classList.add('selected');
 
         this.tracks.forEach(track => {
           if (track.source) {
@@ -1488,13 +4640,22 @@
         });
 
         this.stopProgressUpdate();
+
+        // Stop scatter effect if active
+        if (this.effects.scatter.active && this.effects.scatter.node) {
+          this.effects.scatter.node.stopScatter();
+        }
       }
 
-      stop() {
+            stop() {
         this.isPlaying = false;
         this.currentTime = 0;
-        document.getElementById('playBtn').classList.remove('play');
-        document.getElementById('pauseBtn').classList.remove('play');
+
+        // Update simple display
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        if (playBtn) playBtn.classList.remove('selected');
+        if (pauseBtn) pauseBtn.classList.remove('selected');
 
         this.tracks.forEach(track => {
           if (track.source) {
@@ -1505,27 +4666,50 @@
 
         this.stopProgressUpdate();
         this.updateProgress();
+
+        // Stop scatter effect if active
+        if (this.effects.scatter.active && this.effects.scatter.node) {
+          this.effects.scatter.node.stopScatter();
+        }
       }
 
       startProgressUpdate() {
+        logger.log('startProgressUpdate called');
         // Reference point for sync
         const startRef = this.audioContext ? this.audioContext.currentTime - this.currentTime : 0;
+        logger.log(`Progress update started with startRef: ${startRef}, currentTime: ${this.currentTime}, duration: ${this.duration}`);
+        logger.log(`AudioContext currentTime: ${this.audioContext?.currentTime}`);
+
         const tick = () => {
-          if (!this.isPlaying) return;
+          if (!this.isPlaying) {
+            logger.log('Progress update stopped: not playing');
+            return;
+          }
           // Use AudioContext timebase for accuracy on mobile
           if (this.audioContext) {
-            this.currentTime = Math.max(0, this.audioContext.currentTime - startRef);
+            const newTime = Math.max(0, this.audioContext.currentTime - startRef);
+            if (newTime !== this.currentTime) {
+              logger.log(`Progress update: currentTime changed from ${this.currentTime} to ${newTime}`);
+              this.currentTime = newTime;
+            }
           } else {
             this.currentTime += 0.016;
           }
           if (this.currentTime >= this.duration) {
+            logger.log('Progress update stopped: reached end');
             this.stop();
             return;
           }
           this.updateProgress();
-          this.progressInterval = requestAnimationFrame(tick);
+          // Throttle progress updates to every 100ms to avoid excessive logging
+          setTimeout(() => {
+            if (this.isPlaying) {
+              this.progressInterval = requestAnimationFrame(tick);
+            }
+          }, 100);
         };
         this.progressInterval = requestAnimationFrame(tick);
+        logger.log('Progress update animation frame requested');
       }
 
       stopProgressUpdate() {
@@ -1536,34 +4720,87 @@
       }
 
       updateProgress() {
-        const percentage = (this.currentTime / this.duration) * 100;
-        document.getElementById('progressFill').style.width = `${percentage}%`;
-        document.getElementById('progressHandle').style.left = `${percentage}%`;
+        if (this.duration <= 0) return;
 
+        const percentage = (this.currentTime / this.duration) * 100;
+
+        // Update simple progress bar
+        const progressFill = document.getElementById('main-progress-fill');
+        const progressHandle = document.getElementById('main-progress-handle');
+        if (progressFill) {
+          progressFill.style.width = `${percentage}%`;
+          logger.log(`Progress bar updated: ${percentage.toFixed(1)}%`);
+        } else {
+          logger.error('Progress fill element not found!');
+        }
+        if (progressHandle) {
+          progressHandle.style.left = `${percentage}%`;
+        } else {
+          logger.error('Progress handle element not found!');
+        }
+
+        // Update simple time display
+        this.updateSimpleTimeDisplay();
+
+
+
+        // Update waveform playheads to sync with master progress
+        this.updateWaveformPlayheads();
+
+        // Update master waveform with current position
+        this.updateMasterWaveformPosition(percentage);
+
+        logger.log(`Progress updated: ${this.currentTime.toFixed(2)}s / ${this.duration.toFixed(2)}s (${percentage.toFixed(1)}%)`);
+      }
+
+      updateSimpleTimeDisplay() {
         const currentMinutes = Math.floor(this.currentTime / 60);
         const currentSeconds = Math.floor(this.currentTime % 60);
-        document.getElementById('currentTime').textContent =
-          `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
 
-        this.updateWaveformPlayheads();
+        // Update current time display only
+        const currentTimeElement = document.getElementById('currentTime');
+        if (currentTimeElement) {
+          currentTimeElement.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+          logger.log(`Time display updated: ${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`);
+        } else {
+          logger.error('Current time element not found!');
+        }
       }
 
       updateDuration() {
-        if (this.tracks.length > 0) {
-          this.duration = Math.max(...this.tracks.map(t => t.audioBuffer.duration));
+        // Only update duration if there are downloaded tracks
+        const downloadedTracks = this.tracks.filter(track => track.isDownloaded && track.audioBuffer);
+        logger.log('updateDuration called, downloaded tracks:', downloadedTracks.length);
+        logger.log('Track details:', downloadedTracks.map(t => ({
+          id: t.id,
+          name: t.name,
+          isDownloaded: t.isDownloaded,
+          hasAudioBuffer: !!t.audioBuffer,
+          bufferDuration: t.audioBuffer?.duration
+        })));
+
+        if (downloadedTracks.length > 0) {
+          this.duration = Math.max(...downloadedTracks.map(t => t.audioBuffer.duration));
           const totalMinutes = Math.floor(this.duration / 60);
           const totalSeconds = Math.floor(this.duration % 60);
-          document.getElementById('totalTime').textContent =
-            `${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
+
+          logger.log(`Duration updated: ${this.duration.toFixed(2)}s (${totalMinutes}:${totalSeconds.toString().padStart(2, '0')})`);
+
+                  } else {
+          this.duration = 0;
+          logger.log('No downloaded tracks available for duration calculation');
         }
       }
+
+
 
       seek(event) {
         const rect = event.currentTarget.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const percentage = x / rect.width;
         const seekTime = percentage * this.duration;
-        console.log(`Main progress bar seek: ${x}px, ${percentage * 100}%, time: ${seekTime}s`);
+        logger.log(`Main progress bar seek: x=${x}, width=${rect.width}, percentage=${(percentage*100).toFixed(1)}%, time=${seekTime.toFixed(2)}s`);
+        logger.log(`Current time before seek: ${this.currentTime}s, duration: ${this.duration}s`);
         this.seekToTime(seekTime);
       }
 
@@ -1593,7 +4830,7 @@
         };
         this.marks.push(mark);
         this.marks.sort((a, b) => a.time - b.time); // Keep marks sorted by time
-        console.log(`Added mark at ${this.formatTime(mark.time)}: ${mark.label}`);
+        logger.log(`Added mark at ${this.formatTime(mark.time)}: ${mark.label}`);
         this.displayMarks();
       }
 
@@ -1616,7 +4853,7 @@
 
         if (targetMark) {
           this.seekToTime(targetMark.time);
-          console.log(`Jumped to previous mark: ${targetMark.label} at ${this.formatTime(targetMark.time)}`);
+          logger.log(`Jumped to previous mark: ${targetMark.label} at ${this.formatTime(targetMark.time)}`);
         }
       }
 
@@ -1639,7 +4876,7 @@
 
         if (targetMark) {
           this.seekToTime(targetMark.time);
-          console.log(`Jumped to next mark: ${targetMark.label} at ${this.formatTime(targetMark.time)}`);
+          logger.log(`Jumped to next mark: ${targetMark.label} at ${this.formatTime(targetMark.time)}`);
         }
       }
 
@@ -1693,6 +4930,10 @@
           this.enableEffect(effectType);
           button.classList.add('active');
         }
+
+        // Debug: log effect state
+        logger.log(`${effectType} effect active:`, this.effects[effectType].active);
+        logger.log(`${effectType} effect node:`, this.effects[effectType].node);
       }
 
       enableEffect(effectType) {
@@ -1707,7 +4948,11 @@
         if (effect.node) {
           // Insert effect into audio chain
           this.insertEffectIntoChain(effectType);
-          console.log(`${effectType} effect enabled`);
+
+          // Ensure tracks are properly connected to master gain
+          this.ensureTracksConnectedToMaster();
+
+          logger.log(`${effectType} effect enabled`);
         }
       }
 
@@ -1726,7 +4971,7 @@
           effect.node = null;
         }
 
-        console.log(`${effectType} effect disabled`);
+        logger.log(`${effectType} effect disabled`);
       }
 
       disconnectEffectNodes(effectType, effectNode) {
@@ -1734,16 +4979,13 @@
           case 'reverb':
             if (effectNode.convolver) effectNode.convolver.disconnect();
             if (effectNode.gain) effectNode.gain.disconnect();
+            if (effectNode.highPass) effectNode.highPass.disconnect();
+            if (effectNode.distortion) effectNode.distortion.disconnect();
+            if (effectNode.lowPass) effectNode.lowPass.disconnect();
             break;
           case 'scatter':
-            if (effectNode.delays) {
-              effectNode.delays.forEach(({ delay, gain, pan }) => {
-                delay.disconnect();
-                gain.disconnect();
-                pan.disconnect();
-              });
-            }
             if (effectNode.main) effectNode.main.disconnect();
+            if (effectNode.gain) effectNode.gain.disconnect();
             break;
           case 'pitch':
             if (effectNode.delay) effectNode.delay.disconnect();
@@ -1753,14 +4995,16 @@
             if (effectNode.main) effectNode.main.disconnect();
             break;
           case 'ringmod':
-            if (effectNode.carriers) {
-              effectNode.carriers.forEach(({ carrier, carrierGain, pan }) => {
-                carrier.stop();
-                carrier.disconnect();
-                carrierGain.disconnect();
-                pan.disconnect();
-              });
-            }
+            if (effectNode.waveShaper) effectNode.waveShaper.disconnect();
+            if (effectNode.filter) effectNode.filter.disconnect();
+            if (effectNode.gain) effectNode.gain.disconnect();
+            if (effectNode.main) effectNode.main.disconnect();
+            break;
+          case 'noise':
+            if (effectNode.noise) effectNode.noise.disconnect();
+            if (effectNode.flanger) effectNode.flanger.disconnect();
+            if (effectNode.distortion) effectNode.distortion.disconnect();
+            if (effectNode.gain) effectNode.gain.disconnect();
             if (effectNode.main) effectNode.main.disconnect();
             break;
         }
@@ -1775,75 +5019,215 @@
           case 'pitch':
             return this.createPitchNode();
           case 'ringmod':
-            return this.createRingModNode();
+            return this.createBitcrusherNode();
+          case 'noise':
+            return this.createNoiseNode();
           default:
             return null;
         }
       }
 
-                  createReverbNode() {
-        // Create a convolution reverb using impulse response
+                        createReverbNode() {
+        // Create a Jamaica-style heavy reverb with distorted low ends
         const reverbNode = this.audioContext.createConvolver();
 
-        // Create a more realistic impulse response for heavy reverb
+        // Create a heavy, long impulse response for dub-style reverb
         const sampleRate = this.audioContext.sampleRate;
-        const length = sampleRate * 3; // 3 second reverb
+        const length = sampleRate * 4; // 4 second reverb for heavy effect
         const impulse = this.audioContext.createBuffer(2, length, sampleRate);
 
         for (let channel = 0; channel < 2; channel++) {
           const channelData = impulse.getChannelData(channel);
           for (let i = 0; i < length; i++) {
-            // Create a more natural decay curve
-            const decay = Math.exp(-i / (sampleRate * 0.2));
-            const noise = (Math.random() * 2 - 1) * 0.5;
-            channelData[i] = noise * decay;
+            // Create a heavy, slow decay curve with emphasis on low frequencies
+            const decay = Math.exp(-i / (sampleRate * 0.8)); // Slower decay
+            const noise = (Math.random() * 2 - 1) * 0.8; // Stronger noise
+
+            // Add low frequency emphasis for dub style
+            const lowFreqBoost = Math.exp(-i / (sampleRate * 0.1));
+            channelData[i] = noise * decay * (1 + lowFreqBoost * 0.5);
           }
         }
 
         reverbNode.buffer = impulse;
 
+        // Create distortion for low ends
+        const distortion = this.audioContext.createWaveShaper();
+        const curve = new Float32Array(4096);
+        for (let i = 0; i < 4096; i++) {
+          const x = (i * 2) / 4096 - 1;
+          curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * 3));
+        }
+        distortion.curve = curve;
+
+        // Create low-pass filter to focus distortion on low frequencies
+        const lowPass = this.audioContext.createBiquadFilter();
+        lowPass.type = 'lowpass';
+        lowPass.frequency.value = 200; // Focus on low frequencies
+        lowPass.Q.value = 1;
+
+        // Create high-pass filter for reverb
+        const highPass = this.audioContext.createBiquadFilter();
+        highPass.type = 'highpass';
+        highPass.frequency.value = 100; // Cut very low frequencies
+
         // Add a gain node for wet/dry mix
         const reverbGain = this.audioContext.createGain();
-        reverbGain.gain.value = 0.4; // 40% wet for more noticeable effect
+        reverbGain.gain.value = 0.5; // 50% wet for heavy effect
 
-        // Connect reverb chain to master gain
-        reverbNode.connect(reverbGain);
+        // Store krazy level for dynamic adjustment
+        let krazyLevel = 50;
+
+        // Set krazy level function
+        const setKrazyLevel = (level) => {
+          krazyLevel = Math.max(0, Math.min(100, level));
+
+          // Adjust reverb parameters based on krazy level
+          const decayMultiplier = 1 + (krazyLevel * 0.02); // 1x to 3x decay
+          const distortionAmount = krazyLevel * 0.01; // 0 to 1 distortion
+
+          // Update low-pass filter frequency based on krazy level
+          const baseFreq = 200;
+          const adjustedFreq = baseFreq + (krazyLevel * 3); // 200Hz to 500Hz
+          lowPass.frequency.value = Math.min(2000, adjustedFreq);
+
+          logger.log(`Reverb Krazy: decay=${decayMultiplier.toFixed(2)}x, distortion=${distortionAmount.toFixed(2)}, lowpass=${adjustedFreq.toFixed(0)}Hz`);
+        };
+
+        // Connect reverb chain: reverb -> high-pass -> distortion -> low-pass -> gain -> master
+        reverbNode.connect(highPass);
+        highPass.connect(distortion);
+        distortion.connect(lowPass);
+        lowPass.connect(reverbGain);
         reverbGain.connect(this.masterGain);
 
-        return { convolver: reverbNode, gain: reverbGain };
+        return {
+          convolver: reverbNode,
+          gain: reverbGain,
+          highPass: highPass,
+          distortion: distortion,
+          lowPass: lowPass,
+          setKrazyLevel
+        };
       }
 
-                  createScatterNode() {
-        // Create a granular synthesis effect with forward-backward playback
+                                          createScatterNode() {
+        // Create a scatter effect that receives master audio and creates reverse-forward playback
         const scatterNode = this.audioContext.createGain();
-        scatterNode.gain.value = 1;
+        scatterNode.gain.value = 0.4; // 40% wet
 
-        // Create multiple delay lines with different timing for scatter effect
-        const delays = [];
-        const delayTimes = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]; // Progressive delays
+        // Create a gain node for wet/dry mix
+        const gainNode = this.audioContext.createGain();
+        gainNode.gain.value = 1;
 
-        for (let i = 0; i < 8; i++) {
-          const delay = this.audioContext.createDelay(0.5); // 500ms max delay
-          const gain = this.audioContext.createGain();
-          const pan = this.audioContext.createStereoPanner();
+        // Connect scatter to master gain
+        scatterNode.connect(gainNode);
+        gainNode.connect(this.masterGain);
 
-          // Set progressive delay times for forward-backward effect
-          delay.delayTime.value = delayTimes[i];
-          gain.gain.value = 0.15 + (i * 0.05); // Progressive volume increase
+        // Store reference to current audio buffer for manipulation
+        let currentBuffer = null;
+        let scatterInterval = null;
+        let activeSources = [];
+        let krazyLevel = 50; // Default krazy level
 
-          // Pan delays across stereo field for spatial effect
-          pan.pan.value = (i / 7) * 2 - 1; // -1 to 1 stereo spread
+        // Function to create reverse-forward effect
+        const createScatterEffect = () => {
+          if (!currentBuffer || !this.isPlaying) return;
 
-          delay.connect(gain);
-          gain.connect(pan);
-          pan.connect(scatterNode);
-          delays.push({ delay, gain, pan });
+          try {
+            // Clear previous sources
+            activeSources.forEach(source => {
+              try { source.stop(); } catch (e) {}
+            });
+            activeSources = [];
+
+            // Calculate timing based on krazy level (0-100)
+            const baseDelay = 100 + (krazyLevel * 2); // 100ms to 300ms
+            const baseInterval = 400 + (krazyLevel * 3); // 400ms to 700ms
+
+            // Create forward buffer source
+            const forwardSource = this.audioContext.createBufferSource();
+            forwardSource.buffer = currentBuffer;
+            forwardSource.connect(scatterNode);
+            activeSources.push(forwardSource);
+
+            // Create reverse buffer source
+            const reverseSource = this.audioContext.createBufferSource();
+            reverseSource.buffer = this.createReverseBuffer(currentBuffer);
+            reverseSource.connect(scatterNode);
+            activeSources.push(reverseSource);
+
+            // Play forward then reverse with krazy-adjusted timing
+            forwardSource.start();
+            setTimeout(() => {
+              reverseSource.start();
+            }, baseDelay);
+
+            // Schedule next scatter effect with krazy-adjusted interval
+            scatterInterval = setTimeout(createScatterEffect, baseInterval + Math.random() * 200);
+          } catch (error) {
+            logger.error('Scatter effect error:', error);
+          }
+        };
+
+        // Start scatter effect
+        const startScatter = () => {
+          if (this.isPlaying && currentBuffer) {
+            createScatterEffect();
+          }
+        };
+
+        // Stop scatter effect
+        const stopScatter = () => {
+          if (scatterInterval) {
+            clearTimeout(scatterInterval);
+            scatterInterval = null;
+          }
+          // Stop all active sources
+          activeSources.forEach(source => {
+            try { source.stop(); } catch (e) {}
+          });
+          activeSources = [];
+        };
+
+        // Set krazy level
+        const setKrazyLevel = (level) => {
+          krazyLevel = Math.max(0, Math.min(100, level));
+        };
+
+        return {
+          main: scatterNode,
+          gain: gainNode,
+          startScatter,
+          stopScatter,
+          setKrazyLevel,
+          setBuffer: (buffer) => {
+            currentBuffer = buffer;
+            if (this.isPlaying) {
+              startScatter();
+            }
+          }
+        };
+      }
+
+      createReverseBuffer(originalBuffer) {
+        // Create a reversed version of the audio buffer
+        const reversedBuffer = this.audioContext.createBuffer(
+          originalBuffer.numberOfChannels,
+          originalBuffer.length,
+          originalBuffer.sampleRate
+        );
+
+        for (let channel = 0; channel < originalBuffer.numberOfChannels; channel++) {
+          const originalData = originalBuffer.getChannelData(channel);
+          const reversedData = reversedBuffer.getChannelData(channel);
+
+          for (let i = 0; i < originalBuffer.length; i++) {
+            reversedData[i] = originalData[originalBuffer.length - 1 - i];
+          }
         }
 
-        // Connect scatter output to master gain
-        scatterNode.connect(this.masterGain);
-
-        return { main: scatterNode, delays };
+        return reversedBuffer;
       }
 
             createPitchNode() {
@@ -1870,118 +5254,268 @@
         lfoGain.connect(delay.delayTime);
         lfo.start();
 
+        // Store krazy level for dynamic adjustment
+        let krazyLevel = 50;
+
+        // Set krazy level function
+        const setKrazyLevel = (level) => {
+          krazyLevel = Math.max(0, Math.min(100, level));
+
+          // Adjust pitch effect parameters based on krazy level
+          const baseDelay = 0.01; // 10ms base delay
+          const adjustedDelay = baseDelay + (krazyLevel * 0.0002); // 10ms to 30ms
+          delay.delayTime.value = adjustedDelay;
+
+          const baseLfoFreq = 2; // 2Hz base LFO
+          const adjustedLfoFreq = baseLfoFreq + (krazyLevel * 0.1); // 2Hz to 12Hz
+          lfo.frequency.value = adjustedLfoFreq;
+
+          const baseModDepth = 0.005; // 5ms base modulation depth
+          const adjustedModDepth = baseModDepth + (krazyLevel * 0.0001); // 5ms to 15ms
+          lfoGain.gain.value = adjustedModDepth;
+
+          logger.log(`Pitch Krazy: delay=${(adjustedDelay*1000).toFixed(1)}ms, lfo=${adjustedLfoFreq.toFixed(1)}Hz, mod=${(adjustedModDepth*1000).toFixed(1)}ms`);
+        };
+
         // Connect pitch output to master gain
         pitchNode.connect(this.masterGain);
 
-        return { main: pitchNode, delay, feedback, lfo, lfoGain };
+        return { main: pitchNode, delay, feedback, lfo, lfoGain, setKrazyLevel };
       }
 
-                  createRingModNode() {
-        // Create a heavy ring modulator with multiple carriers
-        const ringModNode = this.audioContext.createGain();
-        ringModNode.gain.value = 1.2; // Boost output for heavier effect
+                                    createBitcrusherNode() {
+        // Create a bitcrusher effect that processes master audio with 100% wet signal
+        const bitcrusherNode = this.audioContext.createGain();
+        bitcrusherNode.gain.value = 1; // 100% wet
 
-        // Create multiple carrier oscillators for more complex modulation
-        const carriers = [];
-        const frequencies = [30, 50, 80, 120]; // Multiple carrier frequencies
+        // Create a wave shaper for bit crushing effect
+        const waveShaper = this.audioContext.createWaveShaper();
+        const curveLength = 4096;
+        const curve = new Float32Array(curveLength);
 
-        frequencies.forEach((freq, index) => {
-          const carrier = this.audioContext.createOscillator();
-          const carrierGain = this.audioContext.createGain();
-          const pan = this.audioContext.createStereoPanner();
+        // Create bit crushing curve with krazy parameter
+        let bitDepth = 4; // 4-bit crushing (default)
+        let krazyLevel = 50; // Default krazy level
 
-          carrier.frequency.value = freq;
-          carrierGain.gain.value = 0.3 + (index * 0.1); // Progressive gain
+        const updateCurve = () => {
+          // Adjust bit depth based on krazy level (0-100)
+          const adjustedBitDepth = Math.max(1, Math.min(16, 16 - (krazyLevel * 0.12))); // 16-bit to 4-bit
+          bitDepth = Math.round(adjustedBitDepth);
 
-          // Pan carriers across stereo field
-          pan.pan.value = (index / (frequencies.length - 1)) * 2 - 1;
+          const levels = Math.pow(2, bitDepth);
+          const step = 2 / levels;
 
-          carrier.connect(carrierGain);
-          carrierGain.connect(pan);
-          pan.connect(ringModNode);
-          carriers.push({ carrier, carrierGain, pan });
-        });
-
-        // Start all carriers
-        carriers.forEach(({ carrier }) => carrier.start());
-
-        // Connect ring mod output to master gain
-        ringModNode.connect(this.masterGain);
-
-        return { main: ringModNode, carriers };
-      }
-
-                  insertEffectIntoChain(effectType) {
-        // Connect tracks through the effect without disconnecting existing connections
-        this.tracks.forEach(track => {
-          if (track.gainNode && track.source) {
-            const effect = this.effects[effectType];
-            if (effect && effect.node) {
-              if (effectType === 'reverb') {
-                // Reverb: connect to convolver
-                track.gainNode.connect(effect.node.convolver);
-              } else if (effectType === 'scatter') {
-                // Scatter: connect to each delay
-                effect.node.delays.forEach(({ delay }) => {
-                  track.gainNode.connect(delay);
-                });
-              } else if (effectType === 'pitch') {
-                // Pitch: connect to delay
-                track.gainNode.connect(effect.node.delay);
-              } else if (effectType === 'ringmod') {
-                // Ring mod: connect to main
-                track.gainNode.connect(effect.node.main);
-              }
-            }
+          for (let i = 0; i < curveLength; i++) {
+            const x = (i * 2) / curveLength - 1;
+            // Quantize the signal to create bit crushing effect
+            const quantized = Math.round(x / step) * step;
+            curve[i] = quantized;
           }
-        });
 
-        // Ensure tracks maintain connection to master gain
-        this.ensureTracksConnectedToMaster();
+          waveShaper.curve = curve;
+        };
 
-        console.log(`Effect ${effectType} inserted into audio chain`);
+        // Initialize curve
+        updateCurve();
+        waveShaper.oversample = '4x';
+
+        // Create a filter for additional digital distortion
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 4000; // Cut high frequencies for lo-fi effect
+        filter.Q.value = 0.5;
+
+        // Create a gain node for output
+        const bitcrusherGain = this.audioContext.createGain();
+        bitcrusherGain.gain.value = 1;
+
+        // Connect bitcrusher chain: input -> waveShaper -> filter -> gain -> master
+        waveShaper.connect(filter);
+        filter.connect(bitcrusherGain);
+        bitcrusherGain.connect(this.masterGain);
+
+        // Set krazy level function
+        const setKrazyLevel = (level) => {
+          krazyLevel = Math.max(0, Math.min(100, level));
+          updateCurve();
+
+          // Also adjust filter frequency based on krazy level
+          const baseFreq = 4000;
+          const adjustedFreq = baseFreq - (krazyLevel * 20); // 4000Hz to 2000Hz
+          filter.frequency.value = Math.max(500, adjustedFreq);
+        };
+
+        return {
+          main: bitcrusherNode,
+          waveShaper: waveShaper,
+          filter: filter,
+          gain: bitcrusherGain,
+          setKrazyLevel,
+          setBitDepth: (depth) => {
+            bitDepth = Math.max(1, Math.min(16, depth));
+            updateCurve();
+          }
+        };
+      }
+
+      createNoiseNode() {
+        // Create noise generator
+        const noise = this.audioContext.createOscillator();
+        noise.type = 'sawtooth';
+        noise.frequency.value = 100;
+
+        // Create flanger effect
+        const flanger = this.audioContext.createDelay();
+        flanger.delayTime.value = 0.01;
+
+        // Create LFO for flanger
+        const lfo = this.audioContext.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.5;
+
+        // Create LFO gain for flanger depth
+        const lfoGain = this.audioContext.createGain();
+        lfoGain.gain.value = 0.005;
+
+        // Create distortion for heavy effect
+        const distortion = this.audioContext.createWaveShaper();
+        const curve = new Float32Array(4096);
+        for (let i = 0; i < 4096; i++) {
+          const x = (i * 2) / 4096 - 1;
+          curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * 10));
+        }
+        distortion.curve = curve;
+        distortion.oversample = '4x';
+
+        // Create gain node for output
+        const noiseGain = this.audioContext.createGain();
+        noiseGain.gain.value = 0.3;
+
+        // Connect flanger chain: LFO -> LFO gain -> flanger delay
+        lfo.connect(lfoGain);
+        lfoGain.connect(flanger.delayTime);
+
+        // Connect noise chain: noise -> flanger -> distortion -> gain -> master
+        noise.connect(flanger);
+        flanger.connect(distortion);
+        distortion.connect(noiseGain);
+        noiseGain.connect(this.masterGain);
+
+        // Start oscillators
+        noise.start();
+        lfo.start();
+
+        // Set krazy level function
+        const setKrazyLevel = (level) => {
+          const krazyLevel = Math.max(0, Math.min(100, level));
+          // Adjust flanger depth and distortion intensity based on krazy level
+          lfoGain.gain.value = 0.005 + (krazyLevel * 0.01);
+          noiseGain.gain.value = 0.3 + (krazyLevel * 0.002);
+        };
+
+        return {
+          main: noise,
+          noise: noise,
+          flanger: flanger,
+          distortion: distortion,
+          gain: noiseGain,
+          lfo: lfo,
+          lfoGain: lfoGain,
+          setKrazyLevel
+        };
+      }
+
+      insertEffectIntoChain(effectType) {
+        const effect = this.effects[effectType];
+        if (!effect || !effect.node) return;
+
+        // Disconnect masterGain from destination temporarily
+        this.masterGain.disconnect();
+
+        if (effectType === 'reverb') {
+          // Reverb: masterGain -> reverb -> destination
+          this.masterGain.connect(effect.node.convolver);
+          effect.node.convolver.connect(this.audioContext.destination);
+        } else if (effectType === 'scatter') {
+          // Scatter: masterGain -> scatter -> destination
+          this.masterGain.connect(effect.node.main);
+          effect.node.main.connect(this.audioContext.destination);
+          if (effect.node.startScatter) {
+            effect.node.startScatter();
+          }
+        } else if (effectType === 'pitch') {
+          // Pitch: masterGain -> pitch -> destination
+          this.masterGain.connect(effect.node.delay);
+          effect.node.delay.connect(this.audioContext.destination);
+        } else if (effectType === 'ringmod') {
+          // Ring mod: masterGain -> ringmod -> destination
+          this.masterGain.connect(effect.node.main);
+          effect.node.main.connect(this.audioContext.destination);
+        } else if (effectType === 'noise') {
+          // Noise: masterGain -> noise -> destination
+          this.masterGain.connect(effect.node.main);
+          effect.node.main.connect(this.audioContext.destination);
+          if (effect.node.startNoise) {
+            effect.node.startNoise();
+          }
+        }
+
+        logger.log(`Effect ${effectType} inserted into audio chain`);
       }
 
       ensureTracksConnectedToMaster() {
-        // Check if tracks are connected to master gain, if not, connect them
+        // Ensure all tracks are connected to master gain
         this.tracks.forEach(track => {
-          if (track.gainNode) {
-            // Check if track is already connected to master gain
-            let connectedToMaster = false;
-            try {
-              // This is a simple check - in a real implementation you'd need to track connections
-              // For now, we'll always ensure the connection
-              track.gainNode.connect(this.masterGain);
-              connectedToMaster = true;
-            } catch (e) {
-              // If already connected, this will throw an error, which is fine
-              connectedToMaster = true;
-            }
+          if (track.gainNode && !track.gainNode.connectedToMaster) {
+            track.gainNode.connect(this.masterGain);
+            track.gainNode.connectedToMaster = true;
           }
         });
+
+        // Ensure master gain is connected to destination (either directly or through effects)
+        const hasActiveEffects = Object.values(this.effects).some(effect => effect.active);
+
+        if (!hasActiveEffects) {
+          // No effects active, connect normally: masterGain -> stereoPanner -> destination
+          this.masterGain.disconnect();
+          this.masterGain.connect(this.stereoPanner);
+          this.stereoPanner.connect(this.audioContext.destination);
+          logger.log('Audio chain restored to normal: masterGain -> stereoPanner -> destination');
+        }
       }
 
       removeEffectFromChain(effectType) {
-        // Remove only the specific effect connections
-        this.tracks.forEach(track => {
-          if (track.gainNode) {
-            const effect = this.effects[effectType];
-            if (effect && effect.node) {
-              if (effectType === 'reverb') {
-                track.gainNode.disconnect(effect.node.convolver);
-              } else if (effectType === 'scatter') {
-                effect.node.delays.forEach(({ delay }) => {
-                  track.gainNode.disconnect(delay);
-                });
-              } else if (effectType === 'pitch') {
-                track.gainNode.disconnect(effect.node.delay);
-              } else if (effectType === 'ringmod') {
-                track.gainNode.disconnect(effect.node.main);
-              }
-            }
+        const effect = this.effects[effectType];
+        if (!effect || !effect.node) return;
+
+        // Disconnect effect from audio chain
+        if (effectType === 'reverb') {
+          effect.node.convolver.disconnect();
+        } else if (effectType === 'scatter') {
+          effect.node.main.disconnect();
+          if (effect.node.stopScatter) {
+            effect.node.stopScatter();
           }
-        });
-        console.log(`Effect ${effectType} removed from audio chain`);
+        } else if (effectType === 'pitch') {
+          effect.node.delay.disconnect();
+        } else if (effectType === 'ringmod') {
+          effect.node.main.disconnect();
+        } else if (effectType === 'noise') {
+          effect.node.main.disconnect();
+          if (effect.node.stopNoise) {
+            effect.node.stopNoise();
+          }
+        }
+
+        // Restore normal audio chain: masterGain -> stereoPanner -> destination
+        this.masterGain.disconnect();
+        this.masterGain.connect(this.stereoPanner);
+        this.stereoPanner.connect(this.audioContext.destination);
+
+        // Ensure tracks are properly connected after effect removal
+        this.ensureTracksConnectedToMaster();
+
+        logger.log(`Effect ${effectType} removed from audio chain`);
       }
     }
 
@@ -1993,3 +5527,4 @@
 </body>
 
 </html>
+
