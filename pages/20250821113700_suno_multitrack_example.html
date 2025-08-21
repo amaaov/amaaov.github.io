@@ -2636,27 +2636,32 @@
       changeSong(song) {
         logger.log(`Changing song from ${this.currentSong} to ${song}`);
 
-                        // ALWAYS stop all audio sources regardless of isPlaying state
+                                // ALWAYS stop all audio sources regardless of isPlaying state
+        this.forceStopAllAudio();
+
+        // Disconnect all gain nodes
         this.tracks.forEach(track => {
-          if (track.source) {
-            try {
-              track.source.stop();
-              logger.log(`Stopped audio source for track ${track.id}`);
-            } catch (e) {
-              logger.log(`Track ${track.id} source already stopped`);
-            }
-            track.source = null;
-          }
           if (track.gainNode) {
+            // Disconnect from all destinations
             track.gainNode.disconnect();
             track.gainNode = null;
+            logger.log(`Disconnected gain node for track ${track.id}`);
           }
         });
 
-        // Always stop progress update and reset playback state
+                // Always stop progress update and reset playback state
         this.stopProgressUpdate();
         this.isPlaying = false;
         this.currentTime = 0;
+
+        // Reset master gain connections
+        if (this.masterGain) {
+          this.masterGain.disconnect();
+          // Reconnect master gain to stereo panner and destination
+          this.masterGain.connect(this.stereoPanner);
+          this.stereoPanner.connect(this.audioContext.destination);
+          logger.log('Master gain connections reset');
+        }
 
         // Force stop all audio context sources
         if (this.audioContext && this.audioContext.state === 'running') {
@@ -2722,6 +2727,14 @@
         // Clear current tracks but preserve states
         this.tracks = [];
         this.soloedTracks.clear();
+
+        // Reset all effects to ensure clean audio chain
+        Object.keys(this.effects).forEach(effectType => {
+          if (this.effects[effectType].active) {
+            logger.log(`Disabling effect ${effectType} during song change`);
+            this.disableEffect(effectType);
+          }
+        });
 
         // Update simple UI
         const songTitle = document.getElementById('currentSongTitle');
@@ -3050,14 +3063,27 @@
             // Update cache indicators for all songs after tracks are loaded
             this.updatePlaylistCacheIndicators();
 
-            // Resume audio context if it was suspended during song change
-            if (this.audioContext && this.audioContext.state === 'suspended') {
-              this.audioContext.resume().then(() => {
-                logger.log('Audio context resumed after song change');
-              }).catch(e => {
-                logger.log('Failed to resume audio context after song change:', e);
-              });
-            }
+                    // Resume audio context if it was suspended during song change
+        if (this.audioContext && this.audioContext.state === 'suspended') {
+          this.audioContext.resume().then(() => {
+            logger.log('Audio context resumed after song change');
+          }).catch(e => {
+            logger.log('Failed to resume audio context after song change:', e);
+          });
+        }
+
+        // Ensure audio context is in a clean state
+        if (this.audioContext && this.audioContext.state === 'running') {
+          logger.log('Audio context is running and ready for new tracks');
+        }
+
+        // Ensure master gain is properly connected for new tracks
+        if (this.masterGain && this.stereoPanner) {
+          this.masterGain.disconnect();
+          this.masterGain.connect(this.stereoPanner);
+          this.stereoPanner.connect(this.audioContext.destination);
+          logger.log('Master gain reconnected for new tracks');
+        }
           }, 100);
 
           logger.log('Track structure preparation completed');
@@ -4671,6 +4697,41 @@
         if (this.effects.scatter.active && this.effects.scatter.node) {
           this.effects.scatter.node.stopScatter();
         }
+      }
+
+      forceStopAllAudio() {
+        logger.log('Force stopping all audio sources');
+
+        // Stop all track sources
+        this.tracks.forEach(track => {
+          if (track.source) {
+            try {
+              track.source.stop();
+              logger.log(`Force stopped source for track ${track.id}`);
+            } catch (e) {
+              logger.log(`Track ${track.id} source already stopped`);
+            }
+            track.source = null;
+          }
+        });
+
+        // Reset playback state
+        this.isPlaying = false;
+        this.currentTime = 0;
+        this.stopProgressUpdate();
+
+        // Force audio context cleanup
+        if (this.audioContext && this.audioContext.state === 'running') {
+          const silentBuffer = this.audioContext.createBuffer(2, 1, 22050);
+          const silentSource = this.audioContext.createBufferSource();
+          silentSource.buffer = silentBuffer;
+          silentSource.connect(this.audioContext.destination);
+          silentSource.start();
+          silentSource.stop();
+          logger.log('Forced audio context cleanup');
+        }
+
+        logger.log('All audio force stopped');
       }
 
       startProgressUpdate() {
