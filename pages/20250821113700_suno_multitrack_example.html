@@ -1844,7 +1844,6 @@
           <button class="effect-btn" id="pitchBtn" data-effect="pitch">🎵 Pitch Shift</button>
                                   <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Bitcrusher</button>
             <button class="effect-btn" id="noiseBtn" data-effect="noise">🎭 Noise Flanger</button>
-            <button class="test-btn" id="iosAudioTestBtn" title="Test iOS Audio">🔊</button>
           </div>
         </div>
 
@@ -2318,7 +2317,6 @@
         document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
                   document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
           document.getElementById('noiseBtn').addEventListener('click', () => this.toggleEffect('noise'));
-          document.getElementById('iosAudioTestBtn').addEventListener('click', () => this.testIOSAudio());
 
         // Krazy parameter
         document.getElementById('krazySlider').addEventListener('input', (e) => {
@@ -6116,17 +6114,17 @@
          *
          * How it works:
          * - Generates white noise using multiple oscillators (sawtooth, triangle, square)
-         * - Applies heavy distortion to the master mix
-         * - Adds flanging with LFO-controlled delay time
-         * - LFO panning moves noise between stereo channels
-         * - Krazy parameter controls all aspects: noise mix, distortion, flanger depth, panning
+         * - Mixes noise with master audio
+         * - Applies heavy distortion to the mixed signal
+         * - Adds flanging with LFO-controlled delay time and feedback
+         * - Krazy parameter allows extreme values for maximum chaos
          *
-         * Audio Chain: masterGain -> flanger -> distortion -> mixer + noise -> destination
-         * Krazy Control: Noise mix (10-70%), Distortion intensity (10-40x), Flanger depth, Panning speed
+         * Audio Chain: (main + noise) -> distortion -> flanger -> destination
+         * Krazy Control: Noise mix (0-100%), Distortion intensity (1-100x), Flanger depth (0-100ms), Feedback (0-100%)
          */
-        // Create a mixer to combine master audio with noise
-        const mixer = this.audioContext.createGain();
-        mixer.gain.value = 1;
+        // Create input mixer to combine master audio with noise
+        const inputMixer = this.audioContext.createGain();
+        inputMixer.gain.value = 1;
 
         // Create white noise generator using multiple oscillators for true noise
         const noise = this.audioContext.createOscillator();
@@ -6142,103 +6140,93 @@
         noise3.type = 'square';
         noise3.frequency.value = 25;
 
-        // Create flanger effect for the master audio
-        const flanger = this.audioContext.createDelay();
-        flanger.delayTime.value = 0.01;
+        // Create gain node for noise mix (controlled by Krazy)
+        const noiseGain = this.audioContext.createGain();
+        noiseGain.gain.value = 0.1; // Start with 10% noise mix
 
-        // Create LFO for flanger time modulation
-        const lfo = this.audioContext.createOscillator();
-        lfo.type = 'sine';
-        lfo.frequency.value = 0.5;
-
-        // Create LFO gain for flanger depth
-        const lfoGain = this.audioContext.createGain();
-        lfoGain.gain.value = 0.005;
-
-        // Create distortion for heavy effect on master mix
+        // Create distortion for heavy effect on mixed signal
         const distortion = this.audioContext.createWaveShaper();
         const curve = new Float32Array(4096);
         for (let i = 0; i < 4096; i++) {
           const x = (i * 2) / 4096 - 1;
-          curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * 15)); // More aggressive distortion
+          curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * 5)); // Start with moderate distortion
         }
         distortion.curve = curve;
         distortion.oversample = '4x';
 
-        // Create gain node for noise mix
-        const noiseGain = this.audioContext.createGain();
-        noiseGain.gain.value = 0.2; // 20% noise mix
+        // Create flanger effect with feedback
+        const flanger = this.audioContext.createDelay(0.1); // 100ms max delay
+        flanger.delayTime.value = 0.01; // Start with 10ms delay
 
-        // Create stereo panner for noise LFO panning
-        const noisePanner = this.audioContext.createStereoPanner();
-        noisePanner.pan.value = 0;
+        // Create feedback loop for flanger
+        const flangerFeedback = this.audioContext.createGain();
+        flangerFeedback.gain.value = 0.3; // Start with 30% feedback
 
-        // Create LFO for noise panning
-        const panLFO = this.audioContext.createOscillator();
-        panLFO.type = 'sine';
-        panLFO.frequency.value = 0.3; // Slower panning
+        // Create LFO for flanger time modulation
+        const lfo = this.audioContext.createOscillator();
+        lfo.type = 'sine';
+        lfo.frequency.value = 0.5; // Start with 0.5Hz
 
-        // Create LFO gain for panning depth
-        const panLfoGain = this.audioContext.createGain();
-        panLfoGain.gain.value = 0.8; // Full stereo width
+        // Create LFO gain for flanger depth
+        const lfoGain = this.audioContext.createGain();
+        lfoGain.gain.value = 0.005; // Start with 5ms modulation depth
 
-        // Connect panning LFO
-        panLFO.connect(panLfoGain);
-        panLfoGain.connect(noisePanner.pan);
-
-        // Connect flanger chain: LFO -> LFO gain -> flanger delay
+        // Connect LFO to flanger delay time
         lfo.connect(lfoGain);
         lfoGain.connect(flanger.delayTime);
 
-        // Connect noise: multiple noise layers -> noise gain -> panner -> mixer
+        // Connect flanger feedback loop
+        flanger.connect(flangerFeedback);
+        flangerFeedback.connect(flanger);
+
+        // Connect noise layers to noise gain
         noise.connect(noiseGain);
         noise2.connect(noiseGain);
         noise3.connect(noiseGain);
-        noiseGain.connect(noisePanner);
-        noisePanner.connect(mixer);
 
         // Start oscillators
         noise.start();
         noise2.start();
         noise3.start();
         lfo.start();
-        panLFO.start();
 
-        // Set krazy level function
+        // Set krazy level function - allows extreme values for maximum chaos
         const setKrazyLevel = (level) => {
           const krazyLevel = Math.max(0, Math.min(100, level));
 
-          // Adjust flanger depth based on krazy level
-          lfoGain.gain.value = 0.005 + (krazyLevel * 0.03); // 0.005 to 0.035
+          // Adjust noise mix based on krazy level (0% to 100%)
+          noiseGain.gain.value = krazyLevel / 100; // 0.0 to 1.0 (0% to 100%)
 
-          // Adjust noise mix based on krazy level
-          noiseGain.gain.value = 0.1 + (krazyLevel * 0.006); // 0.1 to 0.7
-
-          // Adjust distortion intensity based on krazy level
-          const distortionIntensity = 10 + (krazyLevel * 0.3); // 10 to 40
+          // Adjust distortion intensity based on krazy level (1x to 100x)
+          const distortionIntensity = 1 + (krazyLevel * 0.99); // 1 to 100
           for (let i = 0; i < 4096; i++) {
             const x = (i * 2) / 4096 - 1;
             curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * distortionIntensity));
           }
           distortion.curve = curve;
 
-          // Adjust flanger frequency based on krazy level
-          lfo.frequency.value = 0.3 + (krazyLevel * 0.02); // 0.3 to 2.3 Hz
+          // Adjust flanger depth based on krazy level (0ms to 100ms)
+          lfoGain.gain.value = krazyLevel / 1000; // 0.0 to 0.1 (0ms to 100ms)
 
-          // Adjust panning speed based on krazy level
-          panLFO.frequency.value = 0.2 + (krazyLevel * 0.015); // 0.2 to 1.7 Hz
+          // Adjust flanger feedback based on krazy level (0% to 100%)
+          flangerFeedback.gain.value = krazyLevel / 100; // 0.0 to 1.0 (0% to 100%)
 
-          logger.log(`Noise Flanger Krazy: flangerDepth=${lfoGain.gain.value.toFixed(3)}, noiseMix=${noiseGain.gain.value.toFixed(3)}, distortionIntensity=${distortionIntensity.toFixed(1)}, lfoFreq=${lfo.frequency.value.toFixed(1)}Hz, panFreq=${panLFO.frequency.value.toFixed(1)}Hz`);
+          // Adjust LFO frequency based on krazy level (0.1Hz to 10Hz)
+          lfo.frequency.value = 0.1 + (krazyLevel * 0.099); // 0.1 to 10 Hz
+
+          logger.log(`Noise Flanger Krazy: noiseMix=${(noiseGain.gain.value * 100).toFixed(0)}%, distortionIntensity=${distortionIntensity.toFixed(1)}x, flangerDepth=${(lfoGain.gain.value * 1000).toFixed(0)}ms, feedback=${(flangerFeedback.gain.value * 100).toFixed(0)}%, lfoFreq=${lfo.frequency.value.toFixed(1)}Hz`);
         };
 
         return {
-          main: mixer, // Main output is the mixer
+          main: flanger, // Main output is the flanger (final stage)
+          input: inputMixer, // Input node for master audio
           noise: noise,
           noise2: noise2,
           noise3: noise3,
           flanger: flanger,
           distortion: distortion,
-          gain: noiseGain,
+          noiseGain: noiseGain,
+          flangerFeedback: flangerFeedback,
           lfo: lfo,
           lfoGain: lfoGain,
           setKrazyLevel
@@ -6305,23 +6293,24 @@
               logger.error('❌ Bitcrusher node missing main or input');
             }
           } else if (effectType === 'noise') {
-            // Noise Flanger: masterGain -> flanger -> distortion -> mixer + noise -> mixer -> destination
-            if (effect.node.main && effect.node.flanger && effect.node.distortion) {
-              // Connect master audio through flanger and distortion to mixer
-              this.masterGain.connect(effect.node.flanger);
-              effect.node.flanger.connect(effect.node.distortion);
-              effect.node.distortion.connect(effect.node.main);
+            // Noise Flanger: (main + noise) -> distortion -> flanger -> destination
+            if (effect.node.main && effect.node.input && effect.node.distortion && effect.node.flanger) {
+              // Connect master audio to input mixer
+              this.masterGain.connect(effect.node.input);
 
-              // Connect all noise layers to mixer
-              effect.node.noise.connect(effect.node.gain);
-              effect.node.noise2.connect(effect.node.gain);
-              effect.node.noise3.connect(effect.node.gain);
-              effect.node.gain.connect(effect.node.main);
+              // Connect noise to input mixer (mixing with master audio)
+              effect.node.noiseGain.connect(effect.node.input);
 
-              // Connect mixer to destination
+              // Connect input mixer to distortion
+              effect.node.input.connect(effect.node.distortion);
+
+              // Connect distortion to flanger
+              effect.node.distortion.connect(effect.node.flanger);
+
+              // Connect flanger (final stage) to destination
               effect.node.main.connect(this.audioContext.destination);
 
-              logger.log(`✅ Noise Flanger effect connected: masterGain -> flanger -> distortion -> mixer + noise -> mixer -> destination`);
+              logger.log(`✅ Noise Flanger effect connected: (main + noise) -> distortion -> flanger -> destination`);
             } else {
               logger.error('❌ Noise Flanger node missing required components');
               logger.error('Available nodes:', Object.keys(effect.node));
@@ -6417,16 +6406,17 @@
         } else if (effectType === 'noise') {
           // Disconnect all components of the Noise Flanger
           if (effect.node.main) effect.node.main.disconnect();
+          if (effect.node.input) effect.node.input.disconnect();
           if (effect.node.flanger) effect.node.flanger.disconnect();
           if (effect.node.distortion) effect.node.distortion.disconnect();
-          if (effect.node.gain) effect.node.gain.disconnect();
+          if (effect.node.noiseGain) effect.node.noiseGain.disconnect();
+          if (effect.node.flangerFeedback) effect.node.flangerFeedback.disconnect();
 
           // Stop oscillators
           if (effect.node.noise && effect.node.noise.stop) effect.node.noise.stop();
           if (effect.node.noise2 && effect.node.noise2.stop) effect.node.noise2.stop();
           if (effect.node.noise3 && effect.node.noise3.stop) effect.node.noise3.stop();
           if (effect.node.lfo && effect.node.lfo.stop) effect.node.lfo.stop();
-          if (effect.node.panLFO && effect.node.panLFO.stop) effect.node.panLFO.stop();
         }
 
         // Restore normal audio chain: masterGain -> stereoPanner -> destination
