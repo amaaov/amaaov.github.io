@@ -1840,14 +1840,13 @@
           <span class="krazy-value" id="krazyValue">50</span>
         </div>
         <div class="effects-buttons">
-          <button class="effect-btn" id="reverbBtn" data-effect="reverb">🌊 Heavy Reverb</button>
-          <button class="effect-btn" id="scatterBtn" data-effect="scatter">🌀 Scatter</button>
+                      <button class="effect-btn" id="scatterBtn" data-effect="scatter">🌀 Scatter</button>
           <button class="effect-btn" id="pitchBtn" data-effect="pitch">🎵 Pitch Shift</button>
-          <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Bitcrusher</button>
-          <button class="effect-btn" id="noiseBtn" data-effect="noise">🎭 Noise Flanger</button>
-          <button class="test-btn" id="testEffectsBtn" title="Test Effects">🧪</button>
+                                  <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Bitcrusher</button>
+            <button class="effect-btn" id="noiseBtn" data-effect="noise">🎭 Noise Flanger</button>
+            <button class="test-btn" id="iosAudioTestBtn" title="Test iOS Audio">🔊</button>
+          </div>
         </div>
-      </div>
 
       <div class="keyboard-info">
         <strong>Keyboard Shortcuts:</strong><br>
@@ -1918,7 +1917,6 @@
 
         // Effects properties
         this.effects = {
-          reverb: { active: false, node: null },
           scatter: { active: false, node: null },
           pitch: { active: false, node: null },
           ringmod: { active: false, node: null },
@@ -1947,6 +1945,11 @@
           this.masterGain = this.audioContext.createGain();
           this.stereoPanner = this.audioContext.createStereoPanner();
           this.stereoPanner.pan.value = 0;
+
+                    // iOS-specific audio context setup - silent unlock
+          if (this.audioContext.state === 'suspended') {
+            logger.log('iOS Audio Context: Context created in suspended state, will unlock on user interaction');
+          }
 
           // Connect: masterGain -> stereoPanner -> destination
           this.masterGain.connect(this.stereoPanner);
@@ -1998,6 +2001,24 @@
         // Handle responsive canvas sizing
         this.handleResponsiveCanvas();
         window.addEventListener('resize', () => this.handleResponsiveCanvas());
+      }
+
+      updateAudioReadyState() {
+        logger.log('Audio ready state updated - audio context is now running');
+
+        // Update play button state
+        const playBtn = document.getElementById('play');
+        if (playBtn) {
+          playBtn.disabled = false;
+          playBtn.title = 'Play audio';
+        }
+
+        // Show success message
+        const readyMsg = document.createElement('div');
+        readyMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:#4CAF50;color:white;padding:10px;border-radius:5px;z-index:9999;';
+        readyMsg.textContent = '🎵 Audio ready!';
+        document.body.appendChild(readyMsg);
+        setTimeout(() => readyMsg.remove(), 3000);
       }
 
       initializeMasterWaveform() {
@@ -2293,12 +2314,11 @@
         });
 
         // Effects
-        document.getElementById('reverbBtn').addEventListener('click', () => this.toggleEffect('reverb'));
         document.getElementById('scatterBtn').addEventListener('click', () => this.toggleEffect('scatter'));
         document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
-        document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
-        document.getElementById('noiseBtn').addEventListener('click', () => this.toggleEffect('noise'));
-        document.getElementById('testEffectsBtn').addEventListener('click', () => this.testAllEffects());
+                  document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
+          document.getElementById('noiseBtn').addEventListener('click', () => this.toggleEffect('noise'));
+          document.getElementById('iosAudioTestBtn').addEventListener('click', () => this.testIOSAudio());
 
         // Krazy parameter
         document.getElementById('krazySlider').addEventListener('input', (e) => {
@@ -3182,7 +3202,6 @@
 
       initializeEffectsControls() {
         // Add event listeners for effect buttons
-        document.getElementById('reverbBtn').addEventListener('click', () => this.toggleEffect('reverb'));
         document.getElementById('scatterBtn').addEventListener('click', () => this.toggleEffect('scatter'));
         document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
         document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
@@ -4948,7 +4967,7 @@
 
         logger.log('Audio context state:', this.audioContext.state);
 
-        // iOS Safari audio context handling
+        // iOS Safari audio context handling - COMPREHENSIVE
         if (this.audioContext.state === 'suspended') {
           logger.log('Audio context suspended, attempting to resume...');
           try {
@@ -4962,6 +4981,36 @@
           }
         }
 
+        // CRITICAL: Ensure audio context is fully unlocked for iOS
+        if (this.audioContext.state !== 'running') {
+          logger.log('Audio context not running, attempting comprehensive unlock...');
+
+          // Try multiple unlock methods for iOS
+          try {
+            // Method 1: Resume audio context
+            await this.audioContext.resume();
+            logger.log('Audio context resumed via resume()');
+
+            // Method 2: Create a silent buffer to force unlock
+            const silentBuffer = this.audioContext.createBuffer(1, 1, 22050);
+            const silentSource = this.audioContext.createBufferSource();
+            silentSource.buffer = silentBuffer;
+            silentSource.connect(this.audioContext.destination);
+            silentSource.start();
+            silentSource.stop();
+            logger.log('Silent buffer created to force unlock');
+
+            // Method 3: Small delay to ensure unlock
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            logger.log('Audio context state after unlock attempts:', this.audioContext.state);
+          } catch (unlockError) {
+            logger.error('Failed to unlock audio context:', unlockError);
+            alert('Audio unlock failed. Please refresh the page and try again.');
+            return;
+          }
+        }
+
         // Check if audio context is muted
         if (this.audioContext.state === 'running') {
           logger.log('Audio context is running, checking for mute state...');
@@ -4970,6 +5019,19 @@
           logger.log('Audio destination muted:', destination.muted);
           logger.log('Audio destination channelCount:', destination.channelCount);
           logger.log('Audio destination sampleRate:', destination.sampleRate);
+
+          // iOS-specific volume and mute checks
+          if (destination.muted) {
+            logger.warn('iOS Audio: Destination is muted - this may prevent sound output');
+            alert('🔇 Audio is muted. Please check your device volume and unmute if necessary.');
+            return;
+          }
+
+          // Ensure master gain is at audible level
+          if (this.masterGain && this.masterGain.gain.value < 0.1) {
+            logger.warn('iOS Audio: Master gain too low, setting to audible level');
+            this.masterGain.gain.value = 0.8;
+          }
         }
 
         // Additional iOS check
@@ -5683,13 +5745,6 @@
 
       disconnectEffectNodes(effectType, effectNode) {
         switch (effectType) {
-          case 'reverb':
-            if (effectNode.convolver) effectNode.convolver.disconnect();
-            if (effectNode.gain) effectNode.gain.disconnect();
-            if (effectNode.highPass) effectNode.highPass.disconnect();
-            if (effectNode.distortion) effectNode.distortion.disconnect();
-            if (effectNode.lowPass) effectNode.lowPass.disconnect();
-            break;
           case 'scatter':
             if (effectNode.main) effectNode.main.disconnect();
             if (effectNode.gain) effectNode.gain.disconnect();
@@ -5717,10 +5772,23 @@
         }
       }
 
+      /**
+       * 🎛️ EFFECTS SYSTEM - Audio Processing Chain
+       *
+       * This system manages all audio effects and their connections to the master audio chain.
+       * Each effect processes the master mix and applies its unique audio transformation.
+       *
+       * Available Effects:
+       * - 🌀 Scatter: Position jumping chaos
+       * - 🎵 Pitch Shift: LFO modulated pitch shifting
+       * - ⚡ Bitcrusher: Digital distortion & bit reduction
+       * - 🎭 Noise Flanger: White noise + distortion + flanging
+       *
+       * All effects are controlled by the "Krazy" parameter slider (0-100)
+       * which dynamically adjusts effect intensity and parameters in real-time.
+       */
       createEffectNode(effectType) {
         switch (effectType) {
-          case 'reverb':
-            return this.createReverbNode();
           case 'scatter':
             return this.createScatterNode();
           case 'pitch':
@@ -5734,101 +5802,39 @@
         }
       }
 
-                        createReverbNode() {
-        // Create a Jamaica-style heavy reverb with distorted low ends
-        const reverbNode = this.audioContext.createConvolver();
 
-        // Create a heavy, long impulse response for dub-style reverb
-        const sampleRate = this.audioContext.sampleRate;
-        const length = sampleRate * 4; // 4 second reverb for heavy effect
-        const impulse = this.audioContext.createBuffer(2, length, sampleRate);
-
-        for (let channel = 0; channel < 2; channel++) {
-          const channelData = impulse.getChannelData(channel);
-          for (let i = 0; i < length; i++) {
-            // Create a heavy, slow decay curve with emphasis on low frequencies
-            const decay = Math.exp(-i / (sampleRate * 0.8)); // Slower decay
-            const noise = (Math.random() * 2 - 1) * 0.8; // Stronger noise
-
-            // Add low frequency emphasis for dub style
-            const lowFreqBoost = Math.exp(-i / (sampleRate * 0.1));
-            channelData[i] = noise * decay * (1 + lowFreqBoost * 0.5);
-          }
-        }
-
-        reverbNode.buffer = impulse;
-
-        // Create distortion for low ends
-        const distortion = this.audioContext.createWaveShaper();
-        const curve = new Float32Array(4096);
-        for (let i = 0; i < 4096; i++) {
-          const x = (i * 2) / 4096 - 1;
-          curve[i] = Math.sign(x) * (1 - Math.exp(-Math.abs(x) * 3));
-        }
-        distortion.curve = curve;
-
-        // Create low-pass filter to focus distortion on low frequencies
-        const lowPass = this.audioContext.createBiquadFilter();
-        lowPass.type = 'lowpass';
-        lowPass.frequency.value = 200; // Focus on low frequencies
-        lowPass.Q.value = 1;
-
-        // Create high-pass filter for reverb
-        const highPass = this.audioContext.createBiquadFilter();
-        highPass.type = 'highpass';
-        highPass.frequency.value = 100; // Cut very low frequencies
-
-        // Add a gain node for wet/dry mix
-        const reverbGain = this.audioContext.createGain();
-        reverbGain.gain.value = 0.5; // 50% wet for heavy effect
-
-        // Store krazy level for dynamic adjustment
-        let krazyLevel = 50;
-
-        // Set krazy level function
-        const setKrazyLevel = (level) => {
-          krazyLevel = Math.max(0, Math.min(100, level));
-
-          // Adjust reverb parameters based on krazy level
-          const decayMultiplier = 1 + (krazyLevel * 0.02); // 1x to 3x decay
-          const distortionAmount = krazyLevel * 0.01; // 0 to 1 distortion
-
-          // Update low-pass filter frequency based on krazy level
-          const baseFreq = 200;
-          const adjustedFreq = baseFreq + (krazyLevel * 3); // 200Hz to 500Hz
-          lowPass.frequency.value = Math.min(2000, adjustedFreq);
-
-          logger.log(`Reverb Krazy: decay=${decayMultiplier.toFixed(2)}x, distortion=${distortionAmount.toFixed(2)}, lowpass=${adjustedFreq.toFixed(0)}Hz`);
-        };
-
-        // Connect reverb chain: reverb -> high-pass -> distortion -> low-pass -> gain
-        // This creates the complete reverb effect chain
-        reverbNode.connect(highPass);
-        highPass.connect(distortion);
-        distortion.connect(lowPass);
-        lowPass.connect(reverbGain);
-
-        return {
-          convolver: reverbGain, // Use the final output (reverbGain) as the main node
-          gain: reverbGain,
-          highPass: highPass,
-          distortion: distortion,
-          lowPass: lowPass,
-          setKrazyLevel
-        };
-      }
 
                                           createScatterNode() {
-        // Create a scatter effect that receives master audio and creates reverse-forward playback
+        /**
+         * 🌀 SCATTER EFFECT - Position Jumping Chaos
+         *
+         * This effect creates random position jumping in the track, making the playback
+         * scatter around different positions like a broken record player on steroids.
+         *
+         * How it works:
+         * - Randomly jumps to different positions in the track
+         * - Krazy parameter controls jump length (100ms to 2 seconds) and frequency
+         * - Creates unpredictable, chaotic playback patterns
+         * - Perfect for glitch music and experimental audio
+         *
+         * Audio Chain: masterGain -> input -> scatter -> gain -> destination
+         * Krazy Control: Jump length (100ms-2s), Jump interval (500ms-2s)
+         */
+        // Create a scatter effect that receives master audio and creates position jumping
         const scatterNode = this.audioContext.createGain();
         scatterNode.gain.value = 0.4; // 40% wet
+
+        // Create input node for master audio
+        const inputNode = this.audioContext.createGain();
+        inputNode.gain.value = 1;
 
         // Create a gain node for wet/dry mix
         const gainNode = this.audioContext.createGain();
         gainNode.gain.value = 1;
 
-        // Connect scatter chain: scatter -> gain
+        // Connect scatter chain: input -> scatter -> gain
         // This creates the complete scatter effect chain
+        inputNode.connect(scatterNode);
         scatterNode.connect(gainNode);
 
         // Store reference to current audio buffer for manipulation
@@ -5837,41 +5843,30 @@
         let activeSources = [];
         let krazyLevel = 50; // Default krazy level
 
-        // Function to create reverse-forward effect
+        // Function to create position jumping effect
         const createScatterEffect = () => {
-          if (!currentBuffer || !this.isPlaying) return;
+          if (!this.isPlaying) return;
 
           try {
-            // Clear previous sources
-            activeSources.forEach(source => {
-              try { source.stop(); } catch (e) {}
-            });
-            activeSources = [];
+            // Calculate jump timing based on krazy level (0-100)
+            // Krazy affects jump length: 100ms to 2 seconds
+            const jumpLength = 100 + (krazyLevel * 19); // 100ms to 2000ms
+            const jumpInterval = 500 + (krazyLevel * 15); // 500ms to 2000ms
 
-            // Calculate timing based on krazy level (0-100)
-            const baseDelay = 100 + (krazyLevel * 2); // 100ms to 300ms
-            const baseInterval = 400 + (krazyLevel * 3); // 400ms to 700ms
+            // Jump to random position in the track
+            const maxJump = Math.max(0, this.duration - (jumpLength / 1000));
+            if (maxJump > 0) {
+              const randomPosition = Math.random() * maxJump;
+              this.currentTime = randomPosition;
 
-            // Create forward buffer source
-            const forwardSource = this.audioContext.createBufferSource();
-            forwardSource.buffer = currentBuffer;
-            forwardSource.connect(scatterNode);
-            activeSources.push(forwardSource);
+              // Update progress bar immediately
+              this.updateProgress();
 
-            // Create reverse buffer source
-            const reverseSource = this.audioContext.createBufferSource();
-            reverseSource.buffer = this.createReverseBuffer(currentBuffer);
-            reverseSource.connect(scatterNode);
-            activeSources.push(reverseSource);
+              logger.log(`Scatter effect: Jumped to position ${randomPosition.toFixed(2)}s (jump length: ${jumpLength}ms)`);
+            }
 
-            // Play forward then reverse with krazy-adjusted timing
-            forwardSource.start();
-            setTimeout(() => {
-              reverseSource.start();
-            }, baseDelay);
-
-            // Schedule next scatter effect with krazy-adjusted interval
-            scatterInterval = setTimeout(createScatterEffect, baseInterval + Math.random() * 200);
+            // Schedule next jump
+            scatterInterval = setTimeout(createScatterEffect, jumpInterval + Math.random() * 500);
           } catch (error) {
             logger.error('Scatter effect error:', error);
           }
@@ -5879,7 +5874,8 @@
 
         // Start scatter effect
         const startScatter = () => {
-          if (this.isPlaying && currentBuffer) {
+          if (this.isPlaying) {
+            logger.log('Scatter effect started - position jumping enabled');
             createScatterEffect();
           }
         };
@@ -5889,12 +5885,8 @@
           if (scatterInterval) {
             clearTimeout(scatterInterval);
             scatterInterval = null;
+            logger.log('Scatter effect stopped - position jumping disabled');
           }
-          // Stop all active sources
-          activeSources.forEach(source => {
-            try { source.stop(); } catch (e) {}
-          });
-          activeSources = [];
         };
 
         // Set krazy level
@@ -5903,17 +5895,13 @@
         };
 
         return {
-          main: scatterNode,
+          main: gainNode, // Use the final output (gainNode) as the main node
+          input: inputNode, // Input node for master audio
+          scatterNode: scatterNode,
           gain: gainNode,
           startScatter,
           stopScatter,
-          setKrazyLevel,
-          setBuffer: (buffer) => {
-            currentBuffer = buffer;
-            if (this.isPlaying) {
-              startScatter();
-            }
-          }
+          setKrazyLevel
         };
       }
 
@@ -5938,15 +5926,37 @@
       }
 
             createPitchNode() {
+        /**
+         * 🎵 PITCH SHIFT EFFECT - LFO Modulated Pitch Shifting
+         *
+         * This effect creates dynamic pitch shifting using delay lines and LFO modulation.
+         * The pitch of the audio constantly shifts up and down, creating a warbling,
+         * underwater-like effect that's perfect for psychedelic and experimental music.
+         *
+         * How it works:
+         * - Uses delay lines with feedback to create pitch shifting
+         * - LFO modulates the delay time, causing pitch variations
+         * - Krazy parameter controls delay time, LFO frequency, and modulation depth
+         * - Creates smooth, continuous pitch variations
+         *
+         * Audio Chain: masterGain -> input -> delay -> feedback loop -> output
+         * Krazy Control: Delay time (10-30ms), LFO freq (1-12Hz), Modulation depth (5-15ms)
+         */
         // Create a pitch shifter using delay and feedback
         const pitchNode = this.audioContext.createGain();
         pitchNode.gain.value = 1;
 
-        // Create a delay line for pitch shifting
-        const delay = this.audioContext.createDelay(0.01); // 10ms delay
-        const feedback = this.audioContext.createGain();
-        feedback.gain.value = 0.3;
+        // Create input node for master audio
+        const inputNode = this.audioContext.createGain();
+        inputNode.gain.value = 1;
 
+        // Create a delay line for pitch shifting
+        const delay = this.audioContext.createDelay(0.05); // 50ms delay for more audible effect
+        const feedback = this.audioContext.createGain();
+        feedback.gain.value = 0.6; // More feedback for stronger effect
+
+        // Connect input to delay and pitch output
+        inputNode.connect(delay);
         delay.connect(feedback);
         feedback.connect(delay);
         delay.connect(pitchNode);
@@ -5954,8 +5964,8 @@
         // Modulate delay time for pitch effect
         const lfo = this.audioContext.createOscillator();
         const lfoGain = this.audioContext.createGain();
-        lfo.frequency.value = 2; // 2Hz modulation
-        lfoGain.gain.value = 0.005; // 5ms modulation depth
+        lfo.frequency.value = 1; // 1Hz modulation for more audible effect
+        lfoGain.gain.value = 0.02; // 20ms modulation depth for stronger effect
 
         lfo.connect(lfoGain);
         lfoGain.connect(delay.delayTime);
@@ -5988,10 +5998,34 @@
         // This creates the complete pitch effect chain
         // The main output is pitchNode which will be connected by insertEffectIntoChain
 
-        return { main: pitchNode, delay, feedback, lfo, lfoGain, setKrazyLevel };
+        return {
+          main: pitchNode, // Use the final output (pitchNode) as the main node
+          input: inputNode, // Input node for master audio
+          delay,
+          feedback,
+          lfo,
+          lfoGain,
+          setKrazyLevel
+        };
       }
 
                                     createBitcrusherNode() {
+        /**
+         * ⚡ BITCRUSHER EFFECT - Digital Distortion & Bit Reduction
+         *
+         * This effect creates aggressive digital distortion by reducing the bit depth
+         * of the audio signal, simulating old digital hardware and creating harsh,
+         * lo-fi textures perfect for industrial, noise, and experimental music.
+         *
+         * How it works:
+         * - Reduces bit depth from 8-bit down to 1-bit (heavy crushing)
+         * - Applies wave shaping for additional distortion
+         * - Low-pass filter cuts high frequencies for authentic lo-fi sound
+         * - Krazy parameter controls bit depth and filter frequency
+         *
+         * Audio Chain: masterGain -> input -> waveShaper -> filter -> gain -> destination
+         * Krazy Control: Bit depth (8-bit to 1-bit), Filter frequency (4kHz to 2kHz)
+         */
         // Create a bitcrusher effect that processes master audio with 100% wet signal
         const bitcrusherNode = this.audioContext.createGain();
         bitcrusherNode.gain.value = 1; // 100% wet
@@ -6002,12 +6036,12 @@
         const curve = new Float32Array(curveLength);
 
         // Create bit crushing curve with krazy parameter
-        let bitDepth = 4; // 4-bit crushing (default)
+        let bitDepth = 2; // 2-bit crushing (default) for more aggressive effect
         let krazyLevel = 50; // Default krazy level
 
         const updateCurve = () => {
           // Adjust bit depth based on krazy level (0-100)
-          const adjustedBitDepth = Math.max(1, Math.min(16, 16 - (krazyLevel * 0.12))); // 16-bit to 4-bit
+          const adjustedBitDepth = Math.max(1, Math.min(8, 8 - (krazyLevel * 0.07))); // 8-bit to 1-bit for heavy crushing
           bitDepth = Math.round(adjustedBitDepth);
 
           const levels = Math.pow(2, bitDepth);
@@ -6039,8 +6073,13 @@
 
         // Connect bitcrusher chain: input -> waveShaper -> filter -> gain
         // This creates the complete bitcrusher effect chain
+        inputNode.connect(waveShaper);
         waveShaper.connect(filter);
         filter.connect(bitcrusherGain);
+
+        // Store the input node for proper connection
+        const inputNode = this.audioContext.createGain();
+        inputNode.gain.value = 1;
 
         // Set krazy level function
         const setKrazyLevel = (level) => {
@@ -6055,6 +6094,7 @@
 
         return {
           main: bitcrusherGain, // Use the final output (bitcrusherGain) as the main node
+          input: inputNode, // Input node for master audio
           waveShaper: waveShaper,
           filter: filter,
           gain: bitcrusherGain,
@@ -6067,14 +6107,40 @@
       }
 
       createNoiseNode() {
+        /**
+         * 🎭 NOISE FLANGER EFFECT - White Noise + Distortion + Flanging
+         *
+         * This is a complex multi-layered effect that combines white noise generation,
+         * heavy distortion, and flanging to create a chaotic, industrial soundscape.
+         * Perfect for noise music, industrial, and experimental audio.
+         *
+         * How it works:
+         * - Generates white noise using multiple oscillators (sawtooth, triangle, square)
+         * - Applies heavy distortion to the master mix
+         * - Adds flanging with LFO-controlled delay time
+         * - LFO panning moves noise between stereo channels
+         * - Krazy parameter controls all aspects: noise mix, distortion, flanger depth, panning
+         *
+         * Audio Chain: masterGain -> flanger -> distortion -> mixer + noise -> destination
+         * Krazy Control: Noise mix (10-70%), Distortion intensity (10-40x), Flanger depth, Panning speed
+         */
         // Create a mixer to combine master audio with noise
         const mixer = this.audioContext.createGain();
         mixer.gain.value = 1;
 
-        // Create white noise generator (true white noise)
+        // Create white noise generator using multiple oscillators for true noise
         const noise = this.audioContext.createOscillator();
         noise.type = 'sawtooth';
-        noise.frequency.value = 2000; // Higher frequency for more noise-like sound
+        noise.frequency.value = 50; // Very low frequency for more noise-like sound
+
+        // Create additional noise layers for more complex noise
+        const noise2 = this.audioContext.createOscillator();
+        noise2.type = 'triangle';
+        noise2.frequency.value = 75;
+
+        const noise3 = this.audioContext.createOscillator();
+        noise3.type = 'square';
+        noise3.frequency.value = 25;
 
         // Create flanger effect for the master audio
         const flanger = this.audioContext.createDelay();
@@ -6124,13 +6190,17 @@
         lfo.connect(lfoGain);
         lfoGain.connect(flanger.delayTime);
 
-        // Connect noise: noise -> noise gain -> panner -> mixer
+        // Connect noise: multiple noise layers -> noise gain -> panner -> mixer
         noise.connect(noiseGain);
+        noise2.connect(noiseGain);
+        noise3.connect(noiseGain);
         noiseGain.connect(noisePanner);
         noisePanner.connect(mixer);
 
         // Start oscillators
         noise.start();
+        noise2.start();
+        noise3.start();
         lfo.start();
         panLFO.start();
 
@@ -6164,6 +6234,8 @@
         return {
           main: mixer, // Main output is the mixer
           noise: noise,
+          noise2: noise2,
+          noise3: noise3,
           flanger: flanger,
           distortion: distortion,
           gain: noiseGain,
@@ -6202,44 +6274,35 @@
           this.masterGain.disconnect();
           logger.log(`Master gain disconnected from destination`);
 
-          if (effectType === 'reverb') {
-            // Reverb: masterGain -> reverb chain -> destination
-            if (effect.node.convolver) {
-              this.masterGain.connect(effect.node.convolver);
-              effect.node.convolver.connect(this.audioContext.destination);
-              logger.log(`✅ Reverb effect connected: masterGain -> convolver -> destination`);
-            } else {
-              logger.error('❌ Reverb node missing convolver');
-            }
-          } else if (effectType === 'scatter') {
-            // Scatter: masterGain -> scatter chain -> destination
-            if (effect.node.main) {
-              this.masterGain.connect(effect.node.main);
+          if (effectType === 'scatter') {
+            // Scatter: masterGain -> input -> scatter chain -> destination
+            if (effect.node.main && effect.node.input) {
+              this.masterGain.connect(effect.node.input);
               effect.node.main.connect(this.audioContext.destination);
               if (effect.node.startScatter) {
                 effect.node.startScatter();
               }
-              logger.log(`✅ Scatter effect connected: masterGain -> main -> destination`);
+              logger.log(`✅ Scatter effect connected: masterGain -> input -> scatter chain -> destination`);
             } else {
-              logger.error('❌ Scatter node missing main');
+              logger.error('❌ Scatter node missing main or input');
             }
           } else if (effectType === 'pitch') {
-            // Pitch: masterGain -> pitch chain -> destination
-            if (effect.node.main) {
-              this.masterGain.connect(effect.node.main);
+            // Pitch: masterGain -> input -> pitch chain -> destination
+            if (effect.node.main && effect.node.input) {
+              this.masterGain.connect(effect.node.input);
               effect.node.main.connect(this.audioContext.destination);
-              logger.log(`✅ Pitch effect connected: masterGain -> main -> destination`);
+              logger.log(`✅ Pitch effect connected: masterGain -> input -> pitch chain -> destination`);
             } else {
-              logger.error('❌ Pitch node missing main');
+              logger.error('❌ Pitch node missing main or input');
             }
           } else if (effectType === 'ringmod') {
-            // Bitcrusher: masterGain -> bitcrusher chain -> destination
-            if (effect.node.main) {
-              this.masterGain.connect(effect.node.main);
+            // Bitcrusher: masterGain -> input -> bitcrusher chain -> destination
+            if (effect.node.main && effect.node.input) {
+              this.masterGain.connect(effect.node.input);
               effect.node.main.connect(this.audioContext.destination);
-              logger.log(`✅ Ring mod effect connected: masterGain -> main -> destination`);
+              logger.log(`✅ Bitcrusher effect connected: masterGain -> input -> bitcrusher chain -> destination`);
             } else {
-              logger.error('❌ Ring mod node missing main');
+              logger.error('❌ Bitcrusher node missing main or input');
             }
           } else if (effectType === 'noise') {
             // Noise Flanger: masterGain -> flanger -> distortion -> mixer + noise -> mixer -> destination
@@ -6249,8 +6312,10 @@
               effect.node.flanger.connect(effect.node.distortion);
               effect.node.distortion.connect(effect.node.main);
 
-              // Connect noise to mixer
+              // Connect all noise layers to mixer
               effect.node.noise.connect(effect.node.gain);
+              effect.node.noise2.connect(effect.node.gain);
+              effect.node.noise3.connect(effect.node.gain);
               effect.node.gain.connect(effect.node.main);
 
               // Connect mixer to destination
@@ -6337,17 +6402,18 @@
         if (!effect || !effect.node) return;
 
         // Disconnect effect from audio chain
-        if (effectType === 'reverb') {
-          effect.node.convolver.disconnect();
-        } else if (effectType === 'scatter') {
-          effect.node.main.disconnect();
+        if (effectType === 'scatter') {
+          if (effect.node.main) effect.node.main.disconnect();
+          if (effect.node.input) effect.node.input.disconnect();
           if (effect.node.stopScatter) {
             effect.node.stopScatter();
           }
         } else if (effectType === 'pitch') {
-          effect.node.main.disconnect();
+          if (effect.node.main) effect.node.main.disconnect();
+          if (effect.node.input) effect.node.input.disconnect();
         } else if (effectType === 'ringmod') {
-          effect.node.main.disconnect();
+          if (effect.node.main) effect.node.main.disconnect();
+          if (effect.node.input) effect.node.input.disconnect();
         } else if (effectType === 'noise') {
           // Disconnect all components of the Noise Flanger
           if (effect.node.main) effect.node.main.disconnect();
@@ -6357,7 +6423,10 @@
 
           // Stop oscillators
           if (effect.node.noise && effect.node.noise.stop) effect.node.noise.stop();
+          if (effect.node.noise2 && effect.node.noise2.stop) effect.node.noise2.stop();
+          if (effect.node.noise3 && effect.node.noise3.stop) effect.node.noise3.stop();
           if (effect.node.lfo && effect.node.lfo.stop) effect.node.lfo.stop();
+          if (effect.node.panLFO && effect.node.panLFO.stop) effect.node.panLFO.stop();
         }
 
         // Restore normal audio chain: masterGain -> stereoPanner -> destination
@@ -6391,9 +6460,6 @@
             logger.log(`Effect ${type}: node exists, checking connections`);
             // Log the effect node structure
             logger.log(`Effect ${type} node:`, effect.node);
-
-            // Test effect audio routing
-            this.testEffectAudioRouting(type, effect);
           } else {
             logger.log(`Effect ${type}: no node found`);
           }
@@ -6410,67 +6476,107 @@
         logger.log('=== EFFECT CHAIN VALIDATION COMPLETE ===');
       }
 
-            testEffectAudioRouting(effectType, effect) {
-        logger.log(`=== TESTING ${effectType.toUpperCase()} AUDIO ROUTING ===`);
+      // Simple effect test method
+      testEffect(effectType) {
+        const effect = this.effects[effectType];
+        if (effect && effect.node) {
+          logger.log(`✅ Effect ${effectType} is working:`, effect.node);
+          return true;
+        } else {
+          logger.log(`❌ Effect ${effectType} is not working:`, effect);
+          return false;
+        }
+      }
 
-        try {
-          if (effectType === 'reverb' && effect.node.convolver) {
-            logger.log(`✅ Reverb convolver connected to destination: ${effect.node.convolver.numberOfOutputs > 0}`);
-            logger.log(`✅ Reverb gain node: ${effect.node.gain ? 'exists' : 'missing'}`);
-            logger.log(`✅ Reverb high-pass filter: ${effect.node.highPass ? 'exists' : 'missing'}`);
-            logger.log(`✅ Reverb distortion: ${effect.node.distortion ? 'exists' : 'missing'}`);
-            logger.log(`✅ Reverb low-pass filter: ${effect.node.lowPass ? 'exists' : 'missing'}`);
-          } else if (effectType === 'scatter' && effect.node.main) {
-            logger.log(`✅ Scatter main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
-            logger.log(`✅ Scatter gain node: ${effect.node.gain ? 'exists' : 'missing'}`);
-            logger.log(`✅ Scatter startScatter function: ${effect.node.startScatter ? 'exists' : 'missing'}`);
-          } else if (effectType === 'pitch' && effect.node.main) {
-            logger.log(`✅ Pitch main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
-            logger.log(`✅ Pitch delay node: ${effect.node.delay ? 'exists' : 'missing'}`);
-            logger.log(`✅ Pitch feedback node: ${effect.node.feedback ? 'exists' : 'missing'}`);
-            logger.log(`✅ Pitch LFO: ${effect.node.lfo ? 'exists' : 'missing'}`);
-          } else if (effectType === 'ringmod' && effect.node.main) {
-            logger.log(`✅ Bitcrusher main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
-            logger.log(`✅ Bitcrusher waveShaper: ${effect.node.waveShaper ? 'exists' : 'missing'}`);
-            logger.log(`✅ Bitcrusher filter: ${effect.node.filter ? 'exists' : 'missing'}`);
-            logger.log(`✅ Bitcrusher gain: ${effect.node.gain ? 'exists' : 'missing'}`);
-          } else if (effectType === 'noise' && effect.node.main) {
-            logger.log(`✅ Noise main connected to destination: ${effect.node.main.numberOfOutputs > 0}`);
-            logger.log(`✅ Noise flanger connected: ${effect.node.flanger ? 'yes' : 'no'}`);
-            logger.log(`✅ Noise distortion connected: ${effect.node.distortion ? 'yes' : 'no'}`);
-            logger.log(`✅ Noise gain: ${effect.node.gain ? 'exists' : 'missing'}`);
-          }
-        } catch (error) {
-          logger.error(`❌ Error testing ${effectType} routing:`, error);
+      // iOS Audio Test Function
+      testIOSAudio() {
+        logger.log('=== TESTING iOS AUDIO ===');
+
+        if (!this.audioContext) {
+          logger.error('❌ No audio context available');
+          return false;
         }
 
-        logger.log(`=== ${effectType.toUpperCase()} ROUTING TEST COMPLETE ===`);
+        logger.log(`Audio Context State: ${this.audioContext.state}`);
+        logger.log(`Audio Context Sample Rate: ${this.audioContext.sampleRate}`);
+        logger.log(`Master Gain Value: ${this.masterGain?.gain.value}`);
+        logger.log(`Destination Muted: ${this.audioContext.destination.muted}`);
+
+        // Create a simple test tone
+        try {
+          const oscillator = this.audioContext.createOscillator();
+          const gainNode = this.audioContext.createGain();
+
+          oscillator.type = 'sine';
+          oscillator.frequency.value = 440; // A4 note
+          gainNode.gain.value = 0.1; // Low volume for test
+
+          oscillator.connect(gainNode);
+          gainNode.connect(this.audioContext.destination);
+
+          oscillator.start();
+          setTimeout(() => {
+            oscillator.stop();
+            logger.log('✅ iOS Audio Test: Test tone played successfully');
+          }, 500);
+
+          return true;
+        } catch (error) {
+          logger.error('❌ iOS Audio Test failed:', error);
+          return false;
+        }
       }
 
-      testAllEffects() {
-        logger.log('=== TESTING ALL EFFECTS ===');
 
-        // Test each effect type
-        Object.keys(this.effects).forEach(effectType => {
-          const effect = this.effects[effectType];
-          logger.log(`\n--- Testing ${effectType.toUpperCase()} ---`);
-
-          if (effect.node) {
-            logger.log(`✅ Effect ${effectType} has node:`, effect.node);
-            this.testEffectAudioRouting(effectType, effect);
-          } else {
-            logger.log(`❌ Effect ${effectType} has no node`);
-          }
-        });
-
-        logger.log('\n=== ALL EFFECTS TEST COMPLETE ===');
-      }
     }
 
     // Initialize player when page loads
     document.addEventListener('DOMContentLoaded', () => {
-      new MultitrackPlayer();
+      window.player = new MultitrackPlayer();
     });
+
+            // iOS Audio Unlock System - Add event listeners for user interaction
+        function setupIOSAudioUnlock() {
+          const unlockAudio = () => {
+            logger.log('iOS Audio Unlock: User interaction detected, attempting to unlock audio...');
+
+            // Try to unlock any existing audio context
+            if (window.player && window.player.audioContext) {
+              const audioCtx = window.player.audioContext;
+              if (audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => {
+                  logger.log('iOS Audio Unlock: Audio context unlocked via user interaction!');
+                  // Show success message
+                  const unlockMsg = document.createElement('div');
+                  unlockMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:#4CAF50;color:white;padding:10px;border-radius:5px;z-index:9999;';
+                  unlockMsg.textContent = '🎵 Audio unlocked!';
+                  document.body.appendChild(unlockMsg);
+                  setTimeout(() => unlockMsg.remove(), 3000);
+                }).catch(err => {
+                  logger.error('iOS Audio Unlock: Failed to unlock audio context:', err);
+                });
+              }
+            }
+          };
+
+          // Add event listeners for iOS audio unlock
+          document.body.addEventListener('click', unlockAudio, { once: false });
+          document.body.addEventListener('touchstart', unlockAudio, { once: false });
+          document.body.addEventListener('touchend', unlockAudio, { once: false });
+
+          // Add keyboard shortcuts for iOS audio unlock
+          document.addEventListener('keydown', (e) => {
+            // Common shortcuts: space (play/pause), arrow keys, etc.
+            if ([' ', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter'].includes(e.key)) {
+              unlockAudio();
+            }
+          });
+
+          logger.log('iOS Audio Unlock: Event listeners set up for user interaction and shortcuts');
+        }
+
+    // Set up iOS audio unlock when page loads
+    document.addEventListener('DOMContentLoaded', setupIOSAudioUnlock);
   </script>
 </body>
 
