@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suno Multitrack Player - amaaåv</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="Multi-track audio player for Suno-generated music with individual track controls and waveform visualization">
+  <meta name="keywords" content="audio, multitrack, player, Suno, music, waveform, controls">
+  <meta name="author" content="amaaov">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html">
+  <meta property="og:title" content="Suno Multitrack Player - amaaåv">
+  <meta property="og:description" content="Multi-track audio player for Suno-generated music">
+  <meta property="og:image" content="https://amaaov.github.io/index.jpeg">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Suno Multitrack Player - amaaåv">
+  <meta name="twitter:description" content="Multi-track audio player for Suno-generated music">
+  <meta name="twitter:image" content="https://amaaov.github.io/index.jpeg">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #f8f9fa;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 60px 40px;
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      position: relative;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%, rgba(255, 255, 255, 0.01) 100%);
+      border-radius: 24px;
+      pointer-events: none;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 40px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: relative;
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #64ffda, #00d4ff, #ff6b9d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.03em;
+      text-shadow: 0 0 30px rgba(100, 255, 218, 0.3);
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1.4;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .song-selector {
+      background: rgba(255, 255, 255, 0.01);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .song-selector h3 {
+      color: #64ffda;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .song-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .song-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .song-btn:hover {
+      background: rgba(100, 255, 218, 0.1);
+      border-color: rgba(100, 255, 218, 0.3);
+      color: #64ffda;
+    }
+
+    .song-btn.active {
+      background: rgba(100, 255, 218, 0.15);
+      border-color: #64ffda;
+      color: #64ffda;
+    }
+
+    .player-controls {
+      background: rgba(255, 255, 255, 0.01);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .control-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 15px 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 1rem;
+      min-width: 80px;
+    }
+
+    .control-btn:hover {
+      background: rgba(100, 255, 218, 0.1);
+      border-color: rgba(100, 255, 218, 0.3);
+      color: #64ffda;
+    }
+
+    .control-btn:active {
+      transform: scale(0.98);
+    }
+
+    .control-btn.play {
+      background: rgba(100, 255, 218, 0.1);
+      border-color: rgba(100, 255, 218, 0.3);
+      color: #64ffda;
+    }
+
+    .control-btn.play:hover {
+      background: rgba(100, 255, 218, 0.2);
+    }
+
+    .progress-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #64ffda, #00d4ff);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+
+    .progress-handle {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      width: 16px;
+      height: 16px;
+      background: #64ffda;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+    }
+
+    .master-volume {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .volume-label {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .volume-slider {
+      width: 150px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #64ffda;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+    }
+
+    .volume-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: #64ffda;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+    }
+
+    .tracks-container {
+      background: rgba(255, 255, 255, 0.01);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+    }
+
+
+
+    .track {
+      display: grid;
+      grid-template-columns: 100px 1fr 120px;
+      gap: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 16px;
+      margin-bottom: 15px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      align-items: center;
+    }
+
+    .track:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+          .track-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+        padding: 0;
+        margin: 0;
+      }
+
+      .track-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .track-name {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+      }
+
+      .track-duration {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .track-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+    .track-icon.vocals { background: rgba(255, 105, 180, 0.2); color: #ff69b4; }
+    .track-icon.drums { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+    .track-icon.bass { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+    .track-icon.synth { background: rgba(33, 150, 243, 0.2); color: #2196f3; }
+
+    .track-waveform {
+      position: relative;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .waveform-canvas {
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .playhead {
+      position: absolute;
+      top: 0;
+      left: 0%;
+      width: 2px;
+      height: 100%;
+      background: #64ffda;
+      pointer-events: none;
+      z-index: 10;
+      box-shadow: 0 0 8px rgba(100, 255, 218, 0.8);
+    }
+
+    .track-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .track-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .track-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .track-btn.active {
+      background: rgba(100, 255, 218, 0.2);
+      border-color: #64ffda;
+      color: #64ffda;
+    }
+
+    .track-btn.muted {
+      background: rgba(255, 107, 107, 0.2);
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+    }
+
+    .track-volume {
+      width: 80px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .track-volume::-webkit-slider-thumb {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      background: #64ffda;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(100, 255, 218, 0.5);
+    }
+
+    .track-volume::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      background: #64ffda;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 8px rgba(100, 255, 218, 0.5);
+    }
+
+    .track-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .track-name {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+    }
+
+    .track-duration {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px 10px;
+        padding: 40px 25px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+      }
+
+
+
+      .track {
+        grid-template-columns: 80px 1fr 110px;
+        gap: 15px;
+        padding: 15px;
+      }
+
+      .track-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+      }
+
+      /* Make track-meta more compact on mobile */
+      .track-meta {
+        gap: 2px;
+        align-items: center;
+      }
+
+      /* Hide track info on mobile */
+      .track-info {
+        display: none;
+      }
+
+      .control-buttons {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .control-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-width: 70px;
+      }
+
+      .song-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 10px 5px;
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+
+
+      .track {
+        grid-template-columns: 60px 1fr 90px;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .track-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+      }
+
+      /* Make track-meta even more compact on small mobile */
+      .track-meta {
+        gap: 1px;
+        align-items: center;
+      }
+
+      /* Hide track info on small screens */
+      .track-info {
+        display: none;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #64ffda, #00d4ff);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #00d4ff, #64ffda);
+    }
+
+    /* Selection styling */
+    ::selection {
+      background: rgba(100, 255, 218, 0.3);
+      color: #ffffff;
+    }
+
+    ::-moz-selection {
+      background: rgba(100, 255, 218, 0.3);
+      color: #ffffff;
+    }
+
+    /* Marks display styling */
+    .marks-container {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .marks-list {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+    }
+
+    .mark-item {
+      color: #64ffda;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: inline-block;
+      margin: 2px 0;
+    }
+
+    .mark-item:hover {
+      background: rgba(100, 255, 218, 0.1);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .mark-item:active {
+      transform: translateY(0);
+    }
+
+    /* Keyboard shortcuts info */
+    .keyboard-info {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .keyboard-info strong {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .keyboard-info .key {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    /* Effects controls styling */
+    .effects-controls {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .effects-controls h4 {
+      margin: 0 0 15px 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .effects-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .effect-btn {
+      background: rgba(100, 255, 218, 0.1);
+      border: 1px solid rgba(100, 255, 218, 0.3);
+      color: #64ffda;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .effect-btn:hover {
+      background: rgba(100, 255, 218, 0.2);
+      border-color: rgba(100, 255, 218, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(100, 255, 218, 0.2);
+    }
+
+    .effect-btn:active {
+      transform: translateY(0);
+    }
+
+    .effect-btn.active {
+      background: rgba(100, 255, 218, 0.3);
+      border-color: #64ffda;
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(100, 255, 218, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .effects-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .effect-btn {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .effects-buttons {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Suno Multitrack Player</h1>
+      <p class="subtitle">Multi-track audio player for Suno-generated music with individual track controls</p>
+    </header>
+
+    <div class="song-selector">
+      <h3>Select Song</h3>
+      <div class="song-buttons">
+        <button class="song-btn active" data-song="dacha">🏡 На старой даче</button>
+        <button class="song-btn" data-song="ulitsa">🏙️ Улица знает всё</button>
+      </div>
+    </div>
+
+    <div class="player-controls">
+      <div class="control-buttons">
+        <button class="control-btn play" id="playBtn">▶ Play</button>
+        <button class="control-btn" id="pauseBtn">⏸ Pause</button>
+        <button class="control-btn" id="stopBtn">⏹ Stop</button>
+      </div>
+
+      <div class="progress-container">
+        <div class="time-display">
+          <span id="currentTime">0:00</span>
+          <span id="totalTime">0:00</span>
+        </div>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="progress-handle" id="progressHandle"></div>
+        </div>
+      </div>
+
+      <div class="master-volume">
+        <span class="volume-label">Master Volume</span>
+        <input type="range" class="volume-slider" id="masterVolume" min="0" max="100" value="80">
+      </div>
+
+      <div class="effects-controls">
+        <h4>Fun Effects</h4>
+        <div class="effects-buttons">
+          <button class="effect-btn" id="reverbBtn" data-effect="reverb">🌊 Heavy Reverb</button>
+          <button class="effect-btn" id="scatterBtn" data-effect="scatter">🌀 Scatter</button>
+          <button class="effect-btn" id="pitchBtn" data-effect="pitch">🎵 Pitch Shift</button>
+          <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Ring Mod</button>
+        </div>
+      </div>
+
+      <div class="keyboard-info">
+        <strong>Keyboard Shortcuts:</strong><br>
+        <span class="key">Space</span> Play/Pause •
+        <span class="key">←</span> <span class="key">→</span> Skip 5s •
+        <span class="key">K</span> Add Mark •
+        <span class="key">Shift</span>+<span class="key">←</span> <span class="key">Shift</span>+<span class="key">→</span> Jump Between Marks
+      </div>
+    </div>
+
+        <div class="tracks-container">
+      <div id="tracksList">
+        <div class="loading">Loading tracks...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class MultitrackPlayer {
+      constructor() {
+        this.audioContext = null;
+        this.tracks = [];
+        this.currentSong = 'dacha';
+        this.isPlaying = false;
+        this.currentTime = 0;
+        this.duration = 0;
+        this.masterGain = null;
+        this.soloedTracks = new Set();
+        this.marks = []; // Array to store time marks
+
+        // Effects properties
+        this.effects = {
+          reverb: { active: false, node: null },
+          scatter: { active: false, node: null },
+          pitch: { active: false, node: null },
+          ringmod: { active: false, node: null }
+        };
+
+        this.initializeAudio();
+        this.setupEventListeners();
+        this.loadTracks();
+      }
+
+      async initializeAudio() {
+        try {
+          this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          this.masterGain = this.audioContext.createGain();
+          this.masterGain.connect(this.audioContext.destination);
+          this.masterGain.gain.value = 0.8;
+
+          // Resume audio context on first user interaction
+          document.addEventListener('click', () => {
+            if (this.audioContext.state === 'suspended') {
+              this.audioContext.resume();
+            }
+          }, { once: true });
+
+        } catch (error) {
+          console.error('Failed to initialize audio context:', error);
+        }
+      }
+
+      setupEventListeners() {
+        // Mobile unlock (Safari/Firefox Focus): resume audio on first user gesture and visibility change
+        const unlock = async () => {
+          try {
+            if (this.audioContext && this.audioContext.state !== 'running') {
+              await this.audioContext.resume();
+            }
+          } catch (_) {}
+        };
+        ['touchstart','touchend','mousedown','keydown','pointerdown'].forEach(evt => {
+          window.addEventListener(evt, unlock, { once: true, passive: true });
+        });
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') unlock();
+        });
+
+        // Song selection
+        document.querySelectorAll('.song-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.song-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            this.currentSong = e.target.dataset.song;
+            this.loadTracks();
+          });
+        });
+
+        // Player controls
+        document.getElementById('playBtn').addEventListener('click', () => {
+          console.log('Play button clicked');
+          this.play();
+        });
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+          console.log('Pause button clicked');
+          this.pause();
+        });
+        document.getElementById('stopBtn').addEventListener('click', () => {
+          console.log('Stop button clicked');
+          this.stop();
+        });
+
+        // Progress bar
+        const progressBar = document.getElementById('progressBar');
+        // Passive click-to-seek for Safari mobile
+        progressBar.addEventListener('click', (e) => this.seek(e), { passive: true });
+        // Support dragging the handle for finer seeking
+        let isScrubbing = false;
+        const onMove = (e) => {
+          if (!isScrubbing) return;
+          this.seek(e.changedTouches ? { currentTarget: progressBar, clientX: e.changedTouches[0].clientX } : e);
+        };
+        progressBar.addEventListener('mousedown', (e) => { isScrubbing = true; onMove(e); });
+        progressBar.addEventListener('touchstart', (e) => { isScrubbing = true; onMove(e); }, { passive: true });
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('touchmove', onMove, { passive: true });
+        const endScrub = () => { isScrubbing = false; };
+        window.addEventListener('mouseup', endScrub);
+        window.addEventListener('touchend', endScrub, { passive: true });
+
+        // Master volume (input + change for iOS sliders)
+        const vol = document.getElementById('masterVolume');
+        const setVol = (e) => {
+          if (this.masterGain) {
+            this.masterGain.gain.value = e.target.value / 100;
+          }
+        };
+        vol.addEventListener('input', setVol, { passive: true });
+        vol.addEventListener('change', setVol, { passive: true });
+
+        // Initialize keyboard shortcuts
+        this.initializeKeyboardShortcuts();
+
+        // Initialize effects controls
+        this.initializeEffectsControls();
+
+        // (testAudio button removed)
+      }
+
+      initializeKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+          // Ignore shortcuts when typing in input fields
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            return;
+          }
+
+          switch (e.code) {
+            case 'Space':
+              e.preventDefault();
+              if (this.isPlaying) {
+                this.pause();
+              } else {
+                this.play();
+              }
+              break;
+
+            case 'ArrowLeft':
+              e.preventDefault();
+              if (e.shiftKey) {
+                // Shift + Left: Jump to previous mark
+                this.jumpToPreviousMark();
+              } else {
+                // Left: Skip backward 5 seconds
+                this.skipTime(-5);
+              }
+              break;
+
+            case 'ArrowRight':
+              e.preventDefault();
+              if (e.shiftKey) {
+                // Shift + Right: Jump to next mark
+                this.jumpToNextMark();
+              } else {
+                // Right: Skip forward 5 seconds
+                this.skipTime(5);
+              }
+              break;
+
+            case 'KeyK':
+              e.preventDefault();
+              this.addMark();
+              break;
+          }
+        });
+      }
+
+      initializeEffectsControls() {
+        // Add event listeners for effect buttons
+        document.getElementById('reverbBtn').addEventListener('click', () => this.toggleEffect('reverb'));
+        document.getElementById('scatterBtn').addEventListener('click', () => this.toggleEffect('scatter'));
+        document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
+        document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
+      }
+
+            async loadTracks() {
+        const tracksList = document.getElementById('tracksList');
+        tracksList.innerHTML = '<div class="loading">Loading tracks...</div>';
+
+        try {
+          const songData = this.getSongData();
+          this.tracks = [];
+
+          const tracksHTML = songData.map((track, index) => {
+            const trackId = `track-${index}`;
+            return this.createTrackHTML(track, trackId);
+          }).join('');
+
+          tracksList.innerHTML = tracksHTML;
+
+          // Initialize tracks
+          for (let i = 0; i < songData.length; i++) {
+            await this.initializeTrack(songData[i], i);
+          }
+
+          console.log('All tracks loaded:', this.tracks);
+          this.setupTrackEventListeners();
+          this.updateDuration();
+        } catch (error) {
+          console.error('Failed to load tracks:', error);
+          tracksList.innerHTML = '<div class="error">Failed to load tracks. Please try again.</div>';
+        }
+      }
+
+                  getSongData() {
+        const songs = {
+          ulitsa: [
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё (Bass).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/Улица знает всё (Synth).wav' }
+          ],
+          dacha: [
+            { name: 'Vocals', icon: '🎤', color: '#ff69b4', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Vocals).wav' },
+            { name: 'Drums', icon: '🥁', color: '#4caf50', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Drums).wav' },
+            { name: 'Bass', icon: '🎸', color: '#ff9800', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Bass).wav' },
+            { name: 'Synth', icon: '🎹', color: '#2196f3', file: '/pages/20250821113700_suno_multitrack_example/На старой даче (Synth).wav' }
+          ]
+        };
+
+        console.log('Song data for', this.currentSong, ':', songs[this.currentSong]);
+        return songs[this.currentSong] || [];
+      }
+
+      createTrackHTML(track, trackId) {
+        const iconClass = track.name.toLowerCase().includes('vocals') ? 'vocals' :
+                         track.name.toLowerCase().includes('drums') ? 'drums' :
+                         track.name.toLowerCase().includes('bass') ? 'bass' : 'synth';
+
+        return `
+          <div class="track" data-track-id="${trackId}">
+            <div class="track-meta">
+              <div class="track-icon ${iconClass}">${track.icon}</div>
+              <div class="track-info">
+                <div class="track-name">${track.name}</div>
+                <div class="track-duration">0:00</div>
+              </div>
+            </div>
+            <div class="track-waveform" data-track-id="${trackId}">
+              <canvas class="waveform-canvas" width="400" height="60"></canvas>
+              <div class="playhead" style="position: absolute; top: 0; left: 0%; width: 2px; height: 100%; background: #64ffda; pointer-events: none; z-index: 10;"></div>
+            </div>
+            <div class="track-controls">
+              <div class="control-group">
+                <button class="track-btn" data-action="mute" title="Mute">M</button>
+                <button class="track-btn" data-action="solo" title="Solo">S</button>
+              </div>
+              <input type="range" class="track-volume" min="0" max="100" value="80" title="Volume">
+            </div>
+          </div>
+        `;
+      }
+
+                  async initializeTrack(trackData, index) {
+        const trackId = `track-${index}`;
+        const trackElement = document.querySelector(`[data-track-id="${trackId}"]`);
+
+        try {
+          console.log(`Loading track: ${trackData.file}`);
+          const filePath = trackData.file; // Use absolute path directly
+          console.log(`Full file path: ${filePath}`);
+          const response = await fetch(filePath);
+          console.log(`Response status: ${response.status} ${response.statusText}`);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const arrayBuffer = await response.arrayBuffer();
+          console.log(`Audio data loaded, size: ${arrayBuffer.byteLength} bytes`);
+
+          // Safari-safe decode path: try promise decode first, fall back to callback API
+          const decodeWithFallback = (ctx, buf) => new Promise((resolve, reject) => {
+            try {
+              const maybePromise = ctx.decodeAudioData(buf, resolve, reject);
+              // If decodeAudioData returns a promise (modern spec), chain it
+              if (maybePromise && typeof maybePromise.then === 'function') {
+                maybePromise.then(resolve).catch(reject);
+              }
+            } catch (e) {
+              reject(e);
+            }
+          });
+          const audioBuffer = await decodeWithFallback(this.audioContext, arrayBuffer);
+          console.log(`Audio decoded, duration: ${audioBuffer.duration}s, channels: ${audioBuffer.numberOfChannels}`);
+
+          const track = {
+            id: trackId,
+            name: trackData.name,
+            element: trackElement,
+            audioBuffer: audioBuffer,
+            source: null,
+            gainNode: null,
+            isMuted: false,
+            isSoloed: false,
+            volume: 0.8
+          };
+
+          // Create gain node
+          track.gainNode = this.audioContext.createGain();
+          track.gainNode.gain.value = track.volume;
+
+          // Connect gain node to master gain immediately
+          track.gainNode.connect(this.masterGain);
+
+          this.tracks.push(track);
+
+          // Update duration
+          const duration = audioBuffer.duration;
+          const minutes = Math.floor(duration / 60);
+          const seconds = Math.floor(duration % 60);
+          trackElement.querySelector('.track-duration').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+          // Generate waveform
+          this.generateWaveform(track, trackData.color);
+
+          console.log(`Track ${trackData.name} loaded successfully:`, track);
+
+        } catch (error) {
+          console.error(`Failed to load track ${trackData.name}:`, error);
+          trackElement.querySelector('.track-duration').textContent = 'Error';
+        }
+      }
+
+            generateWaveform(track, color) {
+        const canvas = track.element.querySelector('.waveform-canvas');
+        const ctx = canvas.getContext('2d');
+        const audioBuffer = track.audioBuffer;
+
+        const data = audioBuffer.getChannelData(0);
+        const step = Math.ceil(data.length / canvas.width);
+        const amp = canvas.height / 2;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = color;
+
+        // Apply smoothing to the waveform
+        const smoothedData = [];
+        for (let i = 0; i < canvas.width; i++) {
+          let min = 1.0;
+          let max = -1.0;
+
+          for (let j = 0; j < step; j++) {
+            const datum = data[(i * step) + j];
+            if (datum < min) min = datum;
+            if (datum > max) max = datum;
+          }
+
+          smoothedData.push({ min, max });
+        }
+
+        // Apply moving average smoothing
+        const smoothingWindow = 3;
+        for (let i = 0; i < canvas.width; i++) {
+          let smoothMin = 0;
+          let smoothMax = 0;
+          let count = 0;
+
+          for (let j = Math.max(0, i - smoothingWindow); j <= Math.min(canvas.width - 1, i + smoothingWindow); j++) {
+            smoothMin += smoothedData[j].min;
+            smoothMax += smoothedData[j].max;
+            count++;
+          }
+
+          smoothMin /= count;
+          smoothMax /= count;
+
+          const height = Math.max(1, (smoothMax - smoothMin) * amp);
+          const y = (1 + smoothMin) * amp;
+
+          ctx.fillRect(i, y, 1, height);
+        }
+      }
+
+      setupTrackEventListeners() {
+        this.tracks.forEach(track => {
+          const element = track.element;
+
+          // Mute button
+          element.querySelector('[data-action="mute"]').addEventListener('click', () => {
+            this.toggleMute(track);
+          });
+
+          // Solo button
+          element.querySelector('[data-action="solo"]').addEventListener('click', () => {
+            this.toggleSolo(track);
+          });
+
+          // Volume slider
+          element.querySelector('.track-volume').addEventListener('input', (e) => {
+            this.setTrackVolume(track, e.target.value / 100);
+          });
+
+          // Waveform click
+          const wf = element.querySelector('.track-waveform');
+          // Click & drag seek on waveform (mobile-friendly)
+          let seeking = false;
+          const seekEvent = (event) => {
+            const clientX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
+            const rect = wf.getBoundingClientRect();
+            const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+            const percentage = x / rect.width;
+            const seekTime = percentage * (this.duration || track.audioBuffer.duration);
+            this.seekToTime(seekTime);
+          };
+
+          // Use mousedown for immediate seeking, remove click to avoid double events
+          wf.addEventListener('mousedown', (e) => {
+            seeking = true;
+            seekEvent(e);
+          });
+
+          // Throttle mousemove to prevent excessive seeking during drag
+          let lastSeekTime = 0;
+          wf.addEventListener('mousemove', (e) => {
+            if (seeking) {
+              const now = Date.now();
+              if (now - lastSeekTime > 50) { // Only seek every 50ms during drag
+                seekEvent(e);
+                lastSeekTime = now;
+              }
+            }
+          });
+          wf.addEventListener('mouseup', () => { seeking = false; });
+          wf.addEventListener('mouseleave', () => { seeking = false; });
+
+          // Touch events for mobile
+          wf.addEventListener('touchstart', (e) => {
+            seeking = true;
+            seekEvent(e);
+          }, { passive: true });
+
+          // Throttle touchmove as well
+          let lastTouchSeekTime = 0;
+          wf.addEventListener('touchmove', (e) => {
+            if (seeking) {
+              const now = Date.now();
+              if (now - lastTouchSeekTime > 50) { // Only seek every 50ms during touch drag
+                seekEvent(e);
+                lastTouchSeekTime = now;
+              }
+            }
+          }, { passive: true });
+          wf.addEventListener('touchend', () => { seeking = false; });
+        });
+      }
+
+      toggleMute(track) {
+        track.isMuted = !track.isMuted;
+        const btn = track.element.querySelector('[data-action="mute"]');
+
+        if (track.isMuted) {
+          btn.classList.add('muted');
+          track.gainNode.gain.value = 0;
+        } else {
+          btn.classList.remove('muted');
+          track.gainNode.gain.value = track.volume;
+        }
+      }
+
+      toggleSolo(track) {
+        track.isSoloed = !track.isSoloed;
+        const btn = track.element.querySelector('[data-action="solo"]');
+
+        if (track.isSoloed) {
+          this.soloedTracks.add(track.id);
+          btn.classList.add('active');
+        } else {
+          this.soloedTracks.delete(track.id);
+          btn.classList.remove('active');
+        }
+
+        this.updateTrackVisibility();
+      }
+
+      updateTrackVisibility() {
+        this.tracks.forEach(track => {
+          if (this.soloedTracks.size > 0) {
+            // Some tracks are soloed
+            if (track.isSoloed) {
+              track.gainNode.gain.value = track.volume;
+            } else {
+              track.gainNode.gain.value = 0;
+            }
+          } else {
+            // No solo tracks, respect mute state
+            if (track.isMuted) {
+              track.gainNode.gain.value = 0;
+            } else {
+              track.gainNode.gain.value = track.volume;
+            }
+          }
+        });
+      }
+
+      setTrackVolume(track, volume) {
+        track.volume = volume;
+        console.log(`Setting track ${track.id} volume to ${volume}`);
+
+        if (this.soloedTracks.size > 0) {
+          // Some tracks are soloed
+          if (track.isSoloed) {
+            track.gainNode.gain.value = volume;
+          } else {
+            track.gainNode.gain.value = 0;
+          }
+        } else {
+          // No solo tracks, respect mute state
+          if (track.isMuted) {
+            track.gainNode.gain.value = 0;
+          } else {
+            track.gainNode.gain.value = volume;
+          }
+        }
+      }
+
+
+
+                        seekToTime(time) {
+        const seekTime = Math.max(0, Math.min(time, this.duration));
+
+        // Prevent seeking to the same time multiple times
+        if (Math.abs(this.currentTime - seekTime) < 0.1) {
+          return;
+        }
+
+        console.log(`Seeking to time: ${seekTime}s`);
+
+        // Update current time
+        this.currentTime = seekTime;
+
+        if (this.isPlaying) {
+          // Restart playback from that position
+          this.restartPlayback();
+        }
+
+        // Always update progress and waveform playheads
+        this.updateProgress();
+        this.updateWaveformPlayheads();
+      }
+
+                        play() {
+        console.log('Play method called');
+        if (!this.audioContext || this.tracks.length === 0) {
+          console.log('Cannot play: audioContext or tracks not ready');
+          return;
+        }
+
+        console.log('Audio context state:', this.audioContext.state);
+        if (this.audioContext.state === 'suspended') {
+          console.log('Resuming audio context...');
+          this.audioContext.resume();
+        }
+
+        this.isPlaying = true;
+        document.getElementById('playBtn').classList.add('play');
+        document.getElementById('pauseBtn').classList.remove('play');
+
+        console.log(`Starting ${this.tracks.length} tracks from time ${this.currentTime}`);
+
+        this.tracks.forEach((track, index) => {
+          console.log(`Starting track ${index}: ${track.id}`);
+
+          if (track.source) {
+            try {
+              track.source.stop();
+            } catch (e) {
+              console.log('Track source already stopped');
+            }
+          }
+
+          track.source = this.audioContext.createBufferSource();
+          track.source.buffer = track.audioBuffer;
+          track.source.connect(track.gainNode);
+          // ensure connection
+          try { track.gainNode.disconnect(); } catch (_) {}
+          track.gainNode.connect(this.masterGain);
+
+          try {
+            // Start each buffer at the same offset to keep them aligned
+            const offset = Math.min(this.currentTime, track.audioBuffer.duration - 0.001);
+            track.source.start(0, offset);
+            console.log(`Track ${index} started successfully`);
+          } catch (e) {
+            console.error(`Failed to start track ${index}:`, e);
+          }
+        });
+
+        this.startProgressUpdate();
+      }
+
+      restartPlayback() {
+        console.log(`Restarting playback from time ${this.currentTime}s`);
+
+        // Stop current sources without resetting currentTime
+        this.tracks.forEach(track => {
+          if (track.source) {
+            try {
+              track.source.stop();
+            } catch (e) {
+              console.log('Track source already stopped');
+            }
+            track.source = null;
+          }
+        });
+
+        // Restart from current position
+        this.tracks.forEach((track, index) => {
+          console.log(`Restarting track ${index}: ${track.id} from ${this.currentTime}s`);
+
+          track.source = this.audioContext.createBufferSource();
+          track.source.buffer = track.audioBuffer;
+          track.source.connect(track.gainNode);
+
+          try {
+            const offset = Math.min(this.currentTime, track.audioBuffer.duration - 0.001);
+            track.source.start(0, offset);
+            console.log(`Track ${index} restarted successfully from ${offset}s`);
+          } catch (e) {
+            console.error(`Failed to restart track ${index}:`, e);
+          }
+        });
+      }
+
+      pause() {
+        this.isPlaying = false;
+        document.getElementById('playBtn').classList.remove('play');
+        document.getElementById('pauseBtn').classList.add('play');
+
+        this.tracks.forEach(track => {
+          if (track.source) {
+            track.source.stop();
+            track.source = null;
+          }
+        });
+
+        this.stopProgressUpdate();
+      }
+
+      stop() {
+        this.isPlaying = false;
+        this.currentTime = 0;
+        document.getElementById('playBtn').classList.remove('play');
+        document.getElementById('pauseBtn').classList.remove('play');
+
+        this.tracks.forEach(track => {
+          if (track.source) {
+            track.source.stop();
+            track.source = null;
+          }
+        });
+
+        this.stopProgressUpdate();
+        this.updateProgress();
+      }
+
+      startProgressUpdate() {
+        // Reference point for sync
+        const startRef = this.audioContext ? this.audioContext.currentTime - this.currentTime : 0;
+        const tick = () => {
+          if (!this.isPlaying) return;
+          // Use AudioContext timebase for accuracy on mobile
+          if (this.audioContext) {
+            this.currentTime = Math.max(0, this.audioContext.currentTime - startRef);
+          } else {
+            this.currentTime += 0.016;
+          }
+          if (this.currentTime >= this.duration) {
+            this.stop();
+            return;
+          }
+          this.updateProgress();
+          this.progressInterval = requestAnimationFrame(tick);
+        };
+        this.progressInterval = requestAnimationFrame(tick);
+      }
+
+      stopProgressUpdate() {
+        if (this.progressInterval) {
+          cancelAnimationFrame(this.progressInterval);
+          this.progressInterval = null;
+        }
+      }
+
+      updateProgress() {
+        const percentage = (this.currentTime / this.duration) * 100;
+        document.getElementById('progressFill').style.width = `${percentage}%`;
+        document.getElementById('progressHandle').style.left = `${percentage}%`;
+
+        const currentMinutes = Math.floor(this.currentTime / 60);
+        const currentSeconds = Math.floor(this.currentTime % 60);
+        document.getElementById('currentTime').textContent =
+          `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+
+        this.updateWaveformPlayheads();
+      }
+
+      updateDuration() {
+        if (this.tracks.length > 0) {
+          this.duration = Math.max(...this.tracks.map(t => t.audioBuffer.duration));
+          const totalMinutes = Math.floor(this.duration / 60);
+          const totalSeconds = Math.floor(this.duration % 60);
+          document.getElementById('totalTime').textContent =
+            `${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
+        }
+      }
+
+      seek(event) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const percentage = x / rect.width;
+        const seekTime = percentage * this.duration;
+        console.log(`Main progress bar seek: ${x}px, ${percentage * 100}%, time: ${seekTime}s`);
+        this.seekToTime(seekTime);
+      }
+
+      updateWaveformPlayheads() {
+        if (this.duration > 0) {
+          const percentage = (this.currentTime / this.duration) * 100;
+          this.tracks.forEach(track => {
+            const playhead = track.element.querySelector('.playhead');
+            if (playhead) {
+              playhead.style.left = `${percentage}%`;
+            }
+          });
+        }
+      }
+
+      // Keyboard shortcut helper methods
+      skipTime(seconds) {
+        const newTime = Math.max(0, Math.min(this.currentTime + seconds, this.duration));
+        this.seekToTime(newTime);
+      }
+
+      addMark() {
+        const mark = {
+          time: this.currentTime,
+          label: `Mark ${this.marks.length + 1}`,
+          timestamp: Date.now()
+        };
+        this.marks.push(mark);
+        this.marks.sort((a, b) => a.time - b.time); // Keep marks sorted by time
+        console.log(`Added mark at ${this.formatTime(mark.time)}: ${mark.label}`);
+        this.displayMarks();
+      }
+
+      jumpToPreviousMark() {
+        if (this.marks.length === 0) return;
+
+        const currentMarkIndex = this.marks.findIndex(mark => mark.time > this.currentTime);
+        let targetMark;
+
+        if (currentMarkIndex === -1) {
+          // Current time is after all marks, go to last mark
+          targetMark = this.marks[this.marks.length - 1];
+        } else if (currentMarkIndex === 0) {
+          // Current time is before first mark, go to first mark
+          targetMark = this.marks[0];
+        } else {
+          // Go to previous mark
+          targetMark = this.marks[currentMarkIndex - 1];
+        }
+
+        if (targetMark) {
+          this.seekToTime(targetMark.time);
+          console.log(`Jumped to previous mark: ${targetMark.label} at ${this.formatTime(targetMark.time)}`);
+        }
+      }
+
+      jumpToNextMark() {
+        if (this.marks.length === 0) return;
+
+        const currentMarkIndex = this.marks.findIndex(mark => mark.time > this.currentTime);
+        let targetMark;
+
+        if (currentMarkIndex === -1) {
+          // Current time is after all marks, go to first mark
+          targetMark = this.marks[0];
+        } else if (currentMarkIndex >= this.marks.length) {
+          // Current time is after last mark, go to first mark
+          targetMark = this.marks[0];
+        } else {
+          // Go to next mark
+          targetMark = this.marks[currentMarkIndex];
+        }
+
+        if (targetMark) {
+          this.seekToTime(targetMark.time);
+          console.log(`Jumped to next mark: ${targetMark.label} at ${this.formatTime(targetMark.time)}`);
+        }
+      }
+
+      displayMarks() {
+        // Create or update marks display
+        let marksContainer = document.getElementById('marksContainer');
+        if (!marksContainer) {
+          marksContainer = document.createElement('div');
+          marksContainer.id = 'marksContainer';
+          marksContainer.className = 'marks-container';
+          document.querySelector('.player-controls').appendChild(marksContainer);
+        }
+
+        marksContainer.innerHTML = '';
+        if (this.marks.length > 0) {
+          const marksList = document.createElement('div');
+          marksList.className = 'marks-list';
+          marksList.innerHTML = '<strong>Marks:</strong> ';
+
+          this.marks.forEach((mark, index) => {
+            const markSpan = document.createElement('span');
+            markSpan.className = 'mark-item';
+            markSpan.textContent = `${mark.label} (${this.formatTime(mark.time)})`;
+            markSpan.addEventListener('click', () => this.seekToTime(mark.time));
+            markSpan.title = `Click to jump to ${mark.label}`;
+            marksList.appendChild(markSpan);
+            if (index < this.marks.length - 1) {
+              marksList.appendChild(document.createTextNode(' • '));
+            }
+          });
+
+          marksContainer.appendChild(marksList);
+        }
+      }
+
+      formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs.toString().padStart(2, '0')}`;
+      }
+
+      // Effects methods
+      toggleEffect(effectType) {
+        const effect = this.effects[effectType];
+        const button = document.getElementById(`${effectType}Btn`);
+
+        if (effect.active) {
+          this.disableEffect(effectType);
+          button.classList.remove('active');
+        } else {
+          this.enableEffect(effectType);
+          button.classList.add('active');
+        }
+      }
+
+      enableEffect(effectType) {
+        if (!this.audioContext) return;
+
+        const effect = this.effects[effectType];
+        if (effect.active) return;
+
+        effect.active = true;
+        effect.node = this.createEffectNode(effectType);
+
+        if (effect.node) {
+          // Insert effect into audio chain
+          this.insertEffectIntoChain(effectType);
+          console.log(`${effectType} effect enabled`);
+        }
+      }
+
+            disableEffect(effectType) {
+        const effect = this.effects[effectType];
+        if (!effect.active) return;
+
+        effect.active = false;
+
+        // Remove effect from audio chain
+        this.removeEffectFromChain(effectType);
+
+        if (effect.node) {
+          // Properly disconnect all nodes based on effect type
+          this.disconnectEffectNodes(effectType, effect.node);
+          effect.node = null;
+        }
+
+        console.log(`${effectType} effect disabled`);
+      }
+
+      disconnectEffectNodes(effectType, effectNode) {
+        switch (effectType) {
+          case 'reverb':
+            if (effectNode.convolver) effectNode.convolver.disconnect();
+            if (effectNode.gain) effectNode.gain.disconnect();
+            break;
+          case 'scatter':
+            if (effectNode.delays) {
+              effectNode.delays.forEach(({ delay, gain }) => {
+                delay.disconnect();
+                gain.disconnect();
+              });
+            }
+            if (effectNode.main) effectNode.main.disconnect();
+            break;
+          case 'pitch':
+            if (effectNode.delay) effectNode.delay.disconnect();
+            if (effectNode.feedback) effectNode.feedback.disconnect();
+            if (effectNode.lfo) effectNode.lfo.stop();
+            if (effectNode.lfoGain) effectNode.lfoGain.disconnect();
+            if (effectNode.main) effectNode.main.disconnect();
+            break;
+          case 'ringmod':
+            if (effectNode.carrier) {
+              effectNode.carrier.stop();
+              effectNode.carrier.disconnect();
+            }
+            if (effectNode.carrierGain) effectNode.carrierGain.disconnect();
+            if (effectNode.main) effectNode.main.disconnect();
+            break;
+        }
+      }
+
+      createEffectNode(effectType) {
+        switch (effectType) {
+          case 'reverb':
+            return this.createReverbNode();
+          case 'scatter':
+            return this.createScatterNode();
+          case 'pitch':
+            return this.createPitchNode();
+          case 'ringmod':
+            return this.createRingModNode();
+          default:
+            return null;
+        }
+      }
+
+            createReverbNode() {
+        // Create a convolution reverb using impulse response
+        const reverbNode = this.audioContext.createConvolver();
+
+        // Create a simple impulse response for heavy reverb
+        const sampleRate = this.audioContext.sampleRate;
+        const length = sampleRate * 2; // 2 second reverb
+        const impulse = this.audioContext.createBuffer(2, length, sampleRate);
+
+        for (let channel = 0; channel < 2; channel++) {
+          const channelData = impulse.getChannelData(channel);
+          for (let i = 0; i < length; i++) {
+            channelData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sampleRate * 0.1));
+          }
+        }
+
+        reverbNode.buffer = impulse;
+
+        // Add a gain node for wet/dry mix
+        const reverbGain = this.audioContext.createGain();
+        reverbGain.gain.value = 0.3; // 30% wet
+
+        // Connect reverb chain to master gain
+        reverbNode.connect(reverbGain);
+        reverbGain.connect(this.masterGain);
+
+        return { convolver: reverbNode, gain: reverbGain };
+      }
+
+            createScatterNode() {
+        // Create a granular synthesis effect
+        const scatterNode = this.audioContext.createGain();
+        scatterNode.gain.value = 1;
+
+        // Create a delay line with random taps
+        const delays = [];
+        for (let i = 0; i < 8; i++) {
+          const delay = this.audioContext.createDelay(0.1); // 100ms max delay
+          const gain = this.audioContext.createGain();
+          delay.delayTime.value = Math.random() * 0.1;
+          gain.gain.value = 0.1 + Math.random() * 0.2;
+
+          delay.connect(gain);
+          gain.connect(scatterNode);
+          delays.push({ delay, gain });
+        }
+
+        // Connect scatter output to master gain
+        scatterNode.connect(this.masterGain);
+
+        return { main: scatterNode, delays };
+      }
+
+            createPitchNode() {
+        // Create a pitch shifter using delay and feedback
+        const pitchNode = this.audioContext.createGain();
+        pitchNode.gain.value = 1;
+
+        // Create a delay line for pitch shifting
+        const delay = this.audioContext.createDelay(0.01); // 10ms delay
+        const feedback = this.audioContext.createGain();
+        feedback.gain.value = 0.3;
+
+        delay.connect(feedback);
+        feedback.connect(delay);
+        delay.connect(pitchNode);
+
+        // Modulate delay time for pitch effect
+        const lfo = this.audioContext.createOscillator();
+        const lfoGain = this.audioContext.createGain();
+        lfo.frequency.value = 2; // 2Hz modulation
+        lfoGain.gain.value = 0.005; // 5ms modulation depth
+
+        lfo.connect(lfoGain);
+        lfoGain.connect(delay.delayTime);
+        lfo.start();
+
+        // Connect pitch output to master gain
+        pitchNode.connect(this.masterGain);
+
+        return { main: pitchNode, delay, feedback, lfo, lfoGain };
+      }
+
+            createRingModNode() {
+        // Create a ring modulator
+        const ringModNode = this.audioContext.createGain();
+        ringModNode.gain.value = 1;
+
+        // Create carrier oscillator
+        const carrier = this.audioContext.createOscillator();
+        const carrierGain = this.audioContext.createGain();
+        carrier.frequency.value = 50; // 50Hz carrier
+        carrierGain.gain.value = 0.5;
+
+        carrier.connect(carrierGain);
+        carrierGain.connect(ringModNode);
+        carrier.start();
+
+        // Connect ring mod output to master gain
+        ringModNode.connect(this.masterGain);
+
+        return { main: ringModNode, carrier, carrierGain };
+      }
+
+                  insertEffectIntoChain(effectType) {
+        // Connect tracks through the effect without disconnecting existing connections
+        this.tracks.forEach(track => {
+          if (track.gainNode && track.source) {
+            const effect = this.effects[effectType];
+            if (effect && effect.node) {
+              if (effectType === 'reverb') {
+                // Reverb: connect to convolver
+                track.gainNode.connect(effect.node.convolver);
+              } else if (effectType === 'scatter') {
+                // Scatter: connect to each delay
+                effect.node.delays.forEach(({ delay }) => {
+                  track.gainNode.connect(delay);
+                });
+              } else if (effectType === 'pitch') {
+                // Pitch: connect to delay
+                track.gainNode.connect(effect.node.delay);
+              } else if (effectType === 'ringmod') {
+                // Ring mod: connect to main
+                track.gainNode.connect(effect.node.main);
+              }
+            }
+          }
+        });
+        console.log(`Effect ${effectType} inserted into audio chain`);
+      }
+
+      removeEffectFromChain(effectType) {
+        // Reconnect all tracks directly to master gain
+        this.tracks.forEach(track => {
+          if (track.gainNode) {
+            track.gainNode.disconnect();
+            track.gainNode.connect(this.masterGain);
+          }
+        });
+        console.log(`Effect ${effectType} removed from audio chain`);
+      }
+    }
+
+    // Initialize player when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      new MultitrackPlayer();
+    });
+  </script>
+</body>
+
+</html>
