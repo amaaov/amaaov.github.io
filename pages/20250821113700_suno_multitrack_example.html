@@ -1840,10 +1840,7 @@
           <span class="krazy-value" id="krazyValue">50</span>
         </div>
         <div class="effects-buttons">
-                      <button class="effect-btn" id="scatterBtn" data-effect="scatter">🌀 Scatter</button>
-          <button class="effect-btn" id="pitchBtn" data-effect="pitch">🎵 Pitch Shift</button>
-                                  <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Bitcrusher</button>
-            <button class="effect-btn" id="noiseBtn" data-effect="noise">🎭 Noise Flanger</button>
+                                  <button class="effect-btn" id="noiseBtn" data-effect="noise">🎭 Noise Flanger</button>
           </div>
         </div>
 
@@ -1916,9 +1913,6 @@
 
         // Effects properties
         this.effects = {
-          scatter: { active: false, node: null },
-          pitch: { active: false, node: null },
-          ringmod: { active: false, node: null },
           noise: { active: false, node: null }
         };
 
@@ -2313,10 +2307,7 @@
         });
 
         // Effects
-        document.getElementById('scatterBtn').addEventListener('click', () => this.toggleEffect('scatter'));
-        document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
-                  document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
-          document.getElementById('noiseBtn').addEventListener('click', () => this.toggleEffect('noise'));
+                  document.getElementById('noiseBtn').addEventListener('click', () => this.toggleEffect('noise'));
 
         // Krazy parameter
         document.getElementById('krazySlider').addEventListener('input', (e) => {
@@ -3200,9 +3191,7 @@
 
       initializeEffectsControls() {
         // Add event listeners for effect buttons
-        document.getElementById('scatterBtn').addEventListener('click', () => this.toggleEffect('scatter'));
-        document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
-        document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
+        // Only Noise Flanger effect is available
       }
 
       initializeCacheControls() {
@@ -5770,31 +5759,22 @@
         }
       }
 
-      /**
-       * 🎛️ EFFECTS SYSTEM - Audio Processing Chain
-       *
-       * This system manages all audio effects and their connections to the master audio chain.
-       * Each effect processes the master mix and applies its unique audio transformation.
-       *
-       * Available Effects:
-       * - 🌀 Scatter: Position jumping chaos
-       * - 🎵 Pitch Shift: LFO modulated pitch shifting
-       * - ⚡ Bitcrusher: Digital distortion & bit reduction
-       * - 🎭 Noise Flanger: White noise + distortion + flanging
-       *
-       * All effects are controlled by the "Krazy" parameter slider (0-100)
-       * which dynamically adjusts effect intensity and parameters in real-time.
-       */
+              /**
+         * 🎛️ EFFECTS SYSTEM - Audio Processing Chain
+         *
+         * This system manages all audio effects and their connections to the master audio chain.
+         * Each effect processes the master mix and applies its unique audio transformation.
+         *
+         * Available Effects:
+         * - 🎭 Noise Flanger: White noise + distortion + flanging
+         *
+         * All effects are controlled by the "Krazy" parameter slider (0-100)
+         * which dynamically adjusts effect intensity and parameters in real-time.
+         */
       createEffectNode(effectType) {
         switch (effectType) {
-          case 'scatter':
-            return this.createScatterNode();
-          case 'pitch':
-            return this.createPitchNode();
-          case 'ringmod':
-            return this.createBitcrusherNode();
-          case 'noise':
-            return this.createNoiseNode();
+                  case 'noise':
+          return this.createNoiseNode();
           default:
             return null;
         }
@@ -5802,106 +5782,21 @@
 
 
 
-                                          createScatterNode() {
-        /**
-         * 🌀 SCATTER EFFECT - Position Jumping Chaos
-         *
-         * This effect creates random position jumping in the track, making the playback
-         * scatter around different positions like a broken record player on steroids.
-         *
-         * How it works:
-         * - Randomly jumps to different positions in the track
-         * - Krazy parameter controls jump length (100ms to 2 seconds) and frequency
-         * - Creates unpredictable, chaotic playback patterns
-         * - Perfect for glitch music and experimental audio
-         *
-         * Audio Chain: masterGain -> input -> scatter -> gain -> destination
-         * Krazy Control: Jump length (100ms-2s), Jump interval (500ms-2s)
-         */
-        // Create a scatter effect that receives master audio and creates position jumping
-        const scatterNode = this.audioContext.createGain();
-        scatterNode.gain.value = 0.4; // 40% wet
-
-        // Create input node for master audio
-        const inputNode = this.audioContext.createGain();
-        inputNode.gain.value = 1;
-
-        // Create a gain node for wet/dry mix
-        const gainNode = this.audioContext.createGain();
-        gainNode.gain.value = 1;
-
-        // Connect scatter chain: input -> scatter -> gain
-        // This creates the complete scatter effect chain
-        inputNode.connect(scatterNode);
-        scatterNode.connect(gainNode);
-
-        // Store reference to current audio buffer for manipulation
-        let currentBuffer = null;
-        let scatterInterval = null;
-        let activeSources = [];
-        let krazyLevel = 50; // Default krazy level
-
-        // Function to create position jumping effect
-        const createScatterEffect = () => {
-          if (!this.isPlaying) return;
-
-          try {
-            // Calculate jump timing based on krazy level (0-100)
-            // Krazy affects jump length: 100ms to 2 seconds
-            const jumpLength = 100 + (krazyLevel * 19); // 100ms to 2000ms
-            const jumpInterval = 500 + (krazyLevel * 15); // 500ms to 2000ms
-
-            // Jump to random position in the track
-            const maxJump = Math.max(0, this.duration - (jumpLength / 1000));
-            if (maxJump > 0) {
-              const randomPosition = Math.random() * maxJump;
-              this.currentTime = randomPosition;
-
-              // Update progress bar immediately
-              this.updateProgress();
-
-              logger.log(`Scatter effect: Jumped to position ${randomPosition.toFixed(2)}s (jump length: ${jumpLength}ms)`);
-            }
-
-            // Schedule next jump
-            scatterInterval = setTimeout(createScatterEffect, jumpInterval + Math.random() * 500);
-          } catch (error) {
-            logger.error('Scatter effect error:', error);
-          }
-        };
-
-        // Start scatter effect
-        const startScatter = () => {
-          if (this.isPlaying) {
-            logger.log('Scatter effect started - position jumping enabled');
-            createScatterEffect();
-          }
-        };
-
-        // Stop scatter effect
-        const stopScatter = () => {
-          if (scatterInterval) {
-            clearTimeout(scatterInterval);
-            scatterInterval = null;
-            logger.log('Scatter effect stopped - position jumping disabled');
-          }
-        };
-
-        // Set krazy level
-        const setKrazyLevel = (level) => {
-          krazyLevel = Math.max(0, Math.min(100, level));
-        };
-
-        return {
-          main: gainNode, // Use the final output (gainNode) as the main node
-          input: inputNode, // Input node for master audio
-          scatterNode: scatterNode,
-          gain: gainNode,
-          startScatter,
-          stopScatter,
-          setKrazyLevel
-        };
-      }
+                                          /**
+       * 🌀 SCATTER EFFECT - Position Jumping Chaos
+       *
+       * This effect creates random position jumping in the track, making the playback
+       * scatter around different positions like a broken record player on steroids.
+       *
+       * How it works:
+       * - Randomly jumps to different positions in the track
+       * - Krazy parameter controls jump length (100ms to 2 seconds) and frequency
+       * - Creates unpredictable, chaotic playback patterns
+       * - Perfect for glitch music and experimental audio
+       *
+       * Audio Chain: masterGain -> input -> scatter -> gain -> destination
+       * Krazy Control: Jump length (100ms-2s), Jump interval (500ms-2s)
+       */
 
       createReverseBuffer(originalBuffer) {
         // Create a reversed version of the audio buffer
@@ -5923,186 +5818,39 @@
         return reversedBuffer;
       }
 
-            createPitchNode() {
-        /**
-         * 🎵 PITCH SHIFT EFFECT - LFO Modulated Pitch Shifting
-         *
-         * This effect creates dynamic pitch shifting using delay lines and LFO modulation.
-         * The pitch of the audio constantly shifts up and down, creating a warbling,
-         * underwater-like effect that's perfect for psychedelic and experimental music.
-         *
-         * How it works:
-         * - Uses delay lines with feedback to create pitch shifting
-         * - LFO modulates the delay time, causing pitch variations
-         * - Krazy parameter controls delay time, LFO frequency, and modulation depth
-         * - Creates smooth, continuous pitch variations
-         *
-         * Audio Chain: masterGain -> input -> delay -> feedback loop -> output
-         * Krazy Control: Delay time (10-30ms), LFO freq (1-12Hz), Modulation depth (5-15ms)
-         */
-        // Create a pitch shifter using delay and feedback
-        const pitchNode = this.audioContext.createGain();
-        pitchNode.gain.value = 1;
+                  /**
+       * 🎵 PITCH SHIFT EFFECT - LFO Modulated Pitch Shifting
+       *
+       * This effect creates dynamic pitch shifting using delay lines and LFO modulation.
+       * The pitch of the audio constantly shifts up and down, creating a warbling,
+       * underwater-like effect that's perfect for psychedelic and experimental music.
+       *
+       * How it works:
+       * - Uses delay lines with feedback to create pitch shifting
+       * - LFO modulates the delay time, causing pitch variations
+       * - Krazy parameter controls delay time, LFO frequency, and modulation depth
+       * - Creates smooth, continuous pitch variations
+       *
+       * Audio Chain: masterGain -> input -> (original + delayed) -> mixer -> output
+       * Krazy Control: Delay time (5-55ms), LFO freq (0.5-15.5Hz), Modulation depth (1-51ms), Feedback (30-100%)
+       */
 
-        // Create input node for master audio
-        const inputNode = this.audioContext.createGain();
-        inputNode.gain.value = 1;
-
-        // Create a delay line for pitch shifting
-        const delay = this.audioContext.createDelay(0.05); // 50ms delay for more audible effect
-        const feedback = this.audioContext.createGain();
-        feedback.gain.value = 0.6; // More feedback for stronger effect
-
-        // Connect input to delay and pitch output
-        inputNode.connect(delay);
-        delay.connect(feedback);
-        feedback.connect(delay);
-        delay.connect(pitchNode);
-
-        // Modulate delay time for pitch effect
-        const lfo = this.audioContext.createOscillator();
-        const lfoGain = this.audioContext.createGain();
-        lfo.frequency.value = 1; // 1Hz modulation for more audible effect
-        lfoGain.gain.value = 0.02; // 20ms modulation depth for stronger effect
-
-        lfo.connect(lfoGain);
-        lfoGain.connect(delay.delayTime);
-        lfo.start();
-
-        // Store krazy level for dynamic adjustment
-        let krazyLevel = 50;
-
-        // Set krazy level function
-        const setKrazyLevel = (level) => {
-          krazyLevel = Math.max(0, Math.min(100, level));
-
-          // Adjust pitch effect parameters based on krazy level
-          const baseDelay = 0.01; // 10ms base delay
-          const adjustedDelay = baseDelay + (krazyLevel * 0.0002); // 10ms to 30ms
-          delay.delayTime.value = adjustedDelay;
-
-          const baseLfoFreq = 2; // 2Hz base LFO
-          const adjustedLfoFreq = baseLfoFreq + (krazyLevel * 0.1); // 2Hz to 12Hz
-          lfo.frequency.value = adjustedLfoFreq;
-
-          const baseModDepth = 0.005; // 5ms base modulation depth
-          const adjustedModDepth = baseModDepth + (krazyLevel * 0.0001); // 5ms to 15ms
-          lfoGain.gain.value = adjustedModDepth;
-
-          logger.log(`Pitch Krazy: delay=${(adjustedDelay*1000).toFixed(1)}ms, lfo=${adjustedLfoFreq.toFixed(1)}Hz, mod=${(adjustedModDepth*1000).toFixed(1)}ms`);
-        };
-
-        // Connect pitch output chain
-        // This creates the complete pitch effect chain
-        // The main output is pitchNode which will be connected by insertEffectIntoChain
-
-        return {
-          main: pitchNode, // Use the final output (pitchNode) as the main node
-          input: inputNode, // Input node for master audio
-          delay,
-          feedback,
-          lfo,
-          lfoGain,
-          setKrazyLevel
-        };
-      }
-
-                                    createBitcrusherNode() {
-        /**
-         * ⚡ BITCRUSHER EFFECT - Digital Distortion & Bit Reduction
-         *
-         * This effect creates aggressive digital distortion by reducing the bit depth
-         * of the audio signal, simulating old digital hardware and creating harsh,
-         * lo-fi textures perfect for industrial, noise, and experimental music.
-         *
-         * How it works:
-         * - Reduces bit depth from 8-bit down to 1-bit (heavy crushing)
-         * - Applies wave shaping for additional distortion
-         * - Low-pass filter cuts high frequencies for authentic lo-fi sound
-         * - Krazy parameter controls bit depth and filter frequency
-         *
-         * Audio Chain: masterGain -> input -> waveShaper -> filter -> gain -> destination
-         * Krazy Control: Bit depth (8-bit to 1-bit), Filter frequency (4kHz to 2kHz)
-         */
-        // Create a bitcrusher effect that processes master audio with 100% wet signal
-        const bitcrusherNode = this.audioContext.createGain();
-        bitcrusherNode.gain.value = 1; // 100% wet
-
-        // Create a wave shaper for bit crushing effect
-        const waveShaper = this.audioContext.createWaveShaper();
-        const curveLength = 4096;
-        const curve = new Float32Array(curveLength);
-
-        // Create bit crushing curve with krazy parameter
-        let bitDepth = 2; // 2-bit crushing (default) for more aggressive effect
-        let krazyLevel = 50; // Default krazy level
-
-        const updateCurve = () => {
-          // Adjust bit depth based on krazy level (0-100)
-          const adjustedBitDepth = Math.max(1, Math.min(8, 8 - (krazyLevel * 0.07))); // 8-bit to 1-bit for heavy crushing
-          bitDepth = Math.round(adjustedBitDepth);
-
-          const levels = Math.pow(2, bitDepth);
-          const step = 2 / levels;
-
-          for (let i = 0; i < curveLength; i++) {
-            const x = (i * 2) / curveLength - 1;
-            // Quantize the signal to create bit crushing effect
-            const quantized = Math.round(x / step) * step;
-            curve[i] = quantized;
-          }
-
-          waveShaper.curve = curve;
-        };
-
-        // Initialize curve
-        updateCurve();
-        waveShaper.oversample = '4x';
-
-        // Create a filter for additional digital distortion
-        const filter = this.audioContext.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 4000; // Cut high frequencies for lo-fi effect
-        filter.Q.value = 0.5;
-
-        // Create a gain node for output
-        const bitcrusherGain = this.audioContext.createGain();
-        bitcrusherGain.gain.value = 1;
-
-        // Connect bitcrusher chain: input -> waveShaper -> filter -> gain
-        // This creates the complete bitcrusher effect chain
-        inputNode.connect(waveShaper);
-        waveShaper.connect(filter);
-        filter.connect(bitcrusherGain);
-
-        // Store the input node for proper connection
-        const inputNode = this.audioContext.createGain();
-        inputNode.gain.value = 1;
-
-        // Set krazy level function
-        const setKrazyLevel = (level) => {
-          krazyLevel = Math.max(0, Math.min(100, level));
-          updateCurve();
-
-          // Also adjust filter frequency based on krazy level
-          const baseFreq = 4000;
-          const adjustedFreq = baseFreq - (krazyLevel * 20); // 4000Hz to 2000Hz
-          filter.frequency.value = Math.max(500, adjustedFreq);
-        };
-
-        return {
-          main: bitcrusherGain, // Use the final output (bitcrusherGain) as the main node
-          input: inputNode, // Input node for master audio
-          waveShaper: waveShaper,
-          filter: filter,
-          gain: bitcrusherGain,
-          setKrazyLevel,
-          setBitDepth: (depth) => {
-            bitDepth = Math.max(1, Math.min(16, depth));
-            updateCurve();
-          }
-        };
-      }
+                                    /**
+       * ⚡ BITCRUSHER EFFECT - Digital Distortion & Bit Reduction
+       *
+       * This effect creates aggressive digital distortion by reducing the bit depth
+       * of the audio signal, simulating old digital hardware and creating harsh,
+       * lo-fi textures perfect for industrial, noise, and experimental music.
+       *
+       * How it works:
+       * - Reduces bit depth from 8-bit down to 1-bit (heavy crushing)
+       * - Applies wave shaping for additional distortion
+       * - Low-pass filter cuts high frequencies for authentic lo-fi sound
+       * - Krazy parameter controls bit depth and filter frequency
+       *
+       * Audio Chain: masterGain -> input -> waveShaper -> filter -> gain -> destination
+       * Krazy Control: Bit depth (8-bit to 1-bit), Filter frequency (4kHz to 2kHz)
+       */
 
       createNoiseNode() {
         /**
@@ -6262,37 +6010,7 @@
           this.masterGain.disconnect();
           logger.log(`Master gain disconnected from destination`);
 
-          if (effectType === 'scatter') {
-            // Scatter: masterGain -> input -> scatter chain -> destination
-            if (effect.node.main && effect.node.input) {
-              this.masterGain.connect(effect.node.input);
-              effect.node.main.connect(this.audioContext.destination);
-              if (effect.node.startScatter) {
-                effect.node.startScatter();
-              }
-              logger.log(`✅ Scatter effect connected: masterGain -> input -> scatter chain -> destination`);
-            } else {
-              logger.error('❌ Scatter node missing main or input');
-            }
-          } else if (effectType === 'pitch') {
-            // Pitch: masterGain -> input -> pitch chain -> destination
-            if (effect.node.main && effect.node.input) {
-              this.masterGain.connect(effect.node.input);
-              effect.node.main.connect(this.audioContext.destination);
-              logger.log(`✅ Pitch effect connected: masterGain -> input -> pitch chain -> destination`);
-            } else {
-              logger.error('❌ Pitch node missing main or input');
-            }
-          } else if (effectType === 'ringmod') {
-            // Bitcrusher: masterGain -> input -> bitcrusher chain -> destination
-            if (effect.node.main && effect.node.input) {
-              this.masterGain.connect(effect.node.input);
-              effect.node.main.connect(this.audioContext.destination);
-              logger.log(`✅ Bitcrusher effect connected: masterGain -> input -> bitcrusher chain -> destination`);
-            } else {
-              logger.error('❌ Bitcrusher node missing main or input');
-            }
-          } else if (effectType === 'noise') {
+          if (effectType === 'noise') {
             // Noise Flanger: (main + noise) -> distortion -> flanger -> destination
             if (effect.node.main && effect.node.input && effect.node.distortion && effect.node.flanger) {
               // Connect master audio to input mixer
@@ -6390,20 +6108,8 @@
         const effect = this.effects[effectType];
         if (!effect || !effect.node) return;
 
-        // Disconnect effect from audio chain
-        if (effectType === 'scatter') {
-          if (effect.node.main) effect.node.main.disconnect();
-          if (effect.node.input) effect.node.input.disconnect();
-          if (effect.node.stopScatter) {
-            effect.node.stopScatter();
-          }
-        } else if (effectType === 'pitch') {
-          if (effect.node.main) effect.node.main.disconnect();
-          if (effect.node.input) effect.node.input.disconnect();
-        } else if (effectType === 'ringmod') {
-          if (effect.node.main) effect.node.main.disconnect();
-          if (effect.node.input) effect.node.input.disconnect();
-        } else if (effectType === 'noise') {
+                // Disconnect effect from audio chain
+        if (effectType === 'noise') {
           // Disconnect all components of the Noise Flanger
           if (effect.node.main) effect.node.main.disconnect();
           if (effect.node.input) effect.node.input.disconnect();
