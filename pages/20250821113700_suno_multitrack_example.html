@@ -1845,6 +1845,7 @@
           <button class="effect-btn" id="pitchBtn" data-effect="pitch">🎵 Pitch Shift</button>
           <button class="effect-btn" id="ringmodBtn" data-effect="ringmod">⚡ Bitcrusher</button>
           <button class="effect-btn" id="noiseBtn" data-effect="noise">🎭 Noise Flanger</button>
+          <button class="test-btn" id="testEffectsBtn" title="Test Effects">🧪</button>
         </div>
       </div>
 
@@ -2297,6 +2298,7 @@
         document.getElementById('pitchBtn').addEventListener('click', () => this.toggleEffect('pitch'));
         document.getElementById('ringmodBtn').addEventListener('click', () => this.toggleEffect('ringmod'));
         document.getElementById('noiseBtn').addEventListener('click', () => this.toggleEffect('noise'));
+        document.getElementById('testEffectsBtn').addEventListener('click', () => this.testAllEffects());
 
         // Krazy parameter
         document.getElementById('krazySlider').addEventListener('input', (e) => {
@@ -2745,6 +2747,10 @@
         this.isPlaying = false;
         this.currentTime = 0;
         this.duration = 0;
+
+        // Reset progress update state completely
+        this.resetProgressUpdate();
+
         logger.log('Playback state completely reset');
 
         // 4. Reset master gain connections to clean state
@@ -5109,6 +5115,11 @@
 
         this.startProgressUpdate();
 
+        // Validate progress update state after starting
+        setTimeout(() => {
+          this.validateProgressUpdateState();
+        }, 100);
+
         // Start scatter effect if active
         if (this.effects.scatter.active && this.effects.scatter.node) {
           this.effects.scatter.node.startScatter();
@@ -5260,14 +5271,21 @@
       startProgressUpdate() {
         logger.log('startProgressUpdate called');
 
-        // CRITICAL FIX: Always use current audio context time as reference
-        // This ensures smooth progress updates after seeking
-        const startRef = this.audioContext ? this.audioContext.currentTime : 0;
+        // CRITICAL FIX: Calculate reference point based on current seek position
+        // This ensures smooth progress updates after seeking without acceleration
+        let startRef = 0;
+        if (this.audioContext && this.currentTime > 0) {
+          // If we're seeking to a position, calculate the reference point
+          startRef = this.audioContext.currentTime - this.currentTime;
+        } else {
+          // Starting from beginning, use current audio context time as reference
+          startRef = this.audioContext ? this.audioContext.currentTime : 0;
+        }
 
         logger.log(`Progress update started with startRef: ${startRef}, currentTime: ${this.currentTime}, duration: ${this.duration}`);
         logger.log(`AudioContext currentTime: ${this.audioContext?.currentTime}`);
 
-                const tick = () => {
+        const tick = () => {
           if (!this.isPlaying) {
             logger.log('Progress update stopped: not playing');
             return;
@@ -5281,9 +5299,14 @@
 
           // Use AudioContext timebase for accuracy on mobile
           if (this.audioContext) {
-            // Calculate time based on elapsed time since start + current seek position
+            // Calculate time based on elapsed time since start reference
             const elapsedTime = this.audioContext.currentTime - startRef;
-            const newTime = Math.max(0, this.currentTime + elapsedTime);
+            const newTime = Math.max(0, elapsedTime);
+
+            // Debug progress calculation
+            if (this.currentTime % 5 < 0.1) { // Log every ~5 seconds
+              logger.log(`Progress debug: elapsedTime=${elapsedTime.toFixed(2)}, newTime=${newTime.toFixed(2)}, currentTime=${this.currentTime.toFixed(2)}`);
+            }
 
             // Validate the new time to prevent jumping
             if (Math.abs(newTime - this.currentTime) > 0.01) {
@@ -5307,12 +5330,10 @@
 
           this.updateProgress();
 
-          // Throttle progress updates to every 100ms to avoid excessive logging
-          setTimeout(() => {
-            if (this.isPlaying) {
-              this.progressInterval = requestAnimationFrame(tick);
-            }
-          }, 100);
+          // Use requestAnimationFrame for smooth progress updates
+          if (this.isPlaying) {
+            this.progressInterval = requestAnimationFrame(tick);
+          }
         };
         this.progressInterval = requestAnimationFrame(tick);
         logger.log('Progress update animation frame requested');
@@ -5335,6 +5356,21 @@
         logger.log(`audioContext state: ${this.audioContext?.state}`);
         logger.log(`audioContext currentTime: ${this.audioContext?.currentTime}`);
         logger.log('=== PROGRESS UPDATE STATE VALIDATION COMPLETE ===');
+      }
+
+      resetProgressUpdate() {
+        logger.log('=== RESETTING PROGRESS UPDATE ===');
+
+        // Stop current progress update
+        this.stopProgressUpdate();
+
+        // Reset current time to 0
+        this.currentTime = 0;
+
+        // Update progress bar to show 0%
+        this.updateProgress();
+
+        logger.log('Progress update reset complete');
       }
 
       updateProgress() {
@@ -6376,7 +6412,7 @@
 
             testEffectAudioRouting(effectType, effect) {
         logger.log(`=== TESTING ${effectType.toUpperCase()} AUDIO ROUTING ===`);
-        
+
         try {
           if (effectType === 'reverb' && effect.node.convolver) {
             logger.log(`✅ Reverb convolver connected to destination: ${effect.node.convolver.numberOfOutputs > 0}`);
@@ -6407,8 +6443,27 @@
         } catch (error) {
           logger.error(`❌ Error testing ${effectType} routing:`, error);
         }
-        
+
         logger.log(`=== ${effectType.toUpperCase()} ROUTING TEST COMPLETE ===`);
+      }
+
+      testAllEffects() {
+        logger.log('=== TESTING ALL EFFECTS ===');
+
+        // Test each effect type
+        Object.keys(this.effects).forEach(effectType => {
+          const effect = this.effects[effectType];
+          logger.log(`\n--- Testing ${effectType.toUpperCase()} ---`);
+
+          if (effect.node) {
+            logger.log(`✅ Effect ${effectType} has node:`, effect.node);
+            this.testEffectAudioRouting(effectType, effect);
+          } else {
+            logger.log(`❌ Effect ${effectType} has no node`);
+          }
+        });
+
+        logger.log('\n=== ALL EFFECTS TEST COMPLETE ===');
       }
     }
 
