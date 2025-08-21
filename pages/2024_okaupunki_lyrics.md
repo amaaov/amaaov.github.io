@@ -178,6 +178,54 @@ We just keep moving, never-ending, lost and bound!
 “Мы — жонглёры!” — всё понесло!
 ```
 
+## Juggling Anthem
+
+```text
+(Intro melody)
+
+(Verse 1 Fast Rap)
+Pass that ring, let the club swing,
+Hands up high, let the rhythm sing!
+Elbows to the sides, keep it wide,
+Hands down low — feel the vibe.
+
+Don’t drop, don’t stop — stay in motion,
+Catch that moment, ride the commotion.
+We’re in the throw zone, time to glow,
+Feel the juggling flow, let it show!
+
+(Chorus Slow Female Vocal)
+More and more, spin the sky tonight!
+Higher, higher — catch the glowing light!
+Hold the beat, feel the juggling flow,
+This is our world — let the rhythm grow!
+
+(Verse 2 Fast Rap)
+Step to the beat, let the rhythm ride,
+Pass that ring, let your skill collide.
+Elbows out wide, make room to shine,
+Hands down low — you’re doing fine!
+
+(Break melody change harmony)
+
+Left hand flick, right hand spin,
+Feel the drop, let the track begin!
+Circles in motion, don’t let it go,
+We are juggling, and you enjoy!
+
+(Bridge Synth Arpeggio and Female Harmonies)
+Float in time — don’t let it fall,
+We are throwing and catching all.
+Rhythm tight, hold the air,
+Throw joy — beyond compare!
+
+(Chorus Slow Female Vocal)
+More and more, spin the sky tonight!
+Higher, higher — catch the glowing light!
+Hold the beat, feel the juggling flow,
+This is our world — let the rhythm grow!
+```
+
 ## Juggler’s Dawn
 
 ```text
