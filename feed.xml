@@ -5,9 +5,21 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Thu, 01 Nov 2024 12:00:00 +0000</lastBuildDate>
-    <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 21 Aug 2025 18:30:08 +0000</lastBuildDate>
+    <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
 
+    <item>
+      <title>Stay X Fresh lyrics</title>
+      <description>Stay X Fresh lyrics collection: punk and hardcore songs written by Sasha in 2008-2010, performed with Artem. Raw, aggressive lyrics about society, freedom, and resistance.</description>
+      <link>https://amaaov.github.io/pages/20250821090000_stay_x_fresh_lyrics.html</link>
+      <guid>https://amaaov.github.io/pages/20250821090000_stay_x_fresh_lyrics.html</guid>
+      <pubDate>Thu, 21 Aug 2025 18:30:08 +0000</pubDate>
+      <category>lyrics</category>
+      <category>punk</category>
+      <category>hardcore</category>
+      <category>music</category>
+      <category>Russian</category>
+    </item>
     <item>
       <title>2024 okaupunki lyrics</title>
       <description>2024 okaupunki lyrics collection: original ideas processed through GPT and Suno sound generator. Explore juggling-inspired poetry, multilingual verses, and experimental music concepts.</description>
