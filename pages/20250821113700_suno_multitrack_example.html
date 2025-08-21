@@ -3650,16 +3650,6 @@
           // Enable track controls
           this.enableTrackControls(trackId);
 
-          // Set buffer for scatter effect if it's active
-          if (this.effects.scatter.active && this.effects.scatter.node) {
-            this.effects.scatter.node.setBuffer(audioBuffer);
-          }
-
-                    // Set buffer for all tracks to scatter effect
-          if (this.effects.scatter.node) {
-            this.effects.scatter.node.setBuffer(audioBuffer);
-          }
-
           // IMMEDIATE UI UPDATE: Hide placeholder, show waveform, hide download
           const placeholder = trackElement.querySelector('.placeholder-waveform');
           if (placeholder) {
@@ -3892,15 +3882,7 @@
           // Enable track controls
           this.enableTrackControls(trackId);
 
-          // Set buffer for scatter effect if it's active
-          if (this.effects.scatter.active && this.effects.scatter.node) {
-            this.effects.scatter.node.setBuffer(audioBuffer);
-          }
 
-          // Set buffer for all tracks to scatter effect
-          if (this.effects.scatter.node) {
-            this.effects.scatter.node.setBuffer(audioBuffer);
-          }
 
           logger.log(`Track ${trackData.name} loaded successfully:`, track);
 
@@ -4898,10 +4880,7 @@
 
           logger.log('Restarting playback after seek...');
 
-          // Stop scatter effect temporarily during seek
-          if (this.effects.scatter.active && this.effects.scatter.node) {
-            this.effects.scatter.node.stopScatter();
-          }
+
 
           // CRITICAL: Wait for audio restart to complete before starting progress update
           setTimeout(async () => {
@@ -4918,12 +4897,7 @@
                   this.validateProgressUpdateState();
                 }, 50);
 
-                // Restart scatter effect after audio restart
-                setTimeout(() => {
-                  if (this.effects.scatter.active && this.effects.scatter.node) {
-                    this.effects.scatter.node.startScatter();
-                  }
-                }, 100);
+
               }, 100);
             } catch (error) {
               logger.error('Error during seek restart:', error);
@@ -5169,10 +5143,7 @@
           this.validateProgressUpdateState();
         }, 100);
 
-        // Start scatter effect if active
-        if (this.effects.scatter.active && this.effects.scatter.node) {
-          this.effects.scatter.node.startScatter();
-        }
+
       }
 
       restartPlayback() {
@@ -5230,11 +5201,6 @@
         });
 
         this.stopProgressUpdate();
-
-        // Stop scatter effect if active
-        if (this.effects.scatter.active && this.effects.scatter.node) {
-          this.effects.scatter.node.stopScatter();
-        }
       }
 
             stop() {
@@ -5256,11 +5222,6 @@
 
         this.stopProgressUpdate();
         this.updateProgress();
-
-        // Stop scatter effect if active
-        if (this.effects.scatter.active && this.effects.scatter.node) {
-          this.effects.scatter.node.stopScatter();
-        }
       }
 
       forceStopAllAudio() {
@@ -5732,23 +5693,6 @@
 
       disconnectEffectNodes(effectType, effectNode) {
         switch (effectType) {
-          case 'scatter':
-            if (effectNode.main) effectNode.main.disconnect();
-            if (effectNode.gain) effectNode.gain.disconnect();
-            break;
-          case 'pitch':
-            if (effectNode.delay) effectNode.delay.disconnect();
-            if (effectNode.feedback) effectNode.feedback.disconnect();
-            if (effectNode.lfo) effectNode.lfo.stop();
-            if (effectNode.lfoGain) effectNode.lfoGain.disconnect();
-            if (effectNode.main) effectNode.main.disconnect();
-            break;
-          case 'ringmod':
-            if (effectNode.waveShaper) effectNode.waveShaper.disconnect();
-            if (effectNode.filter) effectNode.filter.disconnect();
-            if (effectNode.gain) effectNode.gain.disconnect();
-            if (effectNode.main) effectNode.main.disconnect();
-            break;
           case 'noise':
             if (effectNode.noise) effectNode.noise.disconnect();
             if (effectNode.flanger) effectNode.flanger.disconnect();
