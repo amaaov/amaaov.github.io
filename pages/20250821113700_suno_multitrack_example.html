@@ -388,8 +388,8 @@
       z-index: 15;
       background: rgba(0, 0, 0, 0.4);
       border-radius: 8px;
-      /* Ensure placeholder is visible by default */
-      display: flex !important;
+      /* Hidden by default, will be shown by JavaScript when needed */
+      display: none;
     }
 
     .placeholder-bars {
@@ -2353,14 +2353,14 @@
         this.checkAndRenderCachedTracks();
       }
 
-      async checkAndRenderCachedTracks() {
+            async checkAndRenderCachedTracks() {
         // This method is called after tracks are initialized
         // Check if any tracks are already cached and render them
         const songData = this.getSongData();
         const cachePromises = [];
         let skippedCount = 0;
 
-        logger.log('Starting cache check for tracks...');
+        logger.log('=== CACHE CHECK STARTING ===');
 
         for (let i = 0; i < songData.length; i++) {
           const track = this.tracks[i];
@@ -2385,31 +2385,78 @@
           logger.log(`No tracks need cache checking. All tracks are already downloaded.`);
         }
 
-        // Force hide all placeholders for downloaded tracks
+        // FINAL PLACEHOLDER STATE MANAGEMENT
+        logger.log('=== FINAL PLACEHOLDER STATE MANAGEMENT ===');
         this.tracks.forEach(track => {
-          if (track.isDownloaded && track.element) {
+          if (track.element) {
             const placeholder = track.element.querySelector('.placeholder-waveform');
-            if (placeholder) {
-              placeholder.style.display = 'none';
-              logger.log(`Force hidden placeholder for downloaded track ${track.id}`);
-            }
-
             const canvas = track.element.querySelector('.waveform-canvas');
-            if (canvas) {
-              canvas.style.display = 'block';
-              logger.log(`Force showed waveform for downloaded track ${track.id}`);
-            }
-
             const downloadOverlay = track.element.querySelector('.download-overlay');
-            if (downloadOverlay) {
-              downloadOverlay.style.display = 'none';
-              logger.log(`Force hidden download overlay for downloaded track ${track.id}`);
+
+            if (track.isDownloaded) {
+              // DOWNLOADED TRACKS: Hide placeholder, show waveform, hide download
+              if (placeholder) {
+                placeholder.style.display = 'none';
+                logger.log(`✓ Track ${track.id}: Hidden placeholder (downloaded)`);
+              }
+              if (canvas) {
+                canvas.style.display = 'block';
+                logger.log(`✓ Track ${track.id}: Showed waveform (downloaded)`);
+              }
+              if (downloadOverlay) {
+                downloadOverlay.style.display = 'none';
+                logger.log(`✓ Track ${track.id}: Hidden download overlay (downloaded)`);
+              }
+            } else {
+              // NON-DOWNLOADED TRACKS: Hide placeholder, show download
+              if (placeholder) {
+                placeholder.style.display = 'none';
+                logger.log(`✓ Track ${track.id}: Hidden placeholder (not downloaded)`);
+              }
+              if (canvas) {
+                canvas.style.display = 'none';
+                logger.log(`✓ Track ${track.id}: Hidden waveform (not downloaded)`);
+              }
+              if (downloadOverlay) {
+                downloadOverlay.style.display = 'flex';
+                logger.log(`✓ Track ${track.id}: Showed download overlay (not downloaded)`);
+              }
             }
           }
         });
+
+        logger.log('=== CACHE CHECK COMPLETED ===');
+
+        // CRITICAL: Update duration after all cache loading is complete
+        this.updateDuration();
+        logger.log('Duration updated after cache loading');
+
+        // FINAL CLEANUP: Force hide all placeholders and download overlays for downloaded tracks
+        logger.log('=== FINAL CLEANUP: Force hiding placeholders and download overlays ===');
+        this.tracks.forEach(track => {
+          if (track.isDownloaded && track.element) {
+            const placeholder = track.element.querySelector('.placeholder-waveform');
+            const downloadOverlay = track.element.querySelector('.download-overlay');
+            const canvas = track.element.querySelector('.waveform-canvas');
+
+            if (placeholder) {
+              placeholder.style.display = 'none';
+              logger.log(`✓ Force hidden placeholder for ${track.id}`);
+            }
+            if (downloadOverlay) {
+              downloadOverlay.style.display = 'none';
+              logger.log(`✓ Force hidden download overlay for ${track.id}`);
+            }
+            if (canvas) {
+              canvas.style.display = 'block';
+              logger.log(`✓ Force showed waveform for ${track.id}`);
+            }
+          }
+        });
+        logger.log('=== FINAL CLEANUP COMPLETED ===');
       }
 
-      async checkAndRenderCachedTrack(trackData, index) {
+            async checkAndRenderCachedTrack(trackData, index) {
         const trackId = `track-${index}`;
         const track = this.tracks[index];
 
@@ -2449,33 +2496,32 @@
             // Hide loading overlay and show waveform
             this.hideTrackLoadingOverlay(trackId);
 
-            // Hide placeholder waveform and show real waveform
+            // IMMEDIATE UI UPDATE: Hide placeholder, show waveform, hide download
             const trackElement = track.element;
             if (trackElement) {
               const placeholder = trackElement.querySelector('.placeholder-waveform');
               if (placeholder) {
                 placeholder.style.display = 'none';
-                logger.log(`Hidden placeholder for track ${trackId}`);
+                logger.log(`✓ ${trackId}: Hidden placeholder (cache hit)`);
               }
 
               const canvas = trackElement.querySelector('.waveform-canvas');
               if (canvas) {
                 canvas.style.display = 'block';
-                logger.log(`Showed waveform canvas for track ${trackId}`);
+                logger.log(`✓ ${trackId}: Showed waveform (cache hit)`);
               }
 
-              // Also hide download overlay since track is cached
               const downloadOverlay = trackElement.querySelector('.download-overlay');
               if (downloadOverlay) {
                 downloadOverlay.style.display = 'none';
-                logger.log(`Hidden download overlay for track ${trackId}`);
+                logger.log(`✓ ${trackId}: Hidden download overlay (cache hit)`);
               }
             }
 
             // Enable track controls
             this.enableTrackControls(trackId);
 
-            // Update download status and hide download button
+            // Update download status
             if (trackElement) {
               const downloadStatus = trackElement.querySelector('.download-status');
               if (downloadStatus) {
@@ -2485,50 +2531,46 @@
                 downloadStatus.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
                 downloadStatus.style.color = '#64ffda';
               }
-
-              // Hide download button since track is cached
-              const downloadBtn = trackElement.querySelector('.track-download-btn');
-              const downloadOverlay = trackElement.querySelector('.download-overlay');
-              if (downloadBtn) {
-                downloadBtn.style.display = 'none';
-              }
-              if (downloadOverlay) {
-                downloadOverlay.style.display = 'none';
-              }
             }
 
-            logger.log(`Track ${trackId} restored from cache successfully`);
+            logger.log(`✓ Track ${trackId} restored from cache successfully`);
+
+            // CRITICAL: Update duration after loading from cache
+            this.updateDuration();
           } else {
-            // Track not cached - hide placeholder and show download button
+            // Track not cached - hide placeholder and show download
             logger.log(`Track ${trackId} not cached, showing download button`);
             const trackElement = track.element;
             if (trackElement) {
               const placeholder = trackElement.querySelector('.placeholder-waveform');
               if (placeholder) {
                 placeholder.style.display = 'none';
+                logger.log(`✓ ${trackId}: Hidden placeholder (cache miss)`);
               }
 
-              // Show download overlay for non-cached tracks
               const downloadOverlay = trackElement.querySelector('.download-overlay');
               if (downloadOverlay) {
                 downloadOverlay.style.display = 'flex';
+                logger.log(`✓ ${trackId}: Showed download overlay (cache miss)`);
               }
             }
           }
         } catch (error) {
           logger.error(`Failed to restore cached track ${trackId}:`, error);
 
-          // On error, also hide placeholder and show download button
+          // On error, hide placeholder and show download
           const trackElement = track.element;
           if (trackElement) {
             const placeholder = trackElement.querySelector('.placeholder-waveform');
             if (placeholder) {
               placeholder.style.display = 'none';
+              logger.log(`✓ ${trackId}: Hidden placeholder (error)`);
             }
 
             const downloadOverlay = trackElement.querySelector('.download-overlay');
             if (downloadOverlay) {
               downloadOverlay.style.display = 'flex';
+              logger.log(`✓ ${trackId}: Showed download overlay (error)`);
             }
           }
         }
@@ -2633,48 +2675,79 @@
         }
       }
 
-      changeSong(song) {
+      async changeSong(song) {
         logger.log(`Changing song from ${this.currentSong} to ${song}`);
 
-                                // ALWAYS stop all audio sources regardless of isPlaying state
+                                        // COMPLETE AUDIO RESET: Stop all audio sources regardless of isPlaying state
+        logger.log('=== COMPLETE AUDIO RESET STARTING ===');
+
+        // 1. Force stop all audio sources
         this.forceStopAllAudio();
 
-        // Disconnect all gain nodes
+        // 2. Disconnect all gain nodes from audio chain
         this.tracks.forEach(track => {
           if (track.gainNode) {
-            // Disconnect from all destinations
             track.gainNode.disconnect();
             track.gainNode = null;
             logger.log(`Disconnected gain node for track ${track.id}`);
           }
+          // Also clear any lingering sources
+          if (track.source) {
+            track.source = null;
+            logger.log(`Cleared source for track ${track.id}`);
+          }
         });
 
-                // Always stop progress update and reset playback state
+        // 3. Stop all progress updates and reset playback state
         this.stopProgressUpdate();
         this.isPlaying = false;
         this.currentTime = 0;
+        this.duration = 0;
+        logger.log('Playback state completely reset');
 
-        // Reset master gain connections
+        // 4. Reset master gain connections to clean state
         if (this.masterGain) {
           this.masterGain.disconnect();
+          this.masterGain.gain.value = 0.8; // Reset to default volume
           // Reconnect master gain to stereo panner and destination
           this.masterGain.connect(this.stereoPanner);
           this.stereoPanner.connect(this.audioContext.destination);
-          logger.log('Master gain connections reset');
+          logger.log('Master gain connections reset to clean state');
         }
 
-        // Force stop all audio context sources
-        if (this.audioContext && this.audioContext.state === 'running') {
-          // Don't suspend immediately - let the sources stop naturally
-          logger.log('Audio sources stopped, audio context remains running');
+        // 5. Force audio context to stop all processing
+        if (this.audioContext) {
+          try {
+            // Suspend audio context to stop all audio processing
+            if (this.audioContext.state === 'running') {
+              await this.audioContext.suspend();
+              logger.log('Audio context suspended to stop all audio');
+            }
+
+            // Create a silent buffer to force stop any lingering audio
+            const silentBuffer = this.audioContext.createBuffer(2, 1, 22050);
+            const silentSource = this.audioContext.createBufferSource();
+            silentSource.buffer = silentBuffer;
+            silentSource.connect(this.audioContext.destination);
+            silentSource.start();
+            silentSource.stop();
+            logger.log('Forced audio context cleanup with silent buffer');
+          } catch (e) {
+            logger.log('Audio context cleanup failed:', e);
+          }
         }
 
-        // Reset all playback state
+        logger.log('=== COMPLETE AUDIO RESET COMPLETED ===');
+
+                // Reset all playback state
         this.currentSong = song;
         this.duration = 0;
 
         // Clear any existing progress
         this.stopProgressUpdate();
+
+        // COMPLETE UI RESET
+        logger.log('=== COMPLETE UI RESET STARTING ===');
 
         // Reset play button states
         const playBtn = document.getElementById('play');
@@ -2682,35 +2755,50 @@
         const stopBtn = document.getElementById('stop');
 
         if (playBtn) {
-          playBtn.classList.remove('selected');
+          playBtn.classList.remove('selected', 'active');
           playBtn.disabled = true;
+          logger.log('Play button reset and disabled');
         }
         if (pauseBtn) {
-          pauseBtn.classList.remove('selected');
+          pauseBtn.classList.remove('selected', 'active');
           pauseBtn.disabled = true;
+          logger.log('Pause button reset and disabled');
         }
         if (stopBtn) {
           stopBtn.disabled = true;
+          logger.log('Stop button disabled');
         }
 
         // Reset progress bar
         const progressFill = document.getElementById('main-progress-fill');
         const progressHandle = document.getElementById('main-progress-handle');
-        if (progressFill) progressFill.style.width = '0%';
-        if (progressHandle) progressHandle.style.left = '0%';
+        if (progressFill) {
+          progressFill.style.width = '0%';
+          logger.log('Progress bar reset to 0%');
+        }
+        if (progressHandle) {
+          progressHandle.style.left = '0%';
+          logger.log('Progress handle reset to 0%');
+        }
 
         // Reset time display
         const currentTimeElement = document.getElementById('currentTime');
-        if (currentTimeElement) currentTimeElement.textContent = '0:00';
+        if (currentTimeElement) {
+          currentTimeElement.textContent = '0:00';
+          logger.log('Time display reset to 0:00');
+        }
 
         // Reset download all button
         const downloadAllBtn = document.getElementById('downloadAll');
         if (downloadAllBtn) {
-          downloadAllBtn.classList.remove('downloading', 'downloaded');
+          downloadAllBtn.classList.remove('downloading', 'downloaded', 'active');
           downloadAllBtn.disabled = false;
           downloadAllBtn.innerHTML = '⬇';
           downloadAllBtn.title = 'Download all tracks';
+          logger.log('Download all button reset');
         }
+
+        logger.log('=== COMPLETE UI RESET COMPLETED ===');
 
         // Store current track states before clearing
         const trackStates = new Map();
@@ -2847,25 +2935,28 @@
                 // Hide loading overlay and show waveform
                 this.hideTrackLoadingOverlay(track.id);
 
-                                // Hide placeholder waveform and show real waveform
+                                                // IMMEDIATE UI UPDATE: Hide placeholder, show waveform, hide download
                 const placeholder = trackElement.querySelector('.placeholder-waveform');
                 if (placeholder) {
                   placeholder.style.display = 'none';
+                  logger.log(`✓ ${track.id}: Hidden placeholder (state restored)`);
                 }
 
                 const canvas = trackElement.querySelector('.waveform-canvas');
                 if (canvas) {
                   canvas.style.display = 'block';
+                  logger.log(`✓ ${track.id}: Showed waveform (state restored)`);
                 }
 
                 // Hide download overlay since track is already downloaded
                 const downloadOverlay = trackElement.querySelector('.download-overlay');
                 if (downloadOverlay) {
                   downloadOverlay.style.display = 'none';
+                  logger.log(`✓ ${track.id}: Hidden download overlay (state restored)`);
                 }
               }
 
-              logger.log(`Track ${track.id} restored with audio buffer`);
+              logger.log(`✓ Track ${track.id} restored with audio buffer`);
             }
 
             // Restore solo state
@@ -3084,6 +3175,9 @@
           this.stereoPanner.connect(this.audioContext.destination);
           logger.log('Master gain reconnected for new tracks');
         }
+
+        // Placeholder cleanup is now handled in checkAndRenderCachedTracks
+        // No need for redundant cleanup here
           }, 100);
 
           logger.log('Track structure preparation completed');
@@ -3221,10 +3315,15 @@
 
         this.tracks.push(track);
 
-        // Show placeholder waveform immediately
+        // Show loader initially while checking cache
         const placeholder = trackElement.querySelector('.placeholder-waveform');
+        const downloadOverlay = trackElement.querySelector('.download-overlay');
+
         if (placeholder) {
-          placeholder.style.display = 'flex';
+          placeholder.style.display = 'flex';  // Show loader initially
+        }
+        if (downloadOverlay) {
+          downloadOverlay.style.display = 'none';  // Hide download button initially
         }
 
         // Add download button event listener
@@ -3249,60 +3348,47 @@
         const loadingOverlay = track.element.querySelector('.loading-overlay');
 
         if (downloadBtn && downloadOverlay && loadingOverlay) {
-          // Check cache first before showing loading state
-          const cachedAudio = await this.getCachedAudio(trackData.file);
+          // Show loader immediately when download is requested
+          logger.log(`Track ${trackId} download requested, showing loader first`);
 
-          if (cachedAudio) {
-            logger.log(`Track ${trackId} found in cache, loading directly`);
-            // Hide download button and show cached status
-            downloadBtn.style.display = 'none';
-            downloadOverlay.style.display = 'none';
-            loadingOverlay.style.display = 'flex';
+          // Hide download button and show loader
+          downloadOverlay.style.display = 'none';
+          loadingOverlay.style.display = 'flex';
 
-            // Hide placeholder since we're loading from cache
-            const placeholder = trackElement.querySelector('.placeholder-waveform');
-            if (placeholder) {
-              placeholder.style.display = 'none';
-            }
+          // Hide placeholder since we're processing
+          const placeholder = track.element.querySelector('.placeholder-waveform');
+          if (placeholder) {
+            placeholder.style.display = 'none';
+          }
 
-            try {
+          try {
+            // Check cache first
+            const cachedAudio = await this.getCachedAudio(trackData.file);
+
+            if (cachedAudio) {
+              logger.log(`Track ${trackId} found in cache, loading directly`);
               // Load from cache
               await this.loadTrackAudio(trackData, index);
               // Update play button state after successful load
               this.updatePlayButtonState();
-            } catch (error) {
-              logger.log(`Failed to load cached track ${trackData.name}:`, error);
-              // Reset to download state on error
-              downloadBtn.style.display = 'block';
-              downloadOverlay.style.display = 'flex';
-              loadingOverlay.style.display = 'none';
-            }
-          } else {
-            // Cache miss - show loading state and download
-            downloadBtn.classList.add('downloading');
-            downloadBtn.disabled = true;
-            downloadOverlay.style.display = 'none';
-            loadingOverlay.style.display = 'flex';
+            } else {
+              logger.log(`Track ${trackId} not cached, proceeding with download`);
+              // Cache miss - continue with download
+              downloadBtn.classList.add('downloading');
+              downloadBtn.disabled = true;
 
-            // Hide placeholder since we're downloading
-            const placeholder = trackElement.querySelector('.placeholder-waveform');
-            if (placeholder) {
-              placeholder.style.display = 'none';
-            }
-
-            try {
               // Download the track
               await this.loadTrackAudio(trackData, index);
               // Update play button state after successful download
               this.updatePlayButtonState();
-            } catch (error) {
-              logger.log(`Failed to download track ${trackData.name}:`, error);
-              // Reset to download state on error
-              downloadBtn.classList.remove('downloading');
-              downloadBtn.disabled = false;
-              downloadOverlay.style.display = 'flex';
-              loadingOverlay.style.display = 'none';
             }
+          } catch (error) {
+            logger.log(`Failed to process track ${trackData.name}:`, error);
+            // Reset to download state on error
+            downloadBtn.classList.remove('downloading');
+            downloadBtn.disabled = false;
+            downloadOverlay.style.display = 'flex';
+            loadingOverlay.style.display = 'none';
           }
         }
       }
@@ -3443,20 +3529,29 @@
             this.effects.scatter.node.setBuffer(audioBuffer);
           }
 
-          // Set buffer for all tracks to scatter effect
+                    // Set buffer for all tracks to scatter effect
           if (this.effects.scatter.node) {
             this.effects.scatter.node.setBuffer(audioBuffer);
           }
 
-          // Hide placeholder waveform and show real waveform
+          // IMMEDIATE UI UPDATE: Hide placeholder, show waveform, hide download
           const placeholder = trackElement.querySelector('.placeholder-waveform');
           if (placeholder) {
             placeholder.style.display = 'none';
+            logger.log(`✓ ${trackId}: Hidden placeholder (download complete)`);
           }
 
           const canvas = trackElement.querySelector('.waveform-canvas');
           if (canvas) {
             canvas.style.display = 'block';
+            logger.log(`✓ ${trackId}: Showed waveform (download complete)`);
+          }
+
+          // Hide download overlay since track is now downloaded
+          const downloadOverlay = trackElement.querySelector('.download-overlay');
+          if (downloadOverlay) {
+            downloadOverlay.style.display = 'none';
+            logger.log(`✓ ${trackId}: Hidden download overlay (download complete)`);
           }
 
           logger.log(`Track ${trackData.name} loaded successfully:`, track);
@@ -4501,6 +4596,20 @@
           return;
         }
 
+        // CRITICAL: Ensure duration is valid before starting playback
+        if (this.duration <= 0) {
+          logger.log('Duration is invalid, updating before playback...');
+          this.updateDuration();
+
+          if (this.duration <= 0) {
+            logger.log('Duration still invalid after update, cannot start playback');
+            this.isPlaying = false;
+            return;
+          }
+        }
+
+        logger.log(`Starting playback with duration: ${this.duration}s`);
+
         downloadedTracks.forEach((track, index) => {
           logger.log(`Processing track ${index}:`, {
             id: track.id,
@@ -4713,6 +4822,13 @@
             }
             track.source = null;
           }
+
+          // Also disconnect gain nodes to ensure no audio passes through
+          if (track.gainNode) {
+            track.gainNode.disconnect();
+            track.gainNode.connectedToMaster = false;
+            logger.log(`Disconnected gain node for track ${track.id}`);
+          }
         });
 
         // Reset playback state
@@ -4720,15 +4836,27 @@
         this.currentTime = 0;
         this.stopProgressUpdate();
 
-        // Force audio context cleanup
-        if (this.audioContext && this.audioContext.state === 'running') {
-          const silentBuffer = this.audioContext.createBuffer(2, 1, 22050);
-          const silentSource = this.audioContext.createBufferSource();
-          silentSource.buffer = silentBuffer;
-          silentSource.connect(this.audioContext.destination);
-          silentSource.start();
-          silentSource.stop();
-          logger.log('Forced audio context cleanup');
+        // Force audio context cleanup with more aggressive approach
+        if (this.audioContext) {
+          try {
+            // Suspend audio context immediately
+            if (this.audioContext.state === 'running') {
+              this.audioContext.suspend();
+              logger.log('Audio context suspended during force stop');
+            }
+
+            // Create multiple silent buffers to ensure cleanup
+            for (let i = 0; i < 3; i++) {
+              const silentBuffer = this.audioContext.createBuffer(2, 1, 22050);
+              const silentSource = this.audioContext.createBufferSource();
+              silentSource.buffer = silentBuffer;
+              silentSource.stop();
+              logger.log(`Created silent buffer ${i + 1} for cleanup`);
+            }
+            logger.log('Forced audio context cleanup with multiple silent buffers');
+          } catch (e) {
+            logger.log('Audio context cleanup failed:', e);
+          }
         }
 
         logger.log('All audio force stopped');
@@ -4746,6 +4874,13 @@
             logger.log('Progress update stopped: not playing');
             return;
           }
+
+          // CRITICAL: Check if duration is valid before proceeding
+          if (this.duration <= 0) {
+            logger.log('Progress update stopped: invalid duration (0 or negative)');
+            return;
+          }
+
           // Use AudioContext timebase for accuracy on mobile
           if (this.audioContext) {
             const newTime = Math.max(0, this.audioContext.currentTime - startRef);
@@ -4756,12 +4891,15 @@
           } else {
             this.currentTime += 0.016;
           }
+
           if (this.currentTime >= this.duration) {
             logger.log('Progress update stopped: reached end');
             this.stop();
             return;
           }
+
           this.updateProgress();
+
           // Throttle progress updates to every 100ms to avoid excessive logging
           setTimeout(() => {
             if (this.isPlaying) {
@@ -4847,7 +4985,14 @@
 
           logger.log(`Duration updated: ${this.duration.toFixed(2)}s (${totalMinutes}:${totalSeconds.toString().padStart(2, '0')})`);
 
-                  } else {
+          // Log all track durations for debugging
+          this.tracks.forEach(track => {
+            if (track.isDownloaded && track.audioBuffer) {
+              logger.log(`Track ${track.id} duration: ${track.audioBuffer.duration}s`);
+            }
+          });
+
+        } else {
           this.duration = 0;
           logger.log('No downloaded tracks available for duration calculation');
         }
