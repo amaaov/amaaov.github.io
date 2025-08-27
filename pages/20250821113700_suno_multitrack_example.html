@@ -3530,17 +3530,7 @@
           const filePath = trackData.file;
           logger.log(`Full file path: ${filePath}`);
 
-          // Test if the file exists by making a HEAD request first
-          try {
-            const testResponse = await fetch(filePath, { method: 'HEAD' });
-            logger.log(`File test response: ${testResponse.status} ${testResponse.statusText}`);
-            if (!testResponse.ok) {
-              throw new Error(`File not accessible: ${testResponse.status} ${testResponse.statusText}`);
-            }
-          } catch (testError) {
-            logger.error(`File test failed: ${testError.message}`);
-            throw new Error(`File not accessible: ${testError.message}`);
-          }
+          // File existence will be checked by the actual GET request below
 
           // Check cache first
           let arrayBuffer = await this.getCachedAudio(filePath);
@@ -3761,17 +3751,7 @@
           const filePath = trackData.file; // Use absolute path directly
           logger.log(`Full file path: ${filePath}`);
 
-          // Test if the file exists by making a HEAD request first
-          try {
-            const testResponse = await fetch(filePath, { method: 'HEAD' });
-            logger.log(`File test response: ${testResponse.status} ${testResponse.statusText}`);
-            if (!testResponse.ok) {
-              throw new Error(`File not accessible: ${testResponse.status} ${testResponse.statusText}`);
-            }
-          } catch (testError) {
-            logger.error(`File test failed: ${testError.message}`);
-            throw new Error(`File not accessible: ${testError.message}`);
-          }
+          // File existence will be checked by the actual GET request below
 
                     // Check cache first
           let arrayBuffer = await this.getCachedAudio(filePath);
