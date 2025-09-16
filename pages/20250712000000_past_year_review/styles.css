@@ -1,0 +1,65 @@
+/* Past Year Review 24/25 - Additional Styles */
+
+/* Image gallery enhancements */
+.gallery-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gallery-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover img {
+  opacity: 0.9;
+}
+
+/* Print styles */
+@media print {
+  .news-header,
+  .news-footer,
+  .image-gallery {
+    display: none;
+  }
+
+  .hero-section {
+    background: none;
+    min-height: auto;
+  }
+
+  .article-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

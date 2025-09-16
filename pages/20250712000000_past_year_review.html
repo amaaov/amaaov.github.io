@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Past Year Review 24/25 - amaaåv</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description"
+    content="Past Year Review 24/25: A reflective essay on work culture, productivity simulation, and authentic contribution. A meditation on moving from performance to presence in modern work environments.">
+  <meta name="keywords"
+    content="work culture, productivity, reflection, essay, ninja method, authenticity, workplace dynamics, performance, presence, 2024, 2025">
+  <meta name="author" content="amaaov">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20250712000000_past_year_review.html">
+  <meta property="og:title" content="Past Year Review 24/25 - amaaåv">
+  <meta property="og:description"
+    content="A reflective essay on work culture, productivity simulation, and authentic contribution. Moving from performance to presence.">
+  <meta property="og:image" content="https://amaaov.github.io/pages/20250712000000_past_year_review/image-000.png">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20250712000000_past_year_review.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Past Year Review 24/25 - amaaåv">
+  <meta name="twitter:description"
+    content="A reflective essay on work culture, productivity simulation, and authentic contribution.">
+  <meta name="twitter:image" content="https://amaaov.github.io/pages/20250712000000_past_year_review/image-000.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-color: #1a1a2e;
+      --secondary-color: #16213e;
+      --accent-color: #0f3460;
+      --highlight-color: #533483;
+      --text-primary: #f8f9fa;
+      --text-secondary: #e9ecef;
+      --text-muted: #adb5bd;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: var(--gradient);
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .news-header {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 0;
+    }
+
+    .news-header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .news-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .news-date {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .hero-section {
+      position: relative;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.8) 100%);
+      overflow: hidden;
+    }
+
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('20250712000000_past_year_review/image-000.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      text-align: center;
+      padding: 4rem 2rem;
+      z-index: 2;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #e9ecef 50%, #adb5bd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    .article-meta {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .meta-item {
+      text-align: center;
+    }
+
+    .meta-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .meta-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .article-body {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }
+
+    .article-section {
+      margin-bottom: 0;
+      padding: 4rem 2rem;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      overflow: hidden;
+    }
+
+    .article-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+
+    .article-section:nth-child(1) { background-image: url('20250712000000_past_year_review/image-000.png'); }
+    .article-section:nth-child(2) { background-image: url('20250712000000_past_year_review/image-001.png'); }
+    .article-section:nth-child(3) { background-image: url('20250712000000_past_year_review/image-002.png'); }
+    .article-section:nth-child(4) { background-image: url('20250712000000_past_year_review/image-003.png'); }
+    .article-section:nth-child(5) { background-image: url('20250712000000_past_year_review/image-004.png'); }
+    .article-section:nth-child(6) { background-image: url('20250712000000_past_year_review/image-005.jpg'); }
+    .article-section:nth-child(7) { background-image: url('20250712000000_past_year_review/image-006.png'); }
+    .article-section:nth-child(8) { background-image: url('20250712000000_past_year_review/image-007.png'); }
+    .article-section:nth-child(9) { background-image: url('20250712000000_past_year_review/image-008.png'); }
+    .article-section:nth-child(10) { background-image: url('20250712000000_past_year_review/image-009.png'); }
+    .article-section:nth-child(11) { background-image: url('20250712000000_past_year_review/image-010.png'); }
+    .article-section:nth-child(12) { background-image: url('20250712000000_past_year_review/image-011.png'); }
+    .article-section:nth-child(13) { background-image: url('20250712000000_past_year_review/image-012.png'); }
+    .article-section:nth-child(14) { background-image: url('20250712000000_past_year_review/image-013.png'); }
+    .article-section:nth-child(15) { background-image: url('20250712000000_past_year_review/image-014.png'); }
+
+    .section-number {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--primary-color);
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      z-index: 3;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .section-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 3rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-content p {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+      font-weight: 400;
+    }
+
+    .section-content p:last-child {
+      margin-bottom: 0;
+    }
+
+
+    .conclusion {
+      background-image: url('20250712000000_past_year_review/image-014.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .conclusion::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1;
+    }
+
+    .conclusion-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 3rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .conclusion h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: white;
+      font-weight: 700;
+    }
+
+    .conclusion p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .news-footer {
+      background: rgba(0, 0, 0, 0.9);
+      border-top: 1px solid var(--border-color);
+      padding: 3rem 0;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-meta {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .news-header-content {
+        padding: 0 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .hero-content {
+        padding: 2rem 1rem;
+      }
+
+      .main-content {
+        padding: 0;
+      }
+
+      .article-meta {
+        grid-template-columns: 1fr;
+        text-align: center;
+        margin: 2rem 1rem;
+      }
+
+      .article-section {
+        padding: 2rem 1rem;
+        min-height: 80vh;
+      }
+
+      .section-content {
+        padding: 2rem;
+      }
+
+      .section-content p {
+        font-size: 1.1rem;
+      }
+
+      .conclusion-content {
+        padding: 2rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .article-section {
+        padding: 1.5rem;
+        min-height: 70vh;
+      }
+
+      .section-content {
+        padding: 1.5rem;
+      }
+
+      .section-content p {
+        font-size: 1rem;
+      }
+
+      .conclusion-content {
+        padding: 1.5rem;
+      }
+
+      .conclusion h2 {
+        font-size: 2rem;
+      }
+
+      .conclusion p {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="news-header">
+    <div class="news-header-content">
+      <a href="../index.html" class="news-logo">amaaåv</a>
+      <div class="news-date">July 12, 2025</div>
+    </div>
+  </header>
+
+  <section class="hero-section">
+    <div class="hero-background"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Past Year Review 24/25</h1>
+      <p class="hero-subtitle">A meditation on work culture, productivity simulation, and authentic contribution</p>
+      <div class="hero-meta">
+        <span>ChatGPT with context from Åndrei</span>
+        <span>14 sections</span>
+        <span>Reflective essay</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="main-content">
+    <div class="article-body">
+      <div class="article-section">
+        <div class="section-number">1</div>
+        <div class="section-content">
+          <p>This year did not begin with failure. It began with surface. We saw activity everywhere: tools in motion, dashboards updated, meetings filled, and tasks moving. But the more we looked, the more we realized how much of this movement was not grounded in substance. What we were seeing was not necessarily work. It was the shape of work, performed. It was simulation.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">2</div>
+        <div class="section-content">
+          <p>This pattern wasn't accidental. It came from the culture we operate in. A culture where being seen to work is often more important than doing meaningful work. Where polish is more valuable than follow-through. Where appearing aligned has replaced the effort of actual understanding.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">3</div>
+        <div class="section-content">
+          <p>Much of modern tech and creative work now functions like a cargo cult. People go through the motions of contribution without engaging in the deeper logic. They adopt the form of progress in hopes that real results will follow. Teams meet to simulate coordination. Roles exist to suggest structure. People produce artifacts that look like outcomes. But often, there's no weight to what is being done.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">4</div>
+        <div class="section-content">
+          <p>This dynamic is reinforced by the platforms around us. Artists, developers, and workers of all kinds are rewarded for the appearance of doing — not the consequences of what's been done. Social media teaches us to simulate creativity. Project tools train us to simulate productivity. Team culture begins to drift toward performance and away from presence.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">5</div>
+        <div class="section-content">
+          <p>As newer generations enter the field, many inherit this framework not as a workaround but as the default. They learn roles through content, not through mentorship. They inherit formats without understanding context. They know how contribution looks before they understand what contribution feels like. Simulation becomes the standard. The wrapper becomes the product.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">6</div>
+        <div class="section-content">
+          <p>This mindset has infected the workplace. Meetings become performative rituals. Hand-offs are aesthetic but ungrounded. People are hired based on the glow of a profile or the cadence of their answers, not on their ability to contribute with rhythm and clarity in real time. And yet, the cost of this simulation is high. Teams that look productive but aren't grounded fall apart under pressure. Projects that are over-structured but under-owned drift until failure. Work that is visible but vague erodes trust.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">7</div>
+        <div class="section-content">
+          <p>This year, we began resisting. Not loudly. Not dramatically. But deliberately. We stepped away from ritual performance. We paid attention to what actually held. We reduced noise. We dropped tasks that looked good and did nothing. We asked questions like: Who is this really for? What are we avoiding? What would it take to actually solve this?</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">8</div>
+        <div class="section-content">
+          <p>One of the most useful metaphors this year came from an unexpected place: the ninja. Not as costume, not as fantasy, but as method. The ninja isn't defined by flash. The ninja is defined by repetition, by mastery, by doing the hard thing without seeking recognition. A ninja trains even when no one watches. A ninja holds to values not as decoration but as discipline. A ninja doesn't vibe with loyalty. A ninja proves it in motion.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">9</div>
+        <div class="section-content">
+          <p>The ninja path is the opposite of cargo ritual. It's about consistency under pressure. It's about doing things right when no one will see, because that's what sustains. It's about values being earned through experience, not merely stated. Values are not real until they're tested. Not every day is dramatic. Not every task is visible. But commitment builds through repetition.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">10</div>
+        <div class="section-content">
+          <p>Another lesson this year: being specific is not just about detail. It is about orientation. To be specific is to always know what you are doing, why you're doing it, and how it fits. Specificity is structural. Without it, ownership fades. Without it, meetings grow vague and long. When people are not specific, simulation fills the gap. Specificity is a form of respect — for the problem, the people, and the time being spent.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">11</div>
+        <div class="section-content">
+          <p>We also learned that ownership is always questionable. It moves. It ages. It disappears. And that's not a flaw. That's reality. Ownership isn't a badge — it's a relationship between a person and a task in a moment of time. Because it's fragile, it must be maintained. Made visible. Re-declared. Checked. When ownership is implicit, it decays. When it's explicit, it can be tested, shared, and adjusted. Good teams treat ownership as living structure — something that can flex, but never disappear silently.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">12</div>
+        <div class="section-content">
+          <p>Above all, we saw that the most valuable work begins after the performance ends. It begins when people stop pretending to know and start asking together. When they stop optimizing for how things look and start noticing how things feel. When they stop performing roles and begin inhabiting them. The work that held this year was not fast. It was not loud. It was not always polished. But it was real.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">13</div>
+        <div class="section-content">
+          <p>We leave this year not with performance metrics, but with deeper orientation. We are here to build slowly if needed, clearly when possible, and honestly at all times. We are here to ask the hard questions when they matter. We are here to work as a team, not to simulate one. We are here not to impress, but to endure. Because what holds over time is not the glow, not the wrapper, not the narrative. What holds is what's built through attention, repetition, and trust.</p>
+        </div>
+      </div>
+
+      <div class="article-section">
+        <div class="section-number">14</div>
+        <div class="section-content">
+          <p>That is the path forward. Not a vibe. A practice. Not a promise. A pattern. Not a role. A rhythm. We're walking it. And we're staying.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="conclusion">
+      <div class="conclusion-content">
+        <h2>The Path Forward</h2>
+        <p>Not a vibe. A practice. Not a promise. A pattern. Not a role. A rhythm. We're walking it. And we're staying.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="news-footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="../index.html" class="footer-link">Home</a>
+        <a href="../pages/2024_okaupunki_lyrics.html" class="footer-link">Previous Article</a>
+        <a href="../pages/20250821090000_stay_x_fresh_lyrics.html" class="footer-link">Next Article</a>
+      </div>
+      <div class="footer-meta">
+        <p>© 2025 amaaåv. Everything belongs to everyone. | Published on July 12, 2025</p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
