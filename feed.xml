@@ -5,9 +5,20 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Thu, 21 Aug 2025 18:30:08 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Apr 2026 10:16:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
 
+    <item>
+      <title>Juggling</title>
+      <description>Juggling as continuous presence of a state without holding.</description>
+      <link>https://amaaov.github.io/pages/20260427101600_juggling_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260427101600_juggling_en.html</guid>
+      <pubDate>Mon, 27 Apr 2026 10:16:00 +0000</pubDate>
+      <category>juggling</category>
+      <category>essay</category>
+      <category>multilingual</category>
+      <category>performance art</category>
+    </item>
     <item>
       <title>Past Year Review 24/25</title>
       <description>Past Year Review 24/25: A reflective essay on work culture, productivity simulation, and authentic contribution. A meditation on moving from performance to presence in modern work environments.</description>
