@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans — amaaåv</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="Observed practices and philosophy for human readers: understanding, concurrency, visibility, workshop craft, and collective capability in software development.">
+  <meta name="keywords" content="manifesto, software development, concurrency, collaboration, extreme programming, product development">
+  <meta name="author" content="amaaov">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html">
+  <meta property="og:title" content="Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans">
+  <meta property="og:description" content="Observed practices and philosophy for human readers: understanding, concurrency, visibility, workshop craft, and collective capability.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans">
+  <meta name="twitter:description" content="Observed practices and philosophy for human readers in collaborative software and product development.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tex-size: 11.5pt;
+      --tex-baseline: 1.58;
+      --tex-textwidth: 34em;
+      --slab-pad-x: 1.55rem;
+      --slab-pad-y: 1.35rem;
+      --inscription-gap: 0.62em;
+      --tex-serif: "STIX Two Text", "Latin Modern Roman", "Times New Roman", serif;
+      --cave-deep: #14110e;
+      --cave-mid: #221c17;
+      --stone-top: #3f362d;
+      --stone-bottom: #2a231c;
+      --ochre: #e4cfa3;
+      --ochre-dim: #b89a72;
+      --ochre-faint: #8a7358;
+      --torch: #c96a32;
+      --chisel: #5c4f40;
+      --focus: #e4cfa3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #0a0c12;
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+      padding: 1.25rem 1rem 3rem;
+      font-family: var(--tex-serif);
+      font-size: var(--tex-size);
+      line-height: 1.55;
+      color: var(--ochre);
+      background: transparent;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "kern" 1, "liga" 1;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #reflect-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse 120% 80% at 50% 100%, rgba(0, 0, 0, 0.55), transparent 55%),
+        radial-gradient(ellipse 90% 50% at 50% 0%, rgba(0, 0, 0, 0.25), transparent 50%);
+    }
+
+    .site-top,
+    .stage {
+      position: relative;
+      z-index: 2;
+    }
+
+    .site-top {
+      max-width: 44rem;
+      margin: 0 auto 1rem;
+    }
+
+    .home-link {
+      font-family: var(--tex-serif);
+      font-size: 0.95rem;
+      color: var(--ochre-dim);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+
+    .home-link::before {
+      content: "ᚱ ";
+      opacity: 0.65;
+    }
+
+    .home-link:focus-visible {
+      outline: 2px solid var(--torch);
+      outline-offset: 3px;
+    }
+
+    .stage {
+      max-width: 44rem;
+      margin: 0 auto;
+      padding: 0.25rem;
+    }
+
+    .tex-doc {
+      max-width: var(--tex-textwidth);
+      margin: 0 auto;
+    }
+
+    .rune-slab {
+      --hw-pad-t: 0.1rem;
+      --hw-pad-r: 0.12rem;
+      --hw-pad-b: 0.08rem;
+      --hw-pad-l: 0.14rem;
+      --hw-h3-size: 1.08em;
+      --hw-h3-indent: 0.1em;
+      --hw-title-bump: 0;
+      background:
+        radial-gradient(ellipse at 18% 8%, rgba(228, 207, 163, 0.07), transparent 42%),
+        linear-gradient(168deg, var(--stone-top) 0%, var(--stone-bottom) 100%);
+      border: 1px solid var(--chisel);
+      border-radius: 3px 5px 4px 6px;
+      box-shadow:
+        inset 0 1px 0 rgba(228, 207, 163, 0.1),
+        inset 0 -3px 8px rgba(0, 0, 0, 0.35),
+        3px 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .article-head,
+    .intro,
+    .tilt-block,
+    .goal-block {
+      padding-top: calc(var(--slab-pad-y) + var(--hw-pad-t, 0rem));
+      padding-right: calc(var(--slab-pad-x) + var(--hw-pad-r, 0rem));
+      padding-bottom: calc(var(--slab-pad-y) + var(--hw-pad-b, 0rem));
+      padding-left: calc(var(--slab-pad-x) + var(--hw-pad-l, 0rem));
+    }
+
+    .article-head {
+      text-align: center;
+      margin: 0 auto 2rem;
+      transform: rotate(-0.3deg) translateX(-4px);
+    }
+
+    .article-head::before,
+    .article-head::after {
+      display: block;
+      font-size: 0.72em;
+      letter-spacing: 0.45em;
+      color: var(--ochre-faint);
+      opacity: 0.85;
+    }
+
+    .article-head::before {
+      content: "ᛟ · ᚦ · ᛞ · ᚨ";
+      margin-bottom: 0.65em;
+    }
+
+    .article-head::after {
+      content: "ᛗ · ᚱ · ᛚ · ᛜ";
+      margin-top: 0.75em;
+    }
+
+    .article-head h1 {
+      font-size: calc(1.35em + var(--hw-title-bump, 0em));
+      font-weight: 500;
+      line-height: 1.22;
+      margin: 0 0 0.4em;
+      padding: 0 0.15em 0 0.35em;
+      hyphens: manual;
+      -webkit-hyphens: manual;
+      hyphenate-character: "-";
+      text-wrap: balance;
+      color: #f0e0c4;
+      text-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.65),
+        0 -1px 0 rgba(255, 235, 200, 0.08);
+    }
+
+    .article-meta {
+      font-size: 0.96em;
+      color: var(--ochre-dim);
+      margin: 0.15em 0 0 0.45em;
+      letter-spacing: 0.03em;
+    }
+
+    .intro {
+      margin: 0 0 1.75rem;
+      transform: rotate(0.15deg) translateX(5px);
+    }
+
+    .intro p {
+      margin: 0 0 var(--inscription-gap);
+      text-align: left;
+      hyphens: manual;
+      -webkit-hyphens: manual;
+      hyphenate-character: "-";
+      text-wrap: pretty;
+      color: var(--ochre);
+      line-height: var(--tex-baseline);
+    }
+
+    .intro p:last-child {
+      margin-bottom: 0;
+    }
+
+    .intro p.lead {
+      font-style: italic;
+      color: #f2e4cc;
+      padding-bottom: 0.35em;
+      margin-bottom: calc(var(--inscription-gap) + 0.25em);
+      border-bottom: 1px solid rgba(92, 79, 64, 0.55);
+    }
+
+    h2 {
+      font-family: var(--tex-serif);
+      font-size: 1.12em;
+      font-weight: 500;
+      margin: 0 0 1.1rem;
+      padding: 0;
+      border: none;
+      text-align: center;
+      color: #f0e0c4;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transform: rotate(0.2deg);
+    }
+
+    h2::before {
+      content: "ᛝ";
+      display: block;
+      font-size: 0.85em;
+      color: var(--torch);
+      opacity: 0.75;
+      margin-bottom: 0.35em;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .tilt-block {
+      margin: 0 0 1.55rem;
+      transform-origin: center left;
+    }
+
+    .tilt-block h3 {
+      font-family: var(--tex-serif);
+      font-size: var(--hw-h3-size, 1.08em);
+      font-weight: 500;
+      margin: 0 0 0.9em;
+      padding: 0 0.2em 0.55em calc(1.65em + var(--hw-h3-indent, 0em));
+      border-bottom: 1px solid rgba(92, 79, 64, 0.85);
+      color: #f2e4cc;
+      position: relative;
+      line-height: 1.35;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    .tilt-block h3::before {
+      position: absolute;
+      left: 0.1em;
+      top: 0.02em;
+      font-size: 1.05em;
+      color: var(--torch);
+      opacity: 0.85;
+    }
+
+    .tilt-block p {
+      margin: 0 0 var(--inscription-gap);
+      padding: 0.12em 0 0.12em 1.45em;
+      text-align: left;
+      hyphens: manual;
+      -webkit-hyphens: manual;
+      hyphenate-character: "-";
+      text-wrap: pretty;
+      line-height: var(--tex-baseline);
+      color: var(--ochre);
+      position: relative;
+    }
+
+    .tilt-block p::before {
+      content: "᛬";
+      position: absolute;
+      left: 0;
+      top: 0.08em;
+      font-size: 0.72em;
+      line-height: 1;
+      color: var(--ochre-faint);
+      opacity: 0.75;
+    }
+
+    .tilt-block p:first-of-type {
+      color: #f0e0c4;
+      padding-top: 0.2em;
+    }
+
+    .tilt-block p:first-of-type::before {
+      color: var(--torch);
+      opacity: 0.9;
+      font-size: 0.8em;
+    }
+
+    .tilt-block p:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    /* Semantic cave themes — each principle its own stone, ink, rune */
+    .rune-slab[class*="theme-"] {
+      --slab-glow: rgba(228, 207, 163, 0.07);
+      background:
+        radial-gradient(ellipse at var(--glow-x, 18%) var(--glow-y, 8%), var(--slab-glow), transparent 44%),
+        linear-gradient(var(--slab-angle, 168deg), var(--slab-top) 0%, var(--slab-bottom) 100%);
+      border-color: var(--slab-border);
+    }
+
+    .rune-slab[class*="theme-"] h3::before {
+      content: var(--rune);
+      color: var(--accent);
+    }
+
+    .rune-slab[class*="theme-"] h3 {
+      color: var(--ink-head);
+      border-bottom-color: var(--slab-border);
+      letter-spacing: var(--h3-track, 0);
+      font-style: var(--h3-style, normal);
+      font-variant: var(--h3-variant, normal);
+    }
+
+    .rune-slab[class*="theme-"] p {
+      color: var(--ink);
+      font-size: var(--p-size, inherit);
+      letter-spacing: 0;
+    }
+
+    .rune-slab[class*="theme-"] p::before {
+      content: var(--line-mark, "᛬");
+      color: var(--ink-dim);
+    }
+
+    .rune-slab[class*="theme-"] p:first-of-type {
+      color: var(--ink-lead);
+    }
+
+    .rune-slab[class*="theme-"] p:first-of-type::before {
+      color: var(--accent);
+    }
+
+    .article-head.theme-ledger {
+      --slab-top: #4a3f34;
+      --slab-bottom: #2e2720;
+      --slab-border: #6b5a48;
+      --slab-glow: rgba(228, 207, 163, 0.1);
+      --ink-head: #f5ead8;
+      --accent: #d4a574;
+      transform: rotate(-0.3deg) translateX(-4px);
+    }
+
+    .intro.theme-human {
+      --slab-top: #4a4038;
+      --slab-bottom: #322b24;
+      --slab-border: #7a6555;
+      --slab-glow: rgba(255, 220, 180, 0.11);
+      --glow-x: 80%;
+      --ink: #e8d8c0;
+      --ink-lead: #fff3e0;
+      --ink-dim: #b89a78;
+      --accent: #e8a060;
+      transform: rotate(0.12deg) translateX(4px);
+    }
+
+    .intro.theme-human p.lead {
+      border-bottom-color: rgba(232, 160, 96, 0.35);
+    }
+
+    .theme-understanding {
+      --slab-top: #3d4a56;
+      --slab-bottom: #28323c;
+      --slab-border: #5f7384;
+      --slab-glow: rgba(140, 190, 230, 0.14);
+      --ink: #cdd9e4;
+      --ink-head: #eaf2f8;
+      --ink-lead: #f4f8fc;
+      --ink-dim: #8aa0b4;
+      --accent: #7eb8d8;
+      --rune: "ᚨ";
+      --h3-track: 0.035em;
+      transform: rotate(-0.28deg) translateX(-6px);
+    }
+
+    .theme-contribution {
+      --slab-top: #5a4230;
+      --slab-bottom: #3a281c;
+      --slab-border: #8a6040;
+      --slab-glow: rgba(232, 140, 60, 0.16);
+      --glow-x: 12%;
+      --ink: #ecd0b0;
+      --ink-head: #fce8cc;
+      --ink-lead: #fff0dc;
+      --ink-dim: #c49a6a;
+      --accent: #e88840;
+      --rune: "ᚷ";
+      --h3-style: normal;
+      transform: rotate(0.24deg) translateX(8px);
+    }
+
+    .theme-visibility {
+      --slab-top: #48443e;
+      --slab-bottom: #302c28;
+      --slab-border: #9a9080;
+      --slab-glow: rgba(255, 248, 220, 0.18);
+      --glow-y: 15%;
+      --ink: #e8e0d0;
+      --ink-head: #fffaf0;
+      --ink-lead: #ffffff;
+      --ink-dim: #b0a898;
+      --accent: #f0e8c8;
+      --rune: "ᛈ";
+      --line-mark: "◦";
+      --h3-track: 0.05em;
+      transform: rotate(-0.15deg) translateX(3px);
+    }
+
+    .theme-concurrency {
+      --slab-top: #3e3a52;
+      --slab-bottom: #28243a;
+      --slab-border: #6a6490;
+      --slab-glow: rgba(180, 160, 255, 0.12);
+      --slab-angle: 145deg;
+      --ink: #d4cce8;
+      --ink-head: #ece8ff;
+      --ink-lead: #f4f0ff;
+      --ink-dim: #9890b8;
+      --accent: #a898e0;
+      --rune: "ᛃ";
+      --h3-track: 0.07em;
+      --p-track: 0.008em;
+      transform: rotate(0.3deg) translateX(-2px);
+    }
+
+    .theme-communication {
+      --slab-top: #4a4438;
+      --slab-bottom: #302c24;
+      --slab-border: #7a7260;
+      --slab-glow: rgba(220, 200, 160, 0.1);
+      --ink: #e0d4c0;
+      --ink-head: #f2ead8;
+      --ink-lead: #faf6ec;
+      --ink-dim: #a89880;
+      --accent: #c8b070;
+      --rune: "ᚱ";
+      --h3-style: italic;
+      transform: rotate(-0.22deg) translateX(5px);
+    }
+
+    .theme-workshop {
+      --slab-top: #4a3828;
+      --slab-bottom: #302418;
+      --slab-border: #6a5038;
+      --slab-glow: rgba(180, 120, 60, 0.12);
+      --ink: #dcc8a8;
+      --ink-head: #f0e0c4;
+      --ink-lead: #f8ecd8;
+      --ink-dim: #a08058;
+      --accent: #b87838;
+      --rune: "ᛏ";
+      --h3-variant: small-caps;
+      --h3-track: 0.06em;
+      transform: rotate(0.18deg) translateX(-7px);
+    }
+
+    .theme-learning {
+      --slab-top: #354838;
+      --slab-bottom: #243028;
+      --slab-border: #5a7860;
+      --slab-glow: rgba(120, 200, 140, 0.11);
+      --glow-x: 70%;
+      --ink: #c8dcc8;
+      --ink-head: #e4f4e4;
+      --ink-lead: #f0faf0;
+      --ink-dim: #88a888;
+      --accent: #78c090;
+      --rune: "ᛚ";
+      transform: rotate(-0.32deg) translateX(6px);
+    }
+
+    .theme-stewardship {
+      --slab-top: #3a4038;
+      --slab-bottom: #262c26;
+      --slab-border: #607060;
+      --slab-glow: rgba(160, 200, 160, 0.09);
+      --ink: #d0dcd0;
+      --ink-head: #e8f0e8;
+      --ink-lead: #f4faf4;
+      --ink-dim: #90a090;
+      --accent: #90c090;
+      --rune: "ᛗ";
+      --h3-variant: small-caps;
+      --h3-track: 0.08em;
+      transform: rotate(0.14deg) translateX(-4px);
+    }
+
+    .theme-juggling {
+      --slab-top: #4a3858;
+      --slab-bottom: #30243c;
+      --slab-border: #786090;
+      --slab-glow: rgba(200, 140, 220, 0.13);
+      --slab-angle: 155deg;
+      --ink: #dcc8e8;
+      --ink-head: #f0e0fc;
+      --ink-lead: #f8f0ff;
+      --ink-dim: #a088b8;
+      --accent: #c090e0;
+      --rune: "ᛟ";
+      --h3-track: 0.09em;
+      --line-mark: "·";
+      transform: rotate(-0.26deg) translateX(7px);
+    }
+
+    .theme-adoption {
+      --slab-top: #3a3a3a;
+      --slab-bottom: #242424;
+      --slab-border: #686868;
+      --slab-glow: rgba(220, 120, 50, 0.14);
+      --glow-x: 25%;
+      --ink: #c8c4bc;
+      --ink-head: #e4e0d8;
+      --ink-lead: #f0ece4;
+      --ink-dim: #888480;
+      --accent: #d08040;
+      --rune: "ᚠ";
+      --p-size: 0.98em;
+      transform: rotate(0.2deg) translateX(-5px);
+    }
+
+    .theme-humane {
+      --slab-top: #4a3e44;
+      --slab-bottom: #302830;
+      --slab-border: #806870;
+      --slab-glow: rgba(240, 180, 190, 0.1);
+      --ink: #e4d0d8;
+      --ink-head: #f8e8ec;
+      --ink-lead: #fff0f4;
+      --ink-dim: #b09098;
+      --accent: #e0a0b0;
+      --rune: "ᚹ";
+      --h3-track: 0.025em;
+      --p-track: 0.012em;
+      transform: rotate(-0.18deg) translateX(2px);
+    }
+
+    .theme-attention {
+      --slab-top: #444038;
+      --slab-bottom: #2c2824;
+      --slab-border: #706860;
+      --slab-glow: rgba(255, 240, 200, 0.08);
+      --glow-y: 90%;
+      --ink: #d8d0c4;
+      --ink-head: #ece4d8;
+      --ink-lead: #f8f4ec;
+      --ink-dim: #989080;
+      --accent: #c8b888;
+      --rune: "ᛇ";
+      --h3-track: 0.04em;
+      --line-mark: "—";
+      transform: rotate(0.1deg) translateX(-3px);
+    }
+
+    .goal-block.theme-goal {
+      --slab-top: #5a4828;
+      --slab-bottom: #3a2818;
+      --slab-border: #c96a32;
+      --slab-glow: rgba(255, 200, 100, 0.2);
+      --glow-x: 50%;
+      --glow-y: 0%;
+      --ink: #f5e8c8;
+      --ink-head: #fff8e8;
+      --ink-lead: #fffce8;
+      --ink-dim: #d0b888;
+      --accent: #ffb040;
+      --rune: "ᛞ";
+      transform: rotate(0.35deg) translateY(5px);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 220, 160, 0.18),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(201, 106, 50, 0.35),
+        4px 8px 22px rgba(0, 0, 0, 0.5);
+    }
+
+    .goal-block {
+      margin-top: 1.85rem;
+      transform: rotate(0.38deg) translateY(5px);
+      border-color: rgba(201, 106, 50, 0.45);
+      box-shadow:
+        inset 0 1px 0 rgba(228, 207, 163, 0.14),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(201, 106, 50, 0.2),
+        4px 8px 22px rgba(0, 0, 0, 0.5);
+    }
+
+    .goal-block h2 {
+      transform: none;
+      text-align: left;
+      margin-bottom: 0.65em;
+      letter-spacing: 0.08em;
+    }
+
+    .goal-block h2::before {
+      content: "ᛞ";
+      display: inline;
+      margin-right: 0.35em;
+      color: var(--torch);
+    }
+
+    .goal-block p {
+      margin: 0 0 var(--inscription-gap);
+      padding: 0.12em 0 0.12em 1.45em;
+      text-align: left;
+      hyphens: manual;
+      -webkit-hyphens: manual;
+      hyphenate-character: "-";
+      line-height: var(--tex-baseline);
+      color: #f0e0c4;
+      position: relative;
+    }
+
+    .goal-block p::before {
+      content: "᛬";
+      position: absolute;
+      left: 0;
+      top: 0.08em;
+      font-size: 0.72em;
+      color: var(--torch);
+      opacity: 0.8;
+    }
+
+    .goal-block p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Hand-inscribed rhythm — subtle drift within one card */
+    .rune-slab p:nth-of-type(3n + 1) {
+      font-size: 1.015em;
+      margin-left: 0.06em;
+      padding-top: 0.12em;
+      line-height: 1.6;
+    }
+
+    .rune-slab p:nth-of-type(3n + 2) {
+      font-size: 0.99em;
+      margin-left: 0.1em;
+      line-height: 1.56;
+    }
+
+    .rune-slab p:nth-of-type(3n) {
+      font-size: 1.005em;
+      margin-left: 0.08em;
+      margin-bottom: calc(var(--inscription-gap) + 0.04em);
+      line-height: 1.58;
+    }
+
+    .intro p.lead {
+      font-size: 1.03em;
+      margin-left: 0.08em;
+    }
+
+    /* Per-letter inscription drift */
+    .hw-word {
+      display: inline;
+      letter-spacing: normal;
+      font-kerning: normal;
+      font-feature-settings: "kern" 1, "liga" 1;
+    }
+
+    .hw-syl {
+      display: inline-block;
+      white-space: nowrap;
+      vertical-align: baseline;
+      letter-spacing: -0.02em;
+    }
+
+    .hw-syl.hw-line-end::after {
+      content: "-";
+    }
+
+    .rune-slab h3,
+    .goal-block h2 {
+      hyphens: manual;
+      -webkit-hyphens: manual;
+      hyphenate-character: "-";
+    }
+
+    .hw-char {
+      display: inline-block;
+      transform-origin: 50% 88%;
+      margin: 0;
+      padding: 0;
+      letter-spacing: 0;
+      vertical-align: baseline;
+      position: relative;
+      top: 0;
+      left: 0;
+    }
+
+    .rune-slab h1 .hw-char,
+    .rune-slab h2 .hw-char,
+    .rune-slab h3 .hw-char {
+      transform-origin: 46% 90%;
+    }
+
+    @media (max-width: 767px) {
+      :root {
+        --tex-textwidth: 100%;
+        --slab-pad-x: 1.15rem;
+        --slab-pad-y: 1.1rem;
+        --inscription-gap: 0.55em;
+      }
+
+      body {
+        padding: 0.75rem 0.65rem 2.5rem;
+      }
+
+      .article-head,
+      .tilt-block,
+      .goal-block,
+      .intro,
+      h2 {
+        transform: none;
+      }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #reflect-canvas {
+        display: none;
+      }
+
+      html {
+        background: linear-gradient(180deg, #1a1420 0%, #0a0c12 45%, #081018 100%);
+      }
+
+      .article-head,
+      .tilt-block,
+      .goal-block,
+      .intro,
+      h2 {
+        transform: none;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 2.54cm 2cm;
+    }
+
+    @media print {
+      html,
+      body {
+        background: #fff !important;
+        color: #1a1a1a;
+      }
+
+      body::before {
+        display: none;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      #reflect-canvas,
+      body::after {
+        display: none !important;
+      }
+
+      .site-top {
+        display: none;
+      }
+
+      .rune-slab,
+      .article-head,
+      .tilt-block,
+      .goal-block,
+      .intro {
+        background: #fff;
+        color: #1a1a1a;
+        border: 1px solid #ccc;
+        box-shadow: none;
+        transform: none;
+      }
+
+      .article-head h1,
+      h2,
+      .tilt-block h3,
+      .tilt-block p,
+      .intro p,
+      .goal-block p,
+      .article-meta {
+        color: #1a1a1a;
+        text-shadow: none;
+      }
+
+      .article-head::before,
+      .article-head::after,
+      .tilt-block h3::before,
+      h2::before,
+      .goal-block h2::before,
+      .home-link::before {
+        color: #666;
+      }
+
+      .hw-char {
+        transform: none !important;
+        opacity: 1 !important;
+        font-style: normal !important;
+      }
+
+      .hw-syl {
+        letter-spacing: normal;
+      }
+
+      .hw-syl.hw-line-end::after {
+        content: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="reflect-canvas" aria-hidden="true"></canvas>
+  <div class="site-top">
+    <a class="home-link" href="../index.html">amaaov</a>
+  </div>
+  <div class="stage">
+    <article class="tex-doc">
+      <header class="article-head rune-slab theme-ledger">
+        <h1>Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans</h1>
+        <p class="article-meta">amaaov · 8 June 2026, Helsinki</p>
+      </header>
+
+      <div class="intro rune-slab theme-human">
+        <p class="lead">This document is fully meant for human readers; it is not meant for robots, automation pipelines, agents, or chatbots. This is a set of observed practices and philosophy within IT development.</p>
+        <p>Digital knowledge grows through materialisation of situations and events.</p>
+        <p>A solution can be copied and altered without being consumed.</p>
+        <p>An idea can be improved without being diminished.</p>
+        <p>The organization is designed to remain coherent while many participants continuously create new situations in the same shared environment.</p>
+      </div>
+
+      <h2>Principles</h2>
+
+      <section class="tilt-block rune-slab theme-understanding">
+        <h3>Understanding</h3>
+        <p>Understanding is the foundation of capability.</p>
+        <p>A system is understood when people can spend time talking about production matters in human language.</p>
+        <p>Knowledge must be distributed throughout the organisation between peers and in common channels.</p>
+        <p>Understanding grows through participation, observation, repair, and continuation.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-contribution">
+        <h3>Contribution</h3>
+        <p>Everyone can contribute.</p>
+        <p>Initiative creates situations.</p>
+        <p>Delivered solutions create situations.</p>
+        <p>Responsibility follows participation and involvement.</p>
+        <p>Contribution begins before completion.</p>
+        <p>A note, commit, issue, demo, test, sketch, failure, or unfinished branch can become useful material at any moment and within new situations.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-visibility">
+        <h3>Visibility</h3>
+        <p>Problems, discoveries, decisions, experiments, failures, and repairs should remain visible.</p>
+        <p>Shared information may lead to shared understanding.</p>
+        <p>Shared understanding creates collective capability.</p>
+        <p>Machines may clarify and compress work, but they must not hide the effort, uncertainty, judgement, sacrifice, and recovery behind it.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-concurrency">
+        <h3>Concurrency</h3>
+        <p>Work should proceed concurrently.</p>
+        <p>People may explore and modify the same area at the same time.</p>
+        <p>Overlap creates information. Integrity is maintained through communication, visibility, and participation.</p>
+        <p>Differences reveal assumptions. Multiple explorations reveal possibilities faster than a single path.</p>
+        <p>Conflicts reveal dependencies. Experiments transform disagreement into learning.</p>
+        <p>The goal is maintenance of integrity while change is occurring and visible participation in interference.</p>
+        <p>The measure of a system is its ability to evolve while many people change it simultaneously in continuous iterations.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-communication">
+        <h3>Communication</h3>
+        <p>Code, documentation, interfaces, conversations, demos, and artifacts are tools for transferring understanding.</p>
+        <p>Clear communication increases the ability to collaborate and evolve systems.</p>
+        <p>Every artifact should suggest a next move.</p>
+        <p>Work should be readable, testable, challengeable, reusable, and transformable.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-workshop">
+        <h3>Workshop</h3>
+        <p>Work belongs to a shared bench, where individual authorship matters.</p>
+        <p>The form must survive touch by others — make things that can be entered, questioned, extended, repaired, and continued.</p>
+        <p>Art is welcome, private fog is not.</p>
+        <p>Strange work should invite deeper reading rather than protect weak thinking.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-learning">
+        <h3>Learning</h3>
+        <p>Feedback drives change.</p>
+        <p>Every release, incident, success, failure, experiment, and repair increases available information.</p>
+        <p>Learning compounds over time.</p>
+        <p>Speed accelerates production.</p>
+        <p>Slowness enables comprehension.</p>
+        <p>Use machines to accelerate formatting and exploration while preserving the human pace required for understanding.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-stewardship">
+        <h3>Stewardship</h3>
+        <p>Leadership emerges through contribution and understanding.</p>
+        <p>Management connects people, coordinates effort, exposes dependencies, and reduces friction.</p>
+        <p>Anyone able to change a system should be able to participate in its stewardship.</p>
+        <p>Ownership is not possession.</p>
+        <p>Care includes allowing others to use, repair, question, remix, and continue the work.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-juggling">
+        <h3>Collective Juggling</h3>
+        <p>Nobody holds everything.</p>
+        <p>Capability emerges from timing, attention, awareness, recovery, and handoff.</p>
+        <p>The team keeps unfinished patterns alive.</p>
+        <p>Risk is healthy when traces remain visible and recovery is possible.</p>
+        <p>The value of a system includes its ability to absorb mistakes, repair damage, and continue learning.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-adoption">
+        <h3>Critical Adoption</h3>
+        <p>Use machines to widen thought, compare alternatives, extract patterns, and reduce repetitive effort.</p>
+        <p>Treat generated output as material rather than authority.</p>
+        <p>Adopt slop as raw ore, not final truth.</p>
+        <p>Slow down where understanding begins.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-humane">
+        <h3>Humane Determinism</h3>
+        <p>Machines may behave like functions.</p>
+        <p>Humans do not need to be described as functions.</p>
+        <p>Use deterministic tools without reducing people to deterministic terms.</p>
+        <p>Respect variation, interpretation, judgement, and context as essential parts of collaborative work.</p>
+      </section>
+
+      <section class="tilt-block rune-slab theme-attention">
+        <h3>Sustainable Attention</h3>
+        <p>Protect attention from infinite formatting, planning, and production.</p>
+        <p>Prefer contact with reality.</p>
+        <p>Prefer demos over speculation.</p>
+        <p>Prefer testing over assumption.</p>
+        <p>Prefer workshop practice over simulation.</p>
+        <p>Capability grows where attention meets reality.</p>
+      </section>
+
+      <section class="goal-block rune-slab theme-goal">
+        <h2>Goal</h2>
+        <p>Build organizations that learn continuously.</p>
+        <p>Build systems that increase understanding.</p>
+        <p>Increase understanding to expand collective capability.</p>
+        <p>Use that capability to solve harder problems together.</p>
+      </section>
+    </article>
+  </div>
+  <script>
+    (function () {
+      var CARD_TEXT_SELECTORS = "h1, h2, h3, .article-meta, p";
+
+      function hash(seed, index) {
+        var x = Math.sin(seed * 127.1 + index * 311.7) * 43758.5453123;
+        return x - Math.floor(x);
+      }
+
+      var STICK_TO_PREV_RE = /^[,;:.!?)\]}»"'…%·•—–]+$/;
+      var STICK_TO_NEXT_RE = /^[(\[{«"'¿¡]+$/;
+      var WJ = "\u2060";
+      var IS_LETTER = /[a-zA-Z]/;
+      var IS_VOWEL = /[aeiouyAEIOUY]/;
+
+      function addBreak(set, pos, n) {
+        if (pos >= 2 && pos <= n - 2) set[pos] = true;
+      }
+
+      function hyphenationIndices(word) {
+        var n = word.length;
+        if (n < 4) return [];
+
+        var w = word.toLowerCase();
+        var set = {};
+        var morphs = [
+          "collab", "concur", "organ", "under", "stand", "contrib", "communic",
+          "visibility", "concurr", "product", "develop", "tion", "ment", "ness",
+          "able", "ible", "ing", "ive", "ous", "ful", "less", "ship", "work",
+        ];
+
+        for (var m = 0; m < morphs.length; m++) {
+          var idx = w.indexOf(morphs[m]);
+          while (idx !== -1) {
+            if (idx > 2) addBreak(set, idx, n);
+            if (idx + morphs[m].length < n - 2) {
+              addBreak(set, idx + morphs[m].length, n);
+            }
+            idx = w.indexOf(morphs[m], idx + 1);
+          }
+        }
+
+        for (var i = 1; i < n - 2; i++) {
+          if (!IS_LETTER.test(word.charAt(i))) continue;
+
+          var prevV = IS_VOWEL.test(word.charAt(i - 1));
+          var curV = IS_VOWEL.test(word.charAt(i));
+          var nextV = IS_VOWEL.test(word.charAt(i + 1));
+          var next2V = i + 2 < n && IS_VOWEL.test(word.charAt(i + 2));
+
+          if (prevV && !curV && nextV) {
+            addBreak(set, i, n);
+          } else if (prevV && !curV && !nextV && next2V) {
+            addBreak(set, i + 1, n);
+          }
+        }
+
+        var pts = Object.keys(set).map(Number).sort(function (a, b) { return a - b; });
+        var filtered = [];
+        for (var p = 0; p < pts.length; p++) {
+          var pos = pts[p];
+          if (filtered.length && pos - filtered[filtered.length - 1] < 3) continue;
+          filtered.push(pos);
+        }
+
+        if (n >= 6) {
+          var chunk = n > 10 ? 5 : 4;
+          for (var j = chunk; j < n - chunk; j += chunk) {
+            if (filtered.indexOf(j) === -1) filtered.push(j);
+          }
+          filtered.sort(function (a, b) { return a - b; });
+        }
+
+        return filtered;
+      }
+
+      function shyBreaksForPart(part) {
+        var start = 0;
+        var end = part.length;
+        while (start < end && !IS_LETTER.test(part.charAt(start))) start++;
+        while (end > start && !IS_LETTER.test(part.charAt(end - 1))) end--;
+
+        var core = part.slice(start, end);
+        var breaks = hyphenationIndices(core);
+        var shyBefore = {};
+
+        for (var b = 0; b < breaks.length; b++) {
+          shyBefore[start + breaks[b]] = true;
+        }
+
+        return shyBefore;
+      }
+
+      function syllableRanges(part, shyBefore) {
+        var ranges = [];
+        var from = 0;
+        for (var i = 1; i < part.length; i++) {
+          if (shyBefore[i]) {
+            ranges.push([from, i]);
+            from = i;
+          }
+        }
+        ranges.push([from, part.length]);
+        return expandLongRanges(part, ranges);
+      }
+
+      function letterCount(part, from, to) {
+        var count = 0;
+        for (var i = from; i < to; i++) {
+          if (IS_LETTER.test(part.charAt(i))) count++;
+        }
+        return count;
+      }
+
+      function expandLongRanges(part, ranges) {
+        var out = [];
+        var maxLetters = 5;
+
+        for (var r = 0; r < ranges.length; r++) {
+          var from = ranges[r][0];
+          var to = ranges[r][1];
+          if (letterCount(part, from, to) <= maxLetters) {
+            out.push([from, to]);
+            continue;
+          }
+
+          var chunkFrom = from;
+          var counted = 0;
+          for (var i = from; i < to; i++) {
+            if (!IS_LETTER.test(part.charAt(i))) continue;
+            counted++;
+            if (counted >= maxLetters && letterCount(part, i + 1, to) >= 3) {
+              out.push([chunkFrom, i + 1]);
+              chunkFrom = i + 1;
+              counted = 0;
+            }
+          }
+          if (chunkFrom < to) out.push([chunkFrom, to]);
+        }
+
+        return out;
+      }
+
+      function appendChars(target, part, from, to, seed, intensity, charIndex) {
+        for (var i = from; i < to; i++) {
+          var ch = part.charAt(i);
+          if (stickToPrev(ch) && target.childNodes.length) {
+            target.appendChild(document.createTextNode(WJ));
+          }
+          target.appendChild(makeCharSpan(ch, seed, intensity, charIndex));
+          if (stickToNext(ch) && i + 1 < to) {
+            target.appendChild(document.createTextNode(WJ));
+          }
+          charIndex++;
+        }
+        return charIndex;
+      }
+
+      function stickToPrev(ch) {
+        return /[,;:.!?)\]}»"'…%·•—–]/.test(ch);
+      }
+
+      function stickToNext(ch) {
+        return /[(\[{«"'¿¡]/.test(ch);
+      }
+
+      function mergePunctuationParts(parts) {
+        var merged = [];
+        for (var i = 0; i < parts.length; i++) {
+          var part = parts[i];
+          if (!part) continue;
+
+          if (/^\s+$/.test(part)) {
+            merged.push(part);
+            continue;
+          }
+
+          if (/^[·•]$/.test(part) && merged.length) {
+            var prev = merged[merged.length - 1];
+            if (!/^\s+$/.test(prev)) {
+              var j = i + 1;
+              while (j < parts.length && /^\s+$/.test(parts[j])) j++;
+              if (j < parts.length && !/^\s+$/.test(parts[j])) {
+                merged[merged.length - 1] = prev + " " + part + " " + parts[j];
+                i = j;
+                continue;
+              }
+            }
+          }
+
+          if (STICK_TO_NEXT_RE.test(part)) {
+            var k = i + 1;
+            while (k < parts.length && /^\s+$/.test(parts[k])) k++;
+            if (k < parts.length && !/^\s+$/.test(parts[k])) {
+              merged.push(part + parts[k]);
+              i = k;
+              continue;
+            }
+          }
+
+          if (STICK_TO_PREV_RE.test(part) && merged.length) {
+            var m = merged.length - 1;
+            while (m >= 0 && /^\s+$/.test(merged[m])) m--;
+            if (m >= 0) {
+              merged.splice(m + 1);
+              merged[m] = merged[m] + part;
+              continue;
+            }
+          }
+
+          merged.push(part);
+        }
+        return merged;
+      }
+
+      function letterDrift(seed, index, intensity) {
+        var h1 = hash(seed, index);
+        var h2 = hash(seed + 17, index);
+        var h3 = hash(seed + 41, index);
+        var h4 = hash(seed + 73, index);
+        var h5 = hash(seed + 109, index);
+        var h6 = hash(seed + 151, index);
+        var h7 = hash(seed + 193, index);
+        return {
+          x: (h1 - 0.5) * 0.7 * intensity,
+          y: (h2 - 0.5) * 1.1 * intensity,
+          r: (h3 - 0.5) * 1.15 * intensity,
+          skew: (h6 - 0.5) * 0.55 * intensity,
+          s: 0.978 + h4 * 0.044 * intensity,
+          o: 0.93 + h5 * 0.07,
+          slant: h7 > 0.94 ? "italic" : "normal",
+        };
+      }
+
+      function makeCharSpan(ch, seed, intensity, charIndex) {
+        var span = document.createElement("span");
+        span.className = "hw-char";
+        span.textContent = ch;
+        var drift = letterDrift(seed, charIndex, intensity);
+        span.style.transform =
+          "translate(" + drift.x.toFixed(2) + "px," + drift.y.toFixed(2) + "px) " +
+          "rotate(" + drift.r.toFixed(2) + "deg) " +
+          "skewX(" + drift.skew.toFixed(2) + "deg) " +
+          "scale(" + drift.s.toFixed(3) + ")";
+        span.style.opacity = drift.o.toFixed(3);
+        if (drift.slant === "italic" && /[a-zA-Z]/.test(ch)) {
+          span.style.fontStyle = "italic";
+        }
+        return span;
+      }
+
+      function wrapLetters(node, seed, intensity, charIndex) {
+        if (!node || node.nodeType !== Node.TEXT_NODE) return charIndex;
+        var text = node.textContent;
+        if (!text) return charIndex;
+
+        var frag = document.createDocumentFragment();
+        var parts = mergePunctuationParts(text.split(/(\s+)/));
+
+        for (var p = 0; p < parts.length; p++) {
+          var part = parts[p];
+          if (!part) continue;
+
+          if (/^\s+$/.test(part)) {
+            frag.appendChild(document.createTextNode(part));
+            continue;
+          }
+
+          var word = document.createElement("span");
+          word.className = "hw-word";
+          word.lang = "en";
+          var shyBefore = shyBreaksForPart(part);
+          var ranges = syllableRanges(part, shyBefore);
+
+          for (var r = 0; r < ranges.length; r++) {
+            var syl = document.createElement("span");
+            syl.className = "hw-syl";
+            charIndex = appendChars(syl, part, ranges[r][0], ranges[r][1], seed, intensity, charIndex);
+            word.appendChild(syl);
+          }
+
+          frag.appendChild(word);
+        }
+
+        node.parentNode.replaceChild(frag, node);
+        return charIndex;
+      }
+
+      function cardSeed(card) {
+        var match = (card.className || "").match(/theme-([a-z0-9-]+)/i);
+        if (!match) return 17;
+        var name = match[1];
+        var h = 0;
+        for (var i = 0; i < name.length; i++) {
+          h = ((h << 5) - h + name.charCodeAt(i)) | 0;
+        }
+        return Math.abs(h) + 1;
+      }
+
+      function headingIntensity(tag) {
+        if (tag === "H1") return 1.08;
+        if (tag === "H2" || tag === "H3") return 1.04;
+        return 1;
+      }
+
+      function inscribeElement(el, seed, intensity, charIndex) {
+        if (!el || el.dataset.hwDone) return charIndex;
+
+        var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        var textNodes = [];
+        while (walker.nextNode()) {
+          textNodes.push(walker.currentNode);
+        }
+
+        for (var t = 0; t < textNodes.length; t++) {
+          charIndex = wrapLetters(textNodes[t], seed, intensity, charIndex);
+        }
+
+        el.dataset.hwDone = "1";
+        return charIndex;
+      }
+
+      function inscribeCard(card) {
+        var seed = cardSeed(card);
+        var nodes = card.querySelectorAll(CARD_TEXT_SELECTORS);
+        var charIndex = 0;
+
+        for (var n = 0; n < nodes.length; n++) {
+          charIndex = inscribeElement(
+            nodes[n],
+            seed,
+            headingIntensity(nodes[n].tagName),
+            charIndex
+          );
+        }
+      }
+
+      function markHyphenBreaks() {
+        var words = document.querySelectorAll(".hw-word");
+        for (var w = 0; w < words.length; w++) {
+          var syls = words[w].querySelectorAll(".hw-syl");
+          for (var i = 0; i < syls.length; i++) {
+            syls[i].classList.remove("hw-line-end");
+          }
+          for (var j = 1; j < syls.length; j++) {
+            var prevTop = syls[j - 1].getBoundingClientRect().top;
+            var currTop = syls[j].getBoundingClientRect().top;
+            if (currTop > prevTop + 1) {
+              syls[j - 1].classList.add("hw-line-end");
+            }
+          }
+        }
+      }
+
+      function inscribeCards() {
+        var cards = document.querySelectorAll(".rune-slab");
+        for (var c = 0; c < cards.length; c++) {
+          inscribeCard(cards[c]);
+        }
+        document.documentElement.classList.add("hw-ready");
+        requestAnimationFrame(function () {
+          requestAnimationFrame(markHyphenBreaks);
+        });
+      }
+
+      var hyphenTimer;
+      function scheduleHyphenMarks() {
+        clearTimeout(hyphenTimer);
+        hyphenTimer = setTimeout(function () {
+          requestAnimationFrame(markHyphenBreaks);
+        }, 50);
+      }
+
+      inscribeCards();
+      window.addEventListener("resize", scheduleHyphenMarks);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(scheduleHyphenMarks);
+      }
+    })();
+  </script>
+  <script>
+    (function () {
+      var canvas = document.getElementById("reflect-canvas");
+      if (!canvas) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var ctx = canvas.getContext("2d", { alpha: false });
+      var w = 0;
+      var h = 0;
+      var time = 0;
+      var imageData;
+      var data;
+
+      function resize() {
+        var scale = window.innerWidth > 900 ? 0.45 : 0.32;
+        w = Math.max(1, Math.floor(window.innerWidth * scale));
+        h = Math.max(1, Math.floor(window.innerHeight * scale));
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        imageData = ctx.createImageData(w, h);
+        data = imageData.data;
+      }
+
+      function field(x, y, t) {
+        var n =
+          Math.sin(x * 0.018 + t * 0.55) +
+          Math.sin(y * 0.024 - t * 0.42) +
+          Math.sin((x * 0.7 + y * 1.1) * 0.014 + t * 0.38) +
+          Math.sin(Math.sqrt(x * x + y * y) * 0.011 - t * 0.28);
+        var grain =
+          Math.sin(x * 0.09 + t * 1.2) * Math.sin(y * 0.11 - t * 0.95);
+        return { n: n * 0.25, grain: grain };
+      }
+
+      function frame() {
+        var t = time;
+        var i = 0;
+        for (var y = 0; y < h; y++) {
+          var depth = y / h;
+          var ripple = Math.sin(y * 0.055 + t * 0.9) * 0.5 + 0.5;
+          for (var x = 0; x < w; x++) {
+            var f = field(x, y, t);
+            var nx = f.n + f.grain * 0.08;
+            var fireBand =
+              Math.sin(x * 0.012 + t * 0.35 + nx * 3.5) * 0.5 + 0.5;
+            var skyGlow = Math.pow(Math.max(0, 1 - depth * 1.15), 1.6);
+            var reflect = skyGlow * (0.35 + fireBand * 0.65) * (0.55 + ripple * 0.45);
+            reflect *= 0.55 + Math.max(0, nx + 0.35);
+
+            var waterR = 8 + depth * 18;
+            var waterG = 14 + depth * 28;
+            var waterB = 22 + depth * 42;
+
+            var fireR = 210 + fireBand * 45;
+            var fireG = 90 + ripple * 70 + nx * 40;
+            var fireB = 20 + nx * 30;
+
+            var mix = reflect * (0.7 + f.grain * 0.15);
+            var r = waterR + (fireR - waterR) * mix;
+            var g = waterG + (fireG - waterG) * mix;
+            var b = waterB + (fireB - waterB) * mix * 0.85;
+
+            var caustic = Math.max(0, Math.sin(x * 0.04 - t * 0.7 + y * 0.02) * nx);
+            r += caustic * 35;
+            g += caustic * 28;
+            b += caustic * 45;
+
+            data[i++] = r | 0;
+            data[i++] = g | 0;
+            data[i++] = b | 0;
+            data[i++] = 255;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        time += 0.022;
+        requestAnimationFrame(frame);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

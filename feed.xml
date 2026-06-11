@@ -5,9 +5,29 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Mon, 27 Apr 2026 10:16:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Jun 2026 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
 
+    <item>
+      <title>Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans</title>
+      <description>Observed practices and philosophy for human readers: understanding, concurrency, visibility, workshop craft, and collective capability in software development.</description>
+      <link>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html</link>
+      <guid>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html</guid>
+      <pubDate>Sun, 08 Jun 2026 12:00:00 +0000</pubDate>
+      <category>manifesto</category>
+      <category>software development</category>
+      <category>philosophy</category>
+    </item>
+    <item>
+      <title>Люди с приколом</title>
+      <description>Новелла-эссе о границе между живым контактом и системами, которые заменяют доверие проверкой. Уг, костёр, двор, движуха, работа, медиа и прикол.</description>
+      <link>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html</link>
+      <guid>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html</guid>
+      <pubDate>Sat, 07 Jun 2026 12:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>russian</category>
+      <category>fiction</category>
+    </item>
     <item>
       <title>Juggling</title>
       <description>Juggling as continuous presence of a state without holding.</description>

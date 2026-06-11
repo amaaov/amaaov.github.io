@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Люди с приколом — amaaåv</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="Новелла-эссе о границе между живым контактом и системами, которые заменяют доверие проверкой. Уг, костёр, двор, движуха, работа, медиа и прикол.">
+  <meta name="keywords" content="прикол, форма, дружба, движуха, медиа, работа, эссе, русский">
+  <meta name="author" content="amaaov">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
+  <meta property="og:title" content="Люди с приколом — amaaåv">
+  <meta property="og:description" content="Новелла-эссе о границе между живым контактом и системами, которые заменяют доверие проверкой. Уг, костёр, двор, движуха, работа, медиа и прикол.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Люди с приколом — amaaåv">
+  <meta name="twitter:description" content="Новелла-эссе о границе между живым контактом и системами, которые заменяют доверие проверкой. Уг, костёр, двор, движуха, работа, медиа и прикол.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tex-size: 12.5pt;
+      --tex-baseline: 17pt;
+      --tex-textwidth: 100%;
+      --tex-serif: "STIX Two Text", "PT Serif", "Times New Roman", serif;
+      --tex-ink: #141210;
+      --tex-ink-muted: #4a4540;
+      --tex-paper: #fffaf4;
+      --page-a4-w: 21cm;
+      --page-a4-h: 29.7cm;
+      --page-pad-y: 2.2cm;
+      --page-pad-x: 2cm;
+      --focus: #c45c26;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #1a120e;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+      font-family: var(--tex-serif);
+      font-size: var(--tex-size);
+      line-height: var(--tex-baseline);
+      color: var(--tex-ink);
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "kern" 1, "liga" 1;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #plasma-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.36;
+    }
+
+    .site-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 0.75rem 1rem;
+      pointer-events: none;
+    }
+
+    .home-link {
+      pointer-events: auto;
+      font-family: var(--tex-serif);
+      font-size: 0.95rem;
+      color: #f0e6dc;
+      text-decoration: none;
+      opacity: 0.9;
+    }
+
+    .home-link:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .book {
+      position: relative;
+      z-index: 2;
+      padding: 3.5rem 0.65rem 2rem;
+    }
+
+    .book-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 1rem);
+      min-height: calc(100dvh - 1rem);
+      padding: 0.5rem 0 1.75rem;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .page-sheet {
+      width: min(
+        calc(100vw - 1.3rem),
+        var(--page-a4-w),
+        calc((100dvh - 5.5rem) * 210 / 297)
+      );
+      aspect-ratio: 210 / 297;
+      height: auto;
+      margin: 0 auto;
+      padding: var(--page-pad-y) var(--page-pad-x);
+      background: var(--tex-paper);
+      border: 1px solid #ddd5c8;
+      box-shadow:
+        0 2px 0 rgba(255, 255, 255, 0.45) inset,
+        0 10px 36px rgba(0, 0, 0, 0.24);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-inner {
+      flex: 1;
+      max-width: var(--tex-textwidth);
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-page--title .page-sheet {
+      justify-content: center;
+    }
+
+    .book-page--title .page-inner {
+      justify-content: flex-start;
+    }
+
+    .book-page--title .article-head {
+      text-align: center;
+    }
+
+    .page-prelude {
+      margin-top: 1.35em;
+    }
+
+    .page-prelude p {
+      margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      hyphenate-limit-chars: 6 3 3;
+      text-wrap: pretty;
+      color: var(--tex-ink);
+    }
+
+    .page-prelude p + p {
+      margin-top: 0.85em;
+    }
+
+    .article-head {
+      margin: 0;
+      padding: 0 0 1.25em;
+      border-bottom: 0.4pt solid var(--tex-ink);
+    }
+
+    .article-head h1 {
+      font-family: var(--tex-serif);
+      font-size: 1.55em;
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 0 0 0.4em;
+      color: var(--tex-ink);
+      text-wrap: balance;
+    }
+
+    .article-meta {
+      font-family: var(--tex-serif);
+      font-size: 1em;
+      line-height: var(--tex-baseline);
+      color: var(--tex-ink-muted);
+      margin: 0;
+    }
+
+    .page-chapter {
+      font-family: var(--tex-serif);
+      font-size: 0.82em;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--tex-ink-muted);
+      margin: 0 0 0.35em;
+      text-align: center;
+    }
+
+    .page-title {
+      font-family: var(--tex-serif);
+      font-size: 1.22em;
+      font-weight: 500;
+      line-height: 1.25;
+      margin: 0 0 1.15em;
+      padding-bottom: 0.65em;
+      text-align: center;
+      color: var(--tex-ink);
+      border-bottom: 0.4pt solid #c8bfb0;
+      text-wrap: balance;
+    }
+
+    .page-body {
+      flex: 1;
+    }
+
+    .page-body p {
+      margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      hyphenate-limit-chars: 6 3 3;
+      text-wrap: pretty;
+      orphans: 3;
+      widows: 3;
+    }
+
+    .page-body p + p {
+      margin-top: 0.85em;
+    }
+
+    .page-footer {
+      margin-top: auto;
+      padding-top: 1.35em;
+      font-family: var(--tex-serif);
+      font-size: 0.88em;
+      color: var(--tex-ink-muted);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+
+    .page-num::before {
+      content: "— ";
+    }
+
+    .page-num::after {
+      content: " —";
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    @media (min-width: 768px) {
+      html {
+        scroll-snap-type: y proximity;
+      }
+
+      .book {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      :root {
+        --page-pad-y: clamp(1.35rem, 5vw, 2.2cm);
+        --page-pad-x: clamp(1.1rem, 4.5vw, 2cm);
+      }
+
+      .book {
+        padding-top: 3rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      .page-body p,
+      .page-prelude p {
+        text-align: left;
+      }
+
+      .book-page {
+        min-height: auto;
+        padding-bottom: 1.25rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      #plasma-canvas {
+        display: none;
+      }
+
+      html {
+        background: #2a1e18;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 2.54cm 2cm;
+    }
+
+    @media print {
+      html {
+        background: #fff;
+        scroll-snap-type: none;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      #plasma-canvas,
+      .site-top {
+        display: none !important;
+      }
+
+      .book {
+        padding: 0;
+      }
+
+      .book-page {
+        min-height: auto;
+        padding: 0;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .book-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      .page-sheet {
+        width: auto;
+        aspect-ratio: auto;
+        height: auto;
+        border: none;
+        box-shadow: none;
+        max-width: none;
+        padding: 0;
+      }
+
+      .page-inner {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="plasma-canvas" aria-hidden="true"></canvas>
+  <div class="site-top">
+    <a class="home-link" href="../index.html">amaaov</a>
+  </div>
+
+  <main class="book tex-doc" aria-label="Люди с приколом">
+
+    <section class="book-page book-page--title" id="page-title">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <header class="article-head">
+            <h1>Люди с приколом</h1>
+            <p class="article-meta">amaaov · 7 июня 2026, Хельсинки</p>
+          </header>
+          <div class="page-prelude">
+            <p>Люди с приколом — это абстрактная новелла-эссе о хрупкой границе между живым человеческим контактом и системами, которые стремятся заменить доверие проверкой, дружбу — допуском, игру — отбором, а мастерство — внешним рангом.</p>
+            <p>Через фигуру Уга и сцены костра, двора, движухи, работы и медиа текст исследует, как форма может помогать человеку и как она же может незаметно стать важнее него.</p>
+            <p>В центре рассказа находится вопрос о том, сохраняют ли правила пространство для ошибки, дружбы, разности опыта и прикола как признака живого.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">i</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-1">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">I</p>
+          <h2 class="page-title">У костра</h2>
+          <div class="page-body">
+            <p>Уг сидел у костра и пытался понять, почему некоторые игры умирают ещё до того, как начинаются, хотя внешне всё будто остаётся на месте: мяч катится, люди двигаются, кто-то объясняет правила, кто-то зовёт остальных в круг, кто-то уже считает очки и говорит, что так будет честнее.</p>
+            <p>Огонь шёл неровной синкопой, ветки потрескивали, дым тянулся к тёмной воде, и в этом простом ночном беспорядке было больше доверия, чем во многих хорошо устроенных формах.</p>
+            <p>Никто у костра не требовал доказывать право на присутствие, никто не ранжировал паузы, никто не говорил, что рассказ получает значение только после внешней оценки. Люди сидели, ошибались в деталях, вспоминали по-разному, перебивали, возвращались к старому, смеялись не вовремя, молчали слишком долго, и всё равно между ними держалась тонкая вещь, которую трудно описать без бытового слова: прикол.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">1</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-2">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">II</p>
+          <h2 class="page-title">Другая линия</h2>
+          <div class="page-body">
+            <p>Позже, уже не у костра, а в залах, дворах, на пустырях, в поездах, в мастерских, на временных площадках и в долгих разговорах после событий, Уг всё чаще замечал, что разница между людьми проходит не там, где её обычно ищут. Люди действительно разные, у них разные тела, языки, привычки, травмы, школы внимания, представления о мастерстве и усталости, но под этим различием иногда проступает другая линия, менее видимая и потому более болезненная.</p>
+            <p>Одни встречают другого как возможность, как неизвестную историю, как источник стиля, странности, решения, ошибки и будущей дружбы. Другие почти сразу ищут форму, через которую этого человека можно понять, поставить, оценить, исправить, допустить или отсеять.</p>
+            <p>И не всегда ясно, где заканчивается аккуратность и начинается недоверие.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">2</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-3">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">III</p>
+          <h2 class="page-title">Медиа-погода</h2>
+          <div class="page-body">
+            <p>Медиа усложняло эту разницу, создавая вокруг людей вторую погоду, иногда плотнее настоящей: обрывки рассказов, тени записей, старые легенды, случайные кадры, репутации, чужие победы, истории о местах, где сам не был, но уже будто имеешь мнение.</p>
+            <p>Человек в такой погоде приходит не к другому человеку, а к картинке, собранной из фрагментов. Потом встреча не совпадает с ожиданием, и вместо того чтобы слушать, люди начинают подгонять живое под уже готовый образ.</p>
+            <p>Возможно, именно поэтому так трудно объяснять разницу между движухой и системой: снаружи они могут выглядеть одинаково, но внутри у них разные источники тепла.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">3</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-4">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">IV</p>
+          <h2 class="page-title">Гуманизация</h2>
+          <div class="page-body">
+            <p>В какой-то момент Уг вспомнил старые рассказы о преодолении, голоса с окраинной сцены, разговоры после выступлений, чужие исповеди, где неожиданно прямо звучало то, что обычно прячется под техникой: человек, его решение, его стиль, его место среди других, его способ остаться собой и всё же быть частью общего.</p>
+            <p>Там важным становился не только навык, не только чистота формы, не только победа над слабостью, а сам процесс гуманизации, медленное возвращение человека из схемы обратно в лицо, голос, выбор и биографию.</p>
+            <p>Преодоление там не звучало как казённый лозунг. Оно становилось рассказом о том, как человек собирает себя, как находит язык, как меняет траекторию, как остаётся в игре после провала, как рядом появляются друзья, которые видят не только результат.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">4</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-5">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">V</p>
+          <h2 class="page-title">Движуха</h2>
+          <div class="page-body">
+            <p>Уг думал об этом долго, почти упрямо, возвращаясь к годам движухи, к городам без точных имён, к залам с плохим светом, к форумам, которые давно растворились в чужих архивах, к площадкам, где многое проговаривалось грубо, прямо, иногда смешно, иногда с обидными формулировками, застревавшими в памяти сильнее, чем хотелось бы.</p>
+            <p>Потом были другие места, другие круги, другие способы держаться вместе, и всё равно одна и та же тема проступала снова, как скрытый рисунок на старой бумаге.</p>
+            <p>Он видел себя, друзей, людей с приколом, видел тех, кто мог ошибаться, спорить, быть неудобным, странным, неэффективным, но оставался живым в контакте. И рядом видел других, кто веровал в систему, правила, игру, форму, иногда искренне, иногда красиво, иногда с настоящим мастерством, но всё равно так, что вокруг них постепенно выстраивалась среда, где человек становился производной от допуска.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">5</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-6">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">VI</p>
+          <h2 class="page-title">Старшинство формы</h2>
+          <div class="page-body">
+            <p>Это не всегда было злым выбором. Иногда вера в систему рождалась из опыта хаоса, из плохих компаний, из травмы, из желания защитить слабого, из усталости от болтовни, из памяти о людях, которые обещали и не делали, из необходимости организовать событие, тренировку, проект, поездку, безопасность, общее пространство.</p>
+            <p>Форма действительно может спасать, когда всё распадается. Правила могут удерживать тех, кто иначе подавил бы других. Ревью может поймать ошибку до релиза. Проверка пользователем может вернуть в комнату того, кого забыли в красивой архитектуре. Демо может показать, что идея наконец стала вещью. Ручной проход по сценарию может разрушить иллюзию, созданную собственной уверенностью.</p>
+            <p>Но эта практическая честность отличается от другого движения, где система начинает важничать больше человека и постепенно требует, чтобы все признавали её старшинство.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">6</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-7">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">VII</p>
+          <h2 class="page-title">Дружба</h2>
+          <div class="page-body">
+            <p>Когда это происходило, дружба первой чувствовала изменение воздуха. В дружбе нельзя долго жить как в турнирной таблице, хотя многие пробуют.</p>
+            <p>Дружба держится на странной способности не превращать другого в функцию собственной картины мира. Друг может быть сильнее в одном, слабее в другом, может пропасть, вернуться, сказать глупость, сделать точное замечание, не понять твою работу, понять твою боль, ошибиться с формулировкой, принести новый ритм, разрушить старое самомнение, помочь без протокола.</p>
+            <p>В дружбе есть проверка, но она не похожа на сертификацию. Там человек проверяется временем, вниманием, присутствием, способностью выдерживать разность, а не только соответствием форме.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">7</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-8">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">VIII</p>
+          <h2 class="page-title">Вера в человека</h2>
+          <div class="page-body">
+            <p>Именно здесь тяжёлый центр становился яснее. Вера в человека не означает наивную уверенность, что все всегда добрые, честные, разумные и готовы к взаимности. Такая вера слишком быстро ломается о реальность.</p>
+            <p>Скорее это решение оставлять человеку шанс быть больше своей ошибки, больше своей роли, больше своего результата, больше чужого рассказа о нём. Это готовность начинать с живого контакта, даже зная, что контакт может не получиться. Это способность видеть в другом не только риск, который надо закрыть процедурой, но и источник непредсказуемого смысла.</p>
+            <p>Вера в систему тоже не всегда глупа, но часто она начинает с обратного движения: человек подозрителен, пока не пройдёт форму.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">8</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-9">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">IX</p>
+          <h2 class="page-title">Школьный двор</h2>
+          <div class="page-body">
+            <p>На школьном дворе эта разница выглядела почти невинно. Дети сначала играли как попало, придумывали правила на ходу, ссорились, тут же меняли условия, забывали счёт, возвращали мяч тому, кто плакал, спорили о границах поля, потому что поле каждый раз было другим.</p>
+            <p>Потом приходил взрослый и делал игру понятнее. Иногда от этого становилось лучше: слабого переставали толкать, очередь становилась честнее, мяч не летел в окно.</p>
+            <p>Иногда воздух вдруг сжимался, и игра превращалась в отбор, где уже не важно, что именно возникло между детьми, потому что важнее стало, кто правильно понял форму. Трудность была в том, что обе сцены могли начаться одинаково, с желания помочь.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">9</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-10">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">X</p>
+          <h2 class="page-title">Работа</h2>
+          <div class="page-body">
+            <p>В работе та же линия становилась более скрытой. Концепты профессионализма специфичны, они выросли из определённых сред, экономик, языков, привычек, школ внимания, и потому не могут быть универсальной мерой человеческой ценности.</p>
+            <p>Один человек мыслит через регламент, другой через прототип, третий через разговор, четвёртый через долгую ручную проверку, пятый через демо, где внезапно становится видно то, чего не было в задаче.</p>
+            <p>Хорошая работа иногда требует формы, но плохая культура превращает форму в моральный пьедестал. Тогда человек с другим опытом выглядит не иначе устроенным, а якобы менее зрелым, менее дисциплинированным, менее профессиональным, хотя на самом деле он может просто приходить из другой школы реальности.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">10</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-11">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XI</p>
+          <h2 class="page-title">Разные школы</h2>
+          <div class="page-body">
+            <p>Уг вспоминал, как часто разные способы жить и делать обесценивались под видом объективности.</p>
+            <p>Кто-то любил систему тренировок и видел в ней путь к освобождению тела. Кто-то не выносил тренировку, но мог часами искать один жест, пока он не становился своим. Кто-то нуждался в соревновании, чтобы собрать внимание. Кто-то терял в соревновании всё живое и начинал двигаться глазами чужого судьи.</p>
+            <p>Кто-то через работу и правила находил достоинство. Кто-то в тех же правилах слышал старый голос подчинения. Эти различия нельзя было честно закрыть одной формулой. Но можно было наблюдать, что происходит дальше: становится ли рядом с человеком просторнее или теснее.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">11</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-12">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XII</p>
+          <h2 class="page-title">Медиа-пространство</h2>
+          <div class="page-body">
+            <p>Медиа-пространство часто стирало эту осторожность. Оно любило готовые фигуры: победитель, лузер, мастер, токсик, легенда, дилетант, профессионал, хаотик, системный человек, настоящий артист, неправильный участник.</p>
+            <p>Такие ярлыки удобны, как сжатые аудиофайлы: быстро передаются, легко хранятся, плохо сохраняют обертоны. Через них тусовка начинала видеть сама себя как сериал, где у каждого уже написана роль.</p>
+            <p>Человек с приколом мог быть превращён в мем. Человек с болью — в кейс. Человек с другим темпом — в проблему. Человек с критикой — в угрозу. И чем больше вокруг было рассказов, тем меньше оставалось прямого слуха.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">12</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-13">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XIII</p>
+          <h2 class="page-title">Малые проверки</h2>
+          <div class="page-body">
+            <p>Поэтому Уг всё чаще доверял не большим заявлениям, а малым проверкам.</p>
+            <p>Как человек говорит о тех, кто не вписался. Что происходит после ошибки. Можно ли изменить правило без унижения тех, кто его придумал. Есть ли место дружбе там, где возникло мастерство.</p>
+            <p>Становится ли новичок человеком до результата или только после. Можно ли в среде остаться странным, медленным, непохожим, не превращаясь в объект исправления. Возвращается ли обратная связь к живому опыту или оседает в абстрактной процедуре. Слышно ли в профессионализме уважение к другому пути или только желание построить всех в одну линию.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">13</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-14">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XIV</p>
+          <h2 class="page-title">Две веры</h2>
+          <div class="page-body">
+            <p>Вера в человека и вера в систему редко существуют в чистом виде. В каждом есть немного страха, немного желания опереться на форму, немного надежды на живой контакт, немного усталости от чужой хаотичности. Но в разные моменты одна из этих сил становится ведущей.</p>
+            <p>Когда ведущей становится вера в человека, форма остаётся рядом как инструмент, который можно положить на стол, обсудить, поправить, убрать, вернуть, если нужно.</p>
+            <p>Когда ведущей становится вера в систему, человек начинает ходить вокруг формы как вокруг алтаря и объяснять, почему без неё все остальные недостаточно настоящие.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">14</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-15">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XV</p>
+          <h2 class="page-title">Пустая площадка</h2>
+          <div class="page-body">
+            <p>Ближе к ночи Уг снова пришёл на пустую площадку. После тренировки там остались следы обуви, влажный песок, бутылка под скамейкой, забытая кофта и сетка, провисшая так, будто сама устала быть границей.</p>
+            <p>Двое детей палками катали пластиковую крышку между лужами, постепенно изобретая игру, которую никто ещё не успел назвать. Правила появлялись, ломались, возвращались, менялись после каждого нового препятствия. Один раз они забыли счёт, потом решили, что счёт теперь считается наоборот, потом отменили это, потому что стало скучно.</p>
+            <p>Снаружи можно было сказать, что это хаос. Внутри было видно, что они внимательно держат друг друга.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">15</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-16">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XVI</p>
+          <h2 class="page-title">Внимание</h2>
+          <div class="page-body">
+            <p>Уг стоял у забора и думал, что, возможно, вся трудность именно в этом внимании — в способности чувствовать момент, когда форма перестаёт помогать встрече и начинает заменять её.</p>
+            <p>Дружба, движуха, мастерство, профессиональная работа, игра, музыка, обучение, организация события — всё это нуждается в каких-то контурах, иначе многое расплывается и причиняет боль. Но контур должен помнить, что он нарисован вокруг живого, а не вместо него.</p>
+            <p>И если за долгие годы что-то стало яснее, то скорее не ответ, а направление слуха: искать людей, рядом с которыми форма не убивает прикол, правила не отменяют дружбу, мастерство не унижает другой опыт, а система не доказывает каждый день, что человек без неё якобы ничто.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">16</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-17">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XVII</p>
+          <h2 class="page-title">Подземный уровень</h2>
+          <div class="page-body">
+            <p>Когда крышка укатилась под машину, дети на секунду замолчали, потом один сказал, что теперь это подземный уровень, и игра продолжилась без разрешения.</p>
+            <p>Уг пошёл дальше, не делая окончательной философии из этой маленькой сцены, потому что окончательные философии слишком быстро начинают вести себя как учреждения.</p>
+            <p>Но где-то под шумом дороги, под медийными картинками, под старыми фразами, под демо, ревью, проверками, фестивалями, тренировками и дружбой оставался тихий датчик: становится ли человек больше рядом с этой формой, или форма постепенно делает его меньше. Этот датчик не давал удобной системы, зато возвращал слух к живому, а живое всё ещё было единственным местом, где прикол мог начаться заново.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">17</span></footer>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      var canvas = document.getElementById("plasma-canvas");
+      if (!canvas) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var ctx = canvas.getContext("2d", { alpha: true });
+      var w = 0;
+      var h = 0;
+      var time = 0;
+      var imageData;
+      var data;
+
+      function resize() {
+        w = Math.floor(window.innerWidth / 2);
+        h = Math.floor(window.innerHeight / 2);
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        imageData = ctx.createImageData(w, h);
+        data = imageData.data;
+      }
+
+      function palette(t) {
+        var r = Math.sin(t * 0.1 + 0.2) * 75 + 72;
+        var g = Math.sin(t * 0.1 + 1.8) * 55 + 38;
+        var b = Math.sin(t * 0.1 + 3.6) * 40 + 22;
+        return [r | 0, g | 0, b | 0];
+      }
+
+      function frame() {
+        var i = 0;
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var v =
+              Math.sin(x * 0.02 + time) +
+              Math.sin(y * 0.025 + time * 1.1) +
+              Math.sin((x + y) * 0.018 - time * 0.7) +
+              Math.sin(Math.sqrt(x * x + y * y) * 0.04 + time * 0.5);
+            var c = palette(v * 1.7 + time * 2.0);
+            data[i++] = c[0];
+            data[i++] = c[1];
+            data[i++] = c[2];
+            data[i++] = 255;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        time += 0.04;
+        requestAnimationFrame(frame);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

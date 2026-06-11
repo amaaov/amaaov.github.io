@@ -20,3 +20,4 @@ atom.xml
 
 tmp
 tmp/*/**
+.DS_Store
