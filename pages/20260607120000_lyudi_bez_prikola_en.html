@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People with Spark — amaaåv</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="A novella-essay on the boundary between live human contact and systems that replace trust with verification. Ug, the campfire, the courtyard, the scene, work, media, and spark.">
+  <meta name="keywords" content="spark, form, friendship, scene, media, work, essay, English">
+  <meta name="author" content="amaaov">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html">
+  <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
+  <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html">
+  <link rel="alternate" hreflang="zh-Hant-TW" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_zh.html">
+  <link rel="alternate" hreflang="ja" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ja.html">
+  <link rel="alternate" hreflang="ar" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ar.html">
+  <link rel="alternate" hreflang="hi" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_hi.html">
+  <meta property="og:title" content="People with Spark — amaaåv">
+  <meta property="og:description" content="A novella-essay on the boundary between live human contact and systems that replace trust with verification. Ug, the campfire, the courtyard, the scene, work, media, and spark.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="People with Spark — amaaåv">
+  <meta name="twitter:description" content="A novella-essay on the boundary between live human contact and systems that replace trust with verification. Ug, the campfire, the courtyard, the scene, work, media, and spark.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tex-size: 12.5pt;
+      --tex-baseline: 17pt;
+      --tex-textwidth: 100%;
+      --tex-serif: "STIX Two Text", "PT Serif", "Times New Roman", serif;
+      --tex-ink: #141210;
+      --tex-ink-muted: #4a4540;
+      --tex-paper: #fffaf4;
+      --page-a4-w: 21cm;
+      --page-a4-h: 29.7cm;
+      --page-pad-y: 2.2cm;
+      --page-pad-x: 2cm;
+      --focus: #c45c26;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #1a120e;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+      font-family: var(--tex-serif);
+      font-size: var(--tex-size);
+      line-height: var(--tex-baseline);
+      color: var(--tex-ink);
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "kern" 1, "liga" 1;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #plasma-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.36;
+    }
+
+    .site-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      pointer-events: none;
+    }
+
+    .home-link {
+      pointer-events: auto;
+      font-family: var(--tex-serif);
+      font-size: 0.95rem;
+      color: #f0e6dc;
+      text-decoration: none;
+      opacity: 0.9;
+    }
+
+    .home-link:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .language-nav {
+      display: flex;
+      flex-wrap: nowrap;
+      flex: 1 1 auto;
+      min-width: 0;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 0.15rem 0.55rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(240, 230, 220, 0.75);
+      pointer-events: auto;
+    }
+
+    .language-nav::before {
+      content: "";
+      flex: 1 1 auto;
+      min-width: 0.5rem;
+      border-bottom: 0.4pt dotted rgba(240, 230, 220, 0.35);
+      margin: 0 0.15rem 0.2em;
+      opacity: 0.85;
+    }
+
+    .language-link {
+      font-family: var(--tex-serif);
+      font-size: 1em;
+      font-weight: 500;
+      color: rgba(240, 230, 220, 0.75);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .language-link:hover {
+      color: #f0e6dc;
+    }
+
+    .language-link[aria-current="page"] {
+      color: #f0e6dc;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: inset 0 -0.4pt 0 #f0e6dc;
+    }
+
+    .language-link:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .book {
+      position: relative;
+      z-index: 2;
+      padding: 3.5rem 0.65rem 2rem;
+    }
+
+    .book-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 1rem);
+      min-height: calc(100dvh - 1rem);
+      padding: 0.5rem 0 1.75rem;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .page-sheet {
+      width: min(
+        calc(100vw - 1.3rem),
+        var(--page-a4-w),
+        calc((100dvh - 5.5rem) * 210 / 297)
+      );
+      aspect-ratio: 210 / 297;
+      height: auto;
+      margin: 0 auto;
+      padding: var(--page-pad-y) var(--page-pad-x);
+      background: var(--tex-paper);
+      border: 1px solid #ddd5c8;
+      box-shadow:
+        0 2px 0 rgba(255, 255, 255, 0.45) inset,
+        0 10px 36px rgba(0, 0, 0, 0.24);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-inner {
+      flex: 1;
+      max-width: var(--tex-textwidth);
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-page--title .page-sheet {
+      justify-content: center;
+    }
+
+    .book-page--title .page-inner {
+      justify-content: flex-start;
+    }
+
+    .book-page--title .article-head {
+      text-align: center;
+    }
+
+    .page-prelude {
+      margin-top: 1.35em;
+    }
+
+    .page-prelude p {
+      margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      hyphenate-limit-chars: 6 3 3;
+      text-wrap: pretty;
+      color: var(--tex-ink);
+    }
+
+    .page-prelude p + p {
+      margin-top: 0.85em;
+    }
+
+    .article-head {
+      margin: 0;
+      padding: 0 0 1.25em;
+      border-bottom: 0.4pt solid var(--tex-ink);
+    }
+
+    .article-head h1 {
+      font-family: var(--tex-serif);
+      font-size: 1.55em;
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 0 0 0.4em;
+      color: var(--tex-ink);
+      text-wrap: balance;
+    }
+
+    .article-meta {
+      font-family: var(--tex-serif);
+      font-size: 1em;
+      line-height: var(--tex-baseline);
+      color: var(--tex-ink-muted);
+      margin: 0;
+    }
+
+    .page-chapter {
+      font-family: var(--tex-serif);
+      font-size: 0.82em;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--tex-ink-muted);
+      margin: 0 0 0.35em;
+      text-align: center;
+    }
+
+    .page-title {
+      font-family: var(--tex-serif);
+      font-size: 1.22em;
+      font-weight: 500;
+      line-height: 1.25;
+      margin: 0 0 1.15em;
+      padding-bottom: 0.65em;
+      text-align: center;
+      color: var(--tex-ink);
+      border-bottom: 0.4pt solid #c8bfb0;
+      text-wrap: balance;
+    }
+
+    .page-body {
+      flex: 1;
+    }
+
+    .page-body p {
+      margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      hyphenate-limit-chars: 6 3 3;
+      text-wrap: pretty;
+      orphans: 3;
+      widows: 3;
+    }
+
+    .page-body p + p {
+      margin-top: 0.85em;
+    }
+
+    .page-footer {
+      margin-top: auto;
+      padding-top: 1.35em;
+      font-family: var(--tex-serif);
+      font-size: 0.88em;
+      color: var(--tex-ink-muted);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+
+    .page-num::before {
+      content: "— ";
+    }
+
+    .page-num::after {
+      content: " —";
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    @media (min-width: 768px) {
+      html {
+        scroll-snap-type: y proximity;
+      }
+
+      .book {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      :root {
+        --page-pad-y: clamp(1.35rem, 5vw, 2.2cm);
+        --page-pad-x: clamp(1.1rem, 4.5vw, 2cm);
+      }
+
+      .book {
+        padding-top: 3rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      .page-body p,
+      .page-prelude p {
+        text-align: left;
+      }
+
+      .book-page {
+        min-height: auto;
+        padding-bottom: 1.25rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      #plasma-canvas {
+        display: none;
+      }
+
+      html {
+        background: #2a1e18;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 2.54cm 2cm;
+    }
+
+    @media print {
+      html {
+        background: #fff;
+        scroll-snap-type: none;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      #plasma-canvas,
+      .site-top {
+        display: none !important;
+      }
+
+      .book {
+        padding: 0;
+      }
+
+      .book-page {
+        min-height: auto;
+        padding: 0;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .book-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      .page-sheet {
+        width: auto;
+        aspect-ratio: auto;
+        height: auto;
+        border: none;
+        box-shadow: none;
+        max-width: none;
+        padding: 0;
+      }
+
+      .page-inner {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="plasma-canvas" aria-hidden="true"></canvas>
+  <div class="site-top">
+    <a class="home-link" href="../index.html">amaaov</a>
+    <nav class="language-nav" aria-label="Article languages">
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola.html">RU</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_en.html" aria-current="page">EN</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_zh.html">ZH</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_ja.html">JA</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_ar.html">AR</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_hi.html">HI</a>
+    </nav>
+  </div>
+
+  <main class="book tex-doc" aria-label="People with Spark">
+
+    <section class="book-page book-page--title" id="page-title">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <header class="article-head">
+            <h1>People with Spark</h1>
+            <p class="article-meta">amaaov · 7 June 2026, Helsinki</p>
+          </header>
+          <div class="page-prelude">
+            <p>People with Spark is an abstract novella-essay about the fragile boundary between live human contact and systems that seek to replace trust with verification, friendship with admission, play with selection, and mastery with external rank.</p>
+            <p>Through the figure of Ug and scenes of the campfire, the courtyard, the scene, work, and media, the text explores how form can help a person—and how it can just as quietly become more important than they are.</p>
+            <p>At the center of the story is a question of whether rules preserve space for mistake, friendship, difference of experience, and spark as a sign of the living.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">i</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-1">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">I</p>
+          <h2 class="page-title">By the Campfire</h2>
+          <div class="page-body">
+            <p>Ug sat by the campfire trying to understand why some games die before they even begin, although outwardly everything seems to stay in place: the ball rolls, people move, someone explains the rules, someone calls the rest into the circle, someone is already keeping score and saying this will be fairer.</p>
+            <p>The fire moved in uneven syncopation, branches crackled, smoke drifted toward dark water, and in that simple nightly disorder there was more trust than in many well-arranged forms.</p>
+            <p>No one by the fire demanded proof of the right to be there, no one ranked pauses, no one said a story only gained meaning after external evaluation. People sat, got details wrong, remembered differently, interrupted, returned to old things, laughed at the wrong time, fell silent too long, and still between them held a thin thing hard to describe without an everyday word: spark.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">1</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-2">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">II</p>
+          <h2 class="page-title">Another Line</h2>
+          <div class="page-body">
+            <p>Later, no longer by the campfire but in halls, courtyards, vacant lots, trains, workshops, temporary platforms, and long conversations after events, Ug noticed more and more often that the difference between people did not run where it is usually sought. People really are different—they have different bodies, languages, habits, wounds, schools of attention, ideas of mastery and fatigue—but beneath that difference another line sometimes surfaced, less visible and therefore more painful.</p>
+            <p>Some meet another as possibility, as an unknown story, as a source of style, strangeness, decision, mistake, and future friendship. Others almost immediately look for a form through which that person can be understood, placed, evaluated, corrected, admitted, or filtered out.</p>
+            <p>And it is not always clear where care ends and distrust begins.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">2</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-3">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">III</p>
+          <h2 class="page-title">Media Weather</h2>
+          <div class="page-body">
+            <p>Media complicated this difference, creating around people a second weather, sometimes denser than the real one: fragments of stories, shadows of recordings, old legends, random frames, reputations, other people's victories, stories about places where you have not been but already seem to have an opinion.</p>
+            <p>In such weather a person does not come to another person but to a picture assembled from fragments. Then the meeting does not match the expectation, and instead of listening people begin to fit the living thing to an image already prepared.</p>
+            <p>Perhaps that is why it is so hard to explain the difference between the scene and the system: from outside they can look the same, but inside they have different sources of warmth.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">3</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-4">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">IV</p>
+          <h2 class="page-title">Humanization</h2>
+          <div class="page-body">
+            <p>At some point Ug remembered old stories of overcoming, voices from the margins of the scene, conversations after performances, other people's confessions where, unexpectedly direct, sounded what is usually hidden beneath technique: the person, their decision, their style, their place among others, their way of remaining themselves and still being part of the shared.</p>
+            <p>There what mattered was not only skill, not only purity of form, not only victory over weakness, but the process of humanization itself—the slow return of a person from scheme back into face, voice, choice, and biography.</p>
+            <p>Overcoming there did not sound like an official slogan. It became a story of how a person assembles themselves, finds language, changes trajectory, stays in the game after failure, how friends appear beside them who see more than the result.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">4</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-5">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">V</p>
+          <h2 class="page-title">The Scene</h2>
+          <div class="page-body">
+            <p>Ug thought about this for a long time, almost stubbornly, returning to the years of the scene, to cities without exact names, to halls with bad light, to forums long dissolved in other people's archives, to platforms where much was spoken roughly, directly, sometimes funnily, sometimes with offensive formulations that stuck in memory more strongly than one would wish.</p>
+            <p>Then there were other places, other circles, other ways of holding together, and still the same theme surfaced again, like a hidden pattern on old paper.</p>
+            <p>He saw himself, friends, people with spark; saw those who could err, argue, be inconvenient, strange, inefficient, but remained alive in contact. And beside them he saw others who believed in the system, the rules, the game, the form—sometimes sincerely, sometimes beautifully, sometimes with real mastery—and still in such a way that around them an environment gradually built itself where the person became a derivative of admission.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">5</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-6">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">VI</p>
+          <h2 class="page-title">Seniority of Form</h2>
+          <div class="page-body">
+            <p>This was not always a malicious choice. Sometimes faith in the system was born from experience of chaos, from bad company, from trauma, from the wish to protect the weak, from fatigue with talk, from memory of people who promised and did not deliver, from the need to organize an event, a training, a project, a trip, safety, a shared space.</p>
+            <p>Form really can save when everything falls apart. Rules can hold back those who would otherwise crush others. Review can catch an error before release. User testing can bring back into the room someone forgotten in beautiful architecture. A demo can show that an idea has finally become a thing. A manual walkthrough of a scenario can destroy the illusion created by one's own confidence.</p>
+            <p>But this practical honesty differs from another movement, where the system begins to put on airs more than the person and gradually demands that everyone acknowledge its seniority.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">6</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-7">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">VII</p>
+          <h2 class="page-title">Friendship</h2>
+          <div class="page-body">
+            <p>When this happened, friendship felt the change in the air first. In friendship you cannot live long as if in a tournament table, although many try.</p>
+            <p>Friendship rests on a strange ability not to turn the other into a function of one's own picture of the world. A friend can be stronger in one thing, weaker in another, can disappear, return, say something foolish, make a precise remark, not understand your work, understand your pain, miss the formulation, bring a new rhythm, break old self-importance, help without protocol.</p>
+            <p>There is testing in friendship, but it does not resemble certification. There a person is tested by time, attention, presence, the ability to endure difference—not only conformity to form.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">7</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-8">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">VIII</p>
+          <h2 class="page-title">Faith in the Person</h2>
+          <div class="page-body">
+            <p>Here the heavy center became clearer. Faith in the person does not mean naive certainty that everyone is always kind, honest, reasonable, and ready for reciprocity. Such faith breaks too quickly against reality.</p>
+            <p>Rather it is a decision to leave a person the chance to be more than their mistake, more than their role, more than their result, more than someone else's story about them. It is readiness to begin from live contact even knowing contact may not work out. It is the ability to see in another not only a risk to be closed by procedure but also a source of unpredictable meaning.</p>
+            <p>Faith in the system is not always foolish either, but often it begins with the opposite movement: the person is suspect until they pass the form.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">8</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-9">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">IX</p>
+          <h2 class="page-title">Schoolyard</h2>
+          <div class="page-body">
+            <p>On the schoolyard this difference looked almost innocent. Children first played however they could, inventing rules on the fly, quarreling, immediately changing conditions, forgetting the score, returning the ball to whoever was crying, arguing about the boundaries of the field because the field was different every time.</p>
+            <p>Then an adult came and made the game clearer. Sometimes that made things better: the weak stopped being pushed, the queue became fairer, the ball did not fly into the window.</p>
+            <p>Sometimes the air suddenly tightened, and the game turned into selection, where what arose between the children no longer mattered because what mattered more was who had understood the form correctly. The difficulty was that both scenes could begin the same way, with the wish to help.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">9</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-10">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">X</p>
+          <h2 class="page-title">Work</h2>
+          <div class="page-body">
+            <p>At work the same line became more hidden. Concepts of professionalism are specific—they grew from particular environments, economies, languages, habits, schools of attention—and therefore cannot be a universal measure of human worth.</p>
+            <p>One person thinks through regulation, another through prototype, a third through conversation, a fourth through long manual checking, a fifth through a demo where suddenly becomes visible what was not in the task.</p>
+            <p>Good work sometimes requires form, but bad culture turns form into a moral pedestal. Then a person with different experience looks not differently built but supposedly less mature, less disciplined, less professional—although in fact they may simply come from another school of reality.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">10</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-11">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XI</p>
+          <h2 class="page-title">Different Schools</h2>
+          <div class="page-body">
+            <p>Ug remembered how often different ways of living and doing were devalued under the guise of objectivity.</p>
+            <p>Someone loved a training system and saw in it a path to freeing the body. Someone could not stand training but could search for one gesture for hours until it became their own. Someone needed competition to gather attention. Someone lost everything living in competition and began to move with the eyes of another judge.</p>
+            <p>Someone found dignity through work and rules. Someone heard in those same rules the old voice of submission. These differences could not honestly be closed by one formula. But one could observe what happened next: did it become roomier or tighter beside the person.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">11</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-12">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XII</p>
+          <h2 class="page-title">Media Space</h2>
+          <div class="page-body">
+            <p>Media space often erased this caution. It loved ready-made figures: winner, loser, master, toxic person, legend, dilettante, professional, chaotic one, systematic person, real artist, wrong participant.</p>
+            <p>Such labels are convenient, like compressed audio files: they transfer quickly, store easily, preserve overtones poorly. Through them the scene began to see itself as a series where everyone already had a written role.</p>
+            <p>A person with spark could be turned into a meme. A person with pain—into a case study. A person with a different tempo—into a problem. A person with criticism—into a threat. And the more stories there were around, the less direct hearing remained.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">12</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-13">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XIII</p>
+          <h2 class="page-title">Small Tests</h2>
+          <div class="page-body">
+            <p>So Ug trusted large declarations less and small tests more.</p>
+            <p>How a person speaks of those who did not fit in. What happens after a mistake. Whether a rule can be changed without humiliating those who invented it. Whether there is room for friendship where mastery has appeared.</p>
+            <p>Does a newcomer become a person before the result or only after. Can one remain strange, slow, unlike in an environment without becoming an object of correction. Does feedback return to live experience or settle in abstract procedure. Is there in professionalism respect for another path or only the wish to line everyone up in one row.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">13</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-14">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XIV</p>
+          <h2 class="page-title">Two Faiths</h2>
+          <div class="page-body">
+            <p>Faith in the person and faith in the system rarely exist in pure form. In each there is a little fear, a little wish to lean on form, a little hope for live contact, a little fatigue with another person's chaos. But at different moments one of these forces becomes leading.</p>
+            <p>When faith in the person becomes leading, form stays nearby as an instrument that can be put on the table, discussed, adjusted, removed, brought back if needed.</p>
+            <p>When faith in the system becomes leading, the person begins to walk around form as around an altar and explain why without it everyone else is supposedly not real enough.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">14</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-15">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XV</p>
+          <h2 class="page-title">Empty Court</h2>
+          <div class="page-body">
+            <p>Closer to night Ug came again to an empty court. After practice shoe marks remained, wet sand, a bottle under the bench, a forgotten sweatshirt, and a net hanging as if it too was tired of being a boundary.</p>
+            <p>Two children rolled a plastic lid between puddles with sticks, gradually inventing a game no one had yet had time to name. Rules appeared, broke, returned, changed after each new obstacle. Once they forgot the score, then decided the score would now count backward, then canceled that because it got boring.</p>
+            <p>From outside one could say it was chaos. Inside it was visible that they were carefully holding each other.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">15</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-16">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XVI</p>
+          <h2 class="page-title">Attention</h2>
+          <div class="page-body">
+            <p>Ug stood by the fence and thought that perhaps the whole difficulty lay in this attention—in the ability to feel the moment when form stops helping encounter and begins to replace it.</p>
+            <p>Friendship, the scene, mastery, professional work, play, music, learning, organizing an event—all of this needs some contours, otherwise much dissolves and causes pain. But the contour must remember it is drawn around the living, not instead of it.</p>
+            <p>And if over long years something became clearer, it was perhaps not an answer but a direction of hearing: to seek people beside whom form does not kill spark, rules do not cancel friendship, mastery does not humiliate another experience, and the system does not prove every day that a person without it is supposedly nothing.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">16</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-17">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">XVII</p>
+          <h2 class="page-title">Underground Level</h2>
+          <div class="page-body">
+            <p>When the lid rolled under a car, the children fell silent for a second, then one said that now it was the underground level, and the game continued without permission.</p>
+            <p>Ug walked on, not making a final philosophy out of this small scene, because final philosophies too quickly begin to behave like institutions.</p>
+            <p>But somewhere beneath the noise of the road, beneath media pictures, beneath old phrases, beneath demos, reviews, checks, festivals, trainings, and friendship remained a quiet sensor: does the person become larger beside this form, or does form gradually make them smaller. This sensor offered no convenient system, but it returned hearing to the living—and the living was still the only place where spark could begin again.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">17</span></footer>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      var canvas = document.getElementById("plasma-canvas");
+      if (!canvas) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var ctx = canvas.getContext("2d", { alpha: true });
+      var w = 0;
+      var h = 0;
+      var time = 0;
+      var imageData;
+      var data;
+
+      function resize() {
+        w = Math.floor(window.innerWidth / 2);
+        h = Math.floor(window.innerHeight / 2);
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        imageData = ctx.createImageData(w, h);
+        data = imageData.data;
+      }
+
+      function palette(t) {
+        var r = Math.sin(t * 0.1 + 0.2) * 75 + 72;
+        var g = Math.sin(t * 0.1 + 1.8) * 55 + 38;
+        var b = Math.sin(t * 0.1 + 3.6) * 40 + 22;
+        return [r | 0, g | 0, b | 0];
+      }
+
+      function frame() {
+        var i = 0;
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var v =
+              Math.sin(x * 0.02 + time) +
+              Math.sin(y * 0.025 + time * 1.1) +
+              Math.sin((x + y) * 0.018 - time * 0.7) +
+              Math.sin(Math.sqrt(x * x + y * y) * 0.04 + time * 0.5);
+            var c = palette(v * 1.7 + time * 2.0);
+            data[i++] = c[0];
+            data[i++] = c[1];
+            data[i++] = c[2];
+            data[i++] = 255;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        time += 0.04;
+        requestAnimationFrame(frame);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

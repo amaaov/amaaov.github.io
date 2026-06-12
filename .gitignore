@@ -22,6 +22,10 @@ tmp
 tmp/*/**
 .DS_Store
 
+# Elixir / Erlang compile artifacts
+*.beam
+erl_crash.dump
+
 # URL submission configs (local only; copy from *.example)
 .submit_urls/
 scripts/submit_urls.yml

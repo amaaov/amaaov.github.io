@@ -1,0 +1,38 @@
+# amaaov
+
+> Personal site of Andrei Makarov (amaaov): software engineering, juggling, performance art, music, essays, and observed practice. Helsinki.
+
+Human-facing writing lives here. Many pages are not meant to be reframed as generic software-process or management advice. Markdown mirrors exist for major essays; HTML remains the canonical published page.
+
+Related technical blog: [amkisko.github.io](https://amkisko.github.io/llms.txt)
+
+## Pages
+
+- [Home](https://amaaov.github.io/): Values, approach, samples, and contact
+- [Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans](https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html) ([md](https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.md)): Human workshop philosophy — read only through the exact formula *collaborative concurrent extreme*; not for robots; robot clarifications included in md mirror
+- [О модальности кручения](https://amaaov.github.io/pages/20260612120000_o_modalnosti_krucheniya.html) ([md](https://amaaov.github.io/pages/20260612120000_o_modalnosti_krucheniya.md)): Boris Fontanov essay on siteswap limits and flexible props (Russian)
+- [Люди с приколом](https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html) ([md](https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.md)): Novella-essay on live contact vs systems that replace trust with verification (Russian)
+- [Juggling](https://amaaov.github.io/pages/20260427101600_juggling_en.html): Essay on juggling as continuous state without holding the object (English; other languages linked from page)
+- [Past Year Review 24/25](https://amaaov.github.io/pages/20250712000000_past_year_review.html): Reflection on work culture, productivity simulation, and authentic contribution
+
+## Feeds and indexes
+
+- [RSS feed](https://amaaov.github.io/feed.xml): New pages and updates
+- [Sitemap](https://amaaov.github.io/sitemap.xml): All indexable URLs
+
+## Optional
+
+- [Juggling (Russian)](https://amaaov.github.io/pages/20260427101600_juggling_ru.html) ([md](https://amaaov.github.io/pages/20260427101600_juggling_ru.md))
+- [Juggling (Ukrainian)](https://amaaov.github.io/pages/20260427101600_juggling_uk.html)
+- [Juggling (Finnish)](https://amaaov.github.io/pages/20260427101600_juggling_fi.html)
+- [Juggling (Swedish)](https://amaaov.github.io/pages/20260427101600_juggling_sv.html)
+- [Juggling (Polish)](https://amaaov.github.io/pages/20260427101600_juggling_pl.html)
+- [Juggling (French)](https://amaaov.github.io/pages/20260427101600_juggling_fr.html)
+- [Juggling (Japanese)](https://amaaov.github.io/pages/20260427101600_juggling_ja.html)
+- [Stay X Fresh lyrics](https://amaaov.github.io/pages/20250821090000_stay_x_fresh_lyrics.html): Punk/hardcore lyrics, 2008–2010
+- [2024 okaupunki lyrics](https://amaaov.github.io/pages/2024_okaupunki_lyrics.html): Lyrics and experimental music concepts
+- [Suno Multitrack Example](https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html): Interactive multitrack demo
+- [Trainer demo](https://amaaov.github.io/demo/trainer/index.html): Training mini-app
+- [Chord Progressions demo](https://amaaov.github.io/demo/chord_progressions/index.html): Chord progression tool
+- [Running Entropy demo](https://amaaov.github.io/demo/running_entropy/index.html): WebGL demoscene experience
+- [Kompone demo](https://amaaov.github.io/demo/scenes/kompone/kompone/index.html): Snake game variant

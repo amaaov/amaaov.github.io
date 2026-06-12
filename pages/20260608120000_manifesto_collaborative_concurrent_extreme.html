@@ -9,6 +9,14 @@
   <meta name="keywords" content="manifesto, software development, concurrency, collaboration, extreme programming, product development">
   <meta name="author" content="amaaov">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html">
+  <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html">
+<link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_ru.html">
+<link rel="alternate" hreflang="fi" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_fi.html">
+<link rel="alternate" hreflang="zh-Hant-TW" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_zh.html">
+<link rel="alternate" hreflang="ja" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_ja.html">
+<link rel="alternate" hreflang="ar" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_ar.html">
+<link rel="alternate" hreflang="hi" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_hi.html">
+<link rel="alternate" hreflang="x-default" href="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html">
   <meta property="og:title" content="Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans">
   <meta property="og:description" content="Observed practices and philosophy for human readers: understanding, concurrency, visibility, workshop craft, and collective capability.">
   <meta property="og:url" content="https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html">
@@ -91,6 +99,10 @@
     .site-top {
       max-width: 44rem;
       margin: 0 auto 1rem;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      gap: 0.75rem;
     }
 
     .home-link {
@@ -107,6 +119,78 @@
     }
 
     .home-link:focus-visible {
+      outline: 2px solid var(--torch);
+      outline-offset: 3px;
+    }
+
+    html[dir="rtl"] .site-top {
+      flex-direction: row-reverse;
+    }
+
+    html[dir="rtl"] .language-nav {
+      justify-content: flex-start;
+    }
+
+    html[dir="rtl"] .language-nav::before {
+      order: 2;
+    }
+
+    html[lang="ar"] .language-nav,
+    html[lang="fi"] .language-nav,
+    html[lang="hi"] .language-nav,
+    html[lang="ja"] .language-nav,
+    html[lang="ru"] .language-nav,
+    html[lang="zh-Hant-TW"] .language-nav {
+      text-transform: none;
+      letter-spacing: 0.06em;
+    }
+
+    .language-nav {
+      display: flex;
+      flex-wrap: nowrap;
+      flex: 1 1 auto;
+      min-width: 0;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 0.15rem 0.55rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      font-size: 0.78em;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ochre-dim);
+    }
+
+    .language-nav::before {
+      content: "";
+      flex: 1 1 auto;
+      min-width: 0.5rem;
+      border-bottom: 1px dotted rgba(92, 79, 64, 0.55);
+      margin: 0 0.15rem 0.2em;
+      opacity: 0.85;
+    }
+
+    .language-link {
+      font-family: var(--tex-serif);
+      font-size: 1em;
+      font-weight: 500;
+      color: var(--ochre-dim);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .language-link:hover {
+      color: var(--ochre);
+    }
+
+    .language-link[aria-current="page"] {
+      color: #f0e0c4;
+      font-weight: 600;
+      box-shadow: inset 0 -1px 0 var(--ochre);
+    }
+
+    .language-link:focus-visible {
       outline: 2px solid var(--torch);
       outline-offset: 3px;
     }
@@ -859,6 +943,15 @@
   <canvas id="reflect-canvas" aria-hidden="true"></canvas>
   <div class="site-top">
     <a class="home-link" href="../index.html">amaaov</a>
+    <nav class="language-nav" aria-label="Article languages">
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme.html" aria-current="page">EN</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ru.html">RU</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_fi.html">FI</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_zh.html">ZH</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ja.html">JA</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ar.html">AR</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_hi.html">HI</a>
+    </nav>
   </div>
   <div class="stage">
     <article class="tex-doc">

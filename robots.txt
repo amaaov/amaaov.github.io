@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://amaaov.github.io/sitemap.xml
+# LLM index: https://amaaov.github.io/llms.txt
