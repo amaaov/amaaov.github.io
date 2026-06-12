@@ -2,4 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://amaaov.github.io/sitemap.xml
-Sitemap: https://amaaov.github.io/feed.xml
