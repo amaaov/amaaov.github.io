@@ -1,96 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Main pages -->
   <url>
     <loc>https://amaaov.github.io/</loc>
-    <lastmod>2025-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-
-  <!-- Pages directory -->
-  <url>
-    <loc>https://amaaov.github.io/pages/2024_okaupunki_lyrics.html</loc>
-    <lastmod>2025-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20250821090000_stay_x_fresh_lyrics.html</loc>
-    <lastmod>2025-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html</loc>
-    <lastmod>2025-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20250712000000_past_year_review.html</loc>
-    <lastmod>2025-07-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-12</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html</loc>
     <lastmod>2026-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html</loc>
     <lastmod>2026-06-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20260427101600_juggling_ru.html</loc>
-    <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_uk.html</loc>
     <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20260427101600_juggling_pl.html</loc>
-    <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20260427101600_juggling_en.html</loc>
-    <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20260427101600_juggling_fi.html</loc>
-    <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_sv.html</loc>
     <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://amaaov.github.io/pages/20260427101600_juggling_fr.html</loc>
+    <loc>https://amaaov.github.io/pages/20260427101600_juggling_ru.html</loc>
     <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260427101600_juggling_pl.html</loc>
+    <lastmod>2026-04-27</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_ja.html</loc>
     <lastmod>2026-04-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260427101600_juggling_fr.html</loc>
+    <lastmod>2026-04-27</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260427101600_juggling_fi.html</loc>
+    <lastmod>2026-04-27</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260427101600_juggling_en.html</loc>
+    <lastmod>2026-04-27</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html</loc>
+    <lastmod>2025-08-21</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20250821090000_stay_x_fresh_lyrics.html</loc>
+    <lastmod>2025-08-21</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20250712000000_past_year_review.html</loc>
+    <lastmod>2025-07-12</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/2024_okaupunki_lyrics.html</loc>
+    <lastmod>2025-11-11</lastmod>
   </url>
 </urlset>

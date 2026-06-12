@@ -1,0 +1,29 @@
+site_url: https://example.github.io
+host: example.github.io
+sitemap: sitemap.xml
+
+sitemap_generate:
+  static:
+    - /
+  globs:
+    - pages/*.html
+
+indexnow:
+  enabled: true
+  key: YOUR_INDEXNOW_KEY
+  key_location: https://example.github.io/YOUR_INDEXNOW_KEY.txt
+  endpoint: https://api.indexnow.org/indexnow
+  batch_size: 10000
+
+bing:
+  enabled: false
+  client_id:
+  client_secret:
+  redirect_uri: http://127.0.0.1:8765/callback
+  scope: webmaster.manage
+  batch_size: 500
+
+sitemap_ping:
+  enabled: true
+  endpoints:
+    - https://www.bing.com/ping?sitemap=

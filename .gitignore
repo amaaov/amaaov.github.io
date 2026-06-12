@@ -21,3 +21,6 @@ atom.xml
 tmp
 tmp/*/**
 .DS_Store
+
+# URL submission OAuth tokens (local only)
+.submit_urls/
