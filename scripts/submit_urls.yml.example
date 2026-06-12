@@ -15,6 +15,17 @@ indexnow:
   endpoint: https://api.indexnow.org/indexnow
   batch_size: 10000
 
+archive_org:
+  enabled: false
+  endpoint: https://web.archive.org/save
+  rate_limit_seconds: 5
+  wait_for_status: false
+  options:
+    force_get: 1
+    skip_first_archive: 1
+    js_behavior_timeout: 0
+    if_not_archived_within: 7d
+
 bing:
   enabled: false
   client_id:

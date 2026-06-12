@@ -13,6 +13,9 @@ ROOT_DIR = File.expand_path("..", SCRIPT_DIR)
 DEFAULT_CONFIG = File.join(SCRIPT_DIR, "submit_urls.yml")
 CREDENTIALS_DIR = File.join(ROOT_DIR, ".submit_urls")
 BING_OAUTH_FILE = File.join(CREDENTIALS_DIR, "bing_oauth.json")
+ARCHIVE_CREDENTIALS_FILE = File.join(CREDENTIALS_DIR, "archive_org.json")
+ARCHIVE_DEFAULT_ENDPOINT = "https://web.archive.org/save"
+ARCHIVE_DEFAULT_RATE_LIMIT_SECONDS = 5
 BING_AUTHORIZE_URL = "https://www.bing.com/webmasters/oauth/authorize"
 BING_TOKEN_URL = "https://www.bing.com/webmasters/oauth/token"
 BING_REFRESH_URL = "https://www.bing.com/webmasters/token"
@@ -27,7 +30,7 @@ def usage
       #{File.basename($PROGRAM_NAME)} auth bing
       #{File.basename($PROGRAM_NAME)} ping-sitemap
 
-    Submit changed or sitemap URLs to IndexNow (and optionally Bing Webmaster API).
+    Submit changed or sitemap URLs to IndexNow, Internet Archive, and optionally Bing.
 
     Options for submit:
       --config PATH     Config file (default: scripts/submit_urls.yml)
@@ -36,13 +39,16 @@ def usage
       --stdin           Read URLs from stdin (one per line)
       --verify          Keep only URLs that respond with HTTP 200 or 301
       --dry-run         Print actions without sending requests
-      --indexnow-only   Skip Bing even when configured
-      --bing-only       Skip IndexNow
+      --indexnow-only   Skip Archive.org and Bing
+      --archive-only    Skip IndexNow and Bing
+      --bing-only       Skip IndexNow and Archive.org
 
     Setup:
       1. Copy scripts/submit_urls.yml.example to scripts/submit_urls.yml
       2. Host IndexNow key file at site root (see indexnow.key in config)
-      3. Optional Bing OAuth: register app in Bing Webmaster Tools, fill client_id/secret, run `auth bing`
+      3. Optional Archive.org: copy scripts/archive_org.json.example to .submit_urls/archive_org.json
+         (or set IA_S3_ACCESS_KEY and IA_S3_SECRET_KEY; keys from https://archive.org/account/s3.php)
+      4. Optional Bing OAuth: register app in Bing Webmaster Tools, fill client_id/secret, run `auth bing`
   HELP
 end
 
@@ -85,6 +91,137 @@ def post_json(uri, payload, headers = {})
 
   Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 30, read_timeout: 60) do |http|
     http.request(request)
+  end
+end
+
+def post_form(uri, params, headers = {})
+  request = Net::HTTP::Post.new(uri)
+  request["Content-Type"] = "application/x-www-form-urlencoded"
+  headers.each { |key, value| request[key] = value }
+  request.body = URI.encode_www_form(params)
+
+  Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 30, read_timeout: 120) do |http|
+    http.request(request)
+  end
+end
+
+def get_request(uri, headers = {})
+  request = Net::HTTP::Get.new(uri)
+  headers.each { |key, value| request[key] = value }
+
+  Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 30, read_timeout: 60) do |http|
+    http.request(request)
+  end
+end
+
+def load_archive_credentials(config)
+  archive = config.fetch("archive_org", {})
+  access_key = ENV["IA_S3_ACCESS_KEY"] || archive["access_key"]
+  secret_key = ENV["IA_S3_SECRET_KEY"] || archive["secret_key"]
+
+  if access_key.to_s.empty? || secret_key.to_s.empty?
+    return nil unless File.exist?(ARCHIVE_CREDENTIALS_FILE)
+
+    data = JSON.parse(File.read(ARCHIVE_CREDENTIALS_FILE))
+    access_key = data["access_key"] || data["s3_access_key"]
+    secret_key = data["secret_key"] || data["s3_secret_key"]
+  end
+
+  return nil if access_key.to_s.empty? || secret_key.to_s.empty?
+
+  { "access_key" => access_key, "secret_key" => secret_key }
+end
+
+def archive_auth_header(credentials)
+  { "Authorization" => "LOW #{credentials.fetch('access_key')}:#{credentials.fetch('secret_key')}" }
+end
+
+def poll_archive_status(job_id, credentials, archive)
+  status_uri = URI("#{archive.fetch('endpoint', ARCHIVE_DEFAULT_ENDPOINT).chomp('/')}/status/#{job_id}")
+  headers = { "Accept" => "application/json" }.merge(archive_auth_header(credentials))
+  max_attempts = archive.fetch("status_poll_attempts", 30).to_i
+  interval = archive.fetch("status_poll_seconds", 2).to_f
+
+  max_attempts.times do |attempt|
+    sleep(interval) if attempt.positive?
+
+    response = get_request(status_uri, headers)
+    unless response.is_a?(Net::HTTPSuccess)
+      warn "  status check failed: HTTP #{response.code}"
+      return
+    end
+
+    data = JSON.parse(response.body)
+    status = data["status"]
+    puts "  status=#{status}"
+
+    case status
+    when "success"
+      timestamp = data["timestamp"]
+      original_url = data["original_url"]
+      puts "  archived: https://web.archive.org/web/#{timestamp}/#{original_url}"
+      return
+    when "error"
+      warn "  #{data['message'] || data['status_ext'] || data}"
+      return
+    end
+  end
+
+  warn "  timed out waiting for capture"
+rescue JSON::ParserError
+  warn "  invalid status response"
+end
+
+def submit_archive_org(config, urls, dry_run:)
+  archive = config.fetch("archive_org", {})
+  return if archive.fetch("enabled", false) != true
+
+  credentials = load_archive_credentials(config)
+  if credentials.nil?
+    warn "archive_org: skipped (no credentials; copy scripts/archive_org.json.example to .submit_urls/archive_org.json)"
+    return
+  end
+
+  endpoint = URI(archive.fetch("endpoint", ARCHIVE_DEFAULT_ENDPOINT))
+  rate_limit = archive.fetch("rate_limit_seconds", ARCHIVE_DEFAULT_RATE_LIMIT_SECONDS).to_f
+  wait = archive.fetch("wait_for_status", false)
+  options = archive.fetch("options", {}).transform_keys(&:to_s).transform_values(&:to_s)
+
+  urls.each_with_index do |url, index|
+    sleep(rate_limit) if index.positive? && !dry_run
+
+    params = options.merge("url" => url)
+    headers = { "Accept" => "application/json" }.merge(archive_auth_header(credentials))
+
+    puts "Archive.org: #{url}"
+    if dry_run
+      puts "  POST #{endpoint}"
+      puts "  #{params.inspect}"
+      next
+    end
+
+    response = post_form(endpoint, params, headers)
+    puts "  HTTP #{response.code} #{response.message}"
+    unless response.is_a?(Net::HTTPSuccess)
+      warn "  #{response.body}"
+      next
+    end
+
+    begin
+      data = JSON.parse(response.body)
+    rescue JSON::ParserError
+      warn "  invalid JSON: #{response.body[0, 200]}"
+      next
+    end
+
+    job_id = data["job_id"]
+    if job_id.nil?
+      puts "  #{data}"
+      next
+    end
+
+    puts "  job_id=#{job_id}"
+    poll_archive_status(job_id, credentials, archive) if wait
   end
 end
 
@@ -288,6 +425,7 @@ def parse_submit_options(args)
     verify: false,
     dry_run: false,
     indexnow_only: false,
+    archive_only: false,
     bing_only: false,
     config: DEFAULT_CONFIG,
     urls: []
@@ -302,6 +440,7 @@ def parse_submit_options(args)
     when "--verify" then options[:verify] = true; args.shift
     when "--dry-run" then options[:dry_run] = true; args.shift
     when "--indexnow-only" then options[:indexnow_only] = true; args.shift
+    when "--archive-only" then options[:archive_only] = true; args.shift
     when "--bing-only" then options[:bing_only] = true; args.shift
     when "-h", "--help" then puts usage; exit 0
     else
@@ -345,8 +484,15 @@ def main(argv)
     config, urls = collect_urls(options)
 
     puts "Submitting #{urls.size} URL(s)"
-    submit_indexnow(config, urls, dry_run: options[:dry_run]) unless options[:bing_only]
-    submit_bing(config, urls, dry_run: options[:dry_run]) unless options[:indexnow_only]
+    unless options[:bing_only] || options[:archive_only]
+      submit_indexnow(config, urls, dry_run: options[:dry_run])
+    end
+    unless options[:indexnow_only] || options[:bing_only]
+      submit_archive_org(config, urls, dry_run: options[:dry_run])
+    end
+    unless options[:indexnow_only] || options[:archive_only]
+      submit_bing(config, urls, dry_run: options[:dry_run])
+    end
   when "auth"
     sub = argv.shift
     abort usage unless sub == "bing"

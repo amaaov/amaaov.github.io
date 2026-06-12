@@ -22,5 +22,7 @@ tmp
 tmp/*/**
 .DS_Store
 
-# URL submission OAuth tokens (local only)
+# URL submission configs (local only; copy from *.example)
 .submit_urls/
+scripts/submit_urls.yml
+scripts/archive_org.json
