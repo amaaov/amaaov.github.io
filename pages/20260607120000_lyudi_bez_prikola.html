@@ -9,6 +9,12 @@
   <meta name="keywords" content="прикол, форма, дружба, движуха, медиа, работа, эссе, русский">
   <meta name="author" content="amaaov">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
+  <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
+  <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html">
+  <link rel="alternate" hreflang="zh-Hant-TW" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_zh.html">
+  <link rel="alternate" hreflang="ja" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ja.html">
+  <link rel="alternate" hreflang="ar" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ar.html">
+  <link rel="alternate" hreflang="hi" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_hi.html">
   <meta property="og:title" content="Люди с приколом — amaaåv">
   <meta property="og:description" content="Новелла-эссе о границе между живым контактом и системами, которые заменяют доверие проверкой. Уг, костёр, двор, движуха, работа, медиа и прикол.">
   <meta property="og:url" content="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
@@ -72,8 +78,16 @@
       left: 0;
       right: 0;
       z-index: 10;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      gap: 0.75rem;
       padding: 0.75rem 1rem;
       pointer-events: none;
+    }
+
+    html[dir="rtl"] .site-top {
+      flex-direction: row-reverse;
     }
 
     .home-link {
@@ -88,6 +102,52 @@
     .home-link:focus-visible {
       outline: 3px solid var(--focus);
       outline-offset: 2px;
+    }
+
+    .language-nav {
+      display: flex;
+      flex-wrap: nowrap;
+      flex: 1 1 auto;
+      min-width: 0;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 0.15rem 0.55rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(240, 230, 220, 0.75);
+      pointer-events: auto;
+    }
+
+    .language-nav::before {
+      content: "";
+      flex: 1 1 auto;
+      min-width: 0.5rem;
+      border-bottom: 1px dotted rgba(240, 230, 220, 0.35);
+      margin: 0 0.15rem 0.2em;
+      opacity: 0.85;
+    }
+
+    .language-link {
+      color: rgba(240, 230, 220, 0.75);
+      text-decoration: none;
+      white-space: nowrap;
+      pointer-events: auto;
+    }
+
+    .language-link[aria-current="page"] {
+      color: #f0e6dc;
+    }
+
+    html[lang="ar"] .language-nav,
+    html[lang="hi"] .language-nav,
+    html[lang="ja"] .language-nav,
+    html[lang="zh-Hant-TW"] .language-nav {
+      text-transform: none;
+      letter-spacing: 0.06em;
     }
 
     .book {
@@ -358,6 +418,14 @@
   <canvas id="plasma-canvas" aria-hidden="true"></canvas>
   <div class="site-top">
     <a class="home-link" href="../index.html">amaaov</a>
+    <nav class="language-nav" aria-label="Языки статьи">
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola.html" aria-current="page">RU</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_en.html">EN</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_zh.html">ZH</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_ja.html">JA</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_ar.html">AR</a>
+      <a class="language-link" href="20260607120000_lyudi_bez_prikola_hi.html">HI</a>
+    </nav>
   </div>
 
   <main class="book tex-doc" aria-label="Люди с приколом">
