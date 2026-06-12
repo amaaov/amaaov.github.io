@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>О модальности кручения — amaaåv</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="Ограничения и трансформации сайтсвопа при применении к гибким реквизитам. Борис Фонтанов, 2025.">
+  <meta name="keywords" content="сайтсвоп, пои, жонглирование, dwell time, нотация, кручение, Борис Фонтанов">
+  <meta name="author" content="Борис Фонтанов">
+  <meta property="article:published_time" content="2025-01-01T00:00:00+00:00">
+  <meta property="article:modified_time" content="2026-06-12T12:00:00+00:00">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260612120000_o_modalnosti_krucheniya.html">
+  <meta property="og:title" content="О модальности кручения — Борис Фонтанов">
+  <meta property="og:description" content="Ограничения и трансформации сайтсвопа при применении к гибким реквизитам.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260612120000_o_modalnosti_krucheniya.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="О модальности кручения — Борис Фонтанов">
+  <meta name="twitter:description" content="Ограничения и трансформации сайтсвопа при применении к гибким реквизитам.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tex-size: 11.5pt;
+      --tex-baseline: 1.58;
+      --tex-textwidth: 100%;
+      --tex-serif: "STIX Two Text", "Latin Modern Roman", "PT Serif", "Times New Roman", serif;
+      --tex-ink: #12100e;
+      --tex-ink-muted: #4a4540;
+      --tex-paper: #fffaf4;
+      --tex-block-bg: #f6f0e6;
+      --tex-block-line: #c8bfb0;
+      --page-a4-w: 21cm;
+      --page-pad-y: 2.1cm;
+      --page-pad-x: 2cm;
+      --focus: #7b3ff2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #08060f;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+      font-family: var(--tex-serif);
+      font-size: var(--tex-size);
+      line-height: var(--tex-baseline);
+      color: var(--tex-ink);
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #plasma-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.52;
+      mix-blend-mode: screen;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.03) 0,
+          rgba(0, 0, 0, 0.03) 1px,
+          transparent 1px,
+          transparent 3px
+        ),
+        radial-gradient(ellipse 90% 70% at 50% 100%, rgba(0, 0, 0, 0.55), transparent 58%),
+        radial-gradient(ellipse 70% 45% at 15% 10%, rgba(123, 63, 242, 0.12), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 88% 18%, rgba(0, 220, 200, 0.1), transparent 48%);
+    }
+
+    .site-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 0.75rem 1rem;
+      pointer-events: none;
+    }
+
+    .home-link {
+      pointer-events: auto;
+      font-family: var(--tex-serif);
+      font-size: 0.95rem;
+      color: #e8e0f8;
+      text-decoration: none;
+      opacity: 0.92;
+      letter-spacing: 0.04em;
+    }
+
+    .home-link:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .book {
+      position: relative;
+      z-index: 2;
+      padding: 3.5rem 0.65rem 2rem;
+    }
+
+    .book-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 1rem);
+      min-height: calc(100dvh - 1rem);
+      padding: 0.5rem 0 1.75rem;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .page-sheet {
+      width: min(
+        calc(100vw - 1.3rem),
+        var(--page-a4-w),
+        calc((100dvh - 5.5rem) * 210 / 297)
+      );
+      aspect-ratio: 210 / 297;
+      height: auto;
+      margin: 0 auto;
+      padding: var(--page-pad-y) var(--page-pad-x);
+      background: var(--tex-paper);
+      border: 1px solid #ddd5c8;
+      box-shadow:
+        0 2px 0 rgba(255, 255, 255, 0.5) inset,
+        0 12px 40px rgba(0, 0, 0, 0.28),
+        0 0 0 1px rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-inner {
+      flex: 1;
+      max-width: var(--tex-textwidth);
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-page--title .page-sheet {
+      justify-content: center;
+    }
+
+    .article-head {
+      margin: 0;
+      padding: 0 0 1.1em;
+      border-bottom: 0.4pt solid var(--tex-ink);
+      text-align: center;
+    }
+
+    .article-head h1 {
+      font-size: 1.42em;
+      font-weight: 600;
+      line-height: 1.18;
+      margin: 0 0 0.55em;
+      text-wrap: balance;
+    }
+
+    .article-subtitle {
+      font-size: 1.02em;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.35;
+      margin: 0 0 0.9em;
+      color: var(--tex-ink-muted);
+      text-wrap: balance;
+    }
+
+    .article-meta {
+      font-size: 0.96em;
+      color: var(--tex-ink-muted);
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .page-chapter {
+      font-size: 0.8em;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--tex-ink-muted);
+      margin: 0 0 0.35em;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 1.14em;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 0 0 1.05em;
+      padding-bottom: 0.6em;
+      text-align: center;
+      border-bottom: 0.4pt solid #c8bfb0;
+      text-wrap: balance;
+    }
+
+    .page-body {
+      flex: 1;
+    }
+
+    .page-body p,
+    .page-prelude p {
+      margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      hyphenate-limit-chars: 6 3 3;
+      text-wrap: pretty;
+      orphans: 3;
+      widows: 3;
+    }
+
+    .page-body p + p,
+    .page-prelude p + p {
+      margin-top: 0.82em;
+    }
+
+    .page-prelude {
+      margin-top: 1.2em;
+    }
+
+    .tex-block {
+      margin: 0.95em 0;
+      padding: 0.75em 0.9em 0.8em;
+      background: var(--tex-block-bg);
+      border: 0.4pt solid var(--tex-block-line);
+      border-left: 2.5pt solid #5c4a8a;
+    }
+
+    .tex-block:first-child {
+      margin-top: 0;
+    }
+
+    .tex-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .tex-block-label {
+      display: block;
+      font-size: 0.78em;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5c4a8a;
+      margin: 0 0 0.45em;
+    }
+
+    .tex-block p {
+      margin: 0;
+      font-size: 0.98em;
+      text-align: left;
+    }
+
+    .tex-block p + p {
+      margin-top: 0.55em;
+    }
+
+    .abstract-block {
+      border-left-color: #0a8f8a;
+    }
+
+    .abstract-block .tex-block-label {
+      color: #0a6f6b;
+    }
+
+    .term {
+      font-style: italic;
+    }
+
+    .notation {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+
+    .page-footer {
+      margin-top: auto;
+      padding-top: 1.25em;
+      font-size: 0.88em;
+      color: var(--tex-ink-muted);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+
+    .page-num::before {
+      content: "— ";
+    }
+
+    .page-num::after {
+      content: " —";
+    }
+
+    @media (min-width: 768px) {
+      html {
+        scroll-snap-type: y proximity;
+      }
+
+      .book {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      :root {
+        --page-pad-y: clamp(1.3rem, 5vw, 2.1cm);
+        --page-pad-x: clamp(1.05rem, 4.5vw, 2cm);
+      }
+
+      .book {
+        padding-top: 3rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      .page-body p,
+      .page-prelude p,
+      .tex-block p {
+        text-align: left;
+      }
+
+      .book-page {
+        min-height: auto;
+        padding-bottom: 1.25rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      #plasma-canvas {
+        display: none;
+      }
+
+      html {
+        background: #1a1228;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 2.54cm 2cm;
+    }
+
+    @media print {
+      html {
+        background: #fff;
+        scroll-snap-type: none;
+      }
+
+      #plasma-canvas,
+      body::after,
+      .site-top {
+        display: none !important;
+      }
+
+      .book {
+        padding: 0;
+      }
+
+      .book-page {
+        min-height: auto;
+        padding: 0;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .book-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      .page-sheet {
+        width: auto;
+        aspect-ratio: auto;
+        height: auto;
+        border: none;
+        box-shadow: none;
+        max-width: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="plasma-canvas" aria-hidden="true"></canvas>
+  <div class="site-top">
+    <a class="home-link" href="../index.html">amaaov</a>
+  </div>
+
+  <main class="book tex-doc" aria-label="О модальности кручения">
+
+    <section class="book-page book-page--title" id="page-title">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <header class="article-head">
+            <h1>О модальности кручения</h1>
+            <p class="article-subtitle">Ограничения и трансформации сайтсвопа при применении к гибким реквизитам</p>
+            <p class="article-meta">Борис Фонтанов · 2025<br>amaaov.github.io · 12 июня 2026</p>
+          </header>
+          <div class="page-prelude">
+            <div class="tex-block abstract-block">
+              <span class="tex-block-label">Аннотация</span>
+              <p>Статья рассматривает пределы применимости сайтсвопа — ритмической нотации жонглирования — к гибкому и торковому реквизиту. Показано, что отсутствие параметра dwell time и пространственной конкретики делает нотацию точной для жёстких объектов, но недостаточной для пои и смешанных ансамблей.</p>
+            </div>
+          </div>
+          <footer class="page-footer"><span class="page-num">i</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-1">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">§ 1</p>
+          <h2 class="page-title">Сайтсвоп как абстрактная модель</h2>
+          <div class="page-body">
+            <div class="tex-block">
+              <span class="tex-block-label">Определение</span>
+              <p><span class="term">Сайтсвоп</span> представляет собой абстрактную модель жонглёрской нотации, фиксирующую ритмический порядок появления объектов в точке взаимодействия. Он определяет, через сколько тактов после текущего момента данный объект должен быть вновь использован.</p>
+            </div>
+            <p>При этом сайтсвоп не описывает траекторию движения, пространственную конфигурацию или физические характеристики исполнения. Тем самым он выступает как ритмическая схема, лишённая пространственной конкретики и кинетической детальности.</p>
+            <p>Это допущение оказывается эффективным при описании традиционных форм жонглирования с жёстким реквизитом, где основное движение сводится к броску и последующему перехвату.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">1</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-2">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">§ 2</p>
+          <h2 class="page-title">Dwell time и непрерывная динамика</h2>
+          <div class="page-body">
+            <p>Однако при переносе данной системы на реквизит с непрерывной динамикой, например пои, возникают принципиальные расхождения. Основное из них заключается в том, что время удержания объекта (<span class="term">dwell time</span>), существенно варьирующееся в зависимости от техники исполнения, не отражается в нотации, несмотря на критическую роль в формировании ритма и структуры движения.</p>
+            <div class="tex-block">
+              <span class="tex-block-label">Наблюдение 2.1</span>
+              <p>В классическом жонглировании dwell time трактуется как инерционный элемент, не влияющий на базовую ритмику: объект может находиться в руке треть или половину такта — это не влияет на валидность паттерна.</p>
+            </div>
+            <p>В случае с пои ситуация иная: удержание и передача реквизита являются не дискретными событиями, а непрерывным телесным действием, включающим в себя передачу импульса, поддержание вращения и управление плоскостью. Возникает смещение акцента с момента броска на фазу поддержания движения, которая в традиционной нотации полностью опущена.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">2</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-3">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">§ 3</p>
+          <h2 class="page-title">Потеря описательной точности</h2>
+          <div class="page-body">
+            <p>Это приводит к тому, что сайтсвоп теряет описательную точность, оставаясь лишь схемой событий, вырванных из физического контекста.</p>
+            <div class="tex-block">
+              <span class="tex-block-label">Пример 3.1</span>
+              <p>Паттерн <span class="notation">3</span>, означающий в жонглировании равномерное чередование бросков между руками, в поинге может соответствовать множеству различных форм: от wall-plane спирали до асимметричного нобита или пендулума с активной коррекцией.</p>
+            </div>
+            <p>Все эти реализации сохраняют одинаковый ритмический рисунок, но отличаются по характеру удержания, распределению торка, пространственной динамике и взаимодействию с телом.</p>
+            <p>Ещё нагляднее это проявляется при рассмотрении сложных паттернов, таких как <span class="notation">5223</span>. В системе сайтсвоп это чередование высоких, удерживающих и средних бросков. В пои та же последовательность может быть интерпретирована как движение, где «2» — это активная фаза вращения (а не пассивное ожидание, предваряющее смену плоскости), а «5» — усиленный разгон.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">3</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-4">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">§ 4</p>
+          <h2 class="page-title">Терминология и каскад</h2>
+          <div class="page-body">
+            <p>Нотация продолжает описывать ритмическую структуру, но не предоставляет информации о форме исполнения. Она фиксирует, <em>когда</em> должно произойти следующее взаимодействие, но не <em>что</em> именно между ними происходит и какими средствами.</p>
+            <p>Терминология, заимствованная из классического жонглирования, также оказывается проблематичной. Понятие «каскад» применяется по аналогии, однако не имеет в пои прямого соответствия.</p>
+            <div class="tex-block">
+              <span class="tex-block-label">Утверждение 4.1</span>
+              <p>Отсутствие броска как дискретного события, непрерывность траектории и влияние торка делают невозможным точное воспроизведение каскадной структуры. Утверждение «в пои нет каскада» отражает не отрицание ритмического аналога, а невозможность переноса формы без искажений.</p>
+            </div>
+          </div>
+          <footer class="page-footer"><span class="page-num">4</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-5">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">§ 5</p>
+          <h2 class="page-title">Групповая синхронизация</h2>
+          <div class="page-body">
+            <p>Эта проблематика особенно обостряется в групповой работе или в ситуациях синхронизации между исполнителями, использующими различные типы реквизита.</p>
+            <div class="tex-block">
+              <span class="tex-block-label">Сценарий 5.1</span>
+              <p>Один участник, работающий с мячами, исполняет <span class="notation">3</span> как стандартный каскад. Другой, вращая пои, использует тот же ритмический рисунок, но на уровне телесной кинематики выполняет принципиально иное действие.</p>
+            </div>
+            <p>Без уточнения параметров исполнения — способа удержания, направления вращения, плоскости, характера разгона — происходит смысловое расхождение, несмотря на формальное совпадение нотации.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">5</span></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="book-page" id="page-6">
+      <div class="page-sheet">
+        <div class="page-inner">
+          <p class="page-chapter">§ 6</p>
+          <h2 class="page-title">Заключение</h2>
+          <div class="page-body">
+            <p>Всё вышесказанное позволяет заключить, что сайтсвоп, будучи эффективной абстракцией, не является универсальной системой описания движения. Его применимость к гибким и торковым системам требует переосмысления: либо в сторону разработки расширенных моделей с учётом дополнительных параметров, либо в сторону осознанного ограничения области его использования.</p>
+            <div class="tex-block">
+              <span class="tex-block-label">Вывод</span>
+              <p>В текущей форме сайтсвоп продолжает выполнять важную коммуникативную и ритмическую функцию, но не может быть использован как единственный дескриптор в телесной практике, опирающейся на непрерывные, фазово-зависимые движения.</p>
+            </div>
+            <p>Сайтсвоп, таким образом, — это не столько язык описания, сколько инструмент упорядочивания. Он сообщает исполнителю, в какой момент должен произойти следующий акт взаимодействия с объектом, но оставляет открытым вопрос, каким образом этот акт реализуется. Это делает его ценным в качестве ритмической сетки, но ограниченным как модель движения, особенно в дисциплинах, где граница между броском и вращением размыта.</p>
+          </div>
+          <footer class="page-footer"><span class="page-num">6</span></footer>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      var canvas = document.getElementById("plasma-canvas");
+      if (!canvas) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var ctx = canvas.getContext("2d", { alpha: true });
+      var w = 0;
+      var h = 0;
+      var time = 0;
+      var imageData;
+      var data;
+
+      function resize() {
+        w = Math.floor(window.innerWidth / 2);
+        h = Math.floor(window.innerHeight / 2);
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        imageData = ctx.createImageData(w, h);
+        data = imageData.data;
+      }
+
+      function fluidPalette(t, x, y) {
+        var swirl = Math.sin(x * 0.011 + t * 0.9) * Math.cos(y * 0.013 - t * 0.7);
+        var paint = Math.sin(t * 0.35 + swirl * 2.4);
+
+        var r = Math.sin(t * 0.18 + paint * 1.6 + 0.4) * 88 + 42;
+        var g = Math.sin(t * 0.22 + paint * 1.3 + 2.1) * 72 + 18;
+        var b = Math.sin(t * 0.16 + paint * 1.9 + 4.0) * 95 + 58;
+
+        if (paint > 0.35) {
+          r += 40;
+          g += 12;
+          b -= 18;
+        }
+        if (swirl < -0.2) {
+          r -= 10;
+          g += 35;
+          b += 28;
+        }
+
+        return [r | 0, g | 0, b | 0];
+      }
+
+      function frame() {
+        var i = 0;
+        for (var y = 0; y < h; y++) {
+          var ny = y / h;
+          for (var x = 0; x < w; x++) {
+            var nx = x / w;
+            var v =
+              Math.sin(x * 0.024 + time) +
+              Math.sin(y * 0.028 + time * 1.15) +
+              Math.sin((x + y) * 0.02 - time * 0.75) +
+              Math.sin(Math.sqrt(x * x + y * y) * 0.045 + time * 0.55) +
+              Math.sin(nx * 12.0 + ny * 8.0 + time * 0.4) * 0.45;
+            var c = fluidPalette(v * 1.55 + time * 1.8, nx, ny);
+            data[i++] = c[0];
+            data[i++] = c[1];
+            data[i++] = c[2];
+            data[i++] = 210;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        time += 0.038;
+        requestAnimationFrame(frame);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
