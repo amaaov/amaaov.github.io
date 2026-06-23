@@ -8,6 +8,8 @@
   <meta name="description" content="رواية-مقال عن الحدود الهشة بين التواصل الإنساني الحي والأنظمة التي تستبدل الثقة بالتحقق. أوغ، النار، الساحة، المشهد، العمل، الإعلام والبريق.">
   <meta name="keywords" content="بريق, شكل, صداقة, مشهد, إعلام, عمل, مقال, عربي">
   <meta name="author" content="amaaov">
+  <meta property="article:published_time" content="2026-06-07T12:00:00+00:00">
+  <meta property="article:modified_time" content="2026-06-23T20:00:00+00:00">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ar.html">
   <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
   <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html">
@@ -24,385 +26,14 @@
   <meta name="twitter:description" content="رواية-مقال عن الحدود الهشة بين التواصل الإنساني الحي والأنظمة التي تستبدل الثقة بالتحقق. أوغ، النار، الساحة، المشهد، العمل، الإعلام والبريق.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --tex-size: 12.5pt;
-      --tex-baseline: 17pt;
-      --tex-textwidth: 100%;
-      --tex-serif: "Noto Naskh Arabic", "STIX Two Text", "PT Serif", serif;
-      --tex-ink: #141210;
-      --tex-ink-muted: #4a4540;
-      --tex-paper: #fffaf4;
-      --page-a4-w: 21cm;
-      --page-a4-h: 29.7cm;
-      --page-pad-y: 2.2cm;
-      --page-pad-x: 2cm;
-      --focus: #c45c26;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      background: #1a120e;
-      scroll-behavior: smooth;
-      direction: rtl;
-    }
-
-    body {
-      position: relative;
-      margin: 0;
-      font-family: var(--tex-serif);
-      font-size: var(--tex-size);
-      line-height: var(--tex-baseline);
-      color: var(--tex-ink);
-      text-rendering: optimizeLegibility;
-      font-feature-settings: "kern" 1, "liga" 1;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    #plasma-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.36;
-    }
-
-    .site-top {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 10;
-      padding: 0.75rem 1rem;
-      pointer-events: none;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      flex-direction: row-reverse;
-    }
-
-    .home-link {
-      pointer-events: auto;
-      font-family: var(--tex-serif);
-      font-size: 0.95rem;
-      color: #f0e6dc;
-      text-decoration: none;
-      opacity: 0.9;
-    }
-
-    .home-link:focus-visible {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
-    }
-
-    .language-nav {
-      pointer-events: auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.15rem 0.55rem;
-      font-size: 0.78em;
-      letter-spacing: 0.06em;
-      color: #f0e6dc;
-      opacity: 0.9;
-    }
-
-    .language-link {
-      font-family: var(--tex-serif);
-      font-size: 1em;
-      font-weight: 500;
-      color: #f0e6dc;
-      text-decoration: none;
-      white-space: nowrap;
-      opacity: 0.75;
-    }
-
-    .language-link:hover {
-      opacity: 1;
-    }
-
-    .language-link[aria-current="page"] {
-      opacity: 1;
-      font-weight: 600;
-      box-shadow: inset 0 -0.4pt 0 #f0e6dc;
-    }
-
-    .language-link:focus-visible {
-      outline: 2px solid var(--focus);
-      outline-offset: 2px;
-    }
-
-    .book {
-      position: relative;
-      z-index: 2;
-      padding: 3.5rem 0.65rem 2rem;
-    }
-
-    .book-page {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: calc(100vh - 1rem);
-      min-height: calc(100dvh - 1rem);
-      padding: 0.5rem 0 1.75rem;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-    }
-
-    .page-sheet {
-      width: min(
-        calc(100vw - 1.3rem),
-        var(--page-a4-w),
-        calc((100dvh - 5.5rem) * 210 / 297)
-      );
-      aspect-ratio: 210 / 297;
-      height: auto;
-      margin: 0 auto;
-      padding: var(--page-pad-y) var(--page-pad-x);
-      background: var(--tex-paper);
-      border: 1px solid #ddd5c8;
-      box-shadow:
-        0 2px 0 rgba(255, 255, 255, 0.45) inset,
-        0 10px 36px rgba(0, 0, 0, 0.24);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .page-inner {
-      flex: 1;
-      max-width: var(--tex-textwidth);
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .book-page--title .page-sheet {
-      justify-content: center;
-    }
-
-    .book-page--title .page-inner {
-      justify-content: flex-start;
-    }
-
-    .book-page--title .article-head {
-      text-align: center;
-    }
-
-    .page-prelude {
-      margin-top: 1.35em;
-    }
-
-    .page-prelude p {
-      margin: 0;
-      text-align: right;
-      text-wrap: pretty;
-      color: var(--tex-ink);
-    }
-
-    .page-prelude p + p {
-      margin-top: 0.85em;
-    }
-
-    .article-head {
-      margin: 0;
-      padding: 0 0 1.25em;
-      border-bottom: 0.4pt solid var(--tex-ink);
-    }
-
-    .article-head h1 {
-      font-family: var(--tex-serif);
-      font-size: 1.55em;
-      font-weight: 500;
-      line-height: 1.2;
-      margin: 0 0 0.4em;
-      color: var(--tex-ink);
-      text-wrap: balance;
-    }
-
-    .article-meta {
-      font-family: var(--tex-serif);
-      font-size: 1em;
-      line-height: var(--tex-baseline);
-      color: var(--tex-ink-muted);
-      margin: 0;
-    }
-
-    .page-chapter {
-      font-family: var(--tex-serif);
-      font-size: 0.82em;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--tex-ink-muted);
-      margin: 0 0 0.35em;
-      text-align: center;
-    }
-
-    .page-title {
-      font-family: var(--tex-serif);
-      font-size: 1.22em;
-      font-weight: 500;
-      line-height: 1.25;
-      margin: 0 0 1.15em;
-      padding-bottom: 0.65em;
-      text-align: center;
-      color: var(--tex-ink);
-      border-bottom: 0.4pt solid #c8bfb0;
-      text-wrap: balance;
-    }
-
-    .page-body {
-      flex: 1;
-    }
-
-    .page-body p {
-      margin: 0;
-      text-align: right;
-      text-wrap: pretty;
-      orphans: 3;
-      widows: 3;
-    }
-
-    .page-body p + p {
-      margin-top: 0.85em;
-    }
-
-    .page-footer {
-      margin-top: auto;
-      padding-top: 1.35em;
-      font-family: var(--tex-serif);
-      font-size: 0.88em;
-      color: var(--tex-ink-muted);
-      text-align: center;
-      letter-spacing: 0.06em;
-    }
-
-    .page-num::before {
-      content: "— ";
-    }
-
-    .page-num::after {
-      content: " —";
-    }
-
-    em {
-      font-style: italic;
-    }
-
-    @media (min-width: 768px) {
-      html {
-        scroll-snap-type: y proximity;
-      }
-
-      .book {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-    }
-
-    @media (max-width: 767px) {
-      :root {
-        --page-pad-y: clamp(1.35rem, 5vw, 2.2cm);
-        --page-pad-x: clamp(1.1rem, 4.5vw, 2cm);
-      }
-
-      .book {
-        padding-top: 3rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-      }
-
-      .page-body p,
-      .page-prelude p {
-        text-align: right;
-      }
-
-      .book-page {
-        min-height: auto;
-        padding-bottom: 1.25rem;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      #plasma-canvas {
-        display: none;
-      }
-
-      html {
-        background: #2a1e18;
-      }
-    }
-
-    @page {
-      size: A4;
-      margin: 2.54cm 2cm;
-    }
-
-    @media print {
-      html {
-        background: #fff;
-        scroll-snap-type: none;
-      }
-
-      body {
-        padding: 0;
-      }
-
-      #plasma-canvas,
-      .site-top {
-        display: none !important;
-      }
-
-      .book {
-        padding: 0;
-      }
-
-      .book-page {
-        min-height: auto;
-        padding: 0;
-        page-break-after: always;
-        break-after: page;
-      }
-
-      .book-page:last-child {
-        page-break-after: auto;
-        break-after: auto;
-      }
-
-      .page-sheet {
-        width: auto;
-        aspect-ratio: auto;
-        height: auto;
-        border: none;
-        box-shadow: none;
-        max-width: none;
-        padding: 0;
-      }
-
-      .page-inner {
-        max-width: none;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="20260607120000_lyudi_bez_prikola/lyudi_bez_prikola_article.css">
 </head>
 <body>
-  <canvas id="plasma-canvas" aria-hidden="true"></canvas>
+  <div class="ember-field" aria-hidden="true"></div>
   <div class="site-top">
     <a class="home-link" href="../index.html">amaaov</a>
-    <nav class="language-nav" aria-label="لغات المقال">
+    <nav class="language-nav" aria-label="Article languages">
       <a class="language-link" href="20260607120000_lyudi_bez_prikola.html">RU</a>
       <a class="language-link" href="20260607120000_lyudi_bez_prikola_en.html">EN</a>
       <a class="language-link" href="20260607120000_lyudi_bez_prikola_zh.html">ZH</a>
@@ -412,338 +43,164 @@
     </nav>
   </div>
 
-  <main class="book tex-doc" aria-label="أناس فيهم بريق">
-
-    <section class="book-page book-page--title" id="page-title">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <header class="article-head">
-            <h1>أناس فيهم بريق</h1>
-            <p class="article-meta">amaaov · ٧ يونيو ٢٠٢٦، هلسنكي</p>
-          </header>
-          <div class="page-prelude">
-            <p>«أناس فيهم بريق» رواية-مقال مجردة عن الحد الهش بين التواصل الإنساني الحي والأنظمة التي تسعى إلى استبدال الثقة بالتحقق، والصداقة بالإذن، واللعب بالانتقاء، والإتقان بمرتبة خارجية.</p>
-            <p>عبر شخصية أوغ ومشاهد النار والساحة والمشهد والعمل والإعلام، يستكشف النص كيف يمكن للشكل أن يخدم الإنسان، وكيف يمكنه في الوقت نفسه أن يصبح دون أن نلاحظ أهم منه.</p>
-            <p>في مركز السرد سؤال: هل تحافظ القواعد على مساحة للخطأ والصداقة وتباين التجربة والبريق كعلامة على الحياة؟</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٠</span></footer>
-        </div>
-      </div>
-    </section>
-
-    <section class="book-page" id="page-1">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">I</p>
-          <h2 class="page-title">عند النار</h2>
-          <div class="page-body">
-            <p>جلس أوغ عند النار وكان يحاول أن يفهم لماذا تموت بعض الألعاب قبل أن تبدأ، رغم أن كل شيء يبدو من الخارج في مكانه: الكرة تتدحرج، الناس يتحركون، أحد يشرح القواعد، آخر يدعو الباقين إلى الدائرة، وثالث يعد النقاط ويقول إن هكذا يكون الأمر أعدل.</p>
+  <main class="novella" aria-label="أناس فيهم بريق">
+    <header class="novella-head">
+      <h1>أناس فيهم بريق</h1>
+      <p class="article-meta">amaaov · ٧ يونيو ٢٠٢٦، هلسنكي</p>
+    </header>
+    <section class="chapter" id="chapter-1">
+      <p class="chapter-mark">I</p>
+      <h2 class="chapter-title">عند النار</h2>
+      <div class="chapter-prose">
+        <p>جلس أوغ عند النار وكان يحاول أن يفهم لماذا تموت بعض الألعاب قبل أن تبدأ، رغم أن كل شيء يبدو من الخارج في مكانه: الكرة تتدحرج، الناس يتحركون، أحد يشرح القواعد، آخر يدعو الباقين إلى الدائرة، وثالث يعد النقاط ويقول إن هكذا يكون الأمر أعدل.</p>
             <p>كانت النار تسير بإيقاع متقطع غير منتظم، والأغصان تطقطق، والدخان يتجه نحو الماء الداكن، وفي هذا الفوضى الليلية البسيطة كان ثمة ثقة أكثر مما في كثير من الأشكال المنظمة جيدًا.</p>
             <p>لم يطلب أحد عند النار إثبات الحق في الحضور، ولم يرتّب أحد الوقفات، ولم يقل أحد إن الحكاية تأخذ معناها فقط بعد تقييم خارجي. جلس الناس، وأخطأوا في التفاصيل، وتذكروا بشكل مختلف، وقاطعوا بعضهم، وعادوا إلى القديم، وضحكوا في غير وقت، وصمتوا طويلًا، ومع ذلك بقي بينهم شيء رقيق يصعب وصفه دون كلمة يومية: البريق.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-2">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">II</p>
-          <h2 class="page-title">خط آخر</h2>
-          <div class="page-body">
-            <p>لاحقًا، ليس عند النار بل في القاعات والساحات والأراضي الفضاء وفي القطارات والورش والساحات المؤقتة وفي المحادثات الطويلة بعد الأحداث، لاحظ أوغ أكثر فأكثر أن الفرق بين الناس لا يمر حيث يبحثون عنه عادة. الناس مختلفون حقًا: لهم أجساد ولغات وعادات وصدمات ومدارس انتباه وصور عن الإتقان والتعب، لكن تحت هذا الاختلاف يظهر أحيانًا خط آخر، أقل وضوحًا ولذلك أكثر ألمًا.</p>
+    <section class="chapter" id="chapter-2">
+      <p class="chapter-mark">II</p>
+      <h2 class="chapter-title">خط آخر</h2>
+      <div class="chapter-prose">
+        <p>لاحقًا، ليس عند النار بل في القاعات والساحات والأراضي الفضاء وفي القطارات والورش والساحات المؤقتة وفي المحادثات الطويلة بعد الأحداث، لاحظ أوغ أكثر فأكثر أن الفرق بين الناس لا يمر حيث يبحثون عنه عادة. الناس مختلفون حقًا: لهم أجساد ولغات وعادات وصدمات ومدارس انتباه وصور عن الإتقان والتعب، لكن تحت هذا الاختلاف يظهر أحيانًا خط آخر، أقل وضوحًا ولذلك أكثر ألمًا.</p>
             <p>بعضهم يلتقي بالآخر كفرصة، كحكاية مجهولة، كمصدر لأسلوب وغرابة وحل وخطأ وصداقة مستقبلية. وآخرون يبحثون تقريبًا فورًا عن شكل يمكن من خلاله فهم هذا الإنسان ووضعه وتقييمه وتصحيحه والسماح له أو استبعاده.</p>
             <p>وليس دائمًا واضحًا أين ينتهي الحرص وأين يبدأ عدم الثقة.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٢</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-3">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">III</p>
-          <h2 class="page-title">طقس الإعلام</h2>
-          <div class="page-body">
-            <p>عقّد الإعلام هذا الفرق بخلق طقس ثانٍ حول الناس، أحيانًا أكثف من الحقيقي: شذرات حكايات، ظلال تسجيلات، أساطير قديمة، لقطات عابرة، سمعات، انتصارات غيرهم، قصص عن أماكن لم تزرها ومع ذلك تبدو وكأن لك رأيًا فيها.</p>
+    <section class="chapter" id="chapter-3">
+      <p class="chapter-mark">III</p>
+      <h2 class="chapter-title">طقس الإعلام</h2>
+      <div class="chapter-prose">
+        <p>عقّد الإعلام هذا الفرق بخلق طقس ثانٍ حول الناس، أحيانًا أكثف من الحقيقي: شذرات حكايات، ظلال تسجيلات، أساطير قديمة، لقطات عابرة، سمعات، انتصارات غيرهم، قصص عن أماكن لم تزرها ومع ذلك تبدو وكأن لك رأيًا فيها.</p>
             <p>في مثل هذا الطقس لا يأتي المرء إلى إنسان آخر بل إلى صورة مجمعة من شظايا. ثم لا تطابق اللقاءة التوقع، وبدلًا من الاستماع يبدأ الناس في تسوية الحي على صورة جاهزة.</p>
             <p>ربما لهذا السبب يصعب شرح الفرق بين المشهد والنظام: من الخارج قد يبدوان متشابهين، لكن من الداخل لهما مصادر حرارة مختلفة.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٣</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-4">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">IV</p>
-          <h2 class="page-title">إنسنة</h2>
-          <div class="page-body">
-            <p>في لحظة ما تذكر أوغ حكايات قديمة عن التجاوز، أصواتًا من هامش المسرح، حوارات بعد العروض، اعترافات غيرهم حيث بدا فجأة وبوضوح ما يُخبأ عادة تحت التقنية: الإنسان، قراره، أسلوبه، مكانه بين الآخرين، طريقته في البقاء على نفسه ومع ذلك أن يكون جزءًا من المشترك.</p>
+    <section class="chapter" id="chapter-4">
+      <p class="chapter-mark">IV</p>
+      <h2 class="chapter-title">إنسنة</h2>
+      <div class="chapter-prose">
+        <p>في لحظة ما تذكر أوغ حكايات قديمة عن التجاوز، أصواتًا من هامش المسرح، حوارات بعد العروض، اعترافات غيرهم حيث بدا فجأة وبوضوح ما يُخبأ عادة تحت التقنية: الإنسان، قراره، أسلوبه، مكانه بين الآخرين، طريقته في البقاء على نفسه ومع ذلك أن يكون جزءًا من المشترك.</p>
             <p>هناك لم يكن المهم المهارة وحدها، ولا نقاء الشكل، ولا الانتصار على الضعف، بل عملية الإنسنة نفسها، العودة البطيئة للإنسان من المخطط إلى الوجه والصوت والاختيار والسيرة.</p>
             <p>لم يكن التجاوز هناك شعارًا رسميًا. كان يصبح حكاية عن كيف يجمع الإنسان نفسه، وكيف يجد لغة، وكيف يغير مساره، وكيف يبقى في اللعبة بعد الفشل، وكيف يظهر بجانبه أصدقاء يرون ليس النتيجة فقط.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٤</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-5">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">V</p>
-          <h2 class="page-title">المشهد</h2>
-          <div class="page-body">
-            <p>فكر أوغ في هذا طويلًا، بعناد تقريبًا، عائدًا إلى سنوات المشهد، إلى مدن بلا أسماء دقيقة، إلى قاعات بإضاءة سيئة، إلى منتديات ذابت منذ زمن في أرشيفات غيره، إلى ساحات حيث قيل الكثير بفظاظة وبوضوح، أحيانًا بفكاهة وأحيانًا بصيغ تجرح وتعلق في الذاكرة أقوى مما يُراد.</p>
+    <section class="chapter" id="chapter-5">
+      <p class="chapter-mark">V</p>
+      <h2 class="chapter-title">المشهد</h2>
+      <div class="chapter-prose">
+        <p>فكر أوغ في هذا طويلًا، بعناد تقريبًا، عائدًا إلى سنوات المشهد، إلى مدن بلا أسماء دقيقة، إلى قاعات بإضاءة سيئة، إلى منتديات ذابت منذ زمن في أرشيفات غيره، إلى ساحات حيث قيل الكثير بفظاظة وبوضوح، أحيانًا بفكاهة وأحيانًا بصيغ تجرح وتعلق في الذاكرة أقوى مما يُراد.</p>
             <p>ثم كانت أماكن أخرى ودوائر أخرى وطرق أخرى للتماسك معًا، ومع ذلك ظهرت نفس القضية مجددًا كرسم خفي على ورق قديم.</p>
             <p>رأى نفسه وأصدقاءه وأناسًا فيهم بريق، ورأى من يمكن أن يخطئوا ويجادلوا ويكونوا غير مريحين وغريبين وغير فعالين لكنهم يبقون أحياء في التواصل. ورأى بجانبهم آخرين يؤمنون بالنظام والقواعد واللعبة والشكل، أحيانًا بصدق وأحيانًا بجمال وأحيانًا بإتقان حقيقي، لكن مع ذلك بحيث تُبنى تدريجيًا حولهم بيئة يصبح فيها الإنسان مشتقًا من الإذن.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٥</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-6">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VI</p>
-          <h2 class="page-title">أولوية الشكل</h2>
-          <div class="page-body">
-            <p>لم يكن هذا دائمًا خيارًا شريرًا. أحيانًا ولد الإيمان بالنظام من تجربة الفوضى، من صحبة سيئة، من صدمة، من رغبة في حماية الضعيف، من تعب من الثرثرة، من ذكرى أناس وعدوا ولم يفعلوا، من ضرورة تنظيم حدث أو تدريب أو مشروع أو رحلة أو أمان أو فضاء مشترك.</p>
+    <section class="chapter" id="chapter-6">
+      <p class="chapter-mark">VI</p>
+      <h2 class="chapter-title">أولوية الشكل</h2>
+      <div class="chapter-prose">
+        <p>لم يكن هذا دائمًا خيارًا شريرًا. أحيانًا ولد الإيمان بالنظام من تجربة الفوضى، من صحبة سيئة، من صدمة، من رغبة في حماية الضعيف، من تعب من الثرثرة، من ذكرى أناس وعدوا ولم يفعلوا، من ضرورة تنظيم حدث أو تدريب أو مشروع أو رحلة أو أمان أو فضاء مشترك.</p>
             <p>الشكل يمكنه حقًا أن ينقذ عندما يتفكك كل شيء. القواعد يمكن أن تثبت من كانوا ليسحقوا غيرهم. المراجعة يمكن أن تلتقط خطأ قبل الإصدار. اختبار المستخدم يمكن أن يعيد إلى الغرفة من نُسوا في معمار جميل. العرض التوضيحي يمكن أن يُظهر أن الفكرة صارت أخيرًا شيئًا. المرور اليدوي على السيناريو يمكن أن يحطم الوهم الذي خلقته ثقتك بنفسك.</p>
             <p>لكن هذه الصدق العملي يختلف عن حركة أخرى حيث يبدأ النظام في التباهي أكثر من الإنسان ويطلب تدريجيًا أن يعترف الجميع بأولويته.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٦</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-7">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VII</p>
-          <h2 class="page-title">الصداقة</h2>
-          <div class="page-body">
-            <p>عندما يحدث هذا، تشعر الصداقة أولًا بتغير الهواء. في الصداقة لا يمكن العيش طويلًا كما في جدول بطولة، رغم أن كثيرين يجربون.</p>
+    <section class="chapter" id="chapter-7">
+      <p class="chapter-mark">VII</p>
+      <h2 class="chapter-title">الصداقة</h2>
+      <div class="chapter-prose">
+        <p>عندما يحدث هذا، تشعر الصداقة أولًا بتغير الهواء. في الصداقة لا يمكن العيش طويلًا كما في جدول بطولة، رغم أن كثيرين يجربون.</p>
             <p>تتماسك الصداقة على قدرة غريبة في عدم تحويل الآخر إلى وظيفة لصورة العالم الخاصة بك. يمكن أن يكون الصديق أقوى في شيء وأضعف في آخر، أن يختفي ويعود، أن يقول حماقة، أن يقدم ملاحظة دقيقة، أن لا يفهم عملك، أن يفهم ألمك، أن يخطئ في الصياغة، أن يجلب إيقاعًا جديدًا، أن يحطم غرورًا قديمًا، أن يساعد بلا بروتوكول.</p>
             <p>في الصداقة اختبار، لكنه لا يشبه الشهادة. هناك يُختبر الإنسان بالزمن والانتباه والحضور وقدرة تحمل الاختلاف، لا فقط بالمطابقة للشكل.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٧</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-8">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VIII</p>
-          <h2 class="page-title">الإيمان بالإنسان</h2>
-          <div class="page-body">
-            <p>هنا بالذات أصبح المركز الثقيل أوضح. الإيمان بالإنسان لا يعني يقينًا ساذجًا بأن الجميع دائمًا طيبون وأمناء وعقلانيون ومستعدون للتبادل. مثل هذا الإيمان ينكسر سريعًا على الواقع.</p>
+    <section class="chapter" id="chapter-8">
+      <p class="chapter-mark">VIII</p>
+      <h2 class="chapter-title">الإيمان بالإنسان</h2>
+      <div class="chapter-prose">
+        <p>هنا بالذات أصبح المركز الثقيل أوضح. الإيمان بالإنسان لا يعني يقينًا ساذجًا بأن الجميع دائمًا طيبون وأمناء وعقلانيون ومستعدون للتبادل. مثل هذا الإيمان ينكسر سريعًا على الواقع.</p>
             <p>بل هو قرار بترك فرصة للإنسان أن يكون أكبر من خطئه ودوره ونتيجته وحكاية غيره عنه. إنه استعداد لبدء التواصل الحي رغم معرفة أنه قد لا ينجح. إنه القدرة على رؤية في الآخر ليس الخطر الذي يجب إغلاقه بإجراء فقط، بل مصدرًا لمعنى لا يُتوقع.</p>
             <p>الإيمان بالنظام أيضًا ليس دائمًا حماقة، لكنه غالبًا يبدأ بحركة معاكسة: الإنسان مشبوه حتى يجتاز الشكل.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٨</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-9">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">IX</p>
-          <h2 class="page-title">ساحة المدرسة</h2>
-          <div class="page-body">
-            <p>في ساحة المدرسة بدا هذا الفرق شبه بريء. يلعب الأطفال أولًا كما شاؤوا، يخترعون القواعد على الفور، يتشاجرون، يغيرون الشروط فورًا، ينسون العد، يعيدون الكرة لمن بكى، يتجادلون حول حدود الملعب لأن الملعب كل مرة يكون مختلفًا.</p>
+    <section class="chapter" id="chapter-9">
+      <p class="chapter-mark">IX</p>
+      <h2 class="chapter-title">ساحة المدرسة</h2>
+      <div class="chapter-prose">
+        <p>في ساحة المدرسة بدا هذا الفرق شبه بريء. يلعب الأطفال أولًا كما شاؤوا، يخترعون القواعد على الفور، يتشاجرون، يغيرون الشروط فورًا، ينسون العد، يعيدون الكرة لمن بكى، يتجادلون حول حدود الملعب لأن الملعب كل مرة يكون مختلفًا.</p>
             <p>ثم يأتي الكبير ويجعل اللعبة أوضح. أحيانًا يتحسن الوضع بسبب ذلك: يتوقف دفع الضعيف، تصبح الدورات أعدل، لا تطير الكرة إلى النافذة.</p>
             <p>وأحيانًا ينضغط الهواء فجأة وتتحول اللعبة إلى انتقاء حيث لم يعد مهمًا ما نشأ بين الأطفال، لأن الأهم صار من فهم الشكل بشكل صحيح. كانت الصعوبة أن المشهدين يمكن أن يبدآ بنفس الطريقة، برغبة في المساعدة.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">٩</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-10">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">X</p>
-          <h2 class="page-title">العمل</h2>
-          <div class="page-body">
-            <p>في العمل أصبحت نفس الخط أكثر خفاء. مفاهيم الاحتراف خاصة؛ نشأت من بيئات واقتصادات ولغات وعادات ومدارس انتباه معينة، ولذلك لا يمكن أن تكون مقياسًا عالميًا للقيمة الإنسانية.</p>
+    <section class="chapter" id="chapter-10">
+      <p class="chapter-mark">X</p>
+      <h2 class="chapter-title">العمل</h2>
+      <div class="chapter-prose">
+        <p>في العمل أصبحت نفس الخط أكثر خفاء. مفاهيم الاحتراف خاصة؛ نشأت من بيئات واقتصادات ولغات وعادات ومدارس انتباه معينة، ولذلك لا يمكن أن تكون مقياسًا عالميًا للقيمة الإنسانية.</p>
             <p>إنسان يفكر عبر اللوائح، وآخر عبر النموذج الأولي، وثالث عبر الحديث، ورابع عبر فحص يدوي طويل، وخامس عبر عرض توضيحي حيث يظهر فجأة ما لم يكن في المهمة.</p>
             <p>العمل الجيد أحيانًا يحتاج شكلًا، لكن الثقافة السيئة تحول الشكل إلى منصة أخلاقية. حينها يبدو الإنسان ذو التجربة الأخرى ليس مختلف البنية بل أقل نضجًا وأقل انضباطًا وأقل احترافية، رغم أنه قد يأتي ببساطة من مدرسة أخرى للواقع.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١٠</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-11">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XI</p>
-          <h2 class="page-title">مدارس مختلفة</h2>
-          <div class="page-body">
-            <p>تذكر أوغ كم غالبًا أُهمِلت طرق مختلفة للعيش والفعل تحت ستار الموضوعية.</p>
+    <section class="chapter" id="chapter-11">
+      <p class="chapter-mark">XI</p>
+      <h2 class="chapter-title">مدارس مختلفة</h2>
+      <div class="chapter-prose">
+        <p>تذكر أوغ كم غالبًا أُهمِلت طرق مختلفة للعيش والفعل تحت ستار الموضوعية.</p>
             <p>أحب أحد نظام التدريب ورأى فيه طريقًا لتحرير الجسد. لم يتحمل آخر التدريب لكنه يمكن أن يبحث ساعات عن حركة واحدة حتى تصبح ملكه. احتاج ثالث إلى المنافسة ليجمع انتباهه. فقد رابع في المنافسة كل ما هو حي وبدأ يتحرك بعيني حكم غيره.</p>
             <p>وجد خامس كرامة عبر العمل والقواعد. سمع سادس في تلك القواعد نفس الصوت القديم للخضوع. لا يمكن إغلاق هذه الاختلافات بصدق بصيغة واحدة. لكن يمكن ملاحظة ما يحدث بعد ذلك: هل يصبح المكان بجانب الإنسان أوسع أم أضيق.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١١</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-12">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XII</p>
-          <h2 class="page-title">فضاء الإعلام</h2>
-          <div class="page-body">
-            <p>فضاء الإعلام غالبًا يمحو هذا الحذر. يحب الأشكال الجاهزة: الفائز، الخاسر، الأستاذ، السام، الأسطورة، الهواة، المحترف، الفوضوي، الإنسان المنظم، الفنان الحقيقي، المشارك الخطأ.</p>
+    <section class="chapter" id="chapter-12">
+      <p class="chapter-mark">XII</p>
+      <h2 class="chapter-title">فضاء الإعلام</h2>
+      <div class="chapter-prose">
+        <p>فضاء الإعلام غالبًا يمحو هذا الحذر. يحب الأشكال الجاهزة: الفائز، الخاسر، الأستاذ، السام، الأسطورة، الهواة، المحترف، الفوضوي، الإنسان المنظم، الفنان الحقيقي، المشارك الخطأ.</p>
             <p>مثل هذه الألقاب مريحة كملفات صوت مضغوطة: تنتقل بسرعة، تُخزن بسهولة، تحفظ الانسجامات بشكل سيئ. عبرها بدأت الجماعة ترى نفسها كمسلسل حيث لكل واحد دور مكتوب مسبقًا.</p>
             <p>يمكن تحويل إنسان فيه بريق إلى ميم. وإنسان فيه ألم إلى حالة. وإنسان بإيقاع مختلف إلى مشكلة. وإنسان بنقد إلى تهديد. وكلما زادت الحكايات حولهم قل السمع المباشر.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١٢</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-13">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XIII</p>
-          <h2 class="page-title">اختبارات صغيرة</h2>
-          <div class="page-body">
-            <p>لذلك بدأ أوغ يثق أقل في التصريحات الكبيرة وأكثر في الاختبارات الصغيرة.</p>
+    <section class="chapter" id="chapter-13">
+      <p class="chapter-mark">XIII</p>
+      <h2 class="chapter-title">اختبارات صغيرة</h2>
+      <div class="chapter-prose">
+        <p>لذلك بدأ أوغ يثق أقل في التصريحات الكبيرة وأكثر في الاختبارات الصغيرة.</p>
             <p>كيف يتحدث المرء عن من لم يندمجوا. ماذا يحدث بعد الخطأ. هل يمكن تغيير قاعدة دون إذلال من ابتكرها. هل هناك مكان للصداقة حيث نشأ الإتقان.</p>
             <p>هل يصبح المبتدئ إنسانًا قبل النتيجة أم فقط بعدها. هل يمكن البقاء غريبًا وبطيئًا ومختلفًا في البيئة دون أن تصبح موضوع تصحيح. هل يعود التغذية الراجعة إلى التجربة الحية أم تستقر في إجراء مجرد. هل يُسمع في الاحتراف احترام لطريق آخر أم فقط رغبة في صف الجميع في خط واحد.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١٣</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-14">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XIV</p>
-          <h2 class="page-title">إيمانان</h2>
-          <div class="page-body">
-            <p>الإيمان بالإنسان والإيمان بالنظام نادرًا ما يوجدان بصورة نقية. في كل واحد قليل من الخوف وقليل من الرغبة في الاستناد إلى الشكل وقليل من الأمل في التواصل الحي وقليل من التعب من فوضى الآخرين. لكن في لحظات مختلفة تصبح إحدى هاتين القوتين قائدة.</p>
+    <section class="chapter" id="chapter-14">
+      <p class="chapter-mark">XIV</p>
+      <h2 class="chapter-title">إيمانان</h2>
+      <div class="chapter-prose">
+        <p>الإيمان بالإنسان والإيمان بالنظام نادرًا ما يوجدان بصورة نقية. في كل واحد قليل من الخوف وقليل من الرغبة في الاستناد إلى الشكل وقليل من الأمل في التواصل الحي وقليل من التعب من فوضى الآخرين. لكن في لحظات مختلفة تصبح إحدى هاتين القوتين قائدة.</p>
             <p>عندما يصبح الإيمان بالإنسان قائدًا، يبقى الشكل بجانبه كأداة يمكن وضعها على الطاولة ومناقشتها وتصحيحها وإزالتها وإعادتها إذا لزم الأمر.</p>
             <p>وعندما يصبح الإيمان بالنظام قائدًا، يبدأ الإنسان بالدوران حول الشكل كما حول مذبح ويشرح لماذا بدونه يكون الآخرون أقل حقيقة.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١٤</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-15">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XV</p>
-          <h2 class="page-title">ملعب فارغ</h2>
-          <div class="page-body">
-            <p>اقتربت الليل عندما عاد أوغ إلى ملعب فارغ. بعد التدريب بقيت آثار الأحذية ورمل رطب وزجاجة تحت المقعد وسترة منسية وشبكة متدلية كأنها تعبت من كونها حدًا.</p>
+    <section class="chapter" id="chapter-15">
+      <p class="chapter-mark">XV</p>
+      <h2 class="chapter-title">ملعب فارغ</h2>
+      <div class="chapter-prose">
+        <p>اقتربت الليل عندما عاد أوغ إلى ملعب فارغ. بعد التدريب بقيت آثار الأحذية ورمل رطب وزجاجة تحت المقعد وسترة منسية وشبكة متدلية كأنها تعبت من كونها حدًا.</p>
             <p>طفلان يدفعان بعصا غطاء بلاستيكيًا بين البرك، يخترعان تدريجيًا لعبة لم يسمها أحد بعد. ظهرت القواعد وانكسرت وعادت وتغيرت بعد كل عقبة جديدة. مرة نسوا العد، ثم قرروا أن العد الآن بالعكس، ثم ألغوا ذلك لأنه صار مملًا.</p>
             <p>من الخارج يمكن القول إنه فوضى. من الداخل كان واضحًا أنهما يحافظان على بعضهما بانتباه.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١٥</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-16">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XVI</p>
-          <h2 class="page-title">الانتباه</h2>
-          <div class="page-body">
-            <p>وقف أوغ عند السياج وفكر أن الصعوبة كلها ربما في هذا الانتباه — في القدرة على الشعور باللحظة التي يتوقف فيها الشكل عن مساعدة اللقاء ويبدأ في استبداله.</p>
+    <section class="chapter" id="chapter-16">
+      <p class="chapter-mark">XVI</p>
+      <h2 class="chapter-title">الانتباه</h2>
+      <div class="chapter-prose">
+        <p>وقف أوغ عند السياج وفكر أن الصعوبة كلها ربما في هذا الانتباه — في القدرة على الشعور باللحظة التي يتوقف فيها الشكل عن مساعدة اللقاء ويبدأ في استبداله.</p>
             <p>الصداقة والمشهد والإتقان والعمل الاحترافي واللعب والموسيقى والتعلم وتنظيم الحدث — كل ذلك يحتاج إلى حدود ما، وإلا يتمدد الكثير ويؤذي. لكن الحد يجب أن يتذكر أنه مرسوم حول الحي لا بدلًا منه.</p>
             <p>وإذا صار شيء أوضح على مر السنين، فليس الجواب بل اتجاه السمع: البحث عن أناس بجانبهم لا يقتل الشكل البريق، ولا تلغي القواعد الصداقة، ولا يهين الإتقان تجربة أخرى، ولا يثبت النظام كل يوم أن الإنسان بلا نظام ليس شيئًا.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١٦</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-17">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XVII</p>
-          <h2 class="page-title">المستوى السفلي</h2>
-          <div class="page-body">
-            <p>عندما تدحرج الغطاء تحت السيارة صمت الأطفال لحظة، ثم قال أحدهم إن هذا الآن المستوى السفلي، واستمرت اللعبة بلا إذن.</p>
+    <section class="chapter" id="chapter-17">
+      <p class="chapter-mark">XVII</p>
+      <h2 class="chapter-title">المستوى السفلي</h2>
+      <div class="chapter-prose">
+        <p>عندما تدحرج الغطاء تحت السيارة صمت الأطفال لحظة، ثم قال أحدهم إن هذا الآن المستوى السفلي، واستمرت اللعبة بلا إذن.</p>
             <p>مضى أوغ أبعد دون أن يصنع فلسفة نهائية من هذا المشهد الصغير، لأن الفلسفات النهائية تبدأ سريعًا في التصرف كمؤسسات.</p>
             <p>لكن تحت ضجيج الطريق وتحت صور الإعلام وتحت العبارات القديمة وتحت العروض والمراجعات والفحوص والمهرجانات والتدريبات والصداقة بقي مستشعر هادئ: هل يصبح الإنسان أكبر بجانب هذا الشكل، أم يجعله الشكل تدريجيًا أصغر. لم يعطِ هذا المستشعر نظامًا مريحًا، لكنه أعاد السمع إلى الحي، والحي كان لا يزال المكان الوحيد حيث يمكن أن يبدأ البريق من جديد.</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">١٧</span></footer>
-        </div>
       </div>
     </section>
-
   </main>
-
-  <script>
-    (function () {
-      var canvas = document.getElementById("plasma-canvas");
-      if (!canvas) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      var ctx = canvas.getContext("2d", { alpha: true });
-      var w = 0;
-      var h = 0;
-      var time = 0;
-      var imageData;
-      var data;
-
-      function resize() {
-        w = Math.floor(window.innerWidth / 2);
-        h = Math.floor(window.innerHeight / 2);
-        canvas.width = w;
-        canvas.height = h;
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        imageData = ctx.createImageData(w, h);
-        data = imageData.data;
-      }
-
-      function palette(t) {
-        var r = Math.sin(t * 0.1 + 0.2) * 75 + 72;
-        var g = Math.sin(t * 0.1 + 1.8) * 55 + 38;
-        var b = Math.sin(t * 0.1 + 3.6) * 40 + 22;
-        return [r | 0, g | 0, b | 0];
-      }
-
-      function frame() {
-        var i = 0;
-        for (var y = 0; y < h; y++) {
-          for (var x = 0; x < w; x++) {
-            var v =
-              Math.sin(x * 0.02 + time) +
-              Math.sin(y * 0.025 + time * 1.1) +
-              Math.sin((x + y) * 0.018 - time * 0.7) +
-              Math.sin(Math.sqrt(x * x + y * y) * 0.04 + time * 0.5);
-            var c = palette(v * 1.7 + time * 2.0);
-            data[i++] = c[0];
-            data[i++] = c[1];
-            data[i++] = c[2];
-            data[i++] = 255;
-          }
-        }
-        ctx.putImageData(imageData, 0, 0);
-        time += 0.04;
-        requestAnimationFrame(frame);
-      }
-
-      resize();
-      window.addEventListener("resize", resize);
-      requestAnimationFrame(frame);
-    })();
-  </script>
 </body>
 </html>

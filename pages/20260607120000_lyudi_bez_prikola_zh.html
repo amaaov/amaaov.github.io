@@ -8,6 +8,8 @@
   <meta name="description" content="中篇隨筆：寫活生生的人際接觸，與以查驗取代信任的體系之間的邊界。烏格、營火、庭院、圈兒、工作、媒體與火花。">
   <meta name="keywords" content="火花, 形式, 友誼, 圈兒, 媒體, 工作, 隨筆, 繁體中文">
   <meta name="author" content="amaaov">
+  <meta property="article:published_time" content="2026-06-07T12:00:00+00:00">
+  <meta property="article:modified_time" content="2026-06-23T20:00:00+00:00">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_zh.html">
   <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
   <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html">
@@ -24,412 +26,14 @@
   <meta name="twitter:description" content="中篇隨筆：寫活生生的人際接觸，與以查驗取代信任的體系之間的邊界。烏格、營火、庭院、圈兒、工作、媒體與火花。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --tex-size: 12.5pt;
-      --tex-baseline: 17pt;
-      --tex-textwidth: 100%;
-      --tex-serif: "STIX Two Text", "PT Serif", "Times New Roman", serif;
-      --tex-ink: #141210;
-      --tex-ink-muted: #4a4540;
-      --tex-paper: #fffaf4;
-      --page-a4-w: 21cm;
-      --page-a4-h: 29.7cm;
-      --page-pad-y: 2.2cm;
-      --page-pad-x: 2cm;
-      --focus: #c45c26;
-    }
-
-    html[lang="zh-Hant-TW"] {
-      --tex-serif: "Noto Serif TC", "STIX Two Text", "Times New Roman", serif;
-    }
-
-    html[lang="zh-Hant-TW"] .language-nav {
-      text-transform: none;
-      letter-spacing: 0.06em;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      background: #1a120e;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      position: relative;
-      margin: 0;
-      font-family: var(--tex-serif);
-      font-size: var(--tex-size);
-      line-height: var(--tex-baseline);
-      color: var(--tex-ink);
-      text-rendering: optimizeLegibility;
-      font-feature-settings: "kern" 1, "liga" 1;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    #plasma-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.36;
-    }
-
-    .site-top {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 10;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 0.5rem 0.75rem;
-      padding: 0.75rem 1rem;
-      pointer-events: none;
-    }
-
-    .home-link {
-      pointer-events: auto;
-      font-family: var(--tex-serif);
-      font-size: 0.95rem;
-      color: #f0e6dc;
-      text-decoration: none;
-      opacity: 0.9;
-    }
-
-    .home-link:focus-visible {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
-    }
-
-    .language-nav {
-      display: flex;
-      flex-wrap: nowrap;
-      flex: 1 1 auto;
-      min-width: 0;
-      align-items: baseline;
-      justify-content: flex-end;
-      gap: 0.15rem 0.55rem;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scrollbar-width: thin;
-      font-size: 0.78em;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(240, 230, 220, 0.72);
-      pointer-events: auto;
-    }
-
-    .language-nav::before {
-      content: "";
-      flex: 1 1 auto;
-      min-width: 0.5rem;
-      border-bottom: 0.4pt dotted rgba(240, 230, 220, 0.35);
-      margin: 0 0.15rem 0.2em;
-      opacity: 0.85;
-    }
-
-    .language-link {
-      font-family: var(--tex-serif);
-      font-size: 1em;
-      font-weight: 500;
-      color: rgba(240, 230, 220, 0.72);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .language-link:hover {
-      color: #f0e6dc;
-    }
-
-    .language-link[aria-current="page"] {
-      color: #f0e6dc;
-      font-weight: 600;
-      box-shadow: inset 0 -0.4pt 0 #f0e6dc;
-    }
-
-    .language-link:focus-visible {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
-    }
-
-    .book {
-      position: relative;
-      z-index: 2;
-      padding: 3.5rem 0.65rem 2rem;
-    }
-
-    .book-page {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: calc(100vh - 1rem);
-      min-height: calc(100dvh - 1rem);
-      padding: 0.5rem 0 1.75rem;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-    }
-
-    .page-sheet {
-      width: min(
-        calc(100vw - 1.3rem),
-        var(--page-a4-w),
-        calc((100dvh - 5.5rem) * 210 / 297)
-      );
-      aspect-ratio: 210 / 297;
-      height: auto;
-      margin: 0 auto;
-      padding: var(--page-pad-y) var(--page-pad-x);
-      background: var(--tex-paper);
-      border: 1px solid #ddd5c8;
-      box-shadow:
-        0 2px 0 rgba(255, 255, 255, 0.45) inset,
-        0 10px 36px rgba(0, 0, 0, 0.24);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .page-inner {
-      flex: 1;
-      max-width: var(--tex-textwidth);
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .book-page--title .page-sheet {
-      justify-content: center;
-    }
-
-    .book-page--title .page-inner {
-      justify-content: flex-start;
-    }
-
-    .book-page--title .article-head {
-      text-align: center;
-    }
-
-    .page-prelude {
-      margin-top: 1.35em;
-    }
-
-    .page-prelude p {
-      margin: 0;
-      text-align: justify;
-      text-justify: inter-word;
-      hyphens: auto;
-      hyphenate-limit-chars: 6 3 3;
-      text-wrap: pretty;
-      color: var(--tex-ink);
-    }
-
-    .page-prelude p + p {
-      margin-top: 0.85em;
-    }
-
-    .article-head {
-      margin: 0;
-      padding: 0 0 1.25em;
-      border-bottom: 0.4pt solid var(--tex-ink);
-    }
-
-    .article-head h1 {
-      font-family: var(--tex-serif);
-      font-size: 1.55em;
-      font-weight: 500;
-      line-height: 1.2;
-      margin: 0 0 0.4em;
-      color: var(--tex-ink);
-      text-wrap: balance;
-    }
-
-    .article-meta {
-      font-family: var(--tex-serif);
-      font-size: 1em;
-      line-height: var(--tex-baseline);
-      color: var(--tex-ink-muted);
-      margin: 0;
-    }
-
-    .page-chapter {
-      font-family: var(--tex-serif);
-      font-size: 0.82em;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--tex-ink-muted);
-      margin: 0 0 0.35em;
-      text-align: center;
-    }
-
-    .page-title {
-      font-family: var(--tex-serif);
-      font-size: 1.22em;
-      font-weight: 500;
-      line-height: 1.25;
-      margin: 0 0 1.15em;
-      padding-bottom: 0.65em;
-      text-align: center;
-      color: var(--tex-ink);
-      border-bottom: 0.4pt solid #c8bfb0;
-      text-wrap: balance;
-    }
-
-    .page-body {
-      flex: 1;
-    }
-
-    .page-body p {
-      margin: 0;
-      text-align: justify;
-      text-justify: inter-word;
-      hyphens: auto;
-      hyphenate-limit-chars: 6 3 3;
-      text-wrap: pretty;
-      orphans: 3;
-      widows: 3;
-    }
-
-    .page-body p + p {
-      margin-top: 0.85em;
-    }
-
-    .page-footer {
-      margin-top: auto;
-      padding-top: 1.35em;
-      font-family: var(--tex-serif);
-      font-size: 0.88em;
-      color: var(--tex-ink-muted);
-      text-align: center;
-      letter-spacing: 0.06em;
-    }
-
-    .page-num::before {
-      content: "— ";
-    }
-
-    .page-num::after {
-      content: " —";
-    }
-
-    em {
-      font-style: italic;
-    }
-
-    @media (min-width: 768px) {
-      html {
-        scroll-snap-type: y proximity;
-      }
-
-      .book {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-    }
-
-    @media (max-width: 767px) {
-      :root {
-        --page-pad-y: clamp(1.35rem, 5vw, 2.2cm);
-        --page-pad-x: clamp(1.1rem, 4.5vw, 2cm);
-      }
-
-      .book {
-        padding-top: 3rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-      }
-
-      .page-body p,
-      .page-prelude p {
-        text-align: left;
-      }
-
-      .book-page {
-        min-height: auto;
-        padding-bottom: 1.25rem;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      #plasma-canvas {
-        display: none;
-      }
-
-      html {
-        background: #2a1e18;
-      }
-    }
-
-    @page {
-      size: A4;
-      margin: 2.54cm 2cm;
-    }
-
-    @media print {
-      html {
-        background: #fff;
-        scroll-snap-type: none;
-      }
-
-      body {
-        padding: 0;
-      }
-
-      #plasma-canvas,
-      .site-top {
-        display: none !important;
-      }
-
-      .book {
-        padding: 0;
-      }
-
-      .book-page {
-        min-height: auto;
-        padding: 0;
-        page-break-after: always;
-        break-after: page;
-      }
-
-      .book-page:last-child {
-        page-break-after: auto;
-        break-after: auto;
-      }
-
-      .page-sheet {
-        width: auto;
-        aspect-ratio: auto;
-        height: auto;
-        border: none;
-        box-shadow: none;
-        max-width: none;
-        padding: 0;
-      }
-
-      .page-inner {
-        max-width: none;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="20260607120000_lyudi_bez_prikola/lyudi_bez_prikola_article.css">
 </head>
 <body>
-  <canvas id="plasma-canvas" aria-hidden="true"></canvas>
+  <div class="ember-field" aria-hidden="true"></div>
   <div class="site-top">
     <a class="home-link" href="../index.html">amaaov</a>
-    <nav class="language-nav" aria-label="文章語言">
+    <nav class="language-nav" aria-label="Article languages">
       <a class="language-link" href="20260607120000_lyudi_bez_prikola.html">RU</a>
       <a class="language-link" href="20260607120000_lyudi_bez_prikola_en.html">EN</a>
       <a class="language-link" href="20260607120000_lyudi_bez_prikola_zh.html" aria-current="page">ZH</a>
@@ -439,338 +43,164 @@
     </nav>
   </div>
 
-  <main class="book tex-doc" aria-label="有火花的人">
-
-    <section class="book-page book-page--title" id="page-title">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <header class="article-head">
-            <h1>有火花的人</h1>
-            <p class="article-meta">amaaov · 2026年6月7日，赫爾辛基</p>
-          </header>
-          <div class="page-prelude">
-            <p>《有火花的人》是一篇抽象的中篇隨筆，寫的是活生生的人際接觸，與那些急於以查驗取代信任、以入場許可取代友誼、以篩選取代遊戲、以外部等級取代技藝的體系之間，那道脆弱的邊界。</p>
-            <p>透過烏格這個人物，以及營火、庭院、圈兒、工作與媒體等場景，文本探問：形式何以能幫助人，又如何在不知不覺間變得比人更重要。</p>
-            <p>故事的核心問題是：規則是否仍為錯誤、友誼、經驗的差異，以及作為活著之徵兆的「火花」，保留餘地。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">i</span></footer>
-        </div>
-      </div>
-    </section>
-
-    <section class="book-page" id="page-1">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">I</p>
-          <h2 class="page-title">營火旁</h2>
-          <div class="page-body">
-            <p>烏格坐在營火旁，試著弄懂：為什麼有些遊戲在外表一切如常的時候——球還在滾、人還在動、有人解釋規則、有人招呼大家圍成圈、有人已經在記分並說這樣才公平——卻在真正開始之前就已死去。</p>
+  <main class="novella" aria-label="有火花的人">
+    <header class="novella-head">
+      <h1>有火花的人</h1>
+      <p class="article-meta">amaaov · 2026年6月7日，赫爾辛基</p>
+    </header>
+    <section class="chapter" id="chapter-1">
+      <p class="chapter-mark">I</p>
+      <h2 class="chapter-title">營火旁</h2>
+      <div class="chapter-prose">
+        <p>烏格坐在營火旁，試著弄懂：為什麼有些遊戲在外表一切如常的時候——球還在滾、人還在動、有人解釋規則、有人招呼大家圍成圈、有人已經在記分並說這樣才公平——卻在真正開始之前就已死去。</p>
             <p>火光以不規則的切分音跳動，樹枝噼啪作響，煙向暗水裡飄去；在這簡單的夜間混亂裡，比許多安排妥當的形式承載著更多信任。</p>
             <p>營火旁沒人要求證明在場的資格，沒人給停頓排等級，沒人說故事必須經過外部評價才有意義。人們坐著，在細節上記錯、用不同方式回想、互相打斷、回到舊事、笑得不合時宜、沉默過久——彼此之間仍懸著一種難以不用日常詞彙描述的細薄之物：火花。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">1</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-2">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">II</p>
-          <h2 class="page-title">另一條線</h2>
-          <div class="page-body">
-            <p>後來，不在營火旁，而是在大廳、庭院、空地、火車、工作室、臨時場地，以及活動結束後漫長的談話裡，烏格越來越常注意到：人與人之間的差異，並不在人們慣常尋找的地方。人確實不同——身體、語言、習慣、創傷、注意力的訓練、對技藝與疲憊的理解各異——但在這差異之下，有時會浮出另一條線，較不顯眼，因而更痛。</p>
+    <section class="chapter" id="chapter-2">
+      <p class="chapter-mark">II</p>
+      <h2 class="chapter-title">另一條線</h2>
+      <div class="chapter-prose">
+        <p>後來，不在營火旁，而是在大廳、庭院、空地、火車、工作室、臨時場地，以及活動結束後漫長的談話裡，烏格越來越常注意到：人與人之間的差異，並不在人們慣常尋找的地方。人確實不同——身體、語言、習慣、創傷、注意力的訓練、對技藝與疲憊的理解各異——但在這差異之下，有時會浮出另一條線，較不顯眼，因而更痛。</p>
             <p>有些人把對方當作可能：未知的故事、風格、怪異、決定、錯誤與未來友誼的來源。另一些人幾乎立刻尋找形式，好把這個人理解、定位、評價、修正、放行或篩掉。</p>
             <p>而並不總能清楚看出：用心到哪裡結束，不信任又從哪裡開始。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">2</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-3">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">III</p>
-          <h2 class="page-title">媒體天氣</h2>
-          <div class="page-body">
-            <p>媒體把這差異變得更複雜，在人身邊造出第二種天氣，有時比真實的更濃：故事碎片、錄影的陰影、舊傳說、偶然畫面、名聲、他人的勝利、關於你從未去過之處的敘事——你卻彷彿已有定見。</p>
+    <section class="chapter" id="chapter-3">
+      <p class="chapter-mark">III</p>
+      <h2 class="chapter-title">媒體天氣</h2>
+      <div class="chapter-prose">
+        <p>媒體把這差異變得更複雜，在人身邊造出第二種天氣，有時比真實的更濃：故事碎片、錄影的陰影、舊傳說、偶然畫面、名聲、他人的勝利、關於你從未去過之處的敘事——你卻彷彿已有定見。</p>
             <p>在這種天氣裡，人走向的不是另一個人，而是一幅由碎片拼成的圖像。於是相遇對不上預期，人們便開始把活著的東西往現成形象上硬套，而不是去聽。</p>
             <p>也許正因如此，圈兒與體系很難說清：從外面看可以一模一樣，裡面的熱源卻不同。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">3</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-4">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">IV</p>
-          <h2 class="page-title">人性化</h2>
-          <div class="page-body">
-            <p>某個時刻，烏格想起關於克服的舊敘事：邊緣場景的聲音、演出後的談話、他人的告白——其中意外地直接響起的，往往是尋常藏在技藝底下的東西：這個人、他的決定、他的風格、他在眾人中的位置、他如何仍是自己卻又屬於共同體。</p>
+    <section class="chapter" id="chapter-4">
+      <p class="chapter-mark">IV</p>
+      <h2 class="chapter-title">人性化</h2>
+      <div class="chapter-prose">
+        <p>某個時刻，烏格想起關於克服的舊敘事：邊緣場景的聲音、演出後的談話、他人的告白——其中意外地直接響起的，往往是尋常藏在技藝底下的東西：這個人、他的決定、他的風格、他在眾人中的位置、他如何仍是自己卻又屬於共同體。</p>
             <p>那裡重要的不只是技術，不只是形式的乾淨，不只是戰勝弱點，而是人性化這個過程本身：把人從圖式裡慢慢還原成臉、聲音、選擇與傳記。</p>
             <p>克服在那裡聽起來不像官樣口號。它變成關於人如何組裝自己、找到語言、改變軌跡、在失敗後仍留在遊戲裡、以及身旁如何出現不只看結果的朋友。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">4</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-5">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">V</p>
-          <h2 class="page-title">圈兒</h2>
-          <div class="page-body">
-            <p>烏格幾乎執拗地想了很久，回到圈兒那些年：沒有確切名字的城市、光線差的場館、早已溶進他人檔案的論壇、許多事被粗粝、直接、有時可笑、有時帶刺地說出來的場子——那些刺人的說法在記憶裡扎得比願望更深。</p>
+    <section class="chapter" id="chapter-5">
+      <p class="chapter-mark">V</p>
+      <h2 class="chapter-title">圈兒</h2>
+      <div class="chapter-prose">
+        <p>烏格幾乎執拗地想了很久，回到圈兒那些年：沒有確切名字的城市、光線差的場館、早已溶進他人檔案的論壇、許多事被粗粝、直接、有時可笑、有時帶刺地說出來的場子——那些刺人的說法在記憶裡扎得比願望更深。</p>
             <p>後來是別處、別的圈子、別的相聚方式，同一主題仍一再浮現，像舊紙上隱藏的紋路。</p>
             <p>他看見自己、朋友、有火花的人——會錯、會吵、會不順、怪、低效，卻在接觸裡仍是活的。旁邊則是另一種人：相信體系、規則、遊戲、形式——有時真誠，有時優美，有時確實技藝高超——卻仍在他們周圍慢慢築起一種環境：人變成入場許可的函數。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">5</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-6">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VI</p>
-          <h2 class="page-title">形式的主導</h2>
-          <div class="page-body">
-            <p>這不總是惡意選擇。有時相信體系，來自混亂的經驗、糟糕的同伴、創傷、想保護弱者的念頭、對空談的疲憊、對食言者的記憶、以及必須把活動、訓練、計畫、出行、安全、共同空間組織起來的必要。</p>
+    <section class="chapter" id="chapter-6">
+      <p class="chapter-mark">VI</p>
+      <h2 class="chapter-title">形式的主導</h2>
+      <div class="chapter-prose">
+        <p>這不總是惡意選擇。有時相信體系，來自混亂的經驗、糟糕的同伴、創傷、想保護弱者的念頭、對空談的疲憊、對食言者的記憶、以及必須把活動、訓練、計畫、出行、安全、共同空間組織起來的必要。</p>
             <p>形式確實能在一切散架時救人。規則能留住那些否則會壓制他人的人。審查能在發布前攔住錯誤。使用者測試能把在漂亮架構裡被遺忘的人請回房間。演示能讓想法終於成為物件。手動走一遍流程能打碎自己確信製造的幻覺。</p>
             <p>但這種實務上的誠實，不同於另一種運動：體系開始比人更重要，並漸漸要求所有人都承認它的主導地位。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">6</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-7">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VII</p>
-          <h2 class="page-title">友誼</h2>
-          <div class="page-body">
-            <p>當這種運動發生，友誼最先感到空氣變了。友誼無法長久像賽程表那樣活著，儘管許多人試過。</p>
+    <section class="chapter" id="chapter-7">
+      <p class="chapter-mark">VII</p>
+      <h2 class="chapter-title">友誼</h2>
+      <div class="chapter-prose">
+        <p>當這種運動發生，友誼最先感到空氣變了。友誼無法長久像賽程表那樣活著，儘管許多人試過。</p>
             <p>友誼靠一種奇怪的能力：不把對方變成自己世界觀的函數。朋友可以在這裡強、在那裡弱，可以消失、回來、說蠢話、說中要害、不懂你的工作、懂你的痛、用詞失準、帶來新節奏、打破舊的自大、在沒有協議時伸手。</p>
             <p>友誼裡也有檢驗，但不像認證。那裡的人是被時間、注意、在場、以及承受差異的能力所檢驗，而不只是是否符合形式。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">7</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-8">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VIII</p>
-          <h2 class="page-title">對人的信任</h2>
-          <div class="page-body">
-            <p>正是在這裡，沉重的中心變得清楚。對人的信任並非天真地以為人人都善良、誠實、理性、隨時準備互惠——這種信任很快會撞上現實。</p>
+    <section class="chapter" id="chapter-8">
+      <p class="chapter-mark">VIII</p>
+      <h2 class="chapter-title">對人的信任</h2>
+      <div class="chapter-prose">
+        <p>正是在這裡，沉重的中心變得清楚。對人的信任並非天真地以為人人都善良、誠實、理性、隨時準備互惠——這種信任很快會撞上現實。</p>
             <p>它更像是決定：仍給人機會，讓他大於自己的錯誤、大於自己的角色、大於自己的結果、大於他人對他的敘事。是明知接觸可能失敗，仍從活著的接觸開始。是在對方身上不只看見必須用程序關閉的風險，也看見不可預測意義的來源。</p>
             <p>對體系的信任也不總愚蠢，但它常從相反運動開始：人在通過形式之前，都是可疑的。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">8</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-9">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">IX</p>
-          <h2 class="page-title">校園操場</h2>
-          <div class="page-body">
-            <p>在校園操場上，這差異看起來幾乎無害。孩子們先隨便玩，當場發明規則，吵架，立刻改條件，忘記比分，把球還給在哭的那個，為場界爭執——因為場地每次都不一樣。</p>
+    <section class="chapter" id="chapter-9">
+      <p class="chapter-mark">IX</p>
+      <h2 class="chapter-title">校園操場</h2>
+      <div class="chapter-prose">
+        <p>在校園操場上，這差異看起來幾乎無害。孩子們先隨便玩，當場發明規則，吵架，立刻改條件，忘記比分，把球還給在哭的那個，為場界爭執——因為場地每次都不一樣。</p>
             <p>然後大人來，把遊戲弄清楚。有時確實變好：弱者不再被推，輪次更公平，球不會飛進窗裡。</p>
             <p>有時空氣忽然收緊，遊戲變成篩選——重要的不再是孩子之間生出了什麼，而是誰正確理解了形式。難處在於，兩種場景可能以同樣的「想幫忙」開始。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">9</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-10">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">X</p>
-          <h2 class="page-title">工作</h2>
-          <div class="page-body">
-            <p>在工作裡，同一條線藏得更深。專業主義的概念很具體——來自特定環境、經濟、語言、習慣、注意力的訓練——因此不能成為衡量人之價值的普遍尺。</p>
+    <section class="chapter" id="chapter-10">
+      <p class="chapter-mark">X</p>
+      <h2 class="chapter-title">工作</h2>
+      <div class="chapter-prose">
+        <p>在工作裡，同一條線藏得更深。專業主義的概念很具體——來自特定環境、經濟、語言、習慣、注意力的訓練——因此不能成為衡量人之價值的普遍尺。</p>
             <p>有人靠規程思考，有人靠原型，有人靠談話，有人靠長時間手動檢查，有人靠演示——演示裡突然看見任務裡沒有的東西。</p>
             <p>好工作有時需要形式，但糟糕的文化把形式變成道德台座。於是經驗不同的人看起來不是結構不同，而是彷彿較不成熟、較無紀律、較不專業——其實可能只是來自另一所現實的學校。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">10</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-11">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XI</p>
-          <h2 class="page-title">不同的路數</h2>
-          <div class="page-body">
-            <p>烏格記得，不同的生活與做法多常在外觀客觀的名目下被貶低。</p>
+    <section class="chapter" id="chapter-11">
+      <p class="chapter-mark">XI</p>
+      <h2 class="chapter-title">不同的路數</h2>
+      <div class="chapter-prose">
+        <p>烏格記得，不同的生活與做法多常在外觀客觀的名目下被貶低。</p>
             <p>有人愛訓練體系，看見身體解放的路。有人受不了訓練，卻能為一個動作找上數小時，直到它變成自己的。有人需要競賽才能收攏注意。有人在競賽裡失去所有活的東西，開始用裁判的眼睛移動。</p>
             <p>有人透過工作與規則找到尊嚴。有人在同一套規則裡聽見舊的服從之聲。這些差異無法誠實地用一條公式蓋住。但可以觀察之後發生什麼：身旁是變寬，還是變窄。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">11</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-12">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XII</p>
-          <h2 class="page-title">媒體空間</h2>
-          <div class="page-body">
-            <p>媒體空間常把這份謹慎擦掉。它偏愛現成的形狀：贏家、輸家、大師、有毒的人、傳奇、門外漢、專業人士、混亂者、體系人、真正的藝術家、不對的參與者。</p>
+    <section class="chapter" id="chapter-12">
+      <p class="chapter-mark">XII</p>
+      <h2 class="chapter-title">媒體空間</h2>
+      <div class="chapter-prose">
+        <p>媒體空間常把這份謹慎擦掉。它偏愛現成的形狀：贏家、輸家、大師、有毒的人、傳奇、門外漢、專業人士、混亂者、體系人、真正的藝術家、不對的參與者。</p>
             <p>這類標籤像壓縮音檔：傳得快、存得易、泛音差。透過它們，場子開始把自己看成連續劇，每人已有寫好的角色。</p>
             <p>有火花的人可能被變成迷因。有痛的人——案例。節奏不同的人——問題。有批判的人——威脅。故事越多，直接聆聽越少。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">12</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-13">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XIII</p>
-          <h2 class="page-title">小的檢驗</h2>
-          <div class="page-body">
-            <p>因此烏格越來越不信大宣言，而信小的檢驗。</p>
+    <section class="chapter" id="chapter-13">
+      <p class="chapter-mark">XIII</p>
+      <h2 class="chapter-title">小的檢驗</h2>
+      <div class="chapter-prose">
+        <p>因此烏格越來越不信大宣言，而信小的檢驗。</p>
             <p>這人如何談論融不進來的人。錯誤之後發生什麼。能否改規則而不羞辱提出規則的人。技藝出現的地方，是否仍有友誼的位置。</p>
             <p>新手是在結果之前就被當作人，還是只有結果之後才是。能否在環境裡保持怪、慢、不像別人，而不變成被修正的對象。回饋是否回到活著的經驗，還是停在抽象程序裡。專業主義裡是否聽得到對另一條路的尊重，還是只想把所有人排成一行。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">13</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-14">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XIV</p>
-          <h2 class="page-title">兩種信念</h2>
-          <div class="page-body">
-            <p>對人的信任與對體系的信任，很少以純粹形態存在。每人都有恐懼、想倚靠形式的衝動、對活著接觸的盼望、對他人混亂的疲憊——但在不同時刻，其中一種力量會成為主導。</p>
+    <section class="chapter" id="chapter-14">
+      <p class="chapter-mark">XIV</p>
+      <h2 class="chapter-title">兩種信念</h2>
+      <div class="chapter-prose">
+        <p>對人的信任與對體系的信任，很少以純粹形態存在。每人都有恐懼、想倚靠形式的衝動、對活著接觸的盼望、對他人混亂的疲憊——但在不同時刻，其中一種力量會成為主導。</p>
             <p>當對人的信任主導，形式留在旁邊，像可放上桌、討論、修正、收起、必要時再拿出的工具。</p>
             <p>當對體系的信任主導，人開始繞著形式像繞祭壇，並解釋為何沒有它，其他人都「不夠真」。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">14</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-15">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XV</p>
-          <h2 class="page-title">空盪盪的場地</h2>
-          <div class="page-body">
-            <p>近夜時，烏格又來到空場地。訓練後留下鞋印、濕沙、長椅下的瓶子、忘記的外套，以及網子鬆垮地垂著，彷彿連當邊界也累了。</p>
+    <section class="chapter" id="chapter-15">
+      <p class="chapter-mark">XV</p>
+      <h2 class="chapter-title">空盪盪的場地</h2>
+      <div class="chapter-prose">
+        <p>近夜時，烏格又來到空場地。訓練後留下鞋印、濕沙、長椅下的瓶子、忘記的外套，以及網子鬆垮地垂著，彷彿連當邊界也累了。</p>
             <p>兩個孩子用樹枝在積水間滾塑膠蓋，慢慢發明一場還沒人命名的遊戲。規則出現、破裂、回來，每遇新障礙就改。有一次忘了計分，後來決定倒著數，再後來取消，因為無聊。</p>
             <p>從外面可說這是混亂。從裡面看得出他們仔細地彼此抓著。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">15</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-16">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XVI</p>
-          <h2 class="page-title">注意</h2>
-          <div class="page-body">
-            <p>烏格站在圍欄旁想：也許整個難處就在這份注意——能否感到形式何時停止幫助相遇、開始取代相遇。</p>
+    <section class="chapter" id="chapter-16">
+      <p class="chapter-mark">XVI</p>
+      <h2 class="chapter-title">注意</h2>
+      <div class="chapter-prose">
+        <p>烏格站在圍欄旁想：也許整個難處就在這份注意——能否感到形式何時停止幫助相遇、開始取代相遇。</p>
             <p>友誼、圈兒、技藝、專業工作、遊戲、音樂、學習、組織活動——都需要某種輪廓，否則許多事會散開並傷人。但輪廓必須記得：它是畫在活著的東西周圍，而不是代替它。</p>
             <p>若多年後有什麼變得更清楚，那與其說是答案，不如說是聽的方向：尋找那些身旁形式不殺死火花、規則不取消友誼、技藝不貶低另一種經驗、體系不必每天證明「沒有它人便一無是處」的人。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">16</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-17">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XVII</p>
-          <h2 class="page-title">地下層</h2>
-          <div class="page-body">
-            <p>蓋子滾到車底時，孩子們靜了一秒，接著一人說：現在這是地下層——遊戲未經許可便繼續。</p>
+    <section class="chapter" id="chapter-17">
+      <p class="chapter-mark">XVII</p>
+      <h2 class="chapter-title">地下層</h2>
+      <div class="chapter-prose">
+        <p>蓋子滾到車底時，孩子們靜了一秒，接著一人說：現在這是地下層——遊戲未經許可便繼續。</p>
             <p>烏格繼續走，沒把這小場面做成定稿哲學，因為定稿哲學太快會開始像機構一樣行事。</p>
             <p>但在路聲之下、媒體圖像之下、舊句之下、演示、審查、檢驗、節慶、訓練與友誼之下，仍有一個安靜的感測器：在這形式旁，人是變大了，還是形式漸漸把他變小。這感測器不提供方便的體系，卻把聽覺還給活著的東西——而活著，仍是火花能重新開始的唯一所在。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">17</span></footer>
-        </div>
       </div>
     </section>
-
   </main>
-
-  <script>
-    (function () {
-      var canvas = document.getElementById("plasma-canvas");
-      if (!canvas) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      var ctx = canvas.getContext("2d", { alpha: true });
-      var w = 0;
-      var h = 0;
-      var time = 0;
-      var imageData;
-      var data;
-
-      function resize() {
-        w = Math.floor(window.innerWidth / 2);
-        h = Math.floor(window.innerHeight / 2);
-        canvas.width = w;
-        canvas.height = h;
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        imageData = ctx.createImageData(w, h);
-        data = imageData.data;
-      }
-
-      function palette(t) {
-        var r = Math.sin(t * 0.1 + 0.2) * 75 + 72;
-        var g = Math.sin(t * 0.1 + 1.8) * 55 + 38;
-        var b = Math.sin(t * 0.1 + 3.6) * 40 + 22;
-        return [r | 0, g | 0, b | 0];
-      }
-
-      function frame() {
-        var i = 0;
-        for (var y = 0; y < h; y++) {
-          for (var x = 0; x < w; x++) {
-            var v =
-              Math.sin(x * 0.02 + time) +
-              Math.sin(y * 0.025 + time * 1.1) +
-              Math.sin((x + y) * 0.018 - time * 0.7) +
-              Math.sin(Math.sqrt(x * x + y * y) * 0.04 + time * 0.5);
-            var c = palette(v * 1.7 + time * 2.0);
-            data[i++] = c[0];
-            data[i++] = c[1];
-            data[i++] = c[2];
-            data[i++] = 255;
-          }
-        }
-        ctx.putImageData(imageData, 0, 0);
-        time += 0.04;
-        requestAnimationFrame(frame);
-      }
-
-      resize();
-      window.addEventListener("resize", resize);
-      requestAnimationFrame(frame);
-    })();
-  </script>
 </body>
 </html>

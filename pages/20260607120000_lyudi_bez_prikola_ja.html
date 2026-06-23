@@ -8,6 +8,8 @@
   <meta name="description" content="中編随筆：生きた接触と、信頼を検証で置き換える仕組みとのあいだの境界。ウグ、焚き火、校庭、シーン、仕事、メディア、ノリ。">
   <meta name="keywords" content="ノリ, 形式, 友情, シーン, メディア, 仕事, 随筆, 日本語">
   <meta name="author" content="amaaov">
+  <meta property="article:published_time" content="2026-06-07T12:00:00+00:00">
+  <meta property="article:modified_time" content="2026-06-23T20:00:00+00:00">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ja.html">
   <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html">
   <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html">
@@ -24,413 +26,14 @@
   <meta name="twitter:description" content="中編随筆：生きた接触と、信頼を検証で置き換える仕組みとのあいだの境界。ウグ、焚き火、校庭、シーン、仕事、メディア、ノリ。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --tex-size: 12.5pt;
-      --tex-baseline: 17pt;
-      --tex-textwidth: 100%;
-      --tex-serif: "STIX Two Text", "PT Serif", "Times New Roman", serif;
-      --tex-ink: #141210;
-      --tex-ink-muted: #4a4540;
-      --tex-paper: #fffaf4;
-      --page-a4-w: 21cm;
-      --page-a4-h: 29.7cm;
-      --page-pad-y: 2.2cm;
-      --page-pad-x: 2cm;
-      --focus: #c45c26;
-    }
-
-    html[lang="ja"] {
-      --tex-serif: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
-      font-variant-east-asian: proportional-width;
-    }
-
-    html[lang="ja"] .language-nav {
-      text-transform: none;
-      letter-spacing: 0.06em;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      background: #1a120e;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      position: relative;
-      margin: 0;
-      font-family: var(--tex-serif);
-      font-size: var(--tex-size);
-      line-height: var(--tex-baseline);
-      color: var(--tex-ink);
-      text-rendering: optimizeLegibility;
-      font-feature-settings: "kern" 1, "liga" 1;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    #plasma-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.36;
-    }
-
-    .site-top {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 10;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 0.5rem 0.75rem;
-      padding: 0.75rem 1rem;
-      pointer-events: none;
-    }
-
-    .home-link {
-      pointer-events: auto;
-      font-family: var(--tex-serif);
-      font-size: 0.95rem;
-      color: #f0e6dc;
-      text-decoration: none;
-      opacity: 0.9;
-    }
-
-    .home-link:focus-visible {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
-    }
-
-    .language-nav {
-      display: flex;
-      flex-wrap: nowrap;
-      flex: 1 1 auto;
-      min-width: 0;
-      align-items: baseline;
-      justify-content: flex-end;
-      gap: 0.15rem 0.55rem;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scrollbar-width: thin;
-      font-size: 0.78em;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(240, 230, 220, 0.72);
-      pointer-events: auto;
-    }
-
-    .language-nav::before {
-      content: "";
-      flex: 1 1 auto;
-      min-width: 0.5rem;
-      border-bottom: 0.4pt dotted rgba(240, 230, 220, 0.35);
-      margin: 0 0.15rem 0.2em;
-      opacity: 0.85;
-    }
-
-    .language-link {
-      font-family: var(--tex-serif);
-      font-size: 1em;
-      font-weight: 500;
-      color: rgba(240, 230, 220, 0.72);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .language-link:hover {
-      color: #f0e6dc;
-    }
-
-    .language-link[aria-current="page"] {
-      color: #f0e6dc;
-      font-weight: 600;
-      box-shadow: inset 0 -0.4pt 0 #f0e6dc;
-    }
-
-    .language-link:focus-visible {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
-    }
-
-    .book {
-      position: relative;
-      z-index: 2;
-      padding: 3.5rem 0.65rem 2rem;
-    }
-
-    .book-page {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: calc(100vh - 1rem);
-      min-height: calc(100dvh - 1rem);
-      padding: 0.5rem 0 1.75rem;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-    }
-
-    .page-sheet {
-      width: min(
-        calc(100vw - 1.3rem),
-        var(--page-a4-w),
-        calc((100dvh - 5.5rem) * 210 / 297)
-      );
-      aspect-ratio: 210 / 297;
-      height: auto;
-      margin: 0 auto;
-      padding: var(--page-pad-y) var(--page-pad-x);
-      background: var(--tex-paper);
-      border: 1px solid #ddd5c8;
-      box-shadow:
-        0 2px 0 rgba(255, 255, 255, 0.45) inset,
-        0 10px 36px rgba(0, 0, 0, 0.24);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .page-inner {
-      flex: 1;
-      max-width: var(--tex-textwidth);
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .book-page--title .page-sheet {
-      justify-content: center;
-    }
-
-    .book-page--title .page-inner {
-      justify-content: flex-start;
-    }
-
-    .book-page--title .article-head {
-      text-align: center;
-    }
-
-    .page-prelude {
-      margin-top: 1.35em;
-    }
-
-    .page-prelude p {
-      margin: 0;
-      text-align: justify;
-      text-justify: inter-word;
-      hyphens: auto;
-      hyphenate-limit-chars: 6 3 3;
-      text-wrap: pretty;
-      color: var(--tex-ink);
-    }
-
-    .page-prelude p + p {
-      margin-top: 0.85em;
-    }
-
-    .article-head {
-      margin: 0;
-      padding: 0 0 1.25em;
-      border-bottom: 0.4pt solid var(--tex-ink);
-    }
-
-    .article-head h1 {
-      font-family: var(--tex-serif);
-      font-size: 1.55em;
-      font-weight: 500;
-      line-height: 1.2;
-      margin: 0 0 0.4em;
-      color: var(--tex-ink);
-      text-wrap: balance;
-    }
-
-    .article-meta {
-      font-family: var(--tex-serif);
-      font-size: 1em;
-      line-height: var(--tex-baseline);
-      color: var(--tex-ink-muted);
-      margin: 0;
-    }
-
-    .page-chapter {
-      font-family: var(--tex-serif);
-      font-size: 0.82em;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--tex-ink-muted);
-      margin: 0 0 0.35em;
-      text-align: center;
-    }
-
-    .page-title {
-      font-family: var(--tex-serif);
-      font-size: 1.22em;
-      font-weight: 500;
-      line-height: 1.25;
-      margin: 0 0 1.15em;
-      padding-bottom: 0.65em;
-      text-align: center;
-      color: var(--tex-ink);
-      border-bottom: 0.4pt solid #c8bfb0;
-      text-wrap: balance;
-    }
-
-    .page-body {
-      flex: 1;
-    }
-
-    .page-body p {
-      margin: 0;
-      text-align: justify;
-      text-justify: inter-word;
-      hyphens: auto;
-      hyphenate-limit-chars: 6 3 3;
-      text-wrap: pretty;
-      orphans: 3;
-      widows: 3;
-    }
-
-    .page-body p + p {
-      margin-top: 0.85em;
-    }
-
-    .page-footer {
-      margin-top: auto;
-      padding-top: 1.35em;
-      font-family: var(--tex-serif);
-      font-size: 0.88em;
-      color: var(--tex-ink-muted);
-      text-align: center;
-      letter-spacing: 0.06em;
-    }
-
-    .page-num::before {
-      content: "— ";
-    }
-
-    .page-num::after {
-      content: " —";
-    }
-
-    em {
-      font-style: italic;
-    }
-
-    @media (min-width: 768px) {
-      html {
-        scroll-snap-type: y proximity;
-      }
-
-      .book {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-    }
-
-    @media (max-width: 767px) {
-      :root {
-        --page-pad-y: clamp(1.35rem, 5vw, 2.2cm);
-        --page-pad-x: clamp(1.1rem, 4.5vw, 2cm);
-      }
-
-      .book {
-        padding-top: 3rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-      }
-
-      .page-body p,
-      .page-prelude p {
-        text-align: left;
-      }
-
-      .book-page {
-        min-height: auto;
-        padding-bottom: 1.25rem;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      #plasma-canvas {
-        display: none;
-      }
-
-      html {
-        background: #2a1e18;
-      }
-    }
-
-    @page {
-      size: A4;
-      margin: 2.54cm 2cm;
-    }
-
-    @media print {
-      html {
-        background: #fff;
-        scroll-snap-type: none;
-      }
-
-      body {
-        padding: 0;
-      }
-
-      #plasma-canvas,
-      .site-top {
-        display: none !important;
-      }
-
-      .book {
-        padding: 0;
-      }
-
-      .book-page {
-        min-height: auto;
-        padding: 0;
-        page-break-after: always;
-        break-after: page;
-      }
-
-      .book-page:last-child {
-        page-break-after: auto;
-        break-after: auto;
-      }
-
-      .page-sheet {
-        width: auto;
-        aspect-ratio: auto;
-        height: auto;
-        border: none;
-        box-shadow: none;
-        max-width: none;
-        padding: 0;
-      }
-
-      .page-inner {
-        max-width: none;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="20260607120000_lyudi_bez_prikola/lyudi_bez_prikola_article.css">
 </head>
 <body>
-  <canvas id="plasma-canvas" aria-hidden="true"></canvas>
+  <div class="ember-field" aria-hidden="true"></div>
   <div class="site-top">
-    <a class="home-link" href="../index.html">アマーオヴ</a>
-    <nav class="language-nav" aria-label="記事の言語">
+    <a class="home-link" href="../index.html">amaaov</a>
+    <nav class="language-nav" aria-label="Article languages">
       <a class="language-link" href="20260607120000_lyudi_bez_prikola.html">RU</a>
       <a class="language-link" href="20260607120000_lyudi_bez_prikola_en.html">EN</a>
       <a class="language-link" href="20260607120000_lyudi_bez_prikola_zh.html">ZH</a>
@@ -440,338 +43,164 @@
     </nav>
   </div>
 
-  <main class="book tex-doc" aria-label="ノリのある人々">
-
-    <section class="book-page book-page--title" id="page-title">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <header class="article-head">
-            <h1>ノリのある人々</h1>
-            <p class="article-meta">amaaov · 2026年6月7日、ヘルシンキ</p>
-          </header>
-          <div class="page-prelude">
-            <p>『ノリのある人々』は、生きた人間的接触と、信頼を検証で置き換え、友情を入場許可で、遊びを選別で、技を外部のランクで置き換えようとする仕組みとのあいだにある、もろい境界についての抽象的中編随筆である。</p>
-            <p>ウグという人物と、焚き火、校庭、シーン、仕事、メディアの場面を通じて、形式が人を助けることがあり、同時に気づかぬうちに人より重要になることがある、という問いをたどる。</p>
-            <p>物語の中心には、ルールが誤り、友情、経験の差異、そして生きていることの印としてのノリに、余地を残すかどうかという問いがある。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">i</span></footer>
-        </div>
-      </div>
-    </section>
-
-    <section class="book-page" id="page-1">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">I</p>
-          <h2 class="page-title">焚き火のほとり</h2>
-          <div class="page-body">
-            <p>ウグは焚き火のほとりに座り、なぜ外見上はすべてそのままなのに——ボールは転がり、人は動き、誰かがルールを説明し、誰かが輪に呼び、誰かはすでに点数をつけて、こうすれば公平だと言っているのに——、いくつかの遊びは始まる前に死んでしまうのかを理解しようとしていた。</p>
+  <main class="novella" aria-label="ノリのある人々">
+    <header class="novella-head">
+      <h1>ノリのある人々</h1>
+      <p class="article-meta">amaaov · 2026年6月7日、ヘルシンキ</p>
+    </header>
+    <section class="chapter" id="chapter-1">
+      <p class="chapter-mark">I</p>
+      <h2 class="chapter-title">焚き火のほとり</h2>
+      <div class="chapter-prose">
+        <p>ウグは焚き火のほとりに座り、なぜ外見上はすべてそのままなのに——ボールは転がり、人は動き、誰かがルールを説明し、誰かが輪に呼び、誰かはすでに点数をつけて、こうすれば公平だと言っているのに——、いくつかの遊びは始まる前に死んでしまうのかを理解しようとしていた。</p>
             <p>火は不規則なシンコペーションで揺れ、枝はパチパチと鳴り、煙は暗い水面へ伸びた。その単純な夜の無秩序の中には、よく整えられた形式より多くの信頼があった。</p>
             <p>焚き火のほとりでは、誰も在場の資格を証明させなかった。誰も沈黙に序列をつけなかった。物語は外部の評価のあとで初めて意味を持つ、などとは言わなかった。人々は座り、細部を間違え、違う思い出し方をし、口を挟み、古い話に戻り、時機を外して笑い、長く黙りすぎた——それでも彼らのあいだには、日常語なしでは言いにくい薄いものが保たれていた。ノリである。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">1</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-2">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">II</p>
-          <h2 class="page-title">もう一条の線</h2>
-          <div class="page-body">
-            <p>のちに、焚き火のほとりではなく、ホール、校庭、空き地、電車、工房、仮設の場、イベント後の長い会話の中で、ウグは人と人の差が、通常探される場所にはないことに気づくようになった。人は確かに違う。体も、言語も、習慣も、傷も、注意の訓練も、技と疲労についての理解も違う。しかしその差の下に、ときどきもう一条の、目立たないゆえにより痛い線が浮かび上がる。</p>
+    <section class="chapter" id="chapter-2">
+      <p class="chapter-mark">II</p>
+      <h2 class="chapter-title">もう一条の線</h2>
+      <div class="chapter-prose">
+        <p>のちに、焚き火のほとりではなく、ホール、校庭、空き地、電車、工房、仮設の場、イベント後の長い会話の中で、ウグは人と人の差が、通常探される場所にはないことに気づくようになった。人は確かに違う。体も、言語も、習慣も、傷も、注意の訓練も、技と疲労についての理解も違う。しかしその差の下に、ときどきもう一条の、目立たないゆえにより痛い線が浮かび上がる。</p>
             <p>ある人は他者を可能性として迎える。未知の物語、スタイル、奇妙さ、決断、誤り、未来の友情の源として。別の人はほとんどすぐに形式を探す。その人を理解し、位置づけ、評価し、修正し、入場させ、あるいはふるい落とすための形式を。</p>
             <p>丁寧さがどこで終わり、不信がどこから始まるのかは、いつもはっきりしない。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">2</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-3">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">III</p>
-          <h2 class="page-title">メディアの天候</h2>
-          <div class="page-body">
-            <p>メディアはこの差を複雑にし、人の周りに第二の天候を作った。ときには本物より濃い。物語の断片、記録の影、古い伝説、偶然のフレーム、評判、他人の勝利、行ったことのない場所についての物語——まだ意見を持っているかのように。</p>
+    <section class="chapter" id="chapter-3">
+      <p class="chapter-mark">III</p>
+      <h2 class="chapter-title">メディアの天候</h2>
+      <div class="chapter-prose">
+        <p>メディアはこの差を複雑にし、人の周りに第二の天候を作った。ときには本物より濃い。物語の断片、記録の影、古い伝説、偶然のフレーム、評判、他人の勝利、行ったことのない場所についての物語——まだ意見を持っているかのように。</p>
             <p>その天候の中で人は、もう一人の人ではなく、断片から組み立てられた像に向かって歩く。そして出会いが期待と合わず、聴く代わりに、生きているものをできあがった像に合わせ始める。</p>
             <p>おそらくそのため、シーンと仕組みの違いを説明するのは難しい。外から見れば同じに見えても、内側の熱源は違う。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">3</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-4">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">IV</p>
-          <h2 class="page-title">人間化</h2>
-          <div class="page-body">
-            <p>ある時、ウグは克服についての古い物語を思い出した。周縁のシーンの声、公演後の会話、他人の告白——そこで意外なほど率直に響くのは、ふだん技の下に隠れているものだった。人、その決断、そのスタイル、他者の中での位置、自分でありながら共同の一部でいる方法。</p>
+    <section class="chapter" id="chapter-4">
+      <p class="chapter-mark">IV</p>
+      <h2 class="chapter-title">人間化</h2>
+      <div class="chapter-prose">
+        <p>ある時、ウグは克服についての古い物語を思い出した。周縁のシーンの声、公演後の会話、他人の告白——そこで意外なほど率直に響くのは、ふだん技の下に隠れているものだった。人、その決断、そのスタイル、他者の中での位置、自分でありながら共同の一部でいる方法。</p>
             <p>そこで重要になるのは技だけでも、形式の清さだけでも、弱さへの勝利だけでもない。人間化というプロセスそのもの——人を図式から顔、声、選択、伝記へとゆっくり戻すこと——である。</p>
             <p>克服はそこでは公式のスローガンのようには聞こえなかった。人が自分を組み立てる方法、言語を見つける方法、軌道を変える方法、失敗のあとも遊びに残る方法、結果だけでなく人を見る友人がそばに現れる方法、という物語になった。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">4</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-5">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">V</p>
-          <h2 class="page-title">シーン</h2>
-          <div class="page-body">
-            <p>ウグはこれについて長く、ほとんど頑なに考え、シーンの年月に戻った。正確な名前のない街、照明の悪いホール、とうに他人のアーカイブに溶けたフォーラム、多くが粗く、直接的に、ときに可笑しく、ときに傷つく言い回しで語られた場——記憶に望む以上に強く残る言い回し。</p>
+    <section class="chapter" id="chapter-5">
+      <p class="chapter-mark">V</p>
+      <h2 class="chapter-title">シーン</h2>
+      <div class="chapter-prose">
+        <p>ウグはこれについて長く、ほとんど頑なに考え、シーンの年月に戻った。正確な名前のない街、照明の悪いホール、とうに他人のアーカイブに溶けたフォーラム、多くが粗く、直接的に、ときに可笑しく、ときに傷つく言い回しで語られた場——記憶に望む以上に強く残る言い回し。</p>
             <p>のちに別の場所、別の輪、別の寄り添い方があり、それでも同じテーマが、古い紙の隠れた模様のように再び浮かび上がった。</p>
             <p>彼は自分と友人、ノリのある人々を見た。間違え、争い、不都合で、奇妙で、非効率でも、接触の中では生きたままでいる人々を。そして傍らには、仕組み、ルール、遊び、形式を信じる別の人々——誠実なときも、美しいときも、本物の技があるときも——それでも周りに、人が入場許可の関数になる環境が次第に築かれていく人々を。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">5</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-6">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VI</p>
-          <h2 class="page-title">形式の優位</h2>
-          <div class="page-body">
-            <p>これは必ずしも悪意の選択ではなかった。仕組みへの信頼は、混沌の経験、悪い連れ、傷、弱い者を守りたいという願い、空談への疲れ、約束して実行しなかった人々の記憶、イベント、練習、計画、移動、安全、共同空間を組織する必要から生まれることもある。</p>
+    <section class="chapter" id="chapter-6">
+      <p class="chapter-mark">VI</p>
+      <h2 class="chapter-title">形式の優位</h2>
+      <div class="chapter-prose">
+        <p>これは必ずしも悪意の選択ではなかった。仕組みへの信頼は、混沌の経験、悪い連れ、傷、弱い者を守りたいという願い、空談への疲れ、約束して実行しなかった人々の記憶、イベント、練習、計画、移動、安全、共同空間を組織する必要から生まれることもある。</p>
             <p>形式は確かに、すべてが崩れるとき人を救う。ルールは、そうでなければ他者を抑えつける人々を留めておける。レビューはリリース前に誤りを捕まえられる。ユーザーテストは、美しい設計の中で忘れられた人を部屋に戻せる。デモは、アイデアがついに物になったことを示せる。手動でシナリオをたどることは、自分の確信が作った幻想を壊せる。</p>
             <p>しかしこの実務的な誠実さは、仕組みが人より重要になり、全員にその優位を認めさせようとする、別の動きとは違う。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">6</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-7">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VII</p>
-          <h2 class="page-title">友情</h2>
-          <div class="page-body">
-            <p>これが起きると、友情が最初に空気の変化を感じ取る。友情は、多くの人が試すものの、長くは対戦表のように生きられない。</p>
+    <section class="chapter" id="chapter-7">
+      <p class="chapter-mark">VII</p>
+      <h2 class="chapter-title">友情</h2>
+      <div class="chapter-prose">
+        <p>これが起きると、友情が最初に空気の変化を感じ取る。友情は、多くの人が試すものの、長くは対戦表のように生きられない。</p>
             <p>友情は、他者を自分の世界観の関数に変えない奇妙な能力に支えられている。友人はここでは強く、あそこでは弱く、消え、戻り、愚かなことを言い、的確な指摘をし、あなたの仕事を理解せず、あなたの痛みを理解し、言い回しを間違え、新しいリズムをもたらし、古い自惚れを壊し、プロトコルなしで助けてくれる。</p>
             <p>友情にも検証はある。しかしそれは認証のようではない。そこでは人は時間、注意、在場、差異を耐える能力によって試され、形式への適合だけではない。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">7</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-8">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">VIII</p>
-          <h2 class="page-title">人への信頼</h2>
-          <div class="page-body">
-            <p>まさにここで、重い中心がより明確になる。人への信頼とは、誰もが常に善良で誠実で理性的で相互性に備えている、という甘い確信を意味しない。そんな信頼は現実にあっという間に砕ける。</p>
+    <section class="chapter" id="chapter-8">
+      <p class="chapter-mark">VIII</p>
+      <h2 class="chapter-title">人への信頼</h2>
+      <div class="chapter-prose">
+        <p>まさにここで、重い中心がより明確になる。人への信頼とは、誰もが常に善良で誠実で理性的で相互性に備えている、という甘い確信を意味しない。そんな信頼は現実にあっという間に砕ける。</p>
             <p>それはむしろ、人に自分の誤りより大きく、自分の役割より大きく、自分の結果より大きく、他人の物語より大きく在るチャンスを残す決断である。接触がうまくいかないかもしれないと知りながら、生きた接触から始める覚悟。他者の中に、手続きで閉じなければならないリスクだけでなく、予測不能な意味の源を見る能力。</p>
             <p>仕組みへの信頼も必ずしも愚かではない。しかししばしば逆の動きから始まる。人は形式を通過するまで疑わしい。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">8</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-9">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">IX</p>
-          <h2 class="page-title">校庭</h2>
-          <div class="page-body">
-            <p>校庭では、この差はほとんど無害に見えた。子どもたちは最初、適当に遊び、ルールをその場で考え、けんかし、すぐ条件を変え、点数を忘れ、泣いている子にボールを返し、境界を争った。毎回フィールドが違ったからである。</p>
+    <section class="chapter" id="chapter-9">
+      <p class="chapter-mark">IX</p>
+      <h2 class="chapter-title">校庭</h2>
+      <div class="chapter-prose">
+        <p>校庭では、この差はほとんど無害に見えた。子どもたちは最初、適当に遊び、ルールをその場で考え、けんかし、すぐ条件を変え、点数を忘れ、泣いている子にボールを返し、境界を争った。毎回フィールドが違ったからである。</p>
             <p>やがて大人が来て、遊びを分かりやすくする。ときには本当に良くなる。弱い子が押されなくなり、順番が公平になり、ボールが窓に飛ばなくなる。</p>
             <p>ときには空気が急に縮み、遊びが選別に変わる。子どもたちのあいだに生まれたものより、形式を正しく理解した者が重要になる。難しいのは、両方の場面が同じ「助けたい」という気持ちから始まりうることだ。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">9</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-10">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">X</p>
-          <h2 class="page-title">仕事</h2>
-          <div class="page-body">
-            <p>仕事では、同じ線はより隠れる。プロフェッショナリズムの概念は具体的で、特定の環境、経済、言語、習慣、注意の訓練から育った。だから人間の価値の普遍尺度にはなりえない。</p>
+    <section class="chapter" id="chapter-10">
+      <p class="chapter-mark">X</p>
+      <h2 class="chapter-title">仕事</h2>
+      <div class="chapter-prose">
+        <p>仕事では、同じ線はより隠れる。プロフェッショナリズムの概念は具体的で、特定の環境、経済、言語、習慣、注意の訓練から育った。だから人間の価値の普遍尺度にはなりえない。</p>
             <p>一人は規程で考え、もう一人はプロトタイプで、三人目は会話で、四人目は長い手動チェックで、五人目はデモで——デモの中で突然、タスクになかったものが見える。</p>
             <p>良い仕事にはときに形式が必要だ。しかし悪い文化は形式を道徳の台座に変える。すると別の経験を持つ人は、構造が違うのではなく、未熟で、規律がなく、プロフェッショナルでないかのように見える——実際には別の現実の学校から来ているだけかもしれないのに。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">10</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-11">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XI</p>
-          <h2 class="page-title">異なる系譜</h2>
-          <div class="page-body">
-            <p>ウグは、生き方ややり方の違いが、客観性を装ってどれだけしばしば軽んじられるかを思い出した。</p>
+    <section class="chapter" id="chapter-11">
+      <p class="chapter-mark">XI</p>
+      <h2 class="chapter-title">異なる系譜</h2>
+      <div class="chapter-prose">
+        <p>ウグは、生き方ややり方の違いが、客観性を装ってどれだけしばしば軽んじられるかを思い出した。</p>
             <p>ある人は練習体系を愛し、そこに体の解放への道を見た。ある人は練習に耐えられず、一つの身振りが自分のものになるまで何時間も探した。ある人は競争がなければ注意を集められなかった。ある人は競争の中ですべての生きたものを失い、他人の審判の目で動き始めた。</p>
             <p>ある人は仕事とルールを通じて尊厳を見出した。ある人は同じルールの中で、古い服従の声を聞いた。この差異を一つの公式で正直に閉じることはできない。しかしそのあと何が起きるかは観察できる。人のそばは広くなるか、狭くなるか。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">11</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-12">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XII</p>
-          <h2 class="page-title">メディア空間</h2>
-          <div class="page-body">
-            <p>メディア空間はしばしばこの慎重さを消す。それはできあがった形を好む。勝者、敗者、達人、有害な人、伝説、素人、プロ、混沌の人、体系的な人、本物のアーティスト、間違った参加者。</p>
+    <section class="chapter" id="chapter-12">
+      <p class="chapter-mark">XII</p>
+      <h2 class="chapter-title">メディア空間</h2>
+      <div class="chapter-prose">
+        <p>メディア空間はしばしばこの慎重さを消す。それはできあがった形を好む。勝者、敗者、達人、有害な人、伝説、素人、プロ、混沌の人、体系的な人、本物のアーティスト、間違った参加者。</p>
             <p>そうしたラベルは圧縮オーディオのように便利だ。速く伝わり、保存しやすく、倍音は失われる。それらを通じて、場は自分自身を、各自に書かれた役のある連続ドラマとして見始める。</p>
             <p>ノリのある人はミームに変えられうる。痛みを持つ人はケースに。テンポの違う人は問題に。批判する人は脅威に。周りの物語が増えるほど、直接聴く耳は減る。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">12</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-13">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XIII</p>
-          <h2 class="page-title">小さな検証</h2>
-          <div class="page-body">
-            <p>だからウグは大きな宣言より、小さな検証を信じるようになった。</p>
+    <section class="chapter" id="chapter-13">
+      <p class="chapter-mark">XIII</p>
+      <h2 class="chapter-title">小さな検証</h2>
+      <div class="chapter-prose">
+        <p>だからウグは大きな宣言より、小さな検証を信じるようになった。</p>
             <p>その人は馴染めなかった人々についてどう語るか。誤りのあと何が起きるか。ルールを変えても、それを考えた人を辱めないか。技が生まれた場所に友情の余地があるか。</p>
             <p>初心者は結果の前に人として扱われるか、結果のあとで初めて人になるか。環境の中で、変わっていて、遅くて、似ていなくても、修正の対象にならずにいられるか。フィードバックは生きた経験に戻るか、抽象的手続きに沈むか。プロフェッショナリズムの中に、別の道への敬意が聞こえるか、それとも全員を一列に並べたい欲求だけか。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">13</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-14">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XIV</p>
-          <h2 class="page-title">二つの信頼</h2>
-          <div class="page-body">
-            <p>人への信頼と仕組みへの信頼は、純粋な形で存在することは稀だ。誰にも恐れがあり、形式に寄りかかりたい衝動があり、生きた接触への希望があり、他人の混沌への疲れがある。しかし異なる瞬間に、どちらか一方が主導する。</p>
+    <section class="chapter" id="chapter-14">
+      <p class="chapter-mark">XIV</p>
+      <h2 class="chapter-title">二つの信頼</h2>
+      <div class="chapter-prose">
+        <p>人への信頼と仕組みへの信頼は、純粋な形で存在することは稀だ。誰にも恐れがあり、形式に寄りかかりたい衝動があり、生きた接触への希望があり、他人の混沌への疲れがある。しかし異なる瞬間に、どちらか一方が主導する。</p>
             <p>人への信頼が主導するとき、形式は傍らに残る。テーブルに置き、議論し、直し、片付け、必要なら戻せる道具として。</p>
             <p>仕組みへの信頼が主導するとき、人は形式のまわりを祭壇のように歩き、それなしでは他のすべてが十分に本物ではない、と説明し始める。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">14</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-15">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XV</p>
-          <h2 class="page-title">空っぽのグラウンド</h2>
-          <div class="page-body">
-            <p>夜が更けるころ、ウグは再び空のグラウンドに来た。練習のあと、靴の跡、湿った砂、ベンチの下のボトル、忘れられた上着、境界であるはずのネットが、自分自身も疲れて垂れ下がっているように見えた。</p>
+    <section class="chapter" id="chapter-15">
+      <p class="chapter-mark">XV</p>
+      <h2 class="chapter-title">空っぽのグラウンド</h2>
+      <div class="chapter-prose">
+        <p>夜が更けるころ、ウグは再び空のグラウンドに来た。練習のあと、靴の跡、湿った砂、ベンチの下のボトル、忘れられた上着、境界であるはずのネットが、自分自身も疲れて垂れ下がっているように見えた。</p>
             <p>二人の子どもが棒でプラスチックの蓋を水たまりのあいだで転がし、まだ誰も名づけていない遊びを発明していった。ルールは現れ、壊れ、戻り、新しい障害のたびに変わった。一度点数を忘れ、あとで逆数にすることにし、つまらなくなったのでそれをやめた。</p>
             <p>外から見れば混沌だと言えた。内側から見れば、彼らは互いを注意深く支えているのが見えた。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">15</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-16">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XVI</p>
-          <h2 class="page-title">注意</h2>
-          <div class="page-body">
-            <p>ウグはフェンスのそばに立ち、おそらくすべての難しさはこの注意にあるのだと考えた。形式が出会いを助けるのをやめ、それを置き換え始める瞬間を感じ取る能力。</p>
+    <section class="chapter" id="chapter-16">
+      <p class="chapter-mark">XVI</p>
+      <h2 class="chapter-title">注意</h2>
+      <div class="chapter-prose">
+        <p>ウグはフェンスのそばに立ち、おそらくすべての難しさはこの注意にあるのだと考えた。形式が出会いを助けるのをやめ、それを置き換え始める瞬間を感じ取る能力。</p>
             <p>友情、シーン、技、プロフェッショナルな仕事、遊び、音楽、学習、イベントの組織——すべて何らかの輪郭を必要とする。なければ多くが広がり、痛みを与える。しかし輪郭は、生きているものの代わりではなく、その周りに描かれたものだと覚えていなければならない。</p>
             <p>長い年月のあと、何かがより明確になったとすれば、それは答えというより聴く方向だった。形式がノリを殺さず、ルールが友情を取消さず、技が別の経験を貶めず、仕組みが毎日「それなしでは人は何者でもない」と証明しなくて済む、そんな人々のそばを探す方向。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">16</span></footer>
-        </div>
       </div>
     </section>
-
-    <section class="book-page" id="page-17">
-      <div class="page-sheet">
-        <div class="page-inner">
-          <p class="page-chapter">XVII</p>
-          <h2 class="page-title">地下レベル</h2>
-          <div class="page-body">
-            <p>蓋が車の下に転がっていったとき、子どもたちは一瞬黙り、一人が「今度は地下レベルだ」と言い、許可なしに遊びは続いた。</p>
+    <section class="chapter" id="chapter-17">
+      <p class="chapter-mark">XVII</p>
+      <h2 class="chapter-title">地下レベル</h2>
+      <div class="chapter-prose">
+        <p>蓋が車の下に転がっていったとき、子どもたちは一瞬黙り、一人が「今度は地下レベルだ」と言い、許可なしに遊びは続いた。</p>
             <p>ウグは先へ進んだ。この小さな場面を決定的な哲学にしない。決定的な哲学はあっという間に制度のように振る舞い始めるからだ。</p>
             <p>しかし道路の雑音の下、メディアの像の下、古いフレーズの下、デモ、レビュー、検証、フェスティバル、練習、友情の下に、静かなセンサーが残っていた。この形式のそばで、人は大きくなるのか、それとも形式が次第に人を小さくするのか。センサーは便利な仕組みを与えてくれない。代わりに聴覚を生きているものへ戻し、生きているものこそが、ノリが再び始まりうる唯一の場所だった。</p>
-          </div>
-          <footer class="page-footer"><span class="page-num">17</span></footer>
-        </div>
       </div>
     </section>
-
   </main>
-
-  <script>
-    (function () {
-      var canvas = document.getElementById("plasma-canvas");
-      if (!canvas) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      var ctx = canvas.getContext("2d", { alpha: true });
-      var w = 0;
-      var h = 0;
-      var time = 0;
-      var imageData;
-      var data;
-
-      function resize() {
-        w = Math.floor(window.innerWidth / 2);
-        h = Math.floor(window.innerHeight / 2);
-        canvas.width = w;
-        canvas.height = h;
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        imageData = ctx.createImageData(w, h);
-        data = imageData.data;
-      }
-
-      function palette(t) {
-        var r = Math.sin(t * 0.1 + 0.2) * 75 + 72;
-        var g = Math.sin(t * 0.1 + 1.8) * 55 + 38;
-        var b = Math.sin(t * 0.1 + 3.6) * 40 + 22;
-        return [r | 0, g | 0, b | 0];
-      }
-
-      function frame() {
-        var i = 0;
-        for (var y = 0; y < h; y++) {
-          for (var x = 0; x < w; x++) {
-            var v =
-              Math.sin(x * 0.02 + time) +
-              Math.sin(y * 0.025 + time * 1.1) +
-              Math.sin((x + y) * 0.018 - time * 0.7) +
-              Math.sin(Math.sqrt(x * x + y * y) * 0.04 + time * 0.5);
-            var c = palette(v * 1.7 + time * 2.0);
-            data[i++] = c[0];
-            data[i++] = c[1];
-            data[i++] = c[2];
-            data[i++] = 255;
-          }
-        }
-        ctx.putImageData(imageData, 0, 0);
-        time += 0.04;
-        requestAnimationFrame(frame);
-      }
-
-      resize();
-      window.addEventListener("resize", resize);
-      requestAnimationFrame(frame);
-    })();
-  </script>
 </body>
 </html>

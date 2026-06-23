@@ -1,0 +1,283 @@
+/* Люди с приколом — night-water scroll, ember ink, Literata + Source Sans 3 */
+
+:root {
+  --novella-size: clamp(1.02rem, 0.96rem + 0.22vw, 1.14rem);
+  --novella-baseline: 1.62;
+  --novella-serif: "Literata", "PT Serif", "Georgia", serif;
+  --novella-sans: "Source Sans 3", "Segoe UI", sans-serif;
+  --novella-ink: #e8e2d8;
+  --novella-ink-muted: #a39a8e;
+  --novella-ember: #e07a3a;
+  --novella-ember-dim: rgba(224, 122, 58, 0.35);
+  --novella-night: #070b14;
+  --novella-water: #0c1524;
+  --novella-column: min(100vw - 2.5rem, 38rem);
+  --focus: #f0a060;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--novella-night);
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  font-family: var(--novella-serif);
+  font-size: var(--novella-size);
+  line-height: var(--novella-baseline);
+  color: var(--novella-ink);
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ember-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 108%, rgba(180, 72, 28, 0.22), transparent 62%),
+    radial-gradient(ellipse 45% 30% at 12% 88%, rgba(224, 122, 58, 0.14), transparent 55%),
+    radial-gradient(ellipse 40% 28% at 88% 82%, rgba(120, 160, 200, 0.08), transparent 50%),
+    linear-gradient(180deg, var(--novella-night) 0%, var(--novella-water) 48%, #0a121c 100%);
+}
+
+.site-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(7, 11, 20, 0.92) 0%, rgba(7, 11, 20, 0) 100%);
+}
+
+html[dir="rtl"] .site-top {
+  flex-direction: row-reverse;
+}
+
+.home-link {
+  pointer-events: auto;
+  font-family: var(--novella-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--novella-ink);
+  text-decoration: none;
+  opacity: 0.88;
+}
+
+.home-link:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.language-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.15rem 0.55rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  font-family: var(--novella-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--novella-ink-muted);
+  pointer-events: auto;
+}
+
+.language-nav::before {
+  content: "";
+  flex: 1 1 auto;
+  min-width: 0.5rem;
+  border-bottom: 1px dotted var(--novella-ember-dim);
+  margin: 0 0.15rem 0.2em;
+  opacity: 0.85;
+}
+
+.language-link {
+  color: var(--novella-ink-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.language-link[aria-current="page"] {
+  color: var(--novella-ember);
+}
+
+html[lang="ar"] .language-nav,
+html[lang="hi"] .language-nav,
+html[lang="ja"] .language-nav,
+html[lang="zh-Hant-TW"] .language-nav {
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+
+html[dir="rtl"] .site-top {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .chapter-prose p {
+  text-align: right;
+}
+
+html[dir="rtl"] .novella-head,
+html[dir="rtl"] .chapter-mark,
+html[dir="rtl"] .chapter-title {
+  text-align: center;
+}
+
+.novella {
+  position: relative;
+  z-index: 2;
+  width: var(--novella-column);
+  margin: 0 auto;
+  padding: 4.5rem 0 4rem;
+}
+
+.novella-head {
+  margin-bottom: 2.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--novella-ember-dim);
+  text-align: center;
+}
+
+.novella-head h1 {
+  font-family: var(--novella-serif);
+  font-size: clamp(1.65rem, 1.35rem + 1.1vw, 2.15rem);
+  font-weight: 500;
+  line-height: 1.18;
+  margin: 0 0 0.55em;
+  color: var(--novella-ink);
+  text-wrap: balance;
+}
+
+.article-meta {
+  font-family: var(--novella-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--novella-ink-muted);
+  margin: 0;
+}
+
+.chapter {
+  margin-bottom: 2.85rem;
+  padding-top: 0.35rem;
+}
+
+.chapter-mark {
+  font-family: var(--novella-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--novella-ember);
+  margin: 0 0 0.45em;
+  text-align: center;
+}
+
+.chapter-title {
+  font-family: var(--novella-serif);
+  font-size: 1.18rem;
+  font-weight: 500;
+  line-height: 1.28;
+  margin: 0 0 1.1em;
+  padding-bottom: 0.65em;
+  text-align: center;
+  color: var(--novella-ink);
+  border-bottom: 1px solid rgba(224, 122, 58, 0.22);
+  text-wrap: balance;
+}
+
+.chapter-prose p {
+  margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  hyphenate-limit-chars: 6 3 3;
+  text-wrap: pretty;
+  orphans: 3;
+  widows: 3;
+}
+
+.chapter-prose p + p {
+  margin-top: 0.9em;
+}
+
+em {
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .novella {
+    width: min(100vw - 1.25rem, var(--novella-column));
+    padding-top: 3.75rem;
+  }
+
+  .chapter-prose p {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .ember-field {
+    background: var(--novella-water);
+  }
+}
+
+@media (prefers-contrast: high) {
+  :root {
+    --novella-ink: #f5f0e8;
+    --novella-ink-muted: #c8bfb2;
+    --novella-ember: #ff9a52;
+  }
+}
+
+@media print {
+  html {
+    background: #fff;
+  }
+
+  .ember-field,
+  .site-top {
+    display: none !important;
+  }
+
+  body {
+    color: #111;
+  }
+
+  .novella {
+    width: auto;
+    max-width: none;
+    padding: 0;
+  }
+
+  .chapter {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

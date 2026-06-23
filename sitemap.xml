@@ -2,7 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://amaaov.github.io/</loc>
-    <lastmod>2026-06-12</lastmod>
+    <lastmod>2026-06-23</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260623120000_music_of_objects_en.html</loc>
+    <lastmod>2026-06-23</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260612120000_o_modalnosti_krucheniya_sw.html</loc>
@@ -57,8 +65,52 @@
     <lastmod>2026-06-12</lastmod>
   </url>
   <url>
+    <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_zh.html</loc>
+    <lastmod>2026-06-08</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_ru.html</loc>
+    <lastmod>2026-06-08</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_ja.html</loc>
+    <lastmod>2026-06-08</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_hi.html</loc>
+    <lastmod>2026-06-08</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_fi.html</loc>
+    <lastmod>2026-06-08</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme_ar.html</loc>
+    <lastmod>2026-06-08</lastmod>
+  </url>
+  <url>
     <loc>https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html</loc>
     <lastmod>2026-06-08</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_zh.html</loc>
+    <lastmod>2026-06-07</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ja.html</loc>
+    <lastmod>2026-06-07</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_hi.html</loc>
+    <lastmod>2026-06-07</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_en.html</loc>
+    <lastmod>2026-06-07</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola_ar.html</loc>
+    <lastmod>2026-06-07</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html</loc>

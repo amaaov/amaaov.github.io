@@ -5,9 +5,32 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Fri, 12 Jun 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 23 Jun 2026 14:00:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
 
+    <item>
+      <title>Shared Bench: Verified Delivery, Customer Cost, and the Concurrent Workshop Meter</title>
+      <description>A falsifiable workshop benchmark with Elixir simulation and live queue animation: scheduling patterns, triple metrics, bad outcomes at saturation, and CCE routing.</description>
+      <link>https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html</guid>
+      <pubDate>Mon, 23 Jun 2026 14:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>benchmark</category>
+      <category>software development</category>
+      <category>simulation</category>
+    </item>
+    <item>
+      <title>Music of Objects: Scenes, Synchronization, Error, and the Practice of Finding a Personal System</title>
+      <description>Scenes, synchronization, error, and the practice of finding a personal system between movement, sound, voice, and code.</description>
+      <link>https://amaaov.github.io/pages/20260623120000_music_of_objects_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260623120000_music_of_objects_en.html</guid>
+      <pubDate>Mon, 23 Jun 2026 12:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>poi</category>
+      <category>juggling</category>
+      <category>improvisation</category>
+      <category>programming</category>
+    </item>
     <item>
       <title>О модальности кручения / On the Modality of Spinning</title>
       <description>Limitations and transformations of siteswap when applied to flexible props. Boris Fontanov, 2025. Available in RU, EN, DE, FI, FR, ES, AR, HI, JA, SW, RB (Ruby), EX (Elixir), CU (Cucumber).</description>
@@ -91,7 +114,7 @@
       <description>Multi-track audio player for Suno-generated music with individual track controls and waveform visualization. Features Russian songs with separate vocal, drum, bass, and synth tracks.</description>
       <link>https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html</link>
       <guid>https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html</guid>
-      <pubDate>Thu, 01 Nov 2024 12:00:00 +0000</pubDate>
+      <pubDate>Thu, 21 Aug 2025 11:37:00 +0000</pubDate>
       <category>audio</category>
       <category>music</category>
       <category>multitrack</category>
