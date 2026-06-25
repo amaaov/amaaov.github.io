@@ -9,10 +9,17 @@
   var plasmaTime = 0;
   var visualFrame = 0;
 
-  var sat = { value: 1, target: 1, lerp: 0.00012 };
-  var wet = {
-    blur: 0.42,
-    targetBlur: 0.55,
+  var chroma = {
+    sat: { value: 1, target: 1, lerp: 0.0012 },
+    r: { value: 1, target: 1, lerp: 0.0014 },
+    g: { value: 1, target: 1, lerp: 0.0014 },
+    b: { value: 1, target: 1, lerp: 0.0014 },
+    feedback: 0,
+    surge: 0
+  };
+  var mist = {
+    blur: 0.5,
+    targetBlur: 0.65,
     bright: 1.03,
     targetBright: 1.05,
     contrast: 0.97,
@@ -21,8 +28,10 @@
     targetScale: 1.006,
     haze: 0.16,
     targetHaze: 0.18,
-    lerp: 0.0002
+    lerp: 0.0012
   };
+  var chromaPaint = { r: 1, g: 1, b: 1, sat: 1, hue: 0 };
+  var styleCache = {};
   var glyphs = [];
 
   var playing = false;
@@ -32,7 +41,7 @@
   var audioTimer = null;
   var barIndex = 0;
   var tabHidden = document.hidden;
-  var plasmaScale = 3;
+  var resizeRaf = 0;
   var rafId = null;
 
   var drumBus, bassBus, melodyBus, master, dry, send, wet, melodyNodes;
@@ -194,6 +203,7 @@
     delayFbB.gain.setValueAtTime(delayFbB.gain.value, when);
     delayFbB.gain.linearRampToValueAtTime(peakB, when + 0.1);
     delayFbB.gain.linearRampToValueAtTime(feedbackBase.b, when + dur + 0.25);
+    nudgeChromaFromSignal(0.04 + astroUnit(23.8) * 0.06, 23.8);
     if (melodyNodes && melodyNodes.padGain) {
       melodyNodes.padGain.gain.cancelScheduledValues(when);
       melodyNodes.padGain.gain.setValueAtTime(melodyNodes.padGain.gain.value, when);
@@ -288,12 +298,44 @@
   }
 
   function plasmaField(nx, ny, t) {
+    var dx = nx - 0.5;
+    var dy = ny - 0.5;
     return (
       Math.sin(nx * 12.4 + t * 1.2) +
       Math.sin(ny * 10.8 - t * 0.95) +
       Math.sin((nx + ny) * 9.2 + t * 0.6) +
-      Math.sin(Math.sqrt((nx - 0.5) * (nx - 0.5) + (ny - 0.5) * (ny - 0.5)) * 18 - t * 1.4) +
+      Math.sin((dx * dx + dy * dy) * 36 - t * 1.4) +
       Math.sin(nx * 9 + ny * 11 - t * 0.55) * 0.55
+    );
+  }
+
+  function plasmaColor(nx, ny, t, cr, cg, cb, sat) {
+    var v = plasmaField(nx, ny, t);
+    var pt = v * 1.35 + t * 2.1;
+    var ripple = Math.sin(nx * 0.018 + pt * 1.1) * Math.cos(ny * 0.016 - pt * 0.85);
+    var hue = (pt * 0.42 + ripple * 2.8 + nx * 2.4 + ny * 1.7) % 6.283185307179586;
+    var r = Math.sin(hue) * 118 + 118;
+    var g = Math.sin(hue + 2.094) * 105 + 105;
+    var b = Math.sin(hue + 4.188) * 128 + 118;
+    if (ripple > 0.25) {
+      r = r + 35 > 255 ? 255 : r + 35;
+      g = g + 18 > 255 ? 255 : g + 18;
+    }
+    if (ripple < -0.35) {
+      b = b + 42 > 255 ? 255 : b + 42;
+      r += 12;
+    }
+    r *= cr;
+    g *= cg;
+    b *= cb;
+    var gray = r * 0.299 + g * 0.587 + b * 0.114;
+    r = gray + (r - gray) * sat;
+    g = gray + (g - gray) * sat;
+    b = gray + (b - gray) * sat;
+    return (
+      (r < 0 ? 0 : r > 255 ? 255 : r | 0) |
+      ((g < 0 ? 0 : g > 255 ? 255 : g | 0) << 8) |
+      ((b < 0 ? 0 : b > 255 ? 255 : b | 0) << 16)
     );
   }
 
@@ -312,6 +354,18 @@
       r += 12;
     }
     return [r | 0, g | 0, b | 0];
+  }
+
+  function fitOracle() {
+    var oracle = document.querySelector(".oracle");
+    var wrap = document.querySelector(".oracle-wrap");
+    if (!oracle || !wrap) return;
+    root.style.setProperty("--oracle-fit", "1");
+    var limit = wrap.clientHeight * 0.94;
+    var needed = oracle.scrollHeight;
+    if (needed > limit && needed > 0) {
+      root.style.setProperty("--oracle-fit", Math.max(0.5, limit / needed).toFixed(4));
+    }
   }
 
   function initGlyphs() {
@@ -334,110 +388,383 @@
     });
   }
 
-  function pickSatTarget() {
-    var fast = Math.random() < 0.07;
-    sat.target = 0.28 + Math.random() * 1.55;
-    sat.lerp = fast ? 0.0035 + Math.random() * 0.009 : 0.00006 + Math.random() * 0.00022;
+  function pullChromaVoid(depth) {
+    var d = depth || 0.55;
+    chroma.sat.target = Math.min(chroma.sat.target, 0.03 + astroUnit(44.3) * 0.14 * d);
+    chroma.sat.lerp = Math.max(chroma.sat.lerp, 0.0035 + d * 0.004);
+    chroma.r.target += (1 - chroma.r.target) * 0.35 * d;
+    chroma.g.target += (1 - chroma.g.target) * 0.35 * d;
+    chroma.b.target += (1 - chroma.b.target) * 0.35 * d;
   }
 
-  function pickWetTarget() {
+  function nudgeChromaFromSignal(strength, salt) {
+    var s = strength * (0.55 + astroUnit(salt || plasmaTime) * 0.9);
+    chroma.feedback += s;
+    chroma.surge += s * 0.65;
+    chroma.r.target += s * 0.22;
+    chroma.g.target -= s * 0.11;
+    chroma.b.target += s * 0.15;
+    chroma.sat.target += s * 0.35;
+  }
+
+  function setStyleProp(name, value, eps) {
+    var n = parseFloat(value);
+    var prev = styleCache[name];
+    if (prev !== undefined && Math.abs(prev - n) < eps) return;
+    styleCache[name] = n;
+    root.style.setProperty(name, value);
+  }
+
+  function pickChromaTargets() {
+    var a = astroChrono();
+    var fast = astroUnit(plasmaTime * 0.41 + 31.2) > 0.72;
+    var moonBias = Math.sin(a.moon * 6.2831853 + plasmaTime * 0.18) * 0.12;
+    var zodiacBias = Math.cos(a.zodiac * 0.523 + a.hour * 0.09) * 0.1;
+    var faint = (astroUnit(plasmaTime * 0.53 + 42.7) - 0.5) * 0.08;
+    chroma.feedback += faint + moonBias * 0.04 + zodiacBias * 0.03;
+    chroma.feedback *= 0.992;
+
+    if (Math.abs(chroma.feedback) > 0.055 && Math.random() < 0.18 + astroUnit(33.4) * 0.22) {
+      chroma.surge = chroma.feedback * (1.6 + astroUnit(34.5) * 1.4);
+      chroma.feedback *= 0.35;
+    }
+    chroma.surge *= 0.978;
+
+    var surge = chroma.surge;
+    var astroSat = astroUnit(35.6 + plasmaTime * 0.07);
+    var voidGate = astroUnit(43.2 + plasmaTime * 0.13);
+
+    if (voidGate < 0.2) {
+      chroma.sat.target = 0.02 + voidGate * 0.42 + Math.max(0, surge) * 0.06;
+      chroma.sat.lerp = 0.0025 + Math.random() * 0.007;
+    } else if (voidGate < 0.38) {
+      chroma.sat.target = 0.1 + astroSat * 0.42 + surge * 0.22;
+      chroma.sat.lerp = fast ? 0.005 + Math.random() * 0.01 : 0.0014 + Math.random() * 0.0035;
+    } else {
+      chroma.sat.target = 0.22 + astroSat * 1.68 + surge * 0.48;
+      chroma.sat.lerp = fast ? 0.006 + Math.random() * 0.014 : 0.0008 + Math.random() * 0.0028;
+    }
+    chroma.sat.target = Math.max(0, Math.min(2.2, chroma.sat.target));
+
+    var channelSpread = 0.04 + astroUnit(36.7) * 0.07 + Math.abs(surge) * 0.12;
+    if (chroma.sat.target < 0.34) {
+      var dust = 0.01 + astroUnit(37.8) * 0.03;
+      chroma.r.target = 1 - dust;
+      chroma.g.target = 1;
+      chroma.b.target = 1 + dust;
+    } else {
+      chroma.r.target = 1 + (astroUnit(37.8) - 0.5) * channelSpread + surge * 0.55;
+      chroma.g.target = 1 + (astroUnit(38.9) - 0.5) * channelSpread - surge * 0.28;
+      chroma.b.target = 1 + (astroUnit(39.1) - 0.5) * channelSpread + surge * 0.38;
+    }
+    var channelLerp = fast ? 0.005 + Math.random() * 0.012 : 0.001 + Math.random() * 0.0035;
+    chroma.r.lerp = channelLerp;
+    chroma.g.lerp = channelLerp * (0.88 + astroUnit(40.2) * 0.24);
+    chroma.b.lerp = channelLerp * (0.88 + astroUnit(41.3) * 0.24);
+  }
+
+  function pickMistTarget() {
     var fast = Math.random() < 0.1;
-    wet.targetBlur = 0.22 + Math.random() * 1.05;
-    wet.targetBright = 1.01 + Math.random() * 0.08;
-    wet.targetContrast = 0.92 + Math.random() * 0.07;
-    wet.targetScale = 1.002 + Math.random() * 0.009;
-    wet.targetHaze = 0.1 + Math.random() * 0.16;
-    wet.lerp = fast ? 0.002 + Math.random() * 0.005 : 0.00014 + Math.random() * 0.0004;
+    mist.targetBlur = 0.32 + Math.random() * 0.9;
+    mist.targetBright = 0.92 + Math.random() * 0.16;
+    mist.targetContrast = 0.86 + Math.random() * 0.16;
+    mist.targetScale = 1.002 + Math.random() * 0.012;
+    mist.targetHaze = 0.1 + Math.random() * 0.22;
+    mist.lerp = fast ? 0.004 + Math.random() * 0.008 : 0.001 + Math.random() * 0.003;
+  }
+
+  function lerpChannel(ch, astroWobble) {
+    var wobble = astroWobble * 0.018;
+    ch.value += (ch.target + wobble - ch.value) * ch.lerp;
+    return ch.value;
+  }
+
+  function tickChroma() {
+    var astro = frameAstro || astroChrono();
+    var astroWobble =
+      Math.sin(plasmaTime * 0.31 + astro.moon * 6.28) * 0.5 +
+      Math.cos(plasmaTime * 0.47 + astro.zodiac * 0.52) * 0.35;
+
+    var satDelta = chroma.sat.target - chroma.sat.value;
+    var satLerp = chroma.sat.lerp * (Math.abs(satDelta) > 0.4 ? 3.2 : Math.abs(satDelta) > 0.15 ? 1.8 : 1);
+    chroma.sat.value += satDelta * satLerp;
+    chroma.sat.value = Math.max(0, Math.min(2.2, chroma.sat.value));
+    var r = lerpChannel(chroma.r, astroWobble);
+    var g = lerpChannel(chroma.g, -astroWobble * 0.7);
+    var b = lerpChannel(chroma.b, astroWobble * 0.55);
+    var voidMix = chroma.sat.value < 0.36 ? 1 - chroma.sat.value / 0.36 : 0;
+
+    chromaPaint.r = Math.max(0.78, Math.min(1.22, r * (1 - voidMix) + voidMix));
+    chromaPaint.g = Math.max(0.78, Math.min(1.22, g * (1 - voidMix) + voidMix));
+    chromaPaint.b = Math.max(0.78, Math.min(1.22, b * (1 - voidMix) + voidMix));
+    chromaPaint.sat = chroma.sat.value;
+    chromaPaint.hue = voidMix > 0.5 ? 0 : (chromaPaint.r - chromaPaint.b) * 14 + (chromaPaint.g - 1) * 6;
+    setStyleProp("--page-sat", chroma.sat.value.toFixed(3), chroma.sat.value < 0.25 ? 0.003 : 0.007);
+    setStyleProp("--chroma-hue", chromaPaint.hue.toFixed(2) + "deg", 0.18);
+  }
+
+  function tickMist() {
+    var swell = Math.sin(plasmaTime * 0.62) * 0.14 + Math.sin(plasmaTime * 1.37) * 0.06;
+    mist.blur += (mist.targetBlur + swell * 0.35 - mist.blur) * mist.lerp;
+    mist.bright += (mist.targetBright + swell * 0.02 - mist.bright) * mist.lerp;
+    mist.contrast += (mist.targetContrast - mist.contrast) * mist.lerp;
+    mist.scale += (mist.targetScale + swell * 0.0015 - mist.scale) * mist.lerp;
+    mist.haze += (mist.targetHaze + swell * 0.04 - mist.haze) * mist.lerp;
+    if (Math.abs(mist.targetBlur - mist.blur) < 0.03) {
+      pickMistTarget();
+    }
+  }
+
+  function pushMistStyles() {
+    setStyleProp("--wet-blur", mist.blur.toFixed(2) + "px", 0.05);
+    setStyleProp("--wet-scale", mist.scale.toFixed(4), 0.0006);
+    setStyleProp("--wet-haze", mist.haze.toFixed(3), 0.008);
+  }
+
+  function syncAtmosphereStyles() {
+    var satEps = Math.max(0.016, Math.min(0.045, chroma.sat.target * 0.22 + 0.014));
+    var satNear = Math.abs(chroma.sat.target - chroma.sat.value) < satEps;
+    var rgbNear =
+      Math.abs(chroma.r.target - chroma.r.value) < 0.012 &&
+      Math.abs(chroma.g.target - chroma.g.value) < 0.012 &&
+      Math.abs(chroma.b.target - chroma.b.value) < 0.012;
+    if (satNear && rgbNear) {
+      pickChromaTargets();
+    } else if (satNear && Math.random() < 0.04) {
+      pickChromaTargets();
+    }
+    pushMistStyles();
   }
 
   function updateAtmosphere() {
-    sat.value += (sat.target - sat.value) * sat.lerp;
-    if (Math.abs(sat.target - sat.value) < 0.015) {
-      pickSatTarget();
-    }
-    root.style.setProperty("--page-sat", sat.value.toFixed(3));
-
-    var swell = Math.sin(plasmaTime * 0.62) * 0.14 + Math.sin(plasmaTime * 1.37) * 0.06;
-    wet.blur += (wet.targetBlur + swell * 0.35 - wet.blur) * wet.lerp;
-    wet.bright += (wet.targetBright + swell * 0.02 - wet.bright) * wet.lerp;
-    wet.contrast += (wet.targetContrast - wet.contrast) * wet.lerp;
-    wet.scale += (wet.targetScale + swell * 0.0015 - wet.scale) * wet.lerp;
-    wet.haze += (wet.targetHaze + swell * 0.04 - wet.haze) * wet.lerp;
-    if (Math.abs(wet.targetBlur - wet.blur) < 0.025) {
-      pickWetTarget();
-    }
-    root.style.setProperty("--wet-blur", wet.blur.toFixed(3) + "px");
-    root.style.setProperty("--wet-bright", wet.bright.toFixed(3));
-    root.style.setProperty("--wet-contrast", wet.contrast.toFixed(3));
-    root.style.setProperty("--wet-scale", wet.scale.toFixed(4));
-    root.style.setProperty("--wet-haze", wet.haze.toFixed(3));
+    tickChroma();
+    tickMist();
+    syncAtmosphereStyles();
   }
 
   function updateGlyphs() {
     var t = plasmaTime;
     var glow = 0.35 + Math.sin(t * 0.7) * 0.12;
-    root.style.setProperty("--plasma-glow", glow.toFixed(3));
-    root.style.setProperty("--oracle-pulse", (Math.sin(t * 1.4) * 0.04).toFixed(3));
-    for (var i = 0; i < glyphs.length; i++) {
-      var g = glyphs[i];
+    setStyleProp("--plasma-glow", glow.toFixed(3), 0.02);
+    setStyleProp("--oracle-pulse", (Math.sin(t * 1.4) * 0.04).toFixed(3), 0.006);
+    var i = 0;
+    var g;
+    while (i < glyphs.length) {
+      g = glyphs[i++];
       var field = plasmaField(g.nx, g.ny, t);
-      var gx = Math.sin(field * 1.4 + g.index * 0.4) * 2.4;
-      var gy = Math.cos(field * 1.1 + g.index * 0.22) * 1.6;
-      var gr = Math.sin(field + g.index * 0.15) * 0.4;
-      g.el.style.transform = "translate3d(" + gx.toFixed(1) + "px," + gy.toFixed(1) + "px,0) rotate(" + gr.toFixed(2) + "deg)";
+      var fi = field * 1.4 + g.index * 0.4;
+      g.el.style.transform =
+        "translate3d(" +
+        (Math.sin(fi) * 2.4).toFixed(1) + "px," +
+        (Math.cos(field * 1.1 + g.index * 0.22) * 1.6).toFixed(1) + "px,0) rotate(" +
+        (Math.sin(field + g.index * 0.15) * 0.4).toFixed(2) +
+        "deg)";
     }
   }
 
   var atmosphereFrame = 0;
+  var frameAstro = null;
 
   function updateAtmosphereThrottled() {
     atmosphereFrame++;
-    if (atmosphereFrame % 3 !== 0) return;
-    updateAtmosphere();
+    if (atmosphereFrame % 24 === 0) frameAstro = astroChrono();
+    tickChroma();
+    tickMist();
+    if (atmosphereFrame % 8 === 0) syncAtmosphereStyles();
   }
 
+  var gl, plasmaProgram, plasmaAttribs, plasmaUniforms, plasmaBuffer, plasmaReady = false;
   var pCtx, pW, pH, pImage, pData;
+  var PLASMA_TARGET_PIXELS = 700000;
+
+  var PLASMA_VS =
+    "attribute vec2 a_pos;" +
+    "varying vec2 v_uv;" +
+    "void main(){v_uv=a_pos*0.5+0.5;gl_Position=vec4(a_pos,0.0,1.0);}";
+
+  var PLASMA_FS =
+    "precision mediump float;" +
+    "varying vec2 v_uv;" +
+    "uniform float u_time;" +
+    "uniform vec3 u_chroma;" +
+    "uniform float u_sat;" +
+    "uniform float u_bright;" +
+    "uniform float u_contrast;" +
+    "float plasmaField(vec2 uv,float t){" +
+    "vec2 d=uv-0.5;" +
+    "return sin(uv.x*12.4+t*1.2)+" +
+    "sin(uv.y*10.8-t*0.95)+" +
+    "sin((uv.x+uv.y)*9.2+t*0.6)+" +
+    "sin(dot(d,d)*36.0-t*1.4)+" +
+    "sin(uv.x*9.0+uv.y*11.0-t*0.55)*0.55;}" +
+    "void main(){" +
+    "float t=u_time;" +
+    "vec2 uv=v_uv;" +
+    "float v=plasmaField(uv,t);" +
+    "float pt=v*1.35+t*2.1;" +
+    "float ripple=sin(uv.x*0.018+pt*1.1)*cos(uv.y*0.016-pt*0.85);" +
+    "float hue=mod(pt*0.42+ripple*2.8+uv.x*2.4+uv.y*1.7,6.2831853);" +
+    "vec3 c=vec3(" +
+    "sin(hue)*118.0+118.0," +
+    "sin(hue+2.094)*105.0+105.0," +
+    "sin(hue+4.188)*128.0+118.0);" +
+    "if(ripple>0.25){c.r=min(255.0,c.r+35.0);c.g=min(255.0,c.g+18.0);}" +
+    "if(ripple<-0.35){c.b=min(255.0,c.b+42.0);c.r+=12.0;}" +
+    "c*=u_chroma;" +
+    "float gray=dot(c,vec3(0.299,0.587,0.114));" +
+    "c=mix(vec3(gray),c,u_sat);" +
+    "c=(c-127.5)*u_contrast+127.5;" +
+    "c*=u_bright;" +
+    "gl_FragColor=vec4(clamp(c/255.0,0.0,1.0),0.92);}";
+
+  function compilePlasmaShader(type, source) {
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      gl.deleteShader(shader);
+      return null;
+    }
+    return shader;
+  }
+
+  function initPlasmaGL() {
+    gl =
+      canvas.getContext("webgl", { alpha: true, antialias: false, depth: false, preserveDrawingBuffer: true }) ||
+      canvas.getContext("experimental-webgl", { alpha: true, antialias: false, depth: false, preserveDrawingBuffer: true });
+    if (!gl) return false;
+
+    var vs = compilePlasmaShader(gl.VERTEX_SHADER, PLASMA_VS);
+    var fs = compilePlasmaShader(gl.FRAGMENT_SHADER, PLASMA_FS);
+    if (!vs || !fs) return false;
+
+    plasmaProgram = gl.createProgram();
+    gl.attachShader(plasmaProgram, vs);
+    gl.attachShader(plasmaProgram, fs);
+    gl.linkProgram(plasmaProgram);
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
+    if (!gl.getProgramParameter(plasmaProgram, gl.LINK_STATUS)) return false;
+
+    plasmaAttribs = { pos: gl.getAttribLocation(plasmaProgram, "a_pos") };
+    plasmaUniforms = {
+      time: gl.getUniformLocation(plasmaProgram, "u_time"),
+      chroma: gl.getUniformLocation(plasmaProgram, "u_chroma"),
+      sat: gl.getUniformLocation(plasmaProgram, "u_sat"),
+      bright: gl.getUniformLocation(plasmaProgram, "u_bright"),
+      contrast: gl.getUniformLocation(plasmaProgram, "u_contrast")
+    };
+
+    plasmaBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, plasmaBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    plasmaReady = true;
+    return true;
+  }
+
+  function computePlasmaDims() {
+    var cssW = window.innerWidth;
+    var cssH = window.innerHeight;
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var area = cssW * cssH * dpr * dpr;
+    var scale = Math.max(1, Math.sqrt(area / PLASMA_TARGET_PIXELS));
+    return {
+      w: Math.max(1, Math.floor((cssW * dpr) / scale)),
+      h: Math.max(1, Math.floor((cssH * dpr) / scale))
+    };
+  }
+
+  function onViewportResize() {
+    if (resizeRaf) return;
+    resizeRaf = requestAnimationFrame(function () {
+      resizeRaf = 0;
+      resizePlasma();
+      fitOracle();
+    });
+  }
 
   function resizePlasma() {
     if (!canvas) return;
-    pW = Math.max(1, Math.floor(window.innerWidth / plasmaScale));
-    pH = Math.max(1, Math.floor(window.innerHeight / plasmaScale));
+    var dims = computePlasmaDims();
+    var nextW = dims.w;
+    var nextH = dims.h;
+    if (nextW === pW && nextH === pH) return;
+    pW = nextW;
+    pH = nextH;
     canvas.width = pW;
     canvas.height = pH;
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    pImage = pCtx.createImageData(pW, pH);
-    pData = pImage.data;
+    if (gl && plasmaReady) {
+      gl.viewport(0, 0, pW, pH);
+    } else if (pCtx) {
+      pImage = pCtx.createImageData(pW, pH);
+      pData = pImage.data;
+    }
+    drawPlasma();
   }
 
-  function drawPlasma() {
-    if (!canvas || !pCtx) return;
+  function drawPlasma2D() {
+    if (!canvas || !pCtx || !pData) return;
     var t = plasmaTime;
+    var cr = chromaPaint.r;
+    var cg = chromaPaint.g;
+    var cb = chromaPaint.b;
+    var sat = chromaPaint.sat;
+    var bright = mist.bright;
+    var contrast = mist.contrast;
+    var invW = 1 / pW;
+    var invH = 1 / pH;
     var i = 0;
     for (var y = 0; y < pH; y++) {
-      var ny = y / pH;
+      var ny = (y + 0.5) * invH;
       for (var x = 0; x < pW; x++) {
-        var nx = x / pW;
-        var v = plasmaField(nx, ny, t);
-        var c = acidPalette(v * 1.35 + t * 2.1, nx, ny);
-        pData[i++] = c[0];
-        pData[i++] = c[1];
-        pData[i++] = c[2];
+        var nx = (x + 0.5) * invW;
+        var px = plasmaColor(nx, ny, t, cr, cg, cb, sat);
+        var r = px & 255;
+        var g = (px >> 8) & 255;
+        var b = (px >> 16) & 255;
+        r = (r - 127.5) * contrast + 127.5;
+        g = (g - 127.5) * contrast + 127.5;
+        b = (b - 127.5) * contrast + 127.5;
+        r *= bright;
+        g *= bright;
+        b *= bright;
+        pData[i++] = r < 0 ? 0 : r > 255 ? 255 : r | 0;
+        pData[i++] = g < 0 ? 0 : g > 255 ? 255 : g | 0;
+        pData[i++] = b < 0 ? 0 : b > 255 ? 255 : b | 0;
         pData[i++] = 235;
       }
     }
     pCtx.putImageData(pImage, 0, 0);
-    plasmaTime += 0.038;
+  }
+
+  function drawPlasmaGL() {
+    if (!gl || !plasmaReady) return;
+    gl.viewport(0, 0, pW, pH);
+    gl.useProgram(plasmaProgram);
+    gl.uniform1f(plasmaUniforms.time, plasmaTime);
+    gl.uniform3f(plasmaUniforms.chroma, chromaPaint.r, chromaPaint.g, chromaPaint.b);
+    gl.uniform1f(plasmaUniforms.sat, chromaPaint.sat);
+    gl.uniform1f(plasmaUniforms.bright, mist.bright);
+    gl.uniform1f(plasmaUniforms.contrast, mist.contrast);
+    gl.bindBuffer(gl.ARRAY_BUFFER, plasmaBuffer);
+    gl.enableVertexAttribArray(plasmaAttribs.pos);
+    gl.vertexAttribPointer(plasmaAttribs.pos, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  function drawPlasma() {
+    if (gl && plasmaReady) drawPlasmaGL();
+    else drawPlasma2D();
   }
 
   function frame() {
     if (!tabHidden) {
       visualFrame++;
-      if (visualFrame % 2 === 0) {
-        drawPlasma();
-        plasmaTime += 0.038;
-      }
-      if (visualFrame % 5 === 0) updateGlyphs();
+      drawPlasma();
+      plasmaTime += 0.038;
+      if (visualFrame % 12 === 0) updateGlyphs();
       updateAtmosphereThrottled();
     }
     rafId = requestAnimationFrame(frame);
@@ -707,6 +1034,7 @@
     breathe.inhaleEndTime = breathe.voidEndTime + inhaleSec;
     breathe.inhaleNotesTime = breathe.voidEndTime + inhaleSec * 0.38;
     breathe.afterVoid = astroUnit(9.6) > 0.58 ? "new" : "mutate";
+    pullChromaVoid(0.35);
 
     dry.gain.cancelScheduledValues(when);
     dry.gain.setValueAtTime(dry.gain.value, when);
@@ -724,6 +1052,7 @@
     breathe.phase = "void";
     var voidLen = Math.max(0.5, Math.min(5, breathe.voidEndTime - when));
     var ghostTail = astroUnit(voidLen * 3.1) > 0.68;
+    pullChromaVoid(ghostTail ? 0.55 : 1);
 
     send.gain.cancelScheduledValues(when);
     send.gain.setValueAtTime(Math.max(send.gain.value, 0.05), when);
@@ -756,6 +1085,7 @@
       mutateCurrentComp();
       if (astroUnit(8.8) > 0.62) surgeFeedback(when);
     }
+    nudgeChromaFromSignal(0.03 + astroUnit(8.8) * 0.05, 8.8);
 
     var inhaleSec = breathe.inhaleSec;
 
@@ -1171,13 +1501,21 @@
       toggle.setAttribute("aria-label", "Soundscape disabled when reduced motion is on");
     }
     initGlyphs();
+    fitOracle();
+    window.addEventListener("resize", fitOracle);
     return;
   }
 
   if (canvas) {
-    pCtx = canvas.getContext("2d", { alpha: true });
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    if (!initPlasmaGL()) {
+      pCtx = canvas.getContext("2d", { alpha: true });
+    }
     resizePlasma();
-    window.addEventListener("resize", resizePlasma);
+    window.addEventListener("resize", onViewportResize);
+  } else {
+    window.addEventListener("resize", fitOracle);
   }
 
   document.addEventListener("visibilitychange", function () {
@@ -1194,8 +1532,11 @@
   });
 
   initGlyphs();
-  pickSatTarget();
-  pickWetTarget();
+  fitOracle();
+  pickChromaTargets();
+  pickMistTarget();
+  updateAtmosphere();
+  pushMistStyles();
 
   if (toggle) {
     var AudioCtx = window.AudioContext || window.webkitAudioContext;
