@@ -1,0 +1,84 @@
+MUSIC OF OBJECTS — PROJECT DOCUMENTATION
+A thread across evenings. Scenes stay small; the project holds why they accumulate.
+
+---
+
+PROJECT NAME
+
+
+STARTED
+
+
+SITUATION AT START
+(where you were, what was in the room, what question opened the thread)
+
+
+CORE QUESTION
+(one line; may change—note when it does)
+
+
+OBJECTS IN PLAY
+(poi, voice, text, partner, silence, …)
+
+
+PARTNERS / WITNESSES
+
+
+CONSTRAINTS THAT NAMED FREEDOM
+(project-level narrowing; expire when situation changes)
+
+
+SCENE LIBRARY
+(reusable types in this project)
+
+  [ ] said / done
+  [ ] delayed response
+  [ ] prediction
+  [ ] silent source
+  [ ] no sonic orientation
+  [ ] voice commands body
+  [ ] body commands voice
+  [ ] score reading
+  [ ] foreign command
+  [ ] anti-command
+  [ ] error as line
+  [ ] break as check
+  [ ] friend catches failure
+  [ ] custom:
+
+
+SESSION LOG
+(date — scene name — one line outcome)
+
+-
+
+-
+
+-
+
+
+ERRORS THAT BECAME VOCABULARY
+(phase loss, tremor, early catch, late catch, drop, forgotten pause, …)
+
+
+RELATIONS UNDER STUDY
+(time, metric, spatial, dynamic, silence, behavioral, intention)
+
+
+MATERIALIZATIONS
+(date — form — link or path)
+
+-
+
+-
+
+
+WHAT THE PROJECT IS NOT
+(avoid moral limitation dressed as technique; name what you refuse to optimize for)
+
+
+OPEN FOR NEXT TIME
+
+
+ARCHIVE / REFERENCES
+(fixation files, recordings, scores, commits, URLs)

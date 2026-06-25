@@ -1,0 +1,65 @@
+MUSIC OF OBJECTS — SCENE
+One pass. Situation-bound. Constraints expire when the situation changes.
+
+---
+
+NAME
+
+
+SITUATION
+(body today, room, weather, company, fatigue, props available)
+
+
+OBJECT
+(poi, ball, staff, hand, rope, cursor, code, breath, voice, none)
+
+
+SOUND CONDITION
+(active source, silence, room sound only, remembered sound, expected sound absent)
+
+
+DURATION
+
+
+INTENTION
+(one sentence, spoken aloud before acting)
+
+
+ACTION
+(short sequence: what you will do in this pass)
+
+
+FREEDOM BOUNDED FOR THIS PASS
+(what you have defined; deliberate narrowing so something becomes observable)
+
+
+HELD BACK THIS TIME
+(what you already know, decoration, default habits)
+
+
+SYNCHRONIZATION MODE
+(phase, synchrony, shift, delay, following, prediction, echo, canon, loop,
+ polyrhythm, polymeter, cross-accent, metric failure, mirror, resistance,
+ ignoring, silence as material, foreign intention, anti-instruction, precursor, …)
+
+
+EXPECTED DIFFERENCE
+(where the pass may diverge from intention)
+
+
+VARIATION
+(optional constraint for this pass only)
+
+
+RECORDING
+(video, audio, one sentence of notes, none)
+
+
+COMPLETION
+(how you know the scene is done for this pass; what to find or name)
+
+
+---
+
+WORKING LINE (reference)
+intention → action → difference → error → awareness → repetition → variation → scene

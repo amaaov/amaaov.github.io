@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shared Bench — amaaåv</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="A falsifiable workshop benchmark: scheduling patterns, customer cost, verified velocity, and what concurrent collaboration actually costs when the meter runs.">
+  <meta name="keywords" content="collaboration, benchmark, queue, DORA, pairing, swarming, software delivery, simulation">
+  <meta name="author" content="amaaov">
+  <meta property="article:published_time" content="2026-06-23T14:00:00+00:00">
+  <meta property="article:modified_time" content="2026-06-23T18:00:00+00:00">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html">
+  <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html">
+  <meta property="og:title" content="Shared Bench — amaaåv">
+  <meta property="og:description" content="A falsifiable workshop benchmark: scheduling patterns, customer cost, verified velocity, and what concurrent collaboration actually costs when the meter runs.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Shared Bench — amaaåv">
+  <meta name="twitter:description" content="A falsifiable workshop benchmark: scheduling patterns, customer cost, verified velocity, and what concurrent collaboration actually costs when the meter runs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Inconsolata:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="20260623140000_shared_bench_benchmark/shared_bench_article.css">
+</head>
+<body>
+  <canvas id="bench-canvas" aria-hidden="true"></canvas>
+
+  <header class="site-top">
+    <a class="home-link" href="../index.html">amaaåv</a>
+    <nav class="language-nav" aria-label="Article languages">
+      <a class="language-link" href="20260623140000_shared_bench_benchmark_en.html" aria-current="page">EN</a>
+    </nav>
+  </header>
+
+  <main class="article-wrap" aria-label="Shared Bench">
+    <article>
+      <section class="article-slab" id="opening">
+        <header class="article-head">
+          <h1>Shared Bench</h1>
+          <p class="article-subtitle">Verified delivery, customer cost, and what concurrent workshop actually meters</p>
+          <p class="article-meta">amaaåv · 23 June 2026 · Helsinki</p>
+          <p class="article-meta article-companion">Falsifies the <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">Collaborative Concurrent Extreme manifesto</a></p>
+        </header>
+        <div class="page-prelude">
+          <p>The hypothesis on the whiteboard is falsifiable — the same one the <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">Collaborative Concurrent Extreme manifesto</a> states as an exact formula, not a loose keyword pile: can a shared workshop with visible concurrent participation produce verified results faster, with better quality and better recovery, without exploding cost and conflict? The benchmark’s candidate method is <strong>Collaborative Concurrent Extreme (CCE)</strong> — visible shared bench, WIP-limited escalation from solo through pair, swarm, and set-based probes — not “everyone touches everything.” The other nine patterns in the live viz are experimental controls and tail stressors. We ran the Shared Bench Delivery Benchmark across those contrasts, four usage heats, and thirty-six market climates to find out — not to crown a single winner on every lane.</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="bench-viz-section">
+        <p class="section-label">Live ecology</p>
+        <h2 class="section-title">Watch the product organism breathe</h2>
+        <div class="page-body">
+          <p>The grid is a small IT product — a tycoon board in the spirit of nineties programmer-life sims, only the engine is maths instead of sprites. Green is shipped feature, copper is task backlog, red is tech debt, teal filaments are collaboration hyphae. Default pattern is <strong>CCE</strong> — the <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">manifesto</a> candidate — escalating solo → pair → swarm → set-based by patch; the other selects are controls. The customer watches a monthly red line; the team runs a prediction tool whose IQ rises with experience, hyphae, and strategic spend — publishing month-end forecasts for consumers, leads, bench burn, and market direction that get scored when the month closes.</p>
+
+          <div class="bench-viz" id="bench-viz" aria-label="Product ecosystem simulation">
+            <div class="bench-viz-head">
+              <label for="pattern-select">Collaboration pattern</label>
+              <select id="pattern-select" class="pattern-select">
+                <optgroup label="Manifesto candidate">
+                  <option value="cce" selected>Collaborative Concurrent Extreme</option>
+                </optgroup>
+                <optgroup label="Experimental controls">
+                  <option value="nobody">Nobody (devs idle)</option>
+                  <option value="solo_serial">Solo serial</option>
+                  <option value="round_robin">Round-robin</option>
+                  <option value="least_loaded">Least-loaded</option>
+                  <option value="work_stealing" title="Trail-gradient foraging — not Blumofe–Leiserson deque work-stealing">Trail-gradient (work-stealing)</option>
+                  <option value="pair">Pair</option>
+                  <option value="swarm_blockers">Swarm (blockers)</option>
+                  <option value="set_based">Set-based alternatives</option>
+                  <option value="everybody">Everybody × task (tail control)</option>
+                </optgroup>
+              </select>
+              <label for="market-select">Market</label>
+              <select id="market-select" class="pattern-select">
+                <option value="sideways" selected>Sideways</option>
+                <option value="bull">Bull</option>
+                <option value="bear">Bear</option>
+                <option value="volatile">Volatile</option>
+              </select>
+              <label for="investment-select">Investment</label>
+              <select id="investment-select" class="pattern-select">
+                <option value="neutral" selected>Neutral</option>
+                <option value="tight">Tight runway</option>
+                <option value="loose">Loose capital</option>
+              </select>
+              <label for="marketing-select">Marketing</label>
+              <select id="marketing-select" class="pattern-select">
+                <option value="0.2">0.2 quiet</option>
+                <option value="0.5" selected>0.5 steady</option>
+                <option value="0.8">0.8 aggressive</option>
+              </select>
+              <label for="dev-rate">Dev €/h</label>
+              <input type="number" id="dev-rate" class="rate-input" value="120" min="40" max="300" step="5" />
+              <label for="consultant-rate">Consultant €/h</label>
+              <input type="number" id="consultant-rate" class="rate-input" value="168" min="40" max="400" step="5" />
+              <label for="monthly-redline">Monthly red line €</label>
+              <input type="number" id="monthly-redline" class="rate-input wide" value="45000" min="5000" max="200000" step="1000" />
+            </div>
+            <div class="bench-controls scenario-strip" role="group" aria-label="Customer scenarios">
+              <span class="scenario-label">Customer scenario</span>
+              <button type="button" class="bench-btn" data-scenario="default" aria-pressed="true">Standard deal</button>
+              <button type="button" class="bench-btn" data-scenario="tight" aria-pressed="false">Tight CFO</button>
+              <button type="button" class="bench-btn" data-scenario="happy" aria-pressed="false">Happy patron</button>
+              <button type="button" class="bench-btn" data-scenario="shock" aria-pressed="false">Consultant shock</button>
+              <button type="button" class="bench-btn" data-scenario="flat" aria-pressed="false">Flat rate deal</button>
+            </div>
+            <div class="bench-controls transport-strip" role="group" aria-label="Simulation transport">
+              <button type="button" class="bench-btn" id="bench-step-back" title="Step backward one tick">◀</button>
+              <button type="button" class="bench-btn" id="bench-play">Pause</button>
+              <button type="button" class="bench-btn" id="bench-step-fwd" title="Step forward one tick">▶</button>
+              <button type="button" class="bench-btn" id="bench-reset">Reset</button>
+              <label class="speed-label" for="bench-speed">Speed</label>
+              <select id="bench-speed" class="pattern-select speed-select" aria-label="Simulation speed">
+                <option value="1">1×</option>
+                <option value="2" selected>2×</option>
+                <option value="4">4×</option>
+                <option value="8">8×</option>
+                <option value="16">16×</option>
+              </select>
+            </div>
+            <div class="bench-controls" role="group" aria-label="Usage growth">
+              <button type="button" class="bench-btn" data-usage="0.4" aria-pressed="false">usage 0.4 calm</button>
+              <button type="button" class="bench-btn" data-usage="0.7" aria-pressed="true">usage 0.7 growing</button>
+              <button type="button" class="bench-btn" data-usage="0.9" aria-pressed="false">usage 0.9 hot</button>
+              <button type="button" class="bench-btn" data-usage="1.15" aria-pressed="false">usage 1.15 overload</button>
+            </div>
+            <canvas id="bench-stage" width="640" height="256" aria-label="Ecosystem grid canvas"></canvas>
+            <div class="bench-legend meter-strip">feature · task · debt (unplanned) · debt weight · hyphae · dev (morale) · SPACE tags on metrics</div>
+            <p class="stability-banner" id="little-law-banner" hidden>Non-stationary — Little's Law is illustrative only (forecast miss, volatile market, or incident recovery).</p>
+            <p class="stability-banner tail-banner" id="tail-scenario-banner" hidden>Tail scenario — rare stress test (nobody/everybody, usage overload, volatile miss). Do not treat as operating guidance.</p>
+            <div class="event-feed" id="event-feed" aria-live="polite"><span class="event-chip muted">forecast holding — no surprises yet</span></div>
+            <div class="customer-meter" id="customer-meter" aria-label="Customer monthly budget meter">
+              <div class="customer-meter-head">
+                <span>Customer month burn vs red line</span>
+                <strong id="m-redline-readout">—</strong>
+              </div>
+              <div class="redline-bar" role="meter" aria-valuemin="0" aria-valuemax="100">
+                <div class="redline-fill" id="redline-fill"></div>
+              </div>
+            </div>
+            <div class="prediction-meter" id="prediction-meter" aria-label="Market prediction tool">
+              <div class="customer-meter-head">
+                <span>Prediction intelligence · month-end forecast vs actual</span>
+                <strong id="m-intelligence-head">IQ blends experience · hyphae · strategic spend</strong>
+              </div>
+              <canvas id="prediction-chart" class="prediction-chart" width="640" height="72" aria-label="Intelligence and prediction error over month closes"></canvas>
+              <p class="prediction-readout meter-strip" id="prediction-readout">rolling forecast for consumers · leads · bench burn · market</p>
+            </div>
+            <div class="health-panel" id="health-panel" aria-label="Product health readout">
+              <div class="metric-cell health-head">
+                Product health<strong id="m-health-label">—</strong>
+                <span class="health-index" id="m-health-index">—</span>
+              </div>
+              <div class="health-lanes-wrap" id="health-lanes" aria-label="Health lanes: service, ecology, flow, team, reliability, learning"></div>
+              <p class="health-lane-key meter-strip">lanes · service (mood, red line) · ecology (Q, debt weight) · flow (velocity, WIP drain) · team (bounded concurrency, psych) · reliability (CFR, MTTR) · learning (pred IQ)</p>
+            </div>
+            <div class="bench-metrics">
+              <div class="metric-cell ok" data-space="P">Feature mass<strong id="m-feature">—</strong></div>
+              <div class="metric-cell" data-space="E">Task backlog<strong id="m-task">—</strong></div>
+              <div class="metric-cell danger" data-space="E">Tech debt<strong id="m-debt">—</strong></div>
+              <div class="metric-cell" data-space="E">Debt weight<strong id="m-debt-weight">—</strong></div>
+              <div class="metric-cell" data-space="E">Lead time<strong id="m-lead-time">—</strong></div>
+              <div class="metric-cell" data-space="P">CFR proxy<strong id="m-cfr">—</strong></div>
+              <div class="metric-cell" data-space="P">MTTR proxy<strong id="m-mttr">—</strong></div>
+              <div class="metric-cell" data-space="C">Hyphae<strong id="m-hyphae">—</strong></div>
+              <div class="metric-cell" data-space="A">Consumers<strong id="m-consumers">—</strong></div>
+              <div class="metric-cell" data-space="A">Pipeline<strong id="m-leads">—</strong></div>
+              <div class="metric-cell" data-space="E">Forecast miss<strong id="m-forecast">—</strong></div>
+              <div class="metric-cell ok" data-space="C">Pred IQ<strong id="m-intelligence">—</strong></div>
+              <div class="metric-cell" data-space="E">Pred error<strong id="m-pred-error">—</strong></div>
+              <div class="metric-cell" data-space="P">Surprises<strong id="m-events">—</strong></div>
+              <div class="metric-cell">Dev rate<strong id="m-dev-rate">—</strong></div>
+              <div class="metric-cell">Consultant rate<strong id="m-consultant-rate">—</strong></div>
+              <div class="metric-cell">Bench-C<strong id="m-cost">—</strong></div>
+              <div class="metric-cell">OPEX<strong id="m-opex">—</strong></div>
+              <div class="metric-cell">Strategic<strong id="m-strategic">—</strong></div>
+              <div class="metric-cell danger">Total<strong id="m-total">—</strong></div>
+              <div class="metric-cell ok" data-space="S">Experience<strong id="m-experience">—</strong></div>
+              <div class="metric-cell ok" data-space="S">Morale<strong id="m-morale">—</strong></div>
+              <div class="metric-cell ok">Customer mood<strong id="m-customer-mood">—</strong></div>
+              <div class="metric-cell ok" data-space="P">Bench-Q<strong id="m-qual">—</strong></div>
+              <div class="metric-cell">Tick<strong id="m-tick">—</strong></div>
+            </div>
+            <p class="triple-readout" id="triple-readout">&lt;generation, C, Q&gt;</p>
+          </div>
+
+          <p class="meter-strip">Δdebt_unplanned ↑ forecast miss · neglect · consumers · scope creep · Δdebt_paid ↓ dev work · strategic · debt_weight → velocity ÷ · lead time = WIP ÷ throughput († = non-stationary) · CFR/MTTR = DORA-inspired proxies</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="variables">
+        <p class="section-label">I</p>
+        <h2 class="section-title">What the meter measures</h2>
+        <div class="page-body">
+          <p>Let N be team size, here six. Let P_dev and P_consult be hourly customer rates per worker class — default €120 and €168. Let q be the minimum focused participation quantum, fifteen minutes: if you materially touched the task, you bill at least q even when the touch was theatrical. Eight people hovering for five minutes each is not forty minutes of customer time. It is eight times q, a floor of €240 before any real work is counted. That rule exists because collaboration theater looks cheap until someone puts a rate on the wall.</p>
+          <p>For each task j we track initial declared scope S₀, discovered scope change ΔS over time, and verified time Tᵥ from first prompt to accepted result: implemented, tests pass, reviewed, integrated. Human effort H sums billed hours with the q rule. Customer bench cost C_bench equals Σ hoursᵢ × rateᵢ per agent. The customer also carries a monthly red line R — a budget ceiling reviewed every twenty-eight ticks. Total internal cost adds operative burn O and strategic spend S; the customer mood meter reacts to bench burn against R, not to your OPEX. Verified velocity is accepted scope divided by calendar time.</p>
+          <p class="meter-strip">C_bench = Σ max(q, hᵢⱼ) × rateᵢ · month burn vs R → customer mood · C_total = C_bench + OPEX + S_strategic</p>
+          <p>Little's Law still sits in the corner: WIP equals throughput times lead time. In the ecology model, WIP is visible as task backlog mass on the grid. Throughput is feature growth per tick, multiplied by team experience and morale when collaboration fruits, divided by debt weight when the customer did not plan for rot. When forecast miss climbs, the market turns volatile, or incident recovery is active, the live banner warns that lead time is illustrative only — the stationarity assumption broke. Operative costs run whether or not the bench touches work; strategic spend is the only passive debt relief — and it is thin unless investment climate allows it. When usage ρ crosses 0.9, the debt-spread rule turns calm rot into colony bloom. Forecast miss deposits unplanned debt clusters. Pair and trail-gradient patterns that pay debt down raise velocity again; patterns that ignore debt accumulate weight for every future tick.</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="manifesto-pattern">
+        <p class="section-label">Ia</p>
+        <h2 class="section-title">The manifesto pattern — Collaborative Concurrent Extreme</h2>
+        <div class="page-body">
+          <p>The <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">manifesto</a> names <em>collaborative concurrent extreme</em> as an exact formula. The workshop it describes is not ticket-factory concurrency and not “everybody on every task.” It is the shared bench where nobody holds everything, unfinished material stays visible, and the team keeps patterns alive through timing, attention, awareness, recovery, and handoff. The simulation encodes that as one primary pattern — <strong>CCE</strong> — and nine controls to falsify it.</p>
+          <p>Each tick, each forager reads local patch signals: uncertainty (feedback, task mass, hyphae gap, forecast miss) and conflict risk (debt, overlap, recovery). The routing rule escalates — manifesto §12 in benchmark form:</p>
+          <div class="code-ref">low uncertainty + low conflict → solo or least-loaded<br>
+uneven load + visible trails → trail-gradient foraging (work-stealing)<br>
+medium uncertainty or knowledge-transfer gap → pair<br>
+blocker / incident / high debt hotspot → swarm (timeboxed in the room)<br>
+high uncertainty + heavy task → set-based (2–4 parallel probes)<br>
+everybody × all tasks → tail control only — not CCE</div>
+          <p>CCE never selects the everybody stack. That pattern exists in the benchmark as a rare stress test — Brooks channels, invoice theater — to show what happens when “concurrent” collapses into undifferentiated touch. The manifesto wager (H6–H7 in the substrate) is that visible traces and escalation beat that collapse when handoff stays readable.</p>
+          <p class="meter-strip">CCE = escalation · controls = solo · round-robin · least-loaded · trail · pair · swarm · set-based · nobody · everybody</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="healthy-product">
+        <p class="section-label">Ib</p>
+        <h2 class="section-title">Healthy product — six lenses, one operating band</h2>
+        <div class="page-body">
+          <p>The benchmark never shipped a single score called “healthy.” That was deliberate: ten patterns and four usage heats produce different winners on feature, debt paid, morale, and invoice. But a workshop still needs a falsifiable definition of <em>healthy product</em> — not “who won,” but whether the colony is in an operating band the customer can sustain. The live meter above compresses six independent lenses into one index; each lane can be read alone when the composite disagrees with your intuition.</p>
+          <p><strong>Service</strong> is customer trust in money terms: mood at or above pleased (0.58), monthly bench burn under ~78% of the red line, zero months over budget. A delighted CFO with rotting feature tissue is not healthy on this lane; a guarded mood with honest burn still is.</p>
+          <p><strong>Ecology</strong> is product tissue quality: Bench-Q (feature mass relative to rot), global debt weight below ~0.55, and either paid-down rot or weight still contained. Shipped feature without debt payment can look green on the grid while weight drags every future tick — ecology reads that drag.</p>
+          <p><strong>Flow</strong> is delivery throughput relative to backlog: feature velocity on the grid scale (not queue theory units), WIP drain time, and graduated stationarity when forecast miss rises — the Little's Law banner still marks when lead time is non-stationary, but moderate miss no longer zeros the lane.</p>
+          <p><strong>Team</strong> is bounded concurrency: patterns that cap billable overlap (solo, round-robin, least-loaded, trail-gradient, pair, swarm-on-hotspots, set-based probes, CCE) versus tail patterns that stack quanta (everybody) or zero them (nobody). Psych stress below Brooks saturation, morale and experience above floor, hyphae present enough for handoff.</p>
+          <p><strong>Reliability</strong> is change safety in DORA-inspired proxies: synthetic change-failure rate below ~12%, mean time to recover below ~12 ticks when incidents fire, no active recovery window. High feature with frequent surprises is a stressed reliability lane even when morale stays high.</p>
+          <p><strong>Learning</strong> is forecast integrity: prediction intelligence and low month-close error, beating the outside-view median bench burn when scored. A team that ships while lying on the forecast slide fails learning even inside the red line.</p>
+          <p class="meter-strip">operating band · usage 0.55–0.92 · bounded pattern · tail = nobody · everybody · usage ≥ 1.05 · volatile miss</p>
+          <dl class="reading-card">
+            <dt>Healthy (composite)</dt><dd>index ≥ 0.64 · service ≥ 0.5 · ecology ≥ 0.38 · flow ≥ 0.32 · not tail</dd>
+            <dt>Guarded</dt><dd>index 0.52–0.64 · one lane weak · still teachable</dd>
+            <dt>Stressed / critical</dt><dd>index &lt; 0.55 · debt weight or psych dominates</dd>
+            <dt>Tail overlay</dt><dd>nobody · everybody · usage overload · volatile + high miss — rare stress, not default routing</dd>
+            <dt>Contrast-ready</dt><dd>hyphae + set-based or high experience — joint pattern read for next move</dd>
+            <dt>Weights</dt><dd>service 22% · ecology 20% · team 18% · flow 16% · reliability 12% · learning 12%</dd>
+          </dl>
+          <p>Multiple solutions stay valuable: least-loaded may top score while swarm tops debt paid while pair tops experience. Health is the joint contrast — which lanes are green together — not a crown for one pattern. Run two patterns side by side in the live viz; when service and ecology diverge from team and flow, you have a routing decision, not a leaderboard argument.</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="patterns">
+        <p class="section-label">II</p>
+        <h2 class="section-title">The organism, not the queue</h2>
+        <div class="page-body">
+          <p>An average product with consultants on it behaves less like a ticket line and more like an ant nest crossed with mycelium. Tasks are not assigned from above alone; they grow where feedback meets collaboration trails. A standup, a review thread, a customer reply, a production alert: each deposits signal. When signal touches hyphae, the hyphae fruit into tasks. Developers forage along those trails, consume task mass, and convert it into feature tissue. The conversion is lossy. Work produces more work: scope creep spawns neighboring tasks like budding hyphae. Consultants forage slower but leave more spores.</p>
+          <p>Consumers enter from the edges as usage grows. They seek feature density, eat it, and excrete debt the customer never forecast — unplanned load from success without investment. Debt accrues when nobody works the bench, when forecast misses, when scope creep buds into rot instead of tasks, when tight runway skips platform spend. It drops only when developers deliberately pay it down or strategic in-house investment funds relief; shipped feature alone does not erase it. Debt spreads under usage heat like mold, and it weighs on every forager: global debt mass drags velocity even on clean cells.</p>
+          <p>We encoded this in Elixir on a 40×28 grid, 280 ticks per run, six developers, two consultants, consumer count scaling with usage and market. Each run samples market, investment, and marketing; fourteen event types can fire when forecasts miss. <strong>Collaborative Concurrent Extreme</strong> is the manifesto candidate — per-patch escalation through solo, least-loaded, trail-gradient, pair, swarm, and set-based modes. The other nine patterns are fixed metabolisms for contrast: solo ignores trails; round-robin rotates without reading hyphae load; least-loaded chases local minima; trail-gradient follows hyphae-task gradients; pair bonds deposit thicker filaments on complex cells; swarm converges on debt hotspots; set-based runs parallel probes; everybody stacks six billable quanta per touch (tail only); nobody leaves the bench cold. The Elixir module is <code>shared_bench_simulation.exs</code>; it writes <code>simulation_results.json</code> from 160 pattern×usage runs plus a 36-cell climate sweep.</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="pattern-atlas">
+        <p class="section-label">IIb</p>
+        <h2 class="section-title">Pattern atlas at usage 0.7</h2>
+        <div class="page-body">
+          <p>At calm usage the leaderboard is not a single winner repeated ten ways. <strong>Least-loaded</strong> tops score at <strong>0.603</strong> with psych <strong>0.25</strong> — local minima without ceremony. <strong>Swarm</strong> follows at <strong>0.598</strong> and pays the most debt down (<strong>€489</strong>). CCE scores <strong>0.572</strong> with psych <strong>0.44</strong>. Round-robin posts morale <strong>0.91</strong> but debt mass <strong>31k</strong> with zero paid.</p>
+          <p>Set-based exploration bills heavy bench-C (<strong>€175k</strong>) with debt weight still climbing — parallel probes scatter unplanned rot. Pair spends strategic euros and pays <strong>€139</strong> of rot on complex cells. Nobody accrues unplanned debt to <strong>79k</strong> mass with <strong>€0</strong> payment while OPEX alone totals <strong>€208k</strong>.</p>
+          <dl class="reading-card">
+            <dt>Score leader</dt><dd>least_loaded · 0.603 · feat 6.8k · paid €112</dd>
+            <dt>Debt paid leader</dt><dd>swarm · €489 paid · weight on 14.7k mass</dd>
+            <dt>CCE (manifesto)</dt><dd>score 0.572 · paid €69 · psych 0.44</dd>
+            <dt>Round-robin</dt><dd>morale 0.91 · debt 31k · rotation without payment</dd>
+            <dt>Set-based</dt><dd>parallel tax · bench €175k · paid €0</dd>
+            <dt>Everybody</dt><dd>psych 1.08 · bench €674k · Brooks channels</dd>
+          </dl>
+          <p class="meter-strip">ten patterns · same grid · different filament/debt/morale signatures</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="debt-ecology">
+        <p class="section-label">IIc</p>
+        <h2 class="section-title">Tech debt as unplanned weight</h2>
+        <div class="page-body">
+          <p>Tech debt in the model is not a static red stain. It accrues when the customer did not forecast load, did not invest to resolve rot, and developers did not work the bench — and it drops only when someone deliberately pays it down or strategic in-house spend funds thin relief. Shipped feature alone no longer erases debt; that was the old lie that kept velocity charts cheerful while the grid rotted underneath.</p>
+          <p>Accrual channels: consumers eating unplanned success, forecast-miss clusters, scope creep budding into debt instead of tasks, ambient neglect multiplied by pattern (nobody ×2.2, solo ×1.35), tight runway ×1.25. Spread kicks in when usage exceeds 0.9 and three neighbors rot. Relief channels: swarm pays down <strong>€489</strong> per run at usage 0.7; pair <strong>€139</strong>; work-stealing <strong>€65</strong> unless devs prioritize trails over rot; strategic platform spend spreads micro-relief every tick. Nobody accrues debt mass <strong>79k</strong>, pays <strong>€0</strong> — the customer meter reads zero while weight crushes every future tick.</p>
+          <p>Debt weight is global: total rot mass drags yield on every cell, not only where the infection shows. At usage 0.7, swarm carries weight on <strong>14.7k</strong> mass despite paying the most debt; CCE sits near <strong>14.7k</strong> with modest payment. The colony can look busy on feature while weight tells the truth about tomorrow's velocity.</p>
+          <dl class="reading-card">
+            <dt>Debt paid leader</dt><dd>swarm · €489 paid · 14.7k mass</dd>
+            <dt>Neglect colony</dt><dd>nobody · €0 paid · 79k mass · €208k OPEX</dd>
+            <dt>Routing without payment</dt><dd>cce · €69 paid · escalates but rarely pays rot alone</dd>
+            <dt>Spread rule</dt><dd>usage ≥ 0.9 · three debt neighbors · bloom accelerates</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="article-slab" id="routine">
+        <p class="section-label">III</p>
+        <h2 class="section-title">When usage is still calm</h2>
+        <div class="page-body">
+          <p>At usage 0.7, solo serial totals <strong>€223k</strong> with psych <strong>0.29</strong> and experience <strong>0.75</strong> — one forager, debt accruing faster than solo pays. Trail-gradient foraging totals <strong>€238k</strong> with experience <strong>0.89</strong> but only <strong>€65</strong> debt paid: trails fruit, rot waits. Pair pays <strong>€139</strong> of unplanned debt. Swarm pays the most (<strong>€489</strong>) on lighter mass. Everybody bills <strong>€674k</strong> bench-C with psych <strong>1.08</strong> — Brooks coordination theater.</p>
+          <p>Nobody remains the cruel control: <strong>€0 bench-C</strong>, debt mass <strong>79k</strong>, <strong>€208k</strong> total on OPEX alone. Least-loaded leads score at <strong>0.603</strong>; CCE follows at <strong>0.572</strong>. The variation is which pattern matches the patch and whether anyone invests in the rot the customer never forecast.</p>
+          <dl class="reading-card">
+            <dt>Score leader</dt><dd>least_loaded · 0.603 · debt paid €112</dd>
+            <dt>Experience leader</dt><dd>pair / cce · exp 1.00 · trails over rot</dd>
+            <dt>Debt paid leader</dt><dd>swarm · €489 paid · fires have a bill</dd>
+            <dt>Neglect control</dt><dd>nobody · €0 bench · €208k OPEX · debt 79k</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="article-slab" id="incident">
+        <p class="section-label">IV</p>
+        <h2 class="section-title">Usage heat and debt bloom</h2>
+        <div class="page-body">
+          <p>Usage is not one dial with one story. Work-stealing debt mass runs <strong>~21k–23k</strong> across usage levels while debt weight stays above <strong>0.55</strong>; morale peaks at 0.9 then crashes at overload. CCE keeps debt near <strong>23k</strong> with modest paid amounts — routing contains spread better than ignoring rot. At usage 0.9, everybody pins debt at the grid ceiling while swarm still pays down more than work-stealing.</p>
+          <p>Under the spread rule at usage ≥ 0.9, unplanned accrual accelerates when three neighbors rot. Set-based and round-robin accumulate the highest masses at overload because probes scatter infection. Swarm clusters on hotspots: high weight, but also the highest debt paid. Lifecycle frames show debt and feature moving in opposite phases — tick 100 feature 4155 debt 3930; tick 230 feature 2611 debt 4360 — rot and delivery trade places across the run, not only at the end.</p>
+          <dl class="reading-card">
+            <dt>Debt weight band</dt><dd>0.53–0.65 at usage 0.7 · global velocity drag</dd>
+            <dt>Swarm under heat</dt><dd>€917 paid at 0.7 · pays rot · still heavy</dd>
+            <dt>Lifecycle dip</dt><dd>t=230 · feat 2611 · debt 4360 · market bear</dd>
+            <dt>Spread threshold</dt><dd>usage ≥ 0.9 · three neighbors · accrual ×1.8</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="article-slab" id="conflict">
+        <p class="section-label">V</p>
+        <h2 class="section-title">Consultants, alignment, psychology</h2>
+        <div class="page-body">
+          <p>Two consultants walk the same grid as six developers. They consume tasks at 0.65× efficiency but spawn tasks at 0.35× probability versus 0.12× for developers. They bill at their own hourly rate — default €168 versus €120 for devs — not a hidden multiplier on shared hours. Morale and experience are per-agent state: collaboration on hyphae-rich cells raises both; debt rot and idle bench lower them. Work yield scales with (0.65 + 0.35×experience)×(0.75 + 0.25×morale), so a team that fruits well gets faster and happier over generations — not instantly, but measurably by tick 200.</p>
+          <p>Operative costs dominate the total meter when customer billable stays low: nobody still burns OPEX while developers idle. Strategic spend in loose capital climates funds in-house platform bets that accelerate experience; in bull markets the world skill benchmark rises and under-investment widens the skill gap, hurting lead conversion. Training cuts and hiring freezes hit morale directly. Acquisition interest lifts it. These are meters for what an average product room feels like when finance sees only bench-C and misses the people and burn underneath.</p>
+          <p class="meter-strip">hyphae + pairing → experience ↑ morale ↑ → yield ↑ · skill gap vs world → conversion ↓ · OPEX runs always</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="customer-tycoon">
+        <p class="section-label">Va</p>
+        <h2 class="section-title">Customer tycoon meter — red line and mood</h2>
+        <div class="page-body">
+          <p>Think of the nineties shareware shelf: Programmer Life, city builders, monopoly boards where you watched cash counters tick while the machine you built either printed money or ate it. This benchmark is the same genre with honest arithmetic. The customer is the player staring at a monthly red line. Developers and consultants bill separate hourly rates. Every twenty-eight ticks the sim closes a month: if bench burn crossed the red line, mood drops; if delivery stayed strong under budget, mood rises. Debt weight, forecast miss, and everybody-pattern invoice theater all feed the same mood meter — frustrated, guarded, pleased, delighted.</p>
+          <p>Mood is not decoration. A pleased customer converts pipeline leads faster; a frustrated one throttles conversion even when marketing keeps depositing signal. Loss aversion bites harder than symmetric gain — overspend on the red line hurts trust more than underspend repairs it (Kahneman &amp; Tversky; see <a href="20260623140000_shared_bench_benchmark/references.bib">references.bib</a>). Try the live presets: Tight CFO sets a low red line and higher dev rates; Happy patron stretches budget and discounts rates — with a <strong>pleased floor (0.58)</strong> while monthly bench burn stays under ~78% of red line, so a generous CFO stays pleased even after hundreds of ticks if the invoice stays small. Consultant shock keeps dev pricing flat but doubles consultant hourly — the month bar turns red fast if swarm or pair pulls consultants into hot cells.</p>
+          <p>The Elixir sweep crosses three red lines (€28k, €45k, €72k) with three dev rates (€95, €120, €150) at <strong>CCE</strong> and usage 0.7. The delighted corner is <strong>€150/h dev rate with a €28k ceiling</strong> — mood <strong>0.908</strong>, peak month burn <strong>€15.6k</strong>. The frustrated floor in this batch is <strong>€95/h with a €28k red line</strong>: mood <strong>0.382</strong> even when no single month crosses the line, because debt weight and forecast miss erode trust faster than a generous ceiling repairs it. High rate plus mid ceiling (€150 dev, €45k red) lands at <strong>0.719</strong> pleased with peak month <strong>€15.5k</strong>. Pattern choice still matters in the live viz: everybody can please the room on morale while the red-line bar pulses over budget.</p>
+          <p class="meter-strip">month_close: burn/R → mood Δ · debt_weight · forecast_miss · everybody theater · mood → lead conversion</p>
+          <dl class="reading-card" id="psychology-readout">
+            <dt>Delighted corner</dt><dd>dev €150 · red €28k · mood 0.908 · peak month €15.6k</dd>
+            <dt>Frustrated floor</dt><dd>dev €95 · red €28k · mood 0.382 · debt drag without invoice shock</dd>
+            <dt>Try in live viz</dt><dd>Tight CFO vs Happy patron vs Consultant shock — watch red line bar</dd>
+            <dt>Mood bands</dt><dd>&lt;0.42 frustrated · 0.58+ pleased · 0.72+ delighted</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="article-slab" id="prediction-tool">
+        <p class="section-label">Vc</p>
+        <h2 class="section-title">Market prediction by intelligence</h2>
+        <div class="page-body">
+          <p>The ecology is also a prediction tool. Every tick the team publishes a rolling month-end forecast: consumer count, pipeline leads, bench burn, market direction. Forecast quality blends a naive extrapolation with a signal model that reads marketing, conversion, usage, and pattern stress — and an <strong>outside-view baseline</strong>: the rolling three-month median bench burn (reference-class forecasting). Prediction intelligence is 65% signal-model skill plus 35% improvement over that outside-view median at month close.</p>
+          <p>Low intelligence sticks to momentum and noise; high intelligence leans on observable drivers. At each month close the sim scores prediction error against actuals. Bad predictions raise unforecasted-event chance alongside the static customer plan miss. Customer mood also punishes prediction error — a CFO who was told calm burn and got swarm theater loses trust even inside the red line. Composite score now rewards low average prediction error: a team that reads its own colony beats a team that only ships feature while lying on the forecast slide.</p>
+          <p>In the live viz the teal chart tracks intelligence (upper half) and scored error (lower half) across month closes; the readout strip shows predicted versus live consumers, leads, bench €, and market call. At usage 0.7 the sweep ranks <strong>everybody</strong> highest on IQ (<strong>0.572</strong>) with the lowest scored month error (<strong>0.021</strong>) — collaboration theater reads the room even when it bankrupts the red line. <strong>Round-robin</strong> posts the worst live team miss (<strong>3.676</strong>) despite mid IQ: rotation smooths the chart while the signal model stays blind. Pair and swarm sit in the middle; nobody flatlines intelligence because no hyphae means no collective sensor.</p>
+          <p class="meter-strip">IQ = 0.65×signal + 0.35×beat outside-view · pred = naive×(1−IQ) + signal×IQ · month_close → error → events · SPACE tags on live metrics</p>
+          <dl class="reading-card">
+            <dt>Intelligence feeds</dt><dd>experience · hyphae · in-house strategic · collaboration</dd>
+            <dt>Predicts each month</dt><dd>consumers · leads · bench burn · market</dd>
+            <dt>Bad pred →</dt><dd>surprise events ↑ · customer mood ↓</dd>
+            <dt>Live chart</dt><dd>teal IQ · red error · bars act vs pred consumers</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="article-slab" id="climate">
+        <p class="section-label">Vb</p>
+        <h2 class="section-title">Climate lattice</h2>
+        <div class="page-body">
+          <p>Market, investment, and marketing multiply into thirty-six climate cells on <strong>CCE</strong> at usage 0.7. The highest score (<strong>0.578</strong>) lands on <strong>bull market, loose capital, marketing ~0.1</strong> — bench-C €60k, forecast miss 1.82, ten surprise events. The lowest score in this batch (<strong>0.457</strong>) is <strong>bull market, loose capital, marketing 0.8</strong>: bench-C €41k, thirteen events. Bear plus neutral runway with quiet marketing still scores <strong>0.577</strong> with bench-C €25k — quiet burn wins when debt stays contained.</p>
+          <p>Bear plus loose capital with aggressive marketing stacks surprise events while bear plus tight runway with marketing 0.8 still bills bench-C in the mid-forties with elevated debt mass. Volatile market adds drift mid-run; lifecycle samples show debt climbing past feature by tick 300. Climate is not backdrop. It changes conversion, wages, strategic pressure, and which unforecasted events fire when the pipeline chart lied.</p>
+          <dl class="reading-card">
+            <dt>Climate score peak</dt><dd>bull · loose · mkt ~0.1 · score 0.578 · miss 1.82</dd>
+            <dt>Climate score floor</dt><dd>bull · loose · mkt 0.8 · score 0.457 · events 13</dd>
+            <dt>Quiet burn</dt><dd>bear · neutral · mkt 0 · bench €25k · score 0.577</dd>
+          </dl>
+          <p class="meter-strip">bear + quiet marketing → score ↑ · bull + loose → skill gap ↑ strategic chase ↑</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="bad-outcomes">
+        <p class="section-label">VI</p>
+        <h2 class="section-title">Extreme colonies</h2>
+        <div class="page-body">
+          <p>The simulation extremes at usage 0.7 read like parables, each a different failure mode. <strong>Nobody</strong>: €208k total on €0 bench, morale 0.57, hyphae 0, debt 79k. <strong>Everybody</strong>: €855k total, bench €674k, psych 1.08 — filament without handoff. <strong>Set-based</strong>: €355k total, bench €175k — parallel tax. <strong>Swarm</strong>: debt 14.7k calm, feat 8.7k — fires eat feature. <strong>Round-robin</strong>: hy 11k, mor 0.91 — rotation feels fair, meter disagrees.</p>
+          <p>At usage 1.15 the debt leaders diverge: set-based 18795, least-loaded 15431, round-robin 13981, work-stealing 8379. Same spread rule, different foraging geometry. Security fog peaks when debt is high and features are consumed faster than verified. Performance collapse tracks local debt threshold on foragers. The bad outcomes are coupled and pattern-specific. They arrive as colonies with different shapes, not one generic incident ticket.</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="routing">
+        <p class="section-label">VII</p>
+        <h2 class="section-title">Routing as ecology</h2>
+        <div class="page-body">
+          <p>CCE reads local uncertainty and conflict each tick, then escalates — the manifesto routing rule, not a single static scheduler. High debt or active recovery → swarm movement. Uncertainty ≥ 4 with heavy task → set-based probes. Medium uncertainty or thin hyphae on dense task → pair. Routine patch with uneven load → least-loaded; uneven load with visible trails → trail-gradient. Calm low-risk cells → solo serial. It scores <strong>0.572</strong> at usage 0.7 with psych <strong>0.44</strong> in the current batch — against swarm <strong>0.55</strong> and everybody <strong>1.08</strong> as contrasts. Total <strong>€219k</strong> beats round-robin <strong>€289k</strong> and set-based <strong>€355k</strong> on the same grid. Least-loaded tops score (<strong>0.603</strong>) as a control when patches mix debt and task — useful joint read, not a replacement for escalation.</p>
+          <div class="code-ref"># CCE escalation (manifesto §12 → ecology)<br>
+uncertainty, conflict ← patch feedback · task · hyphae · debt · recovery<br>
+blocker / debt hotspot → swarm<br>
+uncertainty ≥ 4 → set-based (2–4 probes)<br>
+uncertainty ≥ 2.8 or handoff gap → pair<br>
+uneven load → least-loaded or trail-gradient<br>
+calm routine → solo<br>
+everybody × task → never in CCE — tail control only</div>
+          <p>Timeboxes from the earlier benchmark still apply in the room: pair for thirty to ninety minutes, swarm for fifteen to sixty, set-based only when ambiguity earns parallel exploration. The grid shows why. Left unchecked, hyphae fill the board whether or not feature follows.</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="simulation">
+        <p class="section-label">VIII</p>
+        <h2 class="section-title">Running the colony</h2>
+        <div class="page-body">
+          <p>Run the Elixir ecology: <code>elixir shared_bench_simulation.exs</code>. It implements the <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">manifesto</a> escalation rule as pattern <code>:cce</code> and nine fixed controls. Expect about two minutes for 160 runs (10 patterns × 4 usage levels × 4 repetitions) plus a 36-cell climate sweep. Output includes per-pattern aggregates with operative and strategic splits, experience and morale averages, lifecycle samples with market phase per tick, consultant-effect rows at usage 0.9, and climate leaderboard. The browser grid exposes the same dimensions: pattern, usage, market, investment, marketing — combinatorial play, not a single demo loop.</p>
+          <p>Try the variations the article cannot exhaust: set-based at usage 1.15 for debt bloom; bear market with quiet marketing for score; everybody with aggressive marketing for psych theater; nobody to watch OPEX run alone; pair versus work-stealing for experience-versus-morale tradeoffs. Neither simulation claims predictive precision for your sprint. They make the couplings visible across patterns, climates, and cost layers so the workshop choice is falsifiable before the quarter ends.</p>
+          <p>Research mapping — which mechanisms align with Little's Law, DORA, technical-debt literature, pair-programming meta-analyses, Brooks coordination, planning fallacy, SPACE, and stigmergy — plus suggested fixes: <a href="20260623140000_shared_bench_benchmark/RESEARCH_REFERENCES.md">RESEARCH_REFERENCES.md</a> · BibTeX: <a href="20260623140000_shared_bench_benchmark/references.bib">references.bib</a>.</p>
+        </div>
+      </section>
+
+      <section class="article-slab" id="closing">
+        <p class="section-label">IX</p>
+        <h2 class="section-title">What stayed on the bench</h2>
+        <div class="page-body">
+          <p>I turn off the projector. The grid on screen still pulses: teal where we met, red where they ate, copper where the backlog fruits again. The numbers are not a verdict on whether people should care about each other. They are a meter for how caring metabolizes: collaboration laying trails, trails spawning tasks, tasks becoming feature and more tasks, consumers turning success into debt as usage climbs.</p>
+          <p>The <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">manifesto</a> wager survives only if the hyphae are real: partial work readable enough that another forager can continue cold, building experience and morale that compound. Otherwise the colony fills with filament and rot, and the simulation's everybody pattern bills <strong>€855 thousand total</strong> — mostly bench theater — while trail-gradient foraging totals <strong>€238 thousand</strong> with experience near <strong>0.89</strong>.</p>
+          <p class="meter-strip">OPEX + strategic + bench-C = total · ten patterns · thirty-six climates · four usage heats</p>
+          <p>Least-loaded wins score when patches mix debt and task. Trail-gradient wins experience when trails fruit. Round-robin wins morale among rotators. Set-based wins debt at overload. Everybody wins filament and loses handoff — tail only. Nobody wins only bench-C. Solo wins psych silence. Swarm wins fires, loses calm feature. <strong>CCE</strong> wins routing economy by escalating instead of picking one mode for the whole run. The consumers are still walking in from the edges. The climate select is still on bear.</p>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="20260623140000_shared_bench_benchmark/shared_bench_article.js" defer></script>
+</body>
+</html>
