@@ -31,6 +31,9 @@
   var audioNextTime = 0;
   var audioTimer = null;
   var barIndex = 0;
+  var tabHidden = document.hidden;
+  var plasmaScale = 3;
+  var rafId = null;
 
   var drumBus, bassBus, melodyBus, master, dry, send, wet, melodyNodes;
   var delayA, delayB, delayFbA, delayFbB, masterWarm, masterDark;
@@ -385,12 +388,20 @@
     }
   }
 
+  var atmosphereFrame = 0;
+
+  function updateAtmosphereThrottled() {
+    atmosphereFrame++;
+    if (atmosphereFrame % 3 !== 0) return;
+    updateAtmosphere();
+  }
+
   var pCtx, pW, pH, pImage, pData;
 
   function resizePlasma() {
     if (!canvas) return;
-    pW = Math.floor(window.innerWidth / 2);
-    pH = Math.floor(window.innerHeight / 2);
+    pW = Math.max(1, Math.floor(window.innerWidth / plasmaScale));
+    pH = Math.max(1, Math.floor(window.innerHeight / plasmaScale));
     canvas.width = pW;
     canvas.height = pH;
     canvas.style.width = "100%";
@@ -420,11 +431,16 @@
   }
 
   function frame() {
-    visualFrame++;
-    drawPlasma();
-    if (visualFrame % 4 === 0) updateGlyphs();
-    if (visualFrame % 2 === 0) updateAtmosphere();
-    requestAnimationFrame(frame);
+    if (!tabHidden) {
+      visualFrame++;
+      if (visualFrame % 2 === 0) {
+        drawPlasma();
+        plasmaTime += 0.038;
+      }
+      if (visualFrame % 5 === 0) updateGlyphs();
+      updateAtmosphereThrottled();
+    }
+    rafId = requestAnimationFrame(frame);
   }
 
   function makeReverbIR(ctx, seconds, decay) {
@@ -1056,13 +1072,28 @@
 
   function audioScheduler() {
     if (!playing || !audioCtx) return;
-    var horizon = 0.14;
-    while (audioNextTime < audioCtx.currentTime + horizon) {
+    var now = audioCtx.currentTime;
+    var horizon = tabHidden ? 10 : 0.45;
+    var maxSteps = tabHidden ? 640 : 48;
+    var steps = 0;
+    while (audioNextTime < now + horizon && steps < maxSteps) {
       scheduleAudioStep(audioTick, audioNextTime);
       audioNextTime += SEC_PER_16;
       audioTick++;
+      steps++;
     }
-    audioTimer = window.setTimeout(audioScheduler, 28);
+    audioTimer = window.setTimeout(audioScheduler, tabHidden ? 400 : 30);
+  }
+
+  function syncAudioAfterTabReturn() {
+    if (!playing || !audioCtx) return;
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    var now = audioCtx.currentTime;
+    if (audioNextTime < now) {
+      audioNextTime = now + 0.02;
+    }
+    if (audioTimer) window.clearTimeout(audioTimer);
+    audioScheduler();
   }
 
   function startAudio() {
@@ -1149,6 +1180,19 @@
     window.addEventListener("resize", resizePlasma);
   }
 
+  document.addEventListener("visibilitychange", function () {
+    tabHidden = document.hidden;
+    if (document.hidden) {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      return;
+    }
+    syncAudioAfterTabReturn();
+    if (!rafId) rafId = requestAnimationFrame(frame);
+  });
+
   initGlyphs();
   pickSatTarget();
   pickWetTarget();
@@ -1162,5 +1206,5 @@
     });
   }
 
-  requestAnimationFrame(frame);
+  rafId = requestAnimationFrame(frame);
 })();
