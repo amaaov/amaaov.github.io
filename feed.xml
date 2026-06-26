@@ -5,9 +5,19 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Wed, 25 Jun 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 26 Jun 2026 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
 
+    <item>
+      <title>pray — amaaåv</title>
+      <description>Language placed before inference. Prayer, silence, lockfile trace, confession as echo in mist.</description>
+      <link>https://amaaov.github.io/pages/20260626120000_prayfile_language_before_inference_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260626120000_prayfile_language_before_inference_en.html</guid>
+      <pubDate>Thu, 26 Jun 2026 12:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>specification</category>
+      <category>software development</category>
+    </item>
     <item>
       <title>Post-Simulacrum Surrogate</title>
       <description>Post-simulacrum era and the surrogate for affected inner formation. Is it now easier to detach from anything and create own reality?</description>
