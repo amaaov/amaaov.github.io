@@ -124,8 +124,10 @@
   var edgeScrollRaf = 0;
   var edgeScrollLastTime = 0;
   var morseRevealed = false;
+  var scrollLockY = 0;
   var fogScrollLockEnabled = !reducedMotion &&
     !window.matchMedia("(prefers-contrast: high)").matches;
+  var coarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
   var MOVE_THRESH = 14;
   var DOT_MIN_MS = 120;
@@ -200,7 +202,7 @@
   }
 
   function maxScrollY() {
-    return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    return Math.max(0, document.body.scrollHeight - window.innerHeight);
   }
 
   function fogScrollLocked() {
@@ -208,19 +210,31 @@
   }
 
   function setFogScrollLock(locked) {
-    document.documentElement.classList.toggle("fog-scroll-lock", locked);
+    if (locked) {
+      scrollLockY = window.scrollY || window.pageYOffset || 0;
+      document.documentElement.classList.add("fog-scroll-lock");
+      document.body.style.top = (-scrollLockY) + "px";
+    } else {
+      document.documentElement.classList.remove("fog-scroll-lock");
+      document.body.style.top = "";
+      window.scrollTo(0, scrollLockY);
+    }
   }
 
   function fogScrollBy(delta) {
     if (!delta) return;
-    var y = window.scrollY || window.pageYOffset || 0;
-    var next = clamp(y + delta, 0, maxScrollY());
-    if (next !== y) window.scrollTo(0, next);
+    scrollLockY = clamp(scrollLockY + delta, 0, maxScrollY());
+    if (fogScrollLocked()) {
+      document.body.style.top = (-scrollLockY) + "px";
+    } else {
+      window.scrollTo(0, scrollLockY);
+    }
   }
 
   function blockNativeScroll(ev) {
     if (!fogScrollLocked()) return;
     if (isChrome(ev.target)) return;
+    if (sharpenCount() > 0) return;
     ev.preventDefault();
   }
 
@@ -255,8 +269,8 @@
   function edgeScrollSpeed(y, dt) {
     var r = spotRadius();
     var vh = window.innerHeight;
-    var band = Math.max(96, vh * 0.14);
-    var maxPxPerMs = 0.11;
+    var band = Math.max(coarsePointer ? 128 : 96, vh * (coarsePointer ? 0.24 : 0.14));
+    var maxPxPerMs = coarsePointer ? 0.2 : 0.11;
     var scroll = 0;
 
     var topInset = y - r;
@@ -288,9 +302,7 @@
     if (p) {
       var scroll = edgeScrollSpeed(p.y, dt);
       if (scroll !== 0) {
-        var y = window.scrollY || window.pageYOffset || 0;
-        var maxY = maxScrollY();
-        if ((scroll < 0 && y > 0) || (scroll > 0 && y < maxY)) {
+        if ((scroll < 0 && scrollLockY > 0) || (scroll > 0 && scrollLockY < maxScrollY())) {
           fogScrollBy(scroll);
         }
       }
@@ -645,5 +657,9 @@
   root.style.setProperty("--spot-r", spotRadius() + "px");
   window.addEventListener("resize", function () {
     root.style.setProperty("--spot-r", spotRadius() + "px");
+    if (fogScrollLocked()) {
+      scrollLockY = clamp(scrollLockY, 0, maxScrollY());
+      document.body.style.top = (-scrollLockY) + "px";
+    }
   });
 })();

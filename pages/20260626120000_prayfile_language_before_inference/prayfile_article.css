@@ -2,9 +2,9 @@
   --body-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.28rem);
   --body-leading: 1.72;
   --text-width: 34rem;
-  --serif: "Cormorant Garamond", "EB Garamond", "Times New Roman", serif;
-  --display: "Italiana", "Cormorant Garamond", serif;
-  --mono: "IBM Plex Mono", monospace;
+  --serif: "Cormorant Garamond", Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  --display: "Italiana", "Cormorant Garamond", Georgia, serif;
+  --mono: "IBM Plex Mono", "SFMono-Regular", "Menlo", "Consolas", monospace;
   --ink: rgba(236, 228, 218, 0.88);
   --ink-faint: rgba(236, 228, 218, 0.38);
   --ink-ghost: rgba(236, 228, 218, 0.12);
@@ -36,9 +36,24 @@ html.fog-scroll-lock {
 }
 
 html.fog-scroll-lock body {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
   overflow: hidden;
   touch-action: none;
   overscroll-behavior: none;
+}
+
+html:has(body.morse-revealed) {
+  overflow: auto;
+  height: auto;
+}
+
+body.morse-revealed {
+  position: static !important;
+  top: auto !important;
+  touch-action: pan-y;
 }
 
 body {
