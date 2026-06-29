@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>pray — demo</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="Interactive demo: pray and Prayfile — language placed before inference. Post-simulacra chamber ad.">
+  <meta name="keywords" content="pray, Prayfile, demo, inference, post-simulacrum">
+  <meta name="author" content="amaaov">
+  <meta property="og:title" content="pray — demo">
+  <meta property="og:description" content="Language placed before inference. Interactive chamber ad for pray and Prayfile.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260627120000_pray_demo_en.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260627120000_pray_demo_en.html">
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400&family=Italiana&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="20260627120000_pray_demo/pray_demo.css">
+</head>
+<body>
+  <canvas id="void-canvas" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <canvas id="mycelium-field" aria-hidden="true"></canvas>
+  <canvas id="spider-field" aria-hidden="true"></canvas>
+  <canvas id="ant-field" aria-hidden="true"></canvas>
+
+  <div class="fade-curtain" id="fade-curtain" aria-hidden="true"></div>
+
+  <header class="site-top demo-chrome" id="site-top">
+    <a class="home-link" href="../index.html">amaaåv</a>
+    <nav class="demo-nav" aria-label="Demo controls">
+      <a class="nav-link" href="20260626120000_prayfile_language_before_inference_en.html">chamber</a>
+    </nav>
+  </header>
+
+  <div class="stage" id="stage" role="application" aria-label="pray demo">
+    <div class="scene-layer" id="scene-layer" aria-live="polite">
+      <p class="scene-eyebrow" id="scene-eyebrow" hidden></p>
+      <h1 class="scene-title" id="scene-title" hidden></h1>
+      <p class="scene-body" id="scene-body" hidden></p>
+      <div class="scene-triad" id="scene-triad" hidden>
+        <p><span class="triad-key">sworn</span> <span class="triad-val">selection · silence</span></p>
+        <p><span class="triad-key">kept</span> <span class="triad-val">original pieces</span></p>
+        <p><span class="triad-key">given</span> <span class="triad-val">inference input</span></p>
+      </div>
+      <div class="scene-cta" id="scene-cta" hidden>
+        <a class="cta-url" href="https://github.com/amkisko/pray" target="_blank" rel="noopener noreferrer">github.com/amkisko/pray</a>
+        <p class="cta-tag">language placed before inference</p>
+      </div>
+    </div>
+
+    <div class="progress-rail demo-chrome" id="progress-rail" aria-hidden="true">
+      <span class="progress-fill" id="progress-fill"></span>
+    </div>
+    <p class="scene-counter demo-chrome" id="scene-counter" aria-hidden="true"></p>
+  </div>
+
+  <div class="start-gate" id="start-gate">
+    <div class="start-inner">
+      <p class="start-word" aria-hidden="true">pray</p>
+      <button type="button" class="start-btn pray-entry" id="start-btn" aria-label="Enter">
+        <svg class="pray-rune" viewBox="0 0 80 100" aria-hidden="true">
+          <defs>
+            <filter id="pray-rune-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <circle class="pray-rune__orbit" cx="40" cy="50" r="34" />
+          <g class="pray-rune__triad">
+            <circle class="pray-rune__dot" cx="40" cy="10" r="2.1" />
+            <circle class="pray-rune__dot" cx="33" cy="19" r="2.1" />
+            <circle class="pray-rune__dot" cx="47" cy="19" r="2.1" />
+          </g>
+          <path class="pray-rune__stem" d="M40 24V72" />
+          <path class="pray-rune__bow" d="M22 32Q40 25 58 32" />
+          <path class="pray-rune__bracket pray-rune__bracket--left" d="M16 37L25 32L25 42" />
+          <path class="pray-rune__bracket pray-rune__bracket--right" d="M64 37L55 32L55 42" />
+          <path class="pray-rune__loop" d="M40 46C33 46 29 52 31 58C33 64 40 62 40 56" />
+          <g class="pray-rune__roots">
+            <path d="M40 72L27 88" />
+            <path d="M40 72V91" />
+            <path d="M40 72L53 88" />
+          </g>
+          <circle class="pray-rune__seed" cx="40" cy="95" r="2.6" filter="url(#pray-rune-glow)" />
+        </svg>
+        <span class="pray-entry__label">enter</span>
+      </button>
+    </div>
+  </div>
+
+  <footer class="demo-footer" id="demo-footer" hidden>
+    <button type="button" class="footer-btn" id="replay-btn" aria-label="Replay demo">replay</button>
+    <button type="button" class="footer-btn" id="mute-btn" aria-pressed="false" aria-label="Mute sound">mute</button>
+  </footer>
+
+  <script src="20260627120000_pray_demo/pray_demo.js" defer></script>
+</body>
+</html>

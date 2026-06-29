@@ -1,0 +1,749 @@
+:root {
+  --void: #050507;
+  --mist: rgba(198, 210, 224, 0.12);
+  --ink: #faf6f0;
+  --ink-soft: #efe9df;
+  --ink-ghost: rgba(250, 246, 240, 0.48);
+  --accent: #d4b48a;
+  --accent-cyan: #7ed4d4;
+  --accent-magenta: #c88aaa;
+  --serif: "STIX Two Text", "Times New Roman", Times, serif;
+  --display: "Italiana", "Cormorant Garamond", Georgia, serif;
+  --accent-serif: "Cormorant Garamond", Georgia, serif;
+  --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --safe-top: max(0.75rem, env(safe-area-inset-top, 0px));
+  --safe-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  --safe-left: max(0.85rem, env(safe-area-inset-left, 0px));
+  --safe-right: max(0.85rem, env(safe-area-inset-right, 0px));
+  --title-size: clamp(2.4rem, 8vmin + 0.5rem, 6.5rem);
+  --body-size: clamp(0.95rem, 2.2vmin + 0.35rem, 1.45rem);
+  --eyebrow-size: clamp(0.62rem, 1.4vmin + 0.2rem, 0.82rem);
+  --stage-pad: clamp(1rem, 4vmin, 2.5rem);
+  --line-width: min(36rem, 92vw);
+  --fade-duration: 1.5s;
+  --fade-ease: cubic-bezier(0.33, 0, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-feature-settings: "liga" 1, "kern" 1, "onum" 1;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+#void-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse 82% 74% at 50% 46%, transparent 32%, rgba(5, 5, 7, 0.42) 100%);
+}
+
+#mycelium-field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+  pointer-events: none;
+  opacity: 0.72;
+  mix-blend-mode: screen;
+}
+
+#spider-field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 12;
+  pointer-events: none;
+  opacity: 0.76;
+  mix-blend-mode: screen;
+}
+
+#ant-field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 13;
+  pointer-events: none;
+  opacity: 0.8;
+  mix-blend-mode: screen;
+}
+
+.demo-chrome.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--fade-duration) var(--fade-ease),
+    visibility var(--fade-duration) var(--fade-ease);
+}
+
+.site-top {
+  position: fixed;
+  top: var(--safe-top);
+  left: var(--safe-left);
+  right: var(--safe-right);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: clamp(0.68rem, 1.5vmin, 0.78rem);
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+}
+
+.home-link,
+.nav-link {
+  color: var(--ink-ghost);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.home-link:hover,
+.home-link:focus-visible,
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--accent);
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding:
+    calc(var(--safe-top) + 2.5rem)
+    var(--safe-right)
+    calc(var(--safe-bottom) + 3rem)
+    var(--safe-left);
+}
+
+.scene-layer {
+  width: var(--line-width);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.5rem, 2vmin, 1.1rem);
+  opacity: 1;
+  transition: opacity var(--fade-duration) var(--fade-ease);
+}
+
+.scene-layer.is-exiting {
+  opacity: 0;
+}
+
+.fade-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  background: var(--void);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--fade-duration) var(--fade-ease);
+}
+
+.fade-curtain.is-active {
+  opacity: 1;
+}
+
+.scene-eyebrow {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--eyebrow-size);
+  font-weight: 300;
+  letter-spacing: 0.24em;
+  text-transform: lowercase;
+  color: var(--accent-cyan);
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity var(--fade-duration) var(--fade-ease),
+    transform var(--fade-duration) var(--fade-ease);
+}
+
+.scene-eyebrow::before {
+  content: "∴\00a0";
+  color: var(--accent-magenta);
+  opacity: 0.75;
+  font-family: var(--serif);
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+.scene-eyebrow.is-fading-out,
+.scene-title.is-fading-out,
+.scene-body.is-fading-out,
+.scene-triad.is-fading-out,
+.scene-cta.is-fading-out {
+  opacity: 0 !important;
+  transform: translateY(-0.35rem) scale(0.98);
+  pointer-events: none;
+}
+
+.scene-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: var(--title-size);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  line-height: 1.05;
+  text-transform: lowercase;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(1rem) scale(0.96);
+  transition:
+    opacity calc(var(--fade-duration) * 1.1) var(--fade-ease),
+    transform calc(var(--fade-duration) * 1.1) var(--fade-ease);
+}
+
+.scene-body {
+  margin: 0;
+  max-width: 32rem;
+  font-family: var(--serif);
+  font-size: var(--body-size);
+  line-height: 1.58;
+  font-weight: 400;
+  color: var(--ink-soft);
+  opacity: 0;
+  transform: translateY(0.8rem);
+  transition:
+    opacity var(--fade-duration) var(--fade-ease),
+    transform var(--fade-duration) var(--fade-ease);
+}
+
+.scene-triad {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.55rem, 2vmin, 0.9rem);
+  font-family: var(--serif);
+  font-size: clamp(0.88rem, 2.1vmin, 1.15rem);
+  letter-spacing: 0.03em;
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity var(--fade-duration) var(--fade-ease),
+    transform var(--fade-duration) var(--fade-ease);
+}
+
+.scene-triad p {
+  margin: 0;
+}
+
+.triad-key {
+  display: inline-block;
+  min-width: 4.8em;
+  text-align: right;
+  margin-right: 0.45em;
+  font-family: var(--accent-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.triad-key::before {
+  content: "⟨";
+  margin-right: 0.15em;
+  font-style: normal;
+  color: var(--accent-magenta);
+  opacity: 0.7;
+}
+
+.triad-key::after {
+  content: "⟩";
+  margin-left: 0.15em;
+  font-style: normal;
+  color: var(--accent-magenta);
+  opacity: 0.7;
+}
+
+.triad-val {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.scene-cta {
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition:
+    opacity calc(var(--fade-duration) * 1.15) var(--fade-ease),
+    transform calc(var(--fade-duration) * 1.15) var(--fade-ease);
+}
+
+.cta-url {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: clamp(1rem, 3.2vmin, 1.85rem);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 0.15em;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.cta-url:hover,
+.cta-url:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent-cyan);
+}
+
+.cta-tag {
+  margin: 0.85rem 0 0;
+  font-family: var(--serif);
+  font-size: clamp(0.74rem, 1.6vmin, 0.9rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 26rem;
+}
+
+.scene-layer .is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.scene-layer .is-dim {
+  opacity: 0.35;
+  transform: scale(0.98);
+}
+
+.progress-rail {
+  position: absolute;
+  bottom: calc(var(--safe-bottom) + 1.6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(14rem, 42vw);
+  height: 2px;
+  background: rgba(244, 239, 230, 0.14);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-cyan));
+  transition: width 0.35s linear;
+}
+
+.scene-counter {
+  position: absolute;
+  bottom: calc(var(--safe-bottom) + 0.55rem);
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--mono);
+  font-size: clamp(0.58rem, 1.2vmin, 0.68rem);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--ink-ghost);
+}
+
+.start-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(ellipse 58% 52% at 50% 40%, rgba(235, 228, 218, 0.14) 0%, transparent 68%),
+    rgba(5, 5, 7, 0.8);
+  backdrop-filter: blur(10px);
+  transition: opacity 1.4s var(--fade-ease), visibility 1.4s var(--fade-ease);
+}
+
+.start-gate.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.start-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--stage-pad);
+  width: 100%;
+  max-width: min(22rem, 92vw);
+  margin-inline: auto;
+}
+
+.start-word {
+  margin: 0 0 clamp(1.1rem, 4vmin, 1.75rem);
+  width: 100%;
+  font-family: var(--display);
+  font-size: clamp(3rem, 14vmin, 7rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  transform-origin: center center;
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.start-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: var(--mono);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.55rem, 1.8vmin, 0.8rem);
+  width: clamp(5.5rem, 16vmin, 7.5rem);
+  max-width: 100%;
+}
+
+.start-btn:focus-visible {
+  outline: none;
+}
+
+.start-btn:focus-visible .pray-rune {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+.pray-rune {
+  --rune-w: clamp(5.5rem, 16vmin, 7.5rem);
+  --rune-stroke: 1.65;
+  display: block;
+  width: var(--rune-w);
+  height: auto;
+  overflow: visible;
+  color: var(--ink);
+  transition: transform 0.55s cubic-bezier(0.33, 0, 0.15, 1), filter 0.5s ease;
+}
+
+.pray-rune__orbit {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.85;
+  stroke-dasharray: 3 7;
+  opacity: 0.28;
+  transform-origin: 40px 50px;
+  animation: rune-orbit 28s linear infinite;
+}
+
+.pray-rune__dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+.pray-rune__triad {
+  transform-origin: 40px 14px;
+  transition: transform 0.75s cubic-bezier(0.33, 0, 0.15, 1), opacity 0.55s ease;
+}
+
+.pray-rune__stem,
+.pray-rune__bow,
+.pray-rune__loop,
+.pray-rune__roots path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--rune-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.pray-rune__stem {
+  transform-origin: 40px 48px;
+  transition: transform 0.7s cubic-bezier(0.33, 0, 0.15, 1), stroke 0.45s ease;
+}
+
+.pray-rune__bow {
+  stroke-width: 1.35;
+  opacity: 0.88;
+  transition: transform 0.55s ease, opacity 0.4s ease;
+  transform-origin: 40px 32px;
+}
+
+.pray-rune__bracket {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.72;
+  transition: transform 0.55s cubic-bezier(0.33, 0, 0.15, 1), opacity 0.4s ease;
+}
+
+.pray-rune__bracket--left {
+  transform-origin: 20px 37px;
+}
+
+.pray-rune__bracket--right {
+  transform-origin: 60px 37px;
+}
+
+.pray-rune__loop {
+  stroke-width: 1.45;
+  opacity: 0.92;
+  transition: transform 0.6s cubic-bezier(0.33, 0, 0.15, 1);
+  transform-origin: 36px 54px;
+}
+
+.pray-rune__roots {
+  transition: transform 0.75s cubic-bezier(0.33, 0, 0.15, 1);
+  transform-origin: 40px 72px;
+}
+
+.pray-rune__roots path {
+  stroke-width: 1.4;
+  opacity: 0.85;
+}
+
+.pray-rune__seed {
+  fill: var(--accent);
+  stroke: none;
+  transform-origin: 40px 95px;
+  animation: rune-seed 3.6s ease-in-out infinite;
+  transition: transform 0.65s ease, fill 0.45s ease;
+}
+
+.pray-entry__label {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(0.64rem, 1.5vmin, 0.76rem);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: lowercase;
+  color: var(--ink-ghost);
+  padding-left: 0.32em;
+  transition: opacity 0.4s ease, letter-spacing 0.6s ease, color 0.4s ease, padding-left 0.6s ease;
+}
+
+.pray-entry:hover .pray-rune,
+.pray-entry:focus-visible .pray-rune {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 14px rgba(126, 212, 212, 0.22));
+}
+
+.pray-entry:hover .pray-rune__bow,
+.pray-entry:focus-visible .pray-rune__bow {
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+.pray-entry:hover .pray-rune__bracket--left,
+.pray-entry:focus-visible .pray-rune__bracket--left {
+  transform: translateX(-2px);
+  opacity: 0.95;
+}
+
+.pray-entry:hover .pray-rune__bracket--right,
+.pray-entry:focus-visible .pray-rune__bracket--right {
+  transform: translateX(2px);
+  opacity: 0.95;
+}
+
+.pray-entry:hover .pray-rune__loop,
+.pray-entry:focus-visible .pray-rune__loop {
+  transform: scale(1.06);
+}
+
+.pray-entry:hover .pray-rune__seed,
+.pray-entry:focus-visible .pray-rune__seed {
+  fill: var(--accent-cyan);
+}
+
+.pray-entry:hover .pray-entry__label,
+.pray-entry:focus-visible .pray-entry__label {
+  letter-spacing: 0.38em;
+  padding-left: 0.38em;
+  color: var(--ink-soft);
+}
+
+.pray-entry.is-unlocking .pray-rune {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 22px rgba(126, 212, 212, 0.38));
+}
+
+.pray-entry.is-unlocking .pray-rune__triad {
+  transform: translateY(-8px);
+  opacity: 0;
+}
+
+.pray-entry.is-unlocking .pray-rune__stem {
+  transform: scaleY(1.1);
+}
+
+.pray-entry.is-unlocking .pray-rune__roots {
+  transform: scale(1.14);
+}
+
+.pray-entry.is-unlocking .pray-rune__loop {
+  transform: scale(1.12) rotate(-4deg);
+}
+
+.pray-entry.is-unlocking .pray-rune__orbit {
+  opacity: 0.55;
+  animation: none;
+}
+
+.pray-entry.is-unlocking .pray-rune__seed {
+  transform: scale(1.35);
+  fill: var(--accent-cyan);
+  animation: none;
+}
+
+.pray-entry.is-unlocking .pray-entry__label {
+  opacity: 0;
+}
+
+@keyframes rune-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rune-seed {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+.demo-footer {
+  position: fixed;
+  bottom: var(--safe-bottom);
+  right: var(--safe-right);
+  z-index: 20;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(0.4rem);
+  transition:
+    opacity var(--fade-duration) var(--fade-ease),
+    transform var(--fade-duration) var(--fade-ease);
+}
+
+.demo-footer.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.footer-btn {
+  appearance: none;
+  border: 1px solid rgba(244, 239, 230, 0.16);
+  background: rgba(5, 5, 7, 0.55);
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: clamp(0.62rem, 1.3vmin, 0.72rem);
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  padding: 0.45em 0.9em;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.footer-btn:hover,
+.footer-btn:focus-visible {
+  color: var(--accent);
+  border-color: rgba(212, 180, 138, 0.45);
+  outline: none;
+}
+
+.footer-btn[aria-pressed="true"] {
+  color: var(--accent-magenta);
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  #ant-field,
+  #spider-field,
+  #mycelium-field {
+    display: none;
+  }
+
+  .start-word {
+    animation: none;
+    opacity: 1;
+  }
+
+  .pray-rune__orbit,
+  .pray-rune__seed {
+    animation: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .scene-layer {
+    --line-width: min(42rem, 70vw);
+  }
+}
