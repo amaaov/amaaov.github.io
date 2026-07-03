@@ -5,9 +5,19 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Thu, 26 Jun 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2026 09:00:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
 
+    <item>
+      <title>Inferentia &amp; Probabilisticum</title>
+      <description>Simulacra detached symbols from reality; Probabilisticum detaches symbolic environments from fixed structure. Inferential media, no-matter space, frictionless ontology, and the operator's fader. EN and RU.</description>
+      <link>https://amaaov.github.io/pages/20260703120000_inferentia_probabilisticum_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260703120000_inferentia_probabilisticum_en.html</guid>
+      <pubDate>Fri, 03 Jul 2026 09:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>philosophy</category>
+      <category>media</category>
+    </item>
     <item>
       <title>pray — amaaåv</title>
       <description>Language placed before inference. Prayer, silence, lockfile trace, confession as echo in mist.</description>
