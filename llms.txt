@@ -6,6 +6,23 @@ Human-facing writing lives here. Many pages are not meant to be reframed as gene
 
 Related technical blog: [amkisko.github.io](https://amkisko.github.io/llms.txt)
 
+## Related technical essays (amkisko.github.io)
+
+Thematic pairs with essays on this site — probabilistic media, inner formation, collective practice, music tooling.
+
+- [LLMs as Probabilistic Medium](https://amkisko.github.io/posts/20251111160000_llms_probabilistic_medium.html) ↔ [Inferentia & Probabilisticum](https://amaaov.github.io/pages/20260703120000_inferentia_probabilisticum_en.html), [pray](https://amaaov.github.io/pages/20260626120000_prayfile_language_before_inference_en.html), [Post-Simulacrum Surrogate](https://amaaov.github.io/pages/20260625120000_post_simulacrum_surrogate_en.html)
+- [The Distance Grows](https://amkisko.github.io/posts/20260313142000_the_distance_grows.html) ↔ Inferentia & Probabilisticum
+- [When Reading Costs More Than Writing](https://amkisko.github.io/posts/20260313103000_when_reading_costs_more_than_writing.html) ↔ Inferentia & Probabilisticum
+- [Inner Formation in the Age of Bots](https://amkisko.github.io/posts/20260306130050_inner_formation_in_the_age_of_bots.html) ↔ pray, Post-Simulacrum, [Past Year Review](https://amaaov.github.io/pages/20250712000000_past_year_review.html)
+- [Manual Gravity in the Probability Storm](https://amkisko.github.io/posts/20260311120000_manual_gravity_in_the_probability_storm.html) ↔ pray, Post-Simulacrum, [Shared Bench](https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html)
+- [Recommendations on Collective Practices](https://amkisko.github.io/posts/20251201120000_collective_practices_recommendations.html) ↔ [CCE manifesto](https://amaaov.github.io/pages/20260608120000_manifesto_collaborative_concurrent_extreme.html), [Люди с приколом](https://amaaov.github.io/pages/20260607120000_lyudi_bez_prikola.html)
+- [Collective Awareness and the Era of Automated Production](https://amkisko.github.io/posts/20251111170000_collective_awareness_automation.html) ↔ CCE manifesto, Shared Bench, Past Year Review
+- [Playing Computer, Playing Music](https://amkisko.github.io/posts/20260313130000_playing_computer_playing_music.html) ↔ [Music of Objects](https://amaaov.github.io/pages/20260623120000_music_of_objects_en.html), Juggling
+- [Slop Is a Lazy Word](https://amkisko.github.io/posts/20260604120000_slop_is_a_lazy_word.html) ↔ [2024 okaupunki lyrics](https://amaaov.github.io/pages/2024_okaupunki_lyrics.html), [Suno Multitrack Example](https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html)
+- [A DAW-less Evening](https://amkisko.github.io/posts/20260605120000_a_dawless_evening.html) ↔ okaupunki lyrics
+- [Before the Dashboard](https://amkisko.github.io/posts/20260606120000_before_the_dashboard.html) ↔ Suno Multitrack Example
+- [Freedom, Consumerism, and the Price of Traces](https://amkisko.github.io/posts/20221030120000_freedom_consumerism_traces.html) ↔ Люди с приколом
+
 ## Pages
 
 - [Home](https://amaaov.github.io/): Values, approach, samples, and contact
