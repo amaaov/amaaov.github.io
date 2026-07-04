@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://amaaov.github.io/</loc>
     <lastmod>2026-07-03</lastmod>
@@ -15,10 +15,6 @@
   <url>
     <loc>https://amaaov.github.io/pages/20260626120000_prayfile_language_before_inference_en.html</loc>
     <lastmod>2026-06-26</lastmod>
-  </url>
-  <url>
-    <loc>https://amaaov.github.io/pages/20260625120000_post_simulacrum_surrogate_en.html</loc>
-    <lastmod>2026-06-25</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260623140000_shared_bench_benchmark_en.html</loc>
@@ -135,34 +131,66 @@
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_uk.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_sv.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_ru.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_pl.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_ja.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_fr.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_fi.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260427101600_juggling_en.html</loc>
     <lastmod>2026-04-27</lastmod>
+      <image:image>
+      <image:loc>https://amaaov.github.io/pages/20260427101600_juggling/IMG_9940.png</image:loc>
+      <image:title>Juggling essay hero photo</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html</loc>
@@ -179,5 +207,13 @@
   <url>
     <loc>https://amaaov.github.io/pages/2024_okaupunki_lyrics.html</loc>
     <lastmod>2025-11-11</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260625120000_post_simulacrum_surrogate_en.html</loc>
+    <lastmod>2026-06-25</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260627120000_pray_demo_en.html</loc>
+    <lastmod>2026-06-27</lastmod>
   </url>
 </urlset>
