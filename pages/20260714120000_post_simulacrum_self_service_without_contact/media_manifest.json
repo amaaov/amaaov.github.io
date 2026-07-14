@@ -1,0 +1,622 @@
+{
+  "chronology": [
+    {
+      "year": 800,
+      "label": "Manuscript copying"
+    },
+    {
+      "year": 1455,
+      "label": "Printed inventory (movable type)"
+    },
+    {
+      "year": 1494,
+      "label": "Double-entry bookkeeping (Pacioli)"
+    },
+    {
+      "year": 1740,
+      "label": "Circulating library"
+    },
+    {
+      "year": 1749,
+      "label": "Fanny Hill (printed erotica edition)"
+    },
+    {
+      "year": 1837,
+      "label": "Electric telegraph"
+    },
+    {
+      "year": 1868,
+      "label": "Typewriter (keyboard text machine)"
+    },
+    {
+      "year": 1872,
+      "label": "Mail-order catalogue"
+    },
+    {
+      "year": 1873,
+      "label": "Comstock postal obscenity"
+    },
+    {
+      "year": 1876,
+      "label": "Telephone (Bell patent)"
+    },
+    {
+      "year": 1877,
+      "label": "Phonograph playback"
+    },
+    {
+      "year": 1882,
+      "label": "Pearl Street private electricity (metered)"
+    },
+    {
+      "year": 1884,
+      "label": "Linotype hot-metal typesetting"
+    },
+    {
+      "year": 1888,
+      "label": "My Secret Life (serial erotic memoir)"
+    },
+    {
+      "year": 1888,
+      "label": "Cash register (self-tallying sales)"
+    },
+    {
+      "year": 1888,
+      "label": "War of the Currents & AC watt-hour meter"
+    },
+    {
+      "year": 1890,
+      "label": "Hollerith punched-card tabulation"
+    },
+    {
+      "year": 1894,
+      "label": "Kinetoscope / motion-picture camera"
+    },
+    {
+      "year": 1895,
+      "label": "Niagara Falls AC transmission"
+    },
+    {
+      "year": 1913,
+      "label": "Ford moving assembly line"
+    },
+    {
+      "year": 1916,
+      "label": "Self-service grocery (Piggly Wiggly)"
+    },
+    {
+      "year": 1922,
+      "label": "Broadcast radio receiver"
+    },
+    {
+      "year": 1927,
+      "label": "Television (electronic image)"
+    },
+    {
+      "year": 1935,
+      "label": "Utility holding company act (US)"
+    },
+    {
+      "year": 1945,
+      "label": "ENIAC electronic computer"
+    },
+    {
+      "year": 1947,
+      "label": "Circus skill → amateur guild (IJA)"
+    },
+    {
+      "year": 1947,
+      "label": "Transistor (solid-state switch)"
+    },
+    {
+      "year": 1948,
+      "label": "LP microgroove (album as inventory)"
+    },
+    {
+      "year": 1950,
+      "label": "Microwave oven (consumer)"
+    },
+    {
+      "year": 1953,
+      "label": "Playboy magazine (newsstand erotica)"
+    },
+    {
+      "year": 1955,
+      "label": "Vending machine mass retail"
+    },
+    {
+      "year": 1956,
+      "label": "Stored-program computer (software self-service)"
+    },
+    {
+      "year": 1958,
+      "label": "BankAmericard (Visa network)"
+    },
+    {
+      "year": 1959,
+      "label": "Xerox plain-paper photocopier"
+    },
+    {
+      "year": 1960,
+      "label": "Free Jazz (Ornette Coleman album)"
+    },
+    {
+      "year": 1961,
+      "label": "Unimate industrial robot"
+    },
+    {
+      "year": 1962,
+      "label": "Fluxus festivals (DIY performance art)"
+    },
+    {
+      "year": 1963,
+      "label": "Time-sharing (remote terminal)"
+    },
+    {
+      "year": 1965,
+      "label": "Gas-station self-service pumps"
+    },
+    {
+      "year": 1966,
+      "label": "Mastercard (Interbank network)"
+    },
+    {
+      "year": 1966,
+      "label": "Rocksteady Jamaica (ska→reggae bridge)"
+    },
+    {
+      "year": 1967,
+      "label": "Automated teller machine (ATM)"
+    },
+    {
+      "year": 1969,
+      "label": "Telnet remote terminal (RFC)"
+    },
+    {
+      "year": 1971,
+      "label": "Ganelin Trio (unofficial free jazz)"
+    },
+    {
+      "year": 1971,
+      "label": "Microprocessor on a chip (Intel 4004)"
+    },
+    {
+      "year": 1971,
+      "label": "Floppy disk (removable storage)"
+    },
+    {
+      "year": 1971,
+      "label": "Project Gutenberg (e-text on ARPANET)"
+    },
+    {
+      "year": 1972,
+      "label": "Deep Throat (theatrical adult film)"
+    },
+    {
+      "year": 1973,
+      "label": "Dub remix (King Tubby era)"
+    },
+    {
+      "year": 1974,
+      "label": "Supermarket barcode scanner"
+    },
+    {
+      "year": 1977,
+      "label": "Punk rock DIY explosion"
+    },
+    {
+      "year": 1977,
+      "label": "Apple II home microcomputer"
+    },
+    {
+      "year": 1978,
+      "label": "MUD1 shared text world"
+    },
+    {
+      "year": 1979,
+      "label": "Sony Walkman (personal detachable sound)"
+    },
+    {
+      "year": 1979,
+      "label": "Usenet (messages & binaries)"
+    },
+    {
+      "year": 1980,
+      "label": "VHS home video (adult rental circuit)"
+    },
+    {
+      "year": 1981,
+      "label": "Computer mouse (GUI pointing)"
+    },
+    {
+      "year": 1981,
+      "label": "IBM Personal Computer"
+    },
+    {
+      "year": 1982,
+      "label": "Compact disc (digital audio carrier)"
+    },
+    {
+      "year": 1983,
+      "label": "MIDI (machines as scores)"
+    },
+    {
+      "year": 1983,
+      "label": "Motorola DynaTAC (cellular handset)"
+    },
+    {
+      "year": 1984,
+      "label": "FidoNet BBS store-and-forward"
+    },
+    {
+      "year": 1984,
+      "label": "Apple Macintosh (GUI desktop)"
+    },
+    {
+      "year": 1985,
+      "label": "Desktop publishing (LaserWriter era)"
+    },
+    {
+      "year": 1986,
+      "label": "CVS concurrent version control"
+    },
+    {
+      "year": 1988,
+      "label": "Akai MPC (pad sampling)"
+    },
+    {
+      "year": 1988,
+      "label": "IRC real-time text chat"
+    },
+    {
+      "year": 1991,
+      "label": "PGP released"
+    },
+    {
+      "year": 1993,
+      "label": "MBone live multicast (first internet concerts)"
+    },
+    {
+      "year": 1994,
+      "label": "Commercial adult websites"
+    },
+    {
+      "year": 1995,
+      "label": "Digital radio (DAB)"
+    },
+    {
+      "year": 1995,
+      "label": "RealAudio & live sports stream"
+    },
+    {
+      "year": 1995,
+      "label": "DVD (optical video disc)"
+    },
+    {
+      "year": 1998,
+      "label": "PayPal web-wallet payments"
+    },
+    {
+      "year": 1998,
+      "label": "MP3 compressed audio (analog carriers optional)"
+    },
+    {
+      "year": 1999,
+      "label": "XMPP / Jabber federated chat"
+    },
+    {
+      "year": 1999,
+      "label": "Napster & Direct Connect P2P"
+    },
+    {
+      "year": 2000,
+      "label": "Gnutella decentralised search"
+    },
+    {
+      "year": 2000,
+      "label": "Distributed Proofreaders & podcast enclosures"
+    },
+    {
+      "year": 2001,
+      "label": "Ableton Live (loop DAW)"
+    },
+    {
+      "year": 2001,
+      "label": "BitTorrent swarm protocol"
+    },
+    {
+      "year": 2001,
+      "label": "iPod portable music library"
+    },
+    {
+      "year": 2001,
+      "label": "Soulseek music P2P"
+    },
+    {
+      "year": 2002,
+      "label": "RapidShare cyberlocker"
+    },
+    {
+      "year": 2002,
+      "label": "Roomba domestic robot"
+    },
+    {
+      "year": 2003,
+      "label": "iTunes Music Store"
+    },
+    {
+      "year": 2003,
+      "label": "The Pirate Bay torrent index"
+    },
+    {
+      "year": 2004,
+      "label": "Self-checkout POS hardware spread"
+    },
+    {
+      "year": 2004,
+      "label": "Google Books mass scan"
+    },
+    {
+      "year": 2005,
+      "label": "Git distributed version control"
+    },
+    {
+      "year": 2005,
+      "label": "YouTube founded"
+    },
+    {
+      "year": 2006,
+      "label": "Farmer's Market (proto darknet drugs)"
+    },
+    {
+      "year": 2006,
+      "label": "MediaFire file hosting"
+    },
+    {
+      "year": 2007,
+      "label": "iPhone & app-store smartphone"
+    },
+    {
+      "year": 2007,
+      "label": "Pornhub (streaming tube site)"
+    },
+    {
+      "year": 2007,
+      "label": "BBC iPlayer catch-up TV"
+    },
+    {
+      "year": 2007,
+      "label": "Netflix streaming & Kindle licence"
+    },
+    {
+      "year": 2007,
+      "label": "Amazon Kindle e-reader"
+    },
+    {
+      "year": 2008,
+      "label": "Bitcoin whitepaper"
+    },
+    {
+      "year": 2008,
+      "label": "Spotify licensed music stream"
+    },
+    {
+      "year": 2009,
+      "label": "MakerBot desktop 3D printer"
+    },
+    {
+      "year": 2010,
+      "label": "Parrot AR.Drone (phone-piloted quadcopter)"
+    },
+    {
+      "year": 2010,
+      "label": "iPad tablet computer"
+    },
+    {
+      "year": 2010,
+      "label": "Stripe payment API"
+    },
+    {
+      "year": 2010,
+      "label": "Instagram image stream"
+    },
+    {
+      "year": 2011,
+      "label": "Twitch (continuous life-stream)"
+    },
+    {
+      "year": 2011,
+      "label": "Silk Road marketplace (Tor+BTC template)"
+    },
+    {
+      "year": 2012,
+      "label": "AlexNet / ImageNet (deep learning return)"
+    },
+    {
+      "year": 2012,
+      "label": "NFC contactless payment cards"
+    },
+    {
+      "year": 2013,
+      "label": "DJI Phantom consumer drone"
+    },
+    {
+      "year": 2013,
+      "label": "Amazon Prime Air announced (60 Minutes)"
+    },
+    {
+      "year": 2013,
+      "label": "Telegram & bot platform"
+    },
+    {
+      "year": 2014,
+      "label": "Starship & Zipline delivery robotics founded"
+    },
+    {
+      "year": 2014,
+      "label": "Apple Pay contactless token"
+    },
+    {
+      "year": 2014,
+      "label": "Amazon Echo (voice appliance)"
+    },
+    {
+      "year": 2015,
+      "label": "Hydra darknet market (RU/post-USSR)"
+    },
+    {
+      "year": 2015,
+      "label": "OpenROV Trident (underwater drone)"
+    },
+    {
+      "year": 2015,
+      "label": "Discord & community bots"
+    },
+    {
+      "year": 2015,
+      "label": "YouTube HTML5 default player"
+    },
+    {
+      "year": 2016,
+      "label": "BlueROV2 hobbyist underwater ROV"
+    },
+    {
+      "year": 2016,
+      "label": "Zipline national medical drone (Rwanda)"
+    },
+    {
+      "year": 2016,
+      "label": "FAA Part 107 (small UAS commercial)"
+    },
+    {
+      "year": 2016,
+      "label": "Hugging Face model hub founded"
+    },
+    {
+      "year": 2016,
+      "label": "Raspberry Pi (local compute board)"
+    },
+    {
+      "year": 2017,
+      "label": "Starship robot delivery (Milton Keynes)"
+    },
+    {
+      "year": 2017,
+      "label": "Matternet BVLOS medical drones (Switzerland)"
+    },
+    {
+      "year": 2017,
+      "label": "Transformer architecture (Attention Is All You Need)"
+    },
+    {
+      "year": 2018,
+      "label": "BERT language understanding"
+    },
+    {
+      "year": 2019,
+      "label": "Adult-stream tracking study (Federici)"
+    },
+    {
+      "year": 2019,
+      "label": "Sipulimarket (Finnish Tor drugs)"
+    },
+    {
+      "year": 2019,
+      "label": "Wing Part 135 drone carrier certificate"
+    },
+    {
+      "year": 2019,
+      "label": "Amazon Scout sidewalk delivery robot"
+    },
+    {
+      "year": 2019,
+      "label": "GPT-2 generative language model"
+    },
+    {
+      "year": 2020,
+      "label": "GPT-3 & OpenAI API (June)"
+    },
+    {
+      "year": 2021,
+      "label": "GitHub Copilot code inference"
+    },
+    {
+      "year": 2022,
+      "label": "Stable Diffusion open image model"
+    },
+    {
+      "year": 2022,
+      "label": "Midjourney Discord image beta (July)"
+    },
+    {
+      "year": 2022,
+      "label": "ChatGPT mass chat interface (November)"
+    },
+    {
+      "year": 2023,
+      "label": "Custom GPTs + Assistants API (6 Nov)"
+    },
+    {
+      "year": 2023,
+      "label": "Chat Completions + system role (1 Mar)"
+    },
+    {
+      "year": 2023,
+      "label": "OpenAI function calling (13 June)"
+    },
+    {
+      "year": 2023,
+      "label": "Suno generative music (prompt stream)"
+    },
+    {
+      "year": 2023,
+      "label": "LLaMA & local open-weight inference"
+    },
+    {
+      "year": 2024,
+      "label": "GPT Store marketplace (10 Jan)"
+    },
+    {
+      "year": 2024,
+      "label": "OpenAI o1-preview reasoning (12 Sept)"
+    },
+    {
+      "year": 2024,
+      "label": "Model Context Protocol (25 Nov)"
+    },
+    {
+      "year": 2025,
+      "label": "OpenAI Responses API (11 Mar)"
+    },
+    {
+      "year": 2025,
+      "label": "o3 / o4-mini reasoning + tools (16 Apr)"
+    },
+    {
+      "year": 2025,
+      "label": "GPT-5 unified router (7 Aug)"
+    },
+    {
+      "year": 2025,
+      "label": "Claude 3.7 Sonnet + extended thinking (24 Feb)"
+    },
+    {
+      "year": 2025,
+      "label": "AGENTS.md open format (Aug)"
+    },
+    {
+      "year": 2026,
+      "label": "Cursor Agent Skills + .agents (22 Jan)"
+    }
+  ],
+  "materials_count": 1337,
+  "references_on_page": 145,
+  "images_checked": 23,
+  "images_failed": 0,
+  "youtube_checked": 20,
+  "archive_embeds_checked": 4,
+  "embeds_failed": 0,
+  "inline_plates_skipped_duplicates": 0,
+  "og_image": "https://commons.wikimedia.org/wiki/Special:FilePath/Self-service_checkout_in_M%26S.jpg?width=1200",
+  "og_material_id": 219
+}
