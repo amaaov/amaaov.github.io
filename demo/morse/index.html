@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Morse channel — translator &amp; synth</title>
+  <meta name="description" content="Slim Morse translator with tap, microphone, and image decode, open-channel ciphers, and a Web Audio CW synthesizer.">
+  <meta name="author" content="amaaov">
+  <link rel="canonical" href="https://amaaov.github.io/demo/morse/">
+  <meta property="og:title" content="Morse channel — translator &amp; synth">
+  <meta property="og:description" content="Text, Morse, tap, mic, and image input with open-channel ciphers and CW synth.">
+  <meta property="og:url" content="https://amaaov.github.io/demo/morse/">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0b100f">
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css2?family=IBM+Plex+Mono:wght@360;450;550&family=Syne:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#mode-tabs">Skip to translator</a>
+  <p id="live-status" class="sr-only" role="status" aria-live="polite"></p>
+
+  <header class="top">
+    <a class="brand" href="https://amaaov.github.io/">amaaåv</a>
+    <h1 class="title">Morse channel</h1>
+    <nav class="icon-nav" aria-label="Tools">
+      <button type="button" id="toggle-history" class="icon-btn" aria-expanded="false" aria-controls="panel-history" aria-haspopup="dialog" title="History (Y)">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 1.5a6.5 6.5 0 1 0 6.2 4.6l-1.3.4A5.2 5.2 0 1 1 8 2.8V5l3-2.2L8 1.5zM7.4 5v3.3l2.6 1.5.6-1-2-1.2V5H7.4z"/></svg>
+        <span class="sr-only">History</span>
+      </button>
+      <button type="button" id="toggle-ensemble" class="icon-btn" aria-expanded="false" aria-controls="panel-ensemble" aria-haspopup="dialog" title="Ensemble (E)">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M2.2 6.2h1.8v7.1H2.2V6.2zm3.3-3.5h1.8v10.6H5.5V2.7zm3.3 5.2h1.8v5.4H8.8V7.9zm3.3-2.4h1.8v7.8h-1.8V5.5z"/></svg>
+        <span class="sr-only">Ensemble</span>
+      </button>
+      <button type="button" id="toggle-listen" class="icon-btn" aria-expanded="false" aria-controls="panel-listen" aria-haspopup="dialog" title="Settings">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6.4 1.2h3.2l.3 1.5a4.8 4.8 0 0 1 1.2.7l1.5-.5 1.6 2.8-1.2 1c.1.4.1.8 0 1.2l1.2 1-1.6 2.8-1.5-.5a4.8 4.8 0 0 1-1.2.7l-.3 1.5H6.4l-.3-1.5a4.8 4.8 0 0 1-1.2-.7l-1.5.5L1.8 9.4l1.2-1a4.4 4.4 0 0 1 0-1.2l-1.2-1 1.6-2.8 1.5.5a4.8 4.8 0 0 1 1.2-.7L6.4 1.2zM8 5.4A2.6 2.6 0 1 0 8 10.6 2.6 2.6 0 0 0 8 5.4z"/></svg>
+        <span class="sr-only">Settings</span>
+      </button>
+      <button type="button" id="toggle-help" class="icon-btn" aria-expanded="false" aria-controls="panel-help" aria-haspopup="dialog" title="Help (H)">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM7.2 11.6h1.6v1.5H7.2v-1.5zm2.5-5.3c0 1-.5 1.5-1.3 2l-.4.3c-.3.2-.4.4-.4.8v.4H6.1v-.5c0-.8.4-1.3 1.2-1.9l.4-.3c.5-.3.7-.6.7-1.1 0-.5-.4-.9-1-.9-.7 0-1.1.4-1.2 1.1H4.6C4.8 4.7 5.8 3.8 7.2 3.8c1.5 0 2.5.9 2.5 2.5z"/></svg>
+        <span class="sr-only">Help</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="stage">
+    <section class="translate" aria-labelledby="translate-heading">
+      <h2 id="translate-heading" class="sr-only">Translator</h2>
+
+      <div id="mode-tabs" class="mode-tabs" role="tablist" aria-label="Input mode">
+        <button type="button" class="mode-tab" role="tab" id="tab-text" aria-selected="true" aria-controls="input-panel" data-mode="text" tabindex="0">TEXT</button>
+        <button type="button" class="mode-tab" role="tab" id="tab-morse" aria-selected="false" aria-controls="input-panel" data-mode="morse" tabindex="-1">MORSE</button>
+        <button type="button" class="mode-tab" role="tab" id="tab-tap" aria-selected="false" aria-controls="input-panel" data-mode="tap" tabindex="-1">TAP</button>
+        <button type="button" class="mode-tab" role="tab" id="tab-mic" aria-selected="false" aria-controls="input-panel" data-mode="mic" tabindex="-1">MIC</button>
+        <button type="button" class="mode-tab" role="tab" id="tab-img" aria-selected="false" aria-controls="input-panel" data-mode="img" tabindex="-1">IMAGE</button>
+      </div>
+
+      <div id="input-panel" class="input-panel" role="tabpanel" aria-labelledby="tab-text">
+        <label class="field" id="text-field">
+          <span class="sr-only" id="input-label">Text</span>
+          <textarea id="text-input" rows="4" spellcheck="true" autocomplete="off" placeholder="Type a message, or paste ASCII QR / GO"></textarea>
+        </label>
+
+        <label class="field" id="morse-field" hidden>
+          <span class="sr-only">Morse</span>
+          <textarea id="morse-input" rows="4" spellcheck="false" autocomplete="off" placeholder="... --- ..."></textarea>
+        </label>
+
+        <div id="tap-field" class="mode-surface" hidden>
+          <button type="button" id="tap-pad" class="tap-pad" aria-label="Morse key pad" aria-describedby="tap-hint">Hold to key</button>
+          <p id="tap-hint" class="hint">Hold Space or this pad. Release length makes dit or dah. Timing follows toolbar WPM.</p>
+        </div>
+
+        <div id="mic-field" class="mode-surface" hidden>
+          <button type="button" id="mic-btn" class="btn btn-mic" aria-pressed="false" aria-describedby="mic-hint">Start listening</button>
+          <p id="mic-hint" class="hint sr-only">Uses the microphone to hear a continuous-wave tone.</p>
+          <p class="hint">Listens for a CW tone. Tune Hz under Settings. Speed follows toolbar WPM.</p>
+        </div>
+
+        <div id="img-field" class="mode-surface" hidden>
+          <label class="file-label btn">
+            Upload image
+            <input id="img-file" type="file" accept="image/*" hidden>
+          </label>
+          <div class="img-controls">
+            <label>Threshold <input id="img-threshold" type="range" min="40" max="220" value="140"></label>
+            <label><input id="img-invert" type="checkbox"> Invert</label>
+            <button type="button" id="img-recognize" class="btn">Recognize</button>
+          </div>
+          <canvas id="img-canvas" class="img-canvas" width="640" height="200" aria-label="Morse image preview"></canvas>
+          <p class="hint">Reads QR or GO boards (Morse or text payload) and line photos of dots and dashes. For a Morse line, drag the threshold until the green band catches the marks, then Recognize.</p>
+        </div>
+      </div>
+
+      <div class="desk-bar">
+        <div class="cipher-bar" aria-label="Output cipher">
+          <div class="cipher-row">
+            <div class="cipher-mode-tabs" role="tablist" aria-label="Output transform">
+              <button type="button" class="mode-tab" role="tab" id="cipher-plain" data-cipher-mode="plain" aria-selected="true" tabindex="0">PLAIN</button>
+              <button type="button" class="mode-tab" role="tab" id="cipher-encrypt" data-cipher-mode="encrypt" aria-selected="false" tabindex="-1">ENCRYPT</button>
+              <button type="button" class="mode-tab" role="tab" id="cipher-decrypt" data-cipher-mode="decrypt" aria-selected="false" tabindex="-1">DECRYPT</button>
+            </div>
+            <label class="cipher-method" id="cipher-method" hidden>
+              <span class="sr-only">Method</span>
+              <select id="cipher-select" title="Cipher method"></select>
+            </label>
+            <button type="button" id="generate-pad" class="btn btn-ghost" hidden>Pad</button>
+          </div>
+          <div id="cipher-keys" class="cipher-keys-inline"></div>
+          <p id="cipher-guide" class="cipher-guide hint" hidden></p>
+        </div>
+      </div>
+
+      <div class="output-head">
+        <div id="output-tabs" class="mode-tabs output-tabs" role="tablist" aria-label="Output mode">
+          <button type="button" class="mode-tab" role="tab" id="out-tab-text" aria-selected="false" aria-controls="output-panel" data-output="text" tabindex="-1">TEXT</button>
+          <button type="button" class="mode-tab" role="tab" id="out-tab-morse" aria-selected="true" aria-controls="output-panel" data-output="morse" tabindex="0">MORSE</button>
+          <button type="button" class="mode-tab" role="tab" id="out-tab-qr" aria-selected="false" aria-controls="output-panel" data-output="qr" tabindex="-1">QR</button>
+          <button type="button" class="mode-tab" role="tab" id="out-tab-midi" aria-selected="false" aria-controls="output-panel" data-output="midi" tabindex="-1">MIDI</button>
+          <button type="button" class="mode-tab" role="tab" id="out-tab-clock" aria-selected="false" aria-controls="output-panel" data-output="clock" tabindex="-1">CLOCK</button>
+        </div>
+      </div>
+
+      <div id="output-panel" class="output-panel" role="tabpanel" aria-labelledby="out-tab-morse">
+        <div id="midi-controls" class="midi-controls" hidden>
+          <button type="button" id="midi-enable" class="btn btn-ghost">Connect MIDI</button>
+          <label class="midi-field">Out
+            <select id="midi-output" title="MIDI output port" disabled>
+              <option value="">No port</option>
+            </select>
+          </label>
+          <label class="midi-field">Ch
+            <input id="midi-channel" type="number" min="1" max="16" value="1" inputmode="numeric" title="MIDI channel">
+          </label>
+          <label class="midi-field">Note
+            <input id="midi-note" type="number" min="0" max="127" value="69" inputmode="numeric" title="MIDI note number">
+          </label>
+          <p id="midi-status" class="hint midi-status">Play keys a straight-key note on/off over Web MIDI when a port is connected.</p>
+        </div>
+        <label class="field" id="output-text-field">
+          <span class="sr-only">Output</span>
+          <textarea id="output-view" rows="3" spellcheck="false" autocomplete="off" readonly aria-live="polite" placeholder="Morse appears here"></textarea>
+        </label>
+        <div id="output-viz-field" class="mode-surface" hidden>
+          <div id="qr-controls" class="qr-controls" hidden>
+            <div id="qr-variant" class="viz-variant" role="group" aria-label="Matrix style">
+              <button type="button" class="viz-variant-btn" data-qr-variant="go" aria-pressed="true">GO</button>
+              <button type="button" class="viz-variant-btn" data-qr-variant="qr" aria-pressed="false">QR</button>
+            </div>
+            <label class="viz-ascii">
+              <input id="qr-ascii" type="checkbox">
+              ASCII
+            </label>
+          </div>
+          <div id="clock-variant" class="viz-variant" role="group" aria-label="Clock style" hidden>
+            <button type="button" class="viz-variant-btn" data-clock-variant="face" aria-pressed="true">FACE</button>
+            <button type="button" class="viz-variant-btn" data-clock-variant="ladder" aria-pressed="false">LADDER</button>
+          </div>
+          <div id="output-viz-frame" class="output-viz-frame">
+            <canvas id="output-canvas" class="output-canvas" width="520" height="520" aria-label="Morse visualization"></canvas>
+            <pre id="output-ascii" class="output-ascii" hidden aria-label="ASCII matrix"></pre>
+          </div>
+          <div id="viz-actions" class="viz-actions" hidden>
+            <button type="button" id="viz-export" class="btn btn-ghost viz-export" title="Download">
+              DOWNLOAD
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="transport-bar">
+        <div class="toolbar" role="toolbar" aria-label="Translate actions">
+          <div class="toolbar-play">
+            <button type="button" id="play-btn" class="btn btn-primary" title="Play (P) · Shift+P loops">Play</button>
+          </div>
+          <button type="button" id="loop-btn" class="btn btn-ghost" aria-pressed="false" title="Loop playback (L)">Loop</button>
+          <button type="button" id="stop-btn" class="btn btn-ghost">Stop</button>
+          <button type="button" id="wav-btn" class="btn btn-ghost" title="Download CW WAV (W)">WAV</button>
+          <button type="button" id="clear-btn" class="btn btn-ghost">Clear</button>
+          <label class="toolbar-wpm" title="Speed for play, tap, and mic">
+            <span class="sr-only">WPM</span>
+            <input id="play-wpm" type="number" min="5" max="40" step="1" value="18" inputmode="numeric">
+            <span aria-hidden="true">WPM</span>
+          </label>
+        </div>
+        <div class="engine-bar" aria-label="Synthesizer engine">
+          <label class="engine-pick">
+            <span class="sr-only">Engine</span>
+            <select id="engine-select" title="Synth engine"></select>
+          </label>
+          <button type="button" id="toggle-synth" class="icon-btn" aria-expanded="false" aria-controls="panel-synth" aria-haspopup="dialog" title="Synth parameters (S)">
+            <span aria-hidden="true">∿</span><span class="sr-only">Synthesizer parameters</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside id="panel-history" class="panel" role="dialog" aria-modal="true" aria-labelledby="history-title" aria-hidden="true" hidden>
+    <div class="panel-head">
+      <h2 id="history-title">History</h2>
+      <button type="button" class="icon-btn" data-close-panel aria-label="Close history">×</button>
+    </div>
+    <p class="panel-lead">Saved on this device only. Click a row to restore input.</p>
+    <div class="history-controls">
+      <label class="history-enable">
+        <input id="history-enable" type="checkbox" checked>
+        Save history
+      </label>
+      <button type="button" id="history-clear" class="btn btn-ghost">Clear all</button>
+    </div>
+    <p id="history-empty" class="hint">No entries yet.</p>
+    <ul id="history-list" class="history-list" aria-label="Saved messages"></ul>
+  </aside>
+
+  <aside id="panel-synth" class="panel" role="dialog" aria-modal="true" aria-labelledby="synth-title" aria-hidden="true" hidden>
+    <div class="panel-head">
+      <h2 id="synth-title">Synthesizer</h2>
+      <button type="button" class="icon-btn" data-close-panel aria-label="Close synthesizer">×</button>
+    </div>
+    <form id="synth-form" class="synth-form"></form>
+  </aside>
+
+  <aside id="panel-ensemble" class="panel panel-wide" role="dialog" aria-modal="true" aria-labelledby="ensemble-title" aria-hidden="true" hidden>
+    <div class="panel-head">
+      <h2 id="ensemble-title">Ensemble</h2>
+      <button type="button" class="icon-btn" data-close-panel aria-label="Close ensemble">×</button>
+    </div>
+    <div class="ensemble-controls">
+      <button type="button" id="ensemble-add" class="btn btn-ghost">ADD</button>
+      <button type="button" id="ensemble-play" class="btn">PLAY</button>
+      <button type="button" id="ensemble-stop" class="btn btn-ghost">STOP</button>
+      <button type="button" id="ensemble-save" class="btn btn-ghost">SAVE</button>
+    </div>
+    <div class="ensemble-master" aria-label="Ensemble master">
+      <label class="ensemble-mix">RVB
+        <input id="ensemble-reverb" type="range" min="0" max="1" step="0.01" value="0.18" aria-label="Master reverb">
+      </label>
+      <label class="ensemble-mix">CMP
+        <input id="ensemble-compression" type="range" min="0" max="1" step="0.01" value="0.35" aria-label="Master compression">
+      </label>
+    </div>
+    <div class="ensemble-library">
+      <label class="field compact">Composition
+        <select id="ensemble-composition" aria-label="Saved compositions">
+          <option value="">Working set</option>
+        </select>
+      </label>
+      <button type="button" id="ensemble-composition-delete" class="icon-btn" aria-label="Delete composition" title="Delete composition" disabled>
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6 2h4l.5 1H14v1H2V3h3.5L6 2zm1 4v6H6V6h1zm2 0v6H8V6h1zm2 0v6h-1V6h1zM3.5 5h9l-.7 9.1A1 1 0 0 1 10.8 15H5.2a1 1 0 0 1-1-.9L3.5 5z"/></svg>
+      </button>
+    </div>
+    <p id="ensemble-empty" class="hint">No tracks yet. ADD seeds from the current text. SAVE stores a composition you can switch back to.</p>
+    <ul id="ensemble-list" class="ensemble-list" aria-label="Ensemble tracks"></ul>
+  </aside>
+
+  <aside id="panel-listen" class="panel" role="dialog" aria-modal="true" aria-labelledby="listen-title" aria-hidden="true" hidden>
+    <div class="panel-head">
+      <h2 id="listen-title">Settings</h2>
+      <button type="button" class="icon-btn" data-close-panel aria-label="Close settings">×</button>
+    </div>
+    <label class="field compact">Mic tone Hz
+      <input id="listen-tone" type="number" min="300" max="1200" value="700">
+    </label>
+    <p class="hint">Mic uses a narrow band around this tone. Dit timing follows toolbar WPM. Prefer a quiet room and a steady CW pitch.</p>
+  </aside>
+
+  <aside id="panel-help" class="panel" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-hidden="true" hidden>
+    <div class="panel-head">
+      <h2 id="help-title">Keyboard</h2>
+      <button type="button" class="icon-btn" data-close-panel aria-label="Close help">×</button>
+    </div>
+    <ul class="keys">
+      <li><kbd>1</kbd>–<kbd>5</kbd> input TEXT MORSE TAP MIC IMAGE</li>
+      <li><kbd>6</kbd>–<kbd>9</kbd> output TEXT MORSE QR MIDI · <kbd>0</kbd> CLOCK</li>
+      <li><kbd>/</kbd> focus input</li>
+      <li><kbd>Space</kbd> hold to key (TAP)</li>
+      <li><kbd>P</kbd> play · <kbd>Shift</kbd>+<kbd>P</kbd> play with loop</li>
+      <li><kbd>L</kbd> loop</li>
+      <li><kbd>W</kbd> download CW WAV</li>
+      <li>QR · GO or QR matrix, ASCII text view, Download or Copy; CLOCK · FACE or LADDER, drag to scrub when idle</li>
+      <li><kbd>S</kbd> synth parameters</li>
+      <li><kbd>E</kbd> ensemble (separate from toolbar Play)</li>
+      <li><kbd>Y</kbd> history</li>
+      <li><kbd>H</kbd> this help</li>
+      <li><kbd>Esc</kbd> close panel</li>
+    </ul>
+  </aside>
+
+  <div class="backdrop" id="backdrop" hidden aria-hidden="true"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
