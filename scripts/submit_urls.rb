@@ -20,8 +20,28 @@ BING_AUTHORIZE_URL = "https://www.bing.com/webmasters/oauth/authorize"
 BING_TOKEN_URL = "https://www.bing.com/webmasters/oauth/token"
 BING_REFRESH_URL = "https://www.bing.com/webmasters/token"
 INDEXNOW_DEFAULT_ENDPOINT = "https://api.indexnow.org/indexnow"
+INDEXNOW_DEFAULT_ENDPOINTS = [
+  INDEXNOW_DEFAULT_ENDPOINT,
+  "https://www.bing.com/indexnow",
+  "https://yandex.com/indexnow",
+  "https://search.seznam.cz/indexnow",
+  "https://indexnow.yep.com/indexnow",
+  "https://indexnow.amazonbot.amazon/indexnow"
+].freeze
 INDEXNOW_BATCH_SIZE = 10_000
 BING_BATCH_SIZE = 500
+WEBSUB_DEFAULT_HUBS = [
+  "https://pubsubhubbub.appspot.com/",
+  "https://pubsubhubbub.superfeedr.com/"
+].freeze
+BRAVE_SUBMIT_PAGE = "https://search.brave.com/submit-url"
+ARCHIVE_TODAY_HOSTS = %w[
+  archive.ph archive.md archive.li archive.vn archive.fo archive.today archive.is
+].freeze
+ARCHIVE_TODAY_USER_AGENT =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " \
+  "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+ARCHIVE_TODAY_DEFAULT_RATE_LIMIT_SECONDS = 15
 
 def usage
   <<~HELP
@@ -30,7 +50,8 @@ def usage
       #{File.basename($PROGRAM_NAME)} auth bing
       #{File.basename($PROGRAM_NAME)} ping-sitemap
 
-    Submit changed or sitemap URLs to IndexNow, Internet Archive, and optionally Bing.
+    Submit changed or sitemap URLs to IndexNow (relay + engines), WebSub hubs,
+    Internet Archive, archive.today, Brave Search, and optionally Bing.
 
     Options for submit:
       --config PATH     Config file (default: scripts/submit_urls.yml)
@@ -39,9 +60,11 @@ def usage
       --stdin           Read URLs from stdin (one per line)
       --verify          Keep only URLs that respond with HTTP 200 or 301
       --dry-run         Print actions without sending requests
-      --indexnow-only   Skip Archive.org and Bing
-      --archive-only    Skip IndexNow and Bing
-      --bing-only       Skip IndexNow and Archive.org
+      --indexnow-only   Skip archive.org, archive.today, Brave, and Bing
+      --archive-only    Skip IndexNow, WebSub, archive.today, Brave, and Bing
+      --archive-today-only  Skip IndexNow, WebSub, archive.org, Brave, and Bing
+      --brave-only      Skip IndexNow, WebSub, archive.org, archive.today, and Bing
+      --bing-only       Skip IndexNow, WebSub, archive.org, archive.today, and Brave
 
     Setup:
       1. Copy scripts/submit_urls.yml.example to scripts/submit_urls.yml
@@ -49,6 +72,8 @@ def usage
       3. Optional Archive.org: copy scripts/archive_org.json.example to .submit_urls/archive_org.json
          (or set IA_S3_ACCESS_KEY and IA_S3_SECRET_KEY; keys from https://archive.org/account/s3.php)
       4. Optional Bing OAuth: register app in Bing Webmaster Tools, fill client_id/secret, run `auth bing`
+      5. Optional archive.today: set archive_today.enabled (rate-limited; may hit CAPTCHA)
+      6. Optional Brave: set brave.enabled (no public API; manual or open-browser helper)
   HELP
 end
 
@@ -105,12 +130,203 @@ def post_form(uri, params, headers = {})
   end
 end
 
-def get_request(uri, headers = {})
+def get_request(uri, headers = {}, cookies: {})
   request = Net::HTTP::Get.new(uri)
   headers.each { |key, value| request[key] = value }
+  request["Cookie"] = cookie_header(cookies) unless cookies.empty?
 
   Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 30, read_timeout: 60) do |http|
     http.request(request)
+  end
+end
+
+def cookie_header(cookies)
+  cookies.map { |name, value| "#{name}=#{value}" }.join("; ")
+end
+
+def merge_cookies(cookies, response)
+  merged = cookies.dup
+  response.get_fields("set-cookie")&.each do |cookie|
+    name, value = cookie.split(";", 2).first.split("=", 2)
+    merged[name] = value if name && value
+  end
+  merged
+end
+
+def archive_today_uniform(url)
+  url.to_s.strip.gsub(" ", "_")
+end
+
+def archive_today_extract_submitid(html)
+  match = html.match(/name="submitid"[^>]*value="([^"]+)"/)
+  match&.captures&.first
+end
+
+def archive_today_pick_host(config)
+  archive = config.fetch("archive_today", {})
+  hosts = archive.fetch("hosts", ARCHIVE_TODAY_HOSTS)
+  headers = { "User-Agent" => ARCHIVE_TODAY_USER_AGENT }
+
+  hosts.each do |host|
+    uri = URI("https://#{host}/")
+    puts "archive.today: probing #{host}"
+    response = get_request(uri, headers)
+    next unless response.is_a?(Net::HTTPSuccess)
+
+    submitid = archive_today_extract_submitid(response.body)
+    next if submitid.nil? || submitid.empty?
+
+    puts "  using #{host}"
+    return [host, submitid, merge_cookies({}, response)]
+  rescue StandardError => e
+    warn "  #{host}: #{e.message}"
+  end
+
+  nil
+end
+
+def archive_today_timemap_count(url, host)
+  uri = URI("https://#{host}/timemap/#{archive_today_uniform(url)}")
+  response = get_request(uri, { "User-Agent" => ARCHIVE_TODAY_USER_AGENT })
+  return 0 if response.code.to_i == 204
+
+  response.is_a?(Net::HTTPSuccess) ? response.body.lines.count { |line| line.start_with?("http") } : 0
+rescue StandardError
+  0
+end
+
+def archive_today_saved_location(response)
+  refresh = response["Refresh"]
+  return refresh.split(";url=", 2)[1] if refresh&.include?(";url=")
+
+  location = response["Location"]
+  return location if location && !location.empty?
+
+  nil
+end
+
+def submit_archive_today_url(host, submitid, cookies, url, dry_run:)
+  endpoint = URI("https://#{host}/submit/")
+  params = { "submitid" => submitid, "url" => url }
+  headers = {
+    "User-Agent" => ARCHIVE_TODAY_USER_AGENT,
+    "Origin" => "https://#{host}",
+    "Referer" => "https://#{host}/"
+  }
+
+  puts "archive.today: #{url}"
+  if dry_run
+    puts "  POST #{endpoint}"
+    puts "  #{params.inspect}"
+    return true
+  end
+
+  response = post_form(endpoint, params, headers.merge("Cookie" => cookie_header(cookies)))
+  code = response.code.to_i
+  puts "  HTTP #{code} #{response.message}"
+
+  if code == 503
+    warn "  rate limited (archive.today often returns 503 instead of 429)"
+    return false
+  end
+
+  saved = archive_today_saved_location(response)
+  if saved
+    puts "  archived: #{saved}"
+    return true
+  end
+
+  warn "  #{response.body[0, 300]}" unless response.is_a?(Net::HTTPSuccess)
+  false
+end
+
+def submit_archive_today(config, urls, dry_run:)
+  archive = config.fetch("archive_today", {})
+  return if archive.fetch("enabled", false) != true
+
+  rate_limit = archive.fetch("rate_limit_seconds", ARCHIVE_TODAY_DEFAULT_RATE_LIMIT_SECONDS).to_f
+  skip_existing = archive.fetch("skip_if_archived", true)
+  max_urls = archive.fetch("max_urls", 0).to_i
+  urls = urls.first(max_urls) if max_urls.positive?
+
+  if dry_run
+    host = archive.fetch("hosts", ARCHIVE_TODAY_HOSTS).first
+    urls.each do |url|
+      puts "archive.today: #{url}"
+      puts "  POST https://#{host}/submit/"
+      puts "  {\"submitid\" => \"...\", \"url\" => \"#{url}\"}"
+    end
+    return
+  end
+
+  host_info = archive_today_pick_host(config)
+  if host_info.nil?
+    warn "archive.today: skipped (no responding host; DNS or service outage)"
+    return
+  end
+
+  host, submitid, cookies = host_info
+
+  urls.each_with_index do |url, index|
+    sleep(rate_limit) if index.positive? && !dry_run
+
+    if skip_existing && !dry_run
+      count = archive_today_timemap_count(url, host)
+      if count.positive?
+        puts "archive.today: #{url}"
+        puts "  skipped (#{count} existing snapshot(s))"
+        next
+      end
+    end
+
+    success = submit_archive_today_url(host, submitid, cookies, url, dry_run: dry_run)
+    sleep(rate_limit * 4) if !success && !dry_run
+  end
+end
+
+def submit_brave(config, urls, dry_run:)
+  brave = config.fetch("brave", {})
+  return if brave.fetch("enabled", false) != true
+
+  max_urls = brave.fetch("max_urls", 10).to_i
+  urls = urls.first(max_urls) if max_urls.positive?
+  mode = brave.fetch("mode", "manual")
+  endpoint = brave["endpoint"]
+  rate_limit = brave.fetch("rate_limit_seconds", 2).to_f
+  submit_page = brave.fetch("submit_page", BRAVE_SUBMIT_PAGE)
+
+  if mode == "open"
+    puts "Brave: opening #{submit_page}"
+    if dry_run
+      puts "  open #{submit_page}"
+    elsif RUBY_PLATFORM.include?("darwin")
+      system("open", submit_page)
+    else
+      warn "Brave open mode needs macOS `open` or set brave.mode to manual"
+    end
+    return
+  end
+
+  if mode == "request" && endpoint && !endpoint.empty?
+    uri = URI(endpoint)
+    urls.each_with_index do |url, index|
+      sleep(rate_limit) if index.positive? && !dry_run
+      params = brave.fetch("params", { "url" => url })
+      params = params.merge("url" => url) unless params.key?("url")
+
+      puts "Brave: #{url} -> #{uri}"
+      next puts "  #{params.inspect}" if dry_run
+
+      response = post_form(uri, params, brave.fetch("headers", {}))
+      puts "  HTTP #{response.code} #{response.message}"
+      warn "  #{response.body[0, 300]}" unless [200, 202, 204].include?(response.code.to_i)
+    end
+    return
+  end
+
+  puts "Brave: no public submit API; use #{submit_page} manually for each URL"
+  urls.each do |url|
+    puts "  #{url}"
   end
 end
 
@@ -225,6 +441,24 @@ def submit_archive_org(config, urls, dry_run:)
   end
 end
 
+def indexnow_endpoints(config)
+  indexnow = config.fetch("indexnow", {})
+  endpoints = indexnow["endpoints"]
+  if endpoints.nil? || endpoints.empty?
+    single = indexnow["endpoint"]
+    return [single] if single && !single.empty?
+
+    return INDEXNOW_DEFAULT_ENDPOINTS
+  end
+
+  endpoints
+end
+
+def indexnow_success?(response)
+  code = response.code.to_i
+  code == 200 || code == 202
+end
+
 def submit_indexnow(config, urls, dry_run:)
   indexnow = config.fetch("indexnow", {})
   return if indexnow.fetch("enabled", true) == false
@@ -232,25 +466,46 @@ def submit_indexnow(config, urls, dry_run:)
   key = indexnow["key"]
   host = indexnow["host"] || URI(config.fetch("site_url")).host
   key_location = indexnow["key_location"] || "#{config.fetch('site_url').chomp('/')}/#{key}.txt"
-  endpoint = URI(indexnow.fetch("endpoint", INDEXNOW_DEFAULT_ENDPOINT))
   batch_size = indexnow.fetch("batch_size", INDEXNOW_BATCH_SIZE).to_i
 
   abort "indexnow.key missing in config" if key.nil? || key.empty?
 
-  urls.each_slice(batch_size).with_index(1) do |batch, index|
-    payload = {
-      "host" => host,
-      "key" => key,
-      "keyLocation" => key_location,
-      "urlList" => batch
-    }
+  indexnow_endpoints(config).each do |endpoint_url|
+    endpoint = URI(endpoint_url)
+    urls.each_slice(batch_size).with_index(1) do |batch, index|
+      payload = {
+        "host" => host,
+        "key" => key,
+        "keyLocation" => key_location,
+        "urlList" => batch
+      }
 
-    puts "IndexNow batch #{index}: #{batch.size} URL(s) -> #{endpoint}"
-    next puts JSON.pretty_generate(payload) if dry_run
+      puts "IndexNow batch #{index}: #{batch.size} URL(s) -> #{endpoint}"
+      next puts JSON.pretty_generate(payload) if dry_run
 
-    response = post_json(endpoint, payload)
+      response = post_json(endpoint, payload)
+      puts "  HTTP #{response.code} #{response.message}"
+      warn "  #{response.body[0, 300]}" unless indexnow_success?(response)
+    end
+  end
+end
+
+def submit_websub(config, dry_run:)
+  websub = config.fetch("websub", {})
+  return if websub.fetch("enabled", true) == false
+
+  feed_url = websub["feed_url"] || "#{config.fetch('site_url').chomp('/')}/feed.xml"
+  hubs = websub.fetch("hubs", WEBSUB_DEFAULT_HUBS)
+
+  hubs.each do |hub_url|
+    endpoint = URI(hub_url)
+    params = { "hub.mode" => "publish", "hub.url" => feed_url }
+    puts "WebSub publish: #{feed_url} -> #{endpoint}"
+    next puts "  #{params.inspect}" if dry_run
+
+    response = post_form(endpoint, params)
     puts "  HTTP #{response.code} #{response.message}"
-    warn "  #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+    warn "  #{response.body[0, 300]}" unless [200, 202, 204].include?(response.code.to_i)
   end
 end
 
@@ -426,6 +681,8 @@ def parse_submit_options(args)
     dry_run: false,
     indexnow_only: false,
     archive_only: false,
+    archive_today_only: false,
+    brave_only: false,
     bing_only: false,
     config: DEFAULT_CONFIG,
     urls: []
@@ -441,6 +698,8 @@ def parse_submit_options(args)
     when "--dry-run" then options[:dry_run] = true; args.shift
     when "--indexnow-only" then options[:indexnow_only] = true; args.shift
     when "--archive-only" then options[:archive_only] = true; args.shift
+    when "--archive-today-only" then options[:archive_today_only] = true; args.shift
+    when "--brave-only" then options[:brave_only] = true; args.shift
     when "--bing-only" then options[:bing_only] = true; args.shift
     when "-h", "--help" then puts usage; exit 0
     else
@@ -484,13 +743,20 @@ def main(argv)
     config, urls = collect_urls(options)
 
     puts "Submitting #{urls.size} URL(s)"
-    unless options[:bing_only] || options[:archive_only]
+    unless options[:bing_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
       submit_indexnow(config, urls, dry_run: options[:dry_run])
+      submit_websub(config, dry_run: options[:dry_run])
     end
-    unless options[:indexnow_only] || options[:bing_only]
+    unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_today_only]
       submit_archive_org(config, urls, dry_run: options[:dry_run])
     end
-    unless options[:indexnow_only] || options[:archive_only]
+    unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_only]
+      submit_archive_today(config, urls, dry_run: options[:dry_run])
+    end
+    unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:bing_only]
+      submit_brave(config, urls, dry_run: options[:dry_run])
+    end
+    unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
       submit_bing(config, urls, dry_run: options[:dry_run])
     end
   when "auth"

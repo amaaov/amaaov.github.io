@@ -12,8 +12,22 @@ indexnow:
   enabled: true
   key: YOUR_INDEXNOW_KEY
   key_location: https://example.github.io/YOUR_INDEXNOW_KEY.txt
-  endpoint: https://api.indexnow.org/indexnow
+  # Omit endpoints to ping relay + Bing, Yandex, Seznam, Yep, and Internet Archive.
+  endpoints:
+    - https://api.indexnow.org/indexnow
+    - https://www.bing.com/indexnow
+    - https://yandex.com/indexnow
+    - https://search.seznam.cz/indexnow
+    - https://indexnow.yep.com/indexnow
+    - https://indexnow.amazonbot.amazon/indexnow
   batch_size: 10000
+
+websub:
+  enabled: true
+  feed_url: https://example.github.io/feed.xml
+  hubs:
+    - https://pubsubhubbub.appspot.com/
+    - https://pubsubhubbub.superfeedr.com/
 
 archive_org:
   enabled: false
@@ -25,6 +39,31 @@ archive_org:
     skip_first_archive: 1
     js_behavior_timeout: 0
     if_not_archived_within: 7d
+
+archive_today:
+  enabled: false
+  rate_limit_seconds: 15
+  skip_if_archived: true
+  max_urls: 0
+  hosts:
+    - archive.ph
+    - archive.md
+    - archive.li
+    - archive.vn
+    - archive.fo
+    - archive.today
+    - archive.is
+
+brave:
+  enabled: false
+  mode: manual
+  submit_page: https://search.brave.com/submit-url
+  max_urls: 10
+  rate_limit_seconds: 2
+  # Brave has no stable public submit API. mode options:
+  #   manual — print URLs to paste at submit_page (default)
+  #   open   — open submit_page in browser (macOS only)
+  #   request — POST to brave.endpoint (experimental; often blocked)
 
 bing:
   enabled: false
