@@ -2,7 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://amaaov.github.io/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-26</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/demo/morse/</loc>
+    <lastmod>2026-07-26</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260718201500_vremennyi_chat_na_gody.html</loc>
+    <lastmod>2026-07-18</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260714120000_post_simulacrum_self_service_without_contact_en.html</loc>

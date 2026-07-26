@@ -50,6 +50,7 @@ Thematic pairs with essays on this site — probabilistic media, inner formation
 - [2024 okaupunki lyrics](https://amaaov.github.io/pages/2024_okaupunki_lyrics.html): Lyrics and experimental music concepts
 - [Suno Multitrack Example](https://amaaov.github.io/pages/20250821113700_suno_multitrack_example.html): Interactive multitrack demo
 - [Trainer demo](https://amaaov.github.io/demo/trainer/index.html): Training mini-app
+- [Morse channel](https://amaaov.github.io/demo/morse/): Morse translator, open-channel ciphers, CW synth
 - [Chord Progressions demo](https://amaaov.github.io/demo/chord_progressions/index.html): Chord progression tool
 - [Running Entropy demo](https://amaaov.github.io/demo/running_entropy/index.html): WebGL demoscene experience
 - [Kompone demo](https://amaaov.github.io/demo/scenes/kompone/kompone/index.html): Snake game variant
