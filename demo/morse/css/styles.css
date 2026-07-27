@@ -448,11 +448,121 @@ select {
   width: min(12rem, 100%);
 }
 
+.clock-controls {
+  width: min(18rem, 100%);
+}
+
+.clock-controls-meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  align-items: center;
+  width: 100%;
+}
+
+.clock-controls-meta:not(:has(.plasma-pick:not([hidden]))) {
+  grid-template-columns: 1fr auto;
+}
+
+.clock-controls-meta:has(.plasma-quality-pick:not([hidden])) {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.65fr) auto;
+}
+
+.plasma-pick {
+  display: grid;
+  min-width: 0;
+  width: 100%;
+}
+
+.plasma-pick[hidden] {
+  display: none;
+}
+
+.plasma-pick select {
+  width: 100%;
+  min-width: 0;
+  font-size: 0.68rem;
+  padding: 0.28rem 0.35rem;
+}
+
+.clock-fullscreen-btn {
+  min-width: 4.2rem;
+  padding-inline: 0.55rem;
+}
+
+.clock-stage-dock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  width: min(22rem, 100%);
+}
+
+body.clock-immersive {
+  overflow: hidden;
+}
+
+#output-viz-field:fullscreen,
+#output-viz-field:-webkit-full-screen,
+#output-viz-field.clock-stage--immersive {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  margin: 0;
+  padding:
+    calc(0.7rem + env(safe-area-inset-top, 0px))
+    calc(0.7rem + env(safe-area-inset-right, 0px))
+    calc(0.7rem + env(safe-area-inset-bottom, 0px))
+    calc(0.7rem + env(safe-area-inset-left, 0px));
+  background: #050807;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  justify-items: center;
+  align-content: stretch;
+  --viz-side: min(
+    calc(
+      100dvw - 1.4rem - env(safe-area-inset-left, 0px) -
+        env(safe-area-inset-right, 0px)
+    ),
+    calc(
+      100dvh - 8rem - env(safe-area-inset-top, 0px) -
+        env(safe-area-inset-bottom, 0px)
+    )
+  );
+}
+
+#output-viz-field:fullscreen .output-viz-frame,
+#output-viz-field:-webkit-full-screen .output-viz-frame,
+#output-viz-field.clock-stage--immersive .output-viz-frame {
+  border-color: transparent;
+  border-radius: 0;
+  width: var(--viz-side);
+  height: var(--viz-side);
+  max-width: 100%;
+  place-self: center;
+}
+
+#output-viz-field:fullscreen .clock-stage-dock,
+#output-viz-field:-webkit-full-screen .clock-stage-dock,
+#output-viz-field.clock-stage--immersive .clock-stage-dock {
+  display: flex;
+}
+
 .viz-variant {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.35rem;
   width: 100%;
+}
+
+.viz-variant--clock {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .viz-ascii {
@@ -535,15 +645,35 @@ select {
   cursor: crosshair;
 }
 
-.viz-actions {
-  display: grid;
-  width: var(--viz-side);
-  max-width: 100%;
+.viz-export {
+  --export-progress: 0;
+  position: relative;
+  overflow: hidden;
+  min-width: 5rem;
 }
 
-.viz-export {
-  width: 100%;
-  min-width: 0;
+.viz-export-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--export-progress) * 100%);
+  background: color-mix(in oklab, var(--accent) 35%, transparent);
+  pointer-events: none;
+  transition: width 90ms linear;
+}
+
+.viz-export-label {
+  position: relative;
+  z-index: 1;
+}
+
+.viz-export:disabled {
+  cursor: wait;
+  opacity: 1;
+  color: var(--ink-dim, var(--ink));
+}
+
+.viz-export:disabled .viz-export-bar {
+  background: color-mix(in oklab, var(--accent) 55%, transparent);
 }
 
 .mode-tab {

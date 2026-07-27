@@ -28,6 +28,12 @@ export function createMorseVoice({
     });
   }
 
+  function clockMs() {
+    return typeof performance !== "undefined" && performance.now
+      ? performance.now()
+      : Date.now();
+  }
+
   function safeStop(voice) {
     try {
       voice?.stop?.();
@@ -49,18 +55,30 @@ export function createMorseVoice({
     activeVoices = [];
   }
 
+  /**
+   * Wait against wall clock, not step count. Heavy export paints can delay
+   * setTimeout; subtracting a fixed 16ms per late wake stretched Morse ~2x.
+   */
   async function waitWhilePlaying(ms, runId, shouldCut) {
-    let left = Math.max(0, ms);
-    while (left > 0 && playing && runId === generation) {
-      if (shouldCut?.()) return { cancelled: false, cut: true, left };
-      const step = Math.min(16, left);
-      await wait(step);
-      left -= step;
+    const target = clockMs() + Math.max(0, ms);
+    while (playing && runId === generation) {
+      if (shouldCut?.()) {
+        return {
+          cancelled: false,
+          cut: true,
+          left: Math.max(0, target - clockMs()),
+        };
+      }
+      const remaining = target - clockMs();
+      if (remaining <= 0) {
+        return { cancelled: false, cut: false, left: 0 };
+      }
+      await wait(Math.min(16, remaining));
     }
     return {
-      cancelled: !playing || runId !== generation,
+      cancelled: true,
       cut: false,
-      left: Math.max(0, left),
+      left: Math.max(0, target - clockMs()),
     };
   }
 

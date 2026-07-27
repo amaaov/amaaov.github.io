@@ -6,10 +6,18 @@ import { applyCipher, generatePad } from "./cipher/index.js";
 import { morbitKeyFromKeyword } from "./cipher/morbit.js";
 import { encodeWav, renderCwSamples } from "./synth/wav.js";
 import {
+  morseDurationSeconds,
+  renderTailSeconds,
+  tokenizeMorseAudio,
+} from "./synth/wav-render.js";
+import {
   ENGINES,
+  createAmazonAtmosphere,
   defaultEngineParams,
   paramsForEngine,
+  startAmazonVoice,
 } from "./synth/engines.js";
+import { isOfflineContext } from "./synth/engines/shared.js";
 import { MOD_DEFAULTS, lfoShapeName } from "./synth/mod-params.js";
 import { recognizeMorseFromImageData } from "./morse/image.js";
 import {
@@ -25,6 +33,8 @@ import { drawGoBoard } from "./viz/draw.js";
 import { goBoardToSvg, qrMatrixToSvg } from "./viz/svg.js";
 import {
   MAX_CLOCK_BEATS,
+  MIN_SOLO_CLOCK_WEIGHT,
+  beatsFromPattern,
   clockViewAt,
   idleClockWindow,
   letterMotionPlan,
@@ -40,11 +50,50 @@ import {
 } from "./viz/clock.js";
 import { createClockAnimator } from "./viz/clock-animate.js";
 import { drawBeatLadder } from "./viz/ladder.js";
+import {
+  plasmaColor,
+  plasmaParams,
+  plasmaSample,
+} from "./viz/plasma-math.js";
+import {
+  cheapNoise,
+  coloredNoise,
+  fbmNoise,
+  layeredNoise,
+  mixNoiseRgb,
+  valueNoise,
+} from "./viz/plasma-noise.js";
+import {
+  PLASMA_TYPES,
+  normalizePlasmaType,
+  plasmaTypeLabel,
+} from "./viz/plasma-types.js";
+import {
+  PLASMA_MAX_BUFFER,
+  PLASMA_QUALITIES,
+  clampPlasmaBuffer,
+  normalizePlasmaQuality,
+  plasmaQuality,
+  plasmaQualityLabel,
+} from "./viz/plasma-quality.js";
 import { ladderLayout, throwCurve } from "./viz/ladder-geometry.js";
 import {
   isValidSiteswap,
   siteswapStepsFromPatterns,
 } from "./viz/ladder-siteswap.js";
+import { encodeAnimatedGif } from "./viz/gif-encode.js";
+import {
+  EXPORT_CLOCK_SIDE,
+  EXPORT_PAINT_MS,
+  EXPORT_VIDEO_FPS,
+  clockMediaFilename,
+  exportTailMs,
+  extensionForMime,
+  pickRecorderMimeType,
+  pickWebmMimeType,
+  videoBitsForSide,
+  videoExportSupported,
+} from "./viz/clock-record.js";
 import { createHistoryStore } from "./history/store.js";
 import { CIPHER_GUIDES } from "./cipher/guides.js";
 import { createPlayHighlighter } from "./ui/play-highlight.js";
@@ -56,9 +105,11 @@ import { buildMidiEvents, formatMidiText } from "./midi/score.js";
 function fakeCanvas(size = 200) {
   const noop = () => {};
   const gradient = { addColorStop: noop };
+  const fillTexts = [];
   return {
     width: size,
     height: size,
+    fillTexts,
     getContext() {
       return {
         clearRect: noop,
@@ -71,7 +122,9 @@ function fakeCanvas(size = 200) {
         quadraticCurveTo: noop,
         fill: noop,
         stroke: noop,
-        fillText: noop,
+        fillText(text, ...rest) {
+          fillTexts.push({ text, args: rest });
+        },
         save: noop,
         restore: noop,
         clip: noop,
@@ -111,6 +164,9 @@ for (const id of [
   "flux",
   "noise",
   "drum",
+  "didgeridoo",
+  "tribal",
+  "amazon",
   "sampler",
 ]) {
   assert.ok(engineIds.has(id), `missing engine ${id}`);
@@ -126,6 +182,21 @@ assert.ok(paramsForEngine("noise").some((param) => param.id === "noiseColor"));
 assert.ok(paramsForEngine("chord").some((param) => param.id === "voicing"));
 assert.ok(paramsForEngine("organism").some((param) => param.id === "chaos"));
 assert.ok(paramsForEngine("drum").some((param) => param.id === "kickTone"));
+assert.ok(paramsForEngine("didgeridoo").some((param) => param.id === "circular"));
+assert.ok(paramsForEngine("tribal").some((param) => param.id === "slap"));
+assert.ok(paramsForEngine("amazon").some((param) => param.id === "birds"));
+assert.ok(paramsForEngine("amazon").some((param) => param.id === "bugs"));
+assert.ok(paramsForEngine("amazon").some((param) => param.id === "fauna"));
+assert.ok(paramsForEngine("amazon").some((param) => param.id === "mist"));
+assert.ok(paramsForEngine("amazon").some((param) => param.id === "drift"));
+assert.ok(paramsForEngine("amazon").some((param) => param.id === "swell"));
+assert.equal(typeof createAmazonAtmosphere, "function");
+assert.equal(typeof startAmazonVoice, "function");
+assert.ok(defaultEngineParams("amazon").birds >= 0.7);
+assert.ok(defaultEngineParams("amazon").bugs >= 0.5);
+assert.ok(defaultEngineParams("amazon").fauna >= 0.55);
+assert.equal(isOfflineContext({ startRendering() {} }), true);
+assert.equal(isOfflineContext({}), false);
 assert.ok(paramsForEngine("sampler").some((param) => param.id === "grain"));
 assert.equal(typeof defaultEngineParams().modIndex, "number");
 assert.equal(typeof defaultEngineParams().detune, "number");
@@ -218,6 +289,19 @@ const wav = new Uint8Array(encodeWav(samples, sampleRate));
 assert.equal(String.fromCharCode(...wav.slice(0, 4)), "RIFF");
 assert.equal(String.fromCharCode(...wav.slice(8, 12)), "WAVE");
 assert.equal(wav.length, 44 + samples.length * 2);
+assert.deepEqual(tokenizeMorseAudio("... ---"), [
+  ".",
+  ".",
+  ".",
+  " ",
+  "-",
+  "-",
+  "-",
+]);
+assert.ok(morseDurationSeconds("...", 18) > 0.3);
+assert.ok(morseDurationSeconds("---", 18) > morseDurationSeconds(".", 18));
+assert.ok(renderTailSeconds({ delayMs: 200, feedback: 0.4 }) > 0.5);
+assert.ok(renderTailSeconds({}) >= 0.25);
 
 const width = 120;
 const height = 40;
@@ -324,16 +408,18 @@ assert.equal(sosSpans[0].pattern, "...");
 assert.equal(sosSpans[1].pattern, "---");
 assert.equal(sosSpans[2].pattern, "...");
 assert.equal(MAX_CLOCK_BEATS, 16);
+assert.equal(MIN_SOLO_CLOCK_WEIGHT, 9);
+assert.equal(patternUnitWeight(beatsFromPattern("---")), MIN_SOLO_CLOCK_WEIGHT);
 const idleSos = idleClockWindow("... --- ...");
-assert.equal(idleSos.letterCount, 2);
-assert.equal(idleSos.pattern, "...---");
-assert.equal(idleSos.beats.length, 6);
+assert.equal(idleSos.letterCount, 3);
+assert.equal(idleSos.pattern, "...---...");
+assert.equal(idleSos.beats.length, 9);
 assert.ok(idleSos.beats.length <= MAX_CLOCK_BEATS);
 const firstS = clockViewAt(0, "... --- ...", timeline.letterAtMorse, "SOS");
-assert.equal(firstS.pattern, "...---");
-assert.equal(firstS.letterCount, 2);
-assert.equal(firstS.label.toUpperCase(), "SO");
-assert.equal(firstS.beats.length, 6);
+assert.equal(firstS.pattern, "...---...");
+assert.equal(firstS.letterCount, 3);
+assert.equal(firstS.label.toUpperCase(), "SOS");
+assert.equal(firstS.beats.length, 9);
 assert.equal(firstS.progressStart, 0);
 assert.ok(firstS.progressEnd > firstS.progressStart);
 assert.equal(firstS.durationUnits, firstS.toneUnits + firstS.gapUnits);
@@ -344,8 +430,8 @@ const midO = clockViewAt(
   timeline.letterAtMorse,
   "SOS",
 );
-assert.equal(midO.pattern, "...---");
-assert.equal(midO.label.toUpperCase(), "SO");
+assert.equal(midO.pattern, "...---...");
+assert.equal(midO.label.toUpperCase(), "SOS");
 assert.equal(midO.activeBeatIndex, 3);
 const secondS = clockViewAt(
   sosSpans[2].start,
@@ -353,10 +439,10 @@ const secondS = clockViewAt(
   timeline.letterAtMorse,
   "SOS",
 );
-assert.equal(secondS.pattern, "...");
-assert.equal(secondS.letterCount, 1);
-assert.equal(secondS.label.toUpperCase(), "S");
-assert.equal(secondS.progressStart, 0);
+assert.equal(secondS.pattern, "...---...");
+assert.equal(secondS.letterCount, 3);
+assert.equal(secondS.label.toUpperCase(), "SOS");
+assert.ok(secondS.activeBeatIndex >= 6);
 const planS = letterMotionPlan("...");
 assert.equal(planS.segments.length, 3);
 assert.equal(planS.segments[0].progressStart, 0);
@@ -374,28 +460,49 @@ assert.equal(planPair.segments[5].gapUnits, 0);
 const theTimeline = buildTextMorseMap("THE");
 const theMorse = textToMorse("THE");
 const theSpans = letterSpansFromMorse(theMorse);
-const loneE = clockViewAt(
+const packedE = clockViewAt(
   theSpans[theSpans.length - 1].start,
   theMorse,
   theTimeline.letterAtMorse,
   "THE",
 );
-assert.equal(loneE.label.toUpperCase(), "E");
-assert.equal(loneE.letterCount, 1);
-assert.equal(loneE.gapUnits, 3);
-assert.equal(loneE.durationUnits, 4);
+assert.ok(packedE.letterCount >= 2);
+assert.notEqual(packedE.label.toUpperCase(), "E");
+assert.ok(packedE.label.toUpperCase().includes("E"));
+const soloO = clockViewAt(0, "---", null, "O");
+assert.equal(soloO.letterCount, 1);
+assert.equal(soloO.pattern, "---");
+assert.ok(patternUnitWeight(soloO.beats) >= MIN_SOLO_CLOCK_WEIGHT);
 const longIdle = idleClockWindow(".".repeat(24));
 assert.equal(longIdle.letterCount, 1);
 assert.equal(longIdle.beats.length, MAX_CLOCK_BEATS);
-drawBeatClock(fakeCanvas(240), {
+const clockWithLetters = fakeCanvas(240);
+drawBeatClock(clockWithLetters, {
   beats: idleSos.beats,
   progress: 0.25,
-  label: "SO",
-  previousLabel: "S",
+  label: "SOS",
+  previousLabel: "SO",
   labelScroll: 0.4,
   activeBeatIndex: 0,
+  showLetters: true,
 });
-const faceMarks = clockBeatMarks(idleSos.beats, 100);
+assert.ok(clockWithLetters.fillTexts.some((entry) => entry.text === "SOS"));
+const clockWithoutLetters = fakeCanvas(240);
+drawBeatClock(clockWithoutLetters, {
+  beats: idleSos.beats,
+  progress: 0.25,
+  label: "SOS",
+  previousLabel: "SO",
+  labelScroll: 0.4,
+  activeBeatIndex: 0,
+  showLetters: false,
+});
+assert.equal(
+  clockWithoutLetters.fillTexts.some((entry) => entry.text === "SOS"),
+  false,
+);
+const soBeats = beatsFromPattern("...---");
+const faceMarks = clockBeatMarks(soBeats, 100);
 assert.equal(faceMarks.length, 6);
 assert.equal(faceMarks[0].kind, "dit");
 assert.equal(faceMarks[3].kind, "dah");
@@ -414,6 +521,110 @@ assert.equal(clockMarkInk(1), "#C82070");
 assert.equal(clockMarkInk(2), "#F2C200");
 assert.equal(clockMarkInk(3), "#556677");
 assert.equal(inkWithAlpha("#7ADCF5", 0.5), "rgba(122, 220, 245, 0.5)");
+const plasmaA = plasmaParams(
+  { frequency: 700, filterHz: 3200, drive: 0, wpm: 18, engine: "sine" },
+  0.1,
+  soBeats,
+  0,
+  1000,
+);
+const plasmaB = plasmaParams(
+  { frequency: 1200, filterHz: 8000, drive: 0.8, wpm: 32, engine: "square" },
+  0.8,
+  soBeats,
+  3,
+  1000,
+);
+assert.ok(plasmaB.spatial > plasmaA.spatial);
+assert.ok(plasmaB.contrast > plasmaA.contrast);
+assert.notEqual(plasmaA.hueBase, plasmaB.hueBase);
+assert.ok(plasmaB.pulse > plasmaA.pulse);
+assert.ok("drift" in plasmaA && "codeWave" in plasmaA);
+assert.equal("beats" in plasmaA, false);
+const sampleIdle = plasmaSample(0.1, -0.2, plasmaA);
+const sampleActive = plasmaSample(0.1, -0.2, plasmaB);
+assert.notEqual(sampleIdle, sampleActive);
+// Same field math at opposite angles: no pie-slice sector boost.
+const left = plasmaSample(-0.3, 0.05, plasmaA);
+const right = plasmaSample(0.3, 0.05, plasmaA);
+assert.notEqual(left, right);
+const rgb = plasmaColor(sampleIdle, plasmaA);
+assert.equal(rgb.length, 3);
+assert.ok(rgb.every((channel) => channel >= 0 && channel <= 255));
+assert.ok(cheapNoise(0.2, -0.1, 1.2, 3) >= 0 && cheapNoise(0.2, -0.1, 1.2, 3) <= 1.2);
+assert.ok(valueNoise(1.25, 2.5, 3) >= 0 && valueNoise(1.25, 2.5, 3) <= 1);
+assert.ok(fbmNoise(0.2, -0.3, { octaves: 1, seed: 1 }) >= 0);
+assert.ok(
+  layeredNoise(0.1, 0.2, 1.5, [
+    { scale: 4, speed: 0.2, seed: 1 },
+    { scale: 9, speed: 0.5, weight: 0.4, seed: 2 },
+  ]) >= 0,
+);
+const noiseRgb = coloredNoise(0.1, 0.2, 1, {
+  red: [{ scale: 3, seed: 1 }],
+  green: [{ scale: 4, seed: 2 }],
+  blue: [{ scale: 5, seed: 3 }],
+});
+assert.equal(noiseRgb.length, 3);
+assert.ok(noiseRgb.every((channel) => channel >= 0 && channel <= 1.2));
+const noiseMix = mixNoiseRgb([10, 20, 30], [1, 0, 0.5], 0.5);
+assert.equal(noiseMix.length, 3);
+assert.ok(noiseMix.every((channel) => channel >= 0 && channel <= 255));
+
+assert.equal(PLASMA_TYPES.length, 12);
+assert.equal(normalizePlasmaType("oil-water"), "oil-water");
+assert.equal(normalizePlasmaType("tsukuyomi"), "tsukuyomi");
+assert.equal(normalizePlasmaType("amaterasu"), "amaterasu");
+assert.equal(normalizePlasmaType("susanoo"), "susanoo");
+assert.equal(normalizePlasmaType("kaleidoscope"), "kaleidoscope");
+assert.equal(normalizePlasmaType("sand"), "sand");
+assert.equal(normalizePlasmaType("nope"), "classic");
+assert.equal(plasmaTypeLabel("campfire"), "CAMPFIRE");
+assert.equal(plasmaTypeLabel("tsukuyomi"), "TSUKUYOMI");
+assert.equal(plasmaTypeLabel("amaterasu"), "AMATERASU");
+assert.equal(plasmaTypeLabel("susanoo"), "SUSANOO");
+assert.equal(plasmaTypeLabel("kaleidoscope"), "KALEIDOSCOPE");
+assert.equal(plasmaTypeLabel("sand"), "SAND DRAWING");
+assert.equal(PLASMA_QUALITIES.length, 4);
+assert.equal(normalizePlasmaQuality("4k"), "4k");
+assert.equal(normalizePlasmaQuality("nope"), "live");
+assert.equal(plasmaQualityLabel("4k"), "4K");
+assert.equal(plasmaQuality("4k").exportSide, 2160);
+assert.equal(plasmaQuality("4k").previewBuffer, 1620);
+assert.equal(clampPlasmaBuffer(9000), PLASMA_MAX_BUFFER);
+assert.equal(clampPlasmaBuffer(12), 48);
+assert.ok(videoBitsForSide(2160) > videoBitsForSide(1080));
+for (const entry of PLASMA_TYPES) {
+  const typed = plasmaParams(
+    { frequency: 700, filterHz: 3200, drive: 0.2, wpm: 18, engine: "sine" },
+    0.4,
+    soBeats,
+    1,
+    2000,
+    {
+      type: entry.id,
+      letterMask: entry.id === "letter-burn" ? 0.8 : 0,
+      letterDust: entry.id === "letter-burn" ? 0.5 : 0,
+    },
+  );
+  assert.equal(typed.type, entry.id);
+  const sample = plasmaSample(0.12, -0.15, typed);
+  const color = plasmaColor(sample, typed);
+  assert.ok(Number.isFinite(sample));
+  assert.ok(color.every((channel) => channel >= 0 && channel <= 255));
+}
+const burnAsh = plasmaColor(
+  0.6,
+  plasmaParams(
+    { frequency: 700, filterHz: 3200, drive: 0.2, wpm: 18, engine: "sine" },
+    0.5,
+    soBeats,
+    1,
+    3000,
+    { type: "letter-burn", letterMask: 0.1, letterDust: 0.9 },
+  ),
+);
+assert.ok(burnAsh.every((channel) => channel >= 0 && channel <= 255));
 assert.ok(
   Math.abs(planPair.segments[3].progressStart * Math.PI * 2 - (faceMarks[3].angle + Math.PI / 2)) <
     1e-9,
@@ -433,9 +644,12 @@ const swapE = siteswapStepsFromPatterns(["."]);
 assert.equal(isValidSiteswap(swapE.map((step) => step.throwValue)), true);
 const swapS = siteswapStepsFromPatterns(["..."]);
 assert.equal(isValidSiteswap(swapS.map((step) => step.throwValue)), true);
+const swapSos = siteswapStepsFromPatterns(["...", "---", "..."]);
+const swapSosThrows = swapSos.map((step) => step.throwValue);
+assert.equal(isValidSiteswap(swapSosThrows), true);
 const ladder = ladderLayout(240, 240, idleSos.beats, idleSos.patterns);
 assert.equal(isValidSiteswap(ladder.nodes.map((node) => node.throwValue)), true);
-assert.equal(ladder.siteswapText, swapSoThrows.join(""));
+assert.equal(ladder.siteswapText, swapSosThrows.join(""));
 assert.equal(ladder.nodes[0].throwValue, 3);
 assert.equal(ladder.nodes[1].throwValue, 1);
 assert.ok(ladder.nodes.some((node) => node.kind === "dah"));
@@ -448,15 +662,90 @@ const curve = throwCurve(
   ladder.nodes.length,
 );
 assert.ok(curve.peak < ladder.nodes[0].y);
-drawBeatLadder(fakeCanvas(240), {
+const ladderWithLetters = fakeCanvas(240);
+drawBeatLadder(ladderWithLetters, {
   beats: idleSos.beats,
   patterns: idleSos.patterns,
   progress: 0.4,
-  label: "SO",
-  previousLabel: "S",
+  label: "SOS",
+  previousLabel: "SO",
   labelScroll: 0.5,
   activeBeatIndex: 1,
+  showLetters: true,
 });
+assert.ok(ladderWithLetters.fillTexts.some((entry) => entry.text === "SOS"));
+const ladderWithoutLetters = fakeCanvas(240);
+drawBeatLadder(ladderWithoutLetters, {
+  beats: idleSos.beats,
+  patterns: idleSos.patterns,
+  progress: 0.4,
+  label: "SOS",
+  previousLabel: "SO",
+  labelScroll: 0.5,
+  activeBeatIndex: 1,
+  showLetters: false,
+});
+assert.equal(
+  ladderWithoutLetters.fillTexts.some((entry) => entry.text === "SOS"),
+  false,
+);
+assert.equal(EXPORT_CLOCK_SIDE, 1080);
+assert.equal(EXPORT_VIDEO_FPS, 30);
+assert.equal(EXPORT_PAINT_MS, Math.round(1000 / EXPORT_VIDEO_FPS));
+assert.ok(exportTailMs({ delayMs: 120, delayMix: 0.5 }) > exportTailMs({}));
+assert.equal(clockMediaFilename("SOS / test!", "webm"), "morse-clock-sos-test.webm");
+assert.equal(clockMediaFilename("", "mp4"), "morse-clock-morse.mp4");
+assert.equal(pickWebmMimeType(() => false), "");
+assert.equal(
+  pickWebmMimeType((mime) => mime === "video/webm"),
+  "video/webm",
+);
+assert.equal(pickRecorderMimeType(() => false), "");
+assert.equal(
+  pickRecorderMimeType((mime) => mime === "video/mp4"),
+  "video/mp4",
+);
+assert.equal(
+  pickRecorderMimeType(
+    (mime) =>
+      mime === "video/webm;codecs=vp9,opus" ||
+      mime === "video/webm;codecs=vp8,opus",
+  ),
+  "video/webm;codecs=vp8,opus",
+);
+assert.equal(extensionForMime("video/webm;codecs=vp8,opus"), "webm");
+assert.equal(extensionForMime("video/mp4"), "mp4");
+assert.equal(videoExportSupported(null, () => false, true), false);
+assert.equal(
+  videoExportSupported(
+    { captureStream() {} },
+    (mime) => mime === "video/webm",
+    true,
+  ),
+  true,
+);
+assert.equal(
+  videoExportSupported(
+    { captureStream() {} },
+    (mime) => mime === "video/webm",
+    false,
+  ),
+  false,
+);
+const gifFrame = new Uint8ClampedArray(4 * 4 * 4);
+for (let index = 0; index < gifFrame.length; index += 4) {
+  gifFrame[index] = 5;
+  gifFrame[index + 1] = 8;
+  gifFrame[index + 2] = 7;
+  gifFrame[index + 3] = 255;
+}
+const gifBytes = encodeAnimatedGif([gifFrame, gifFrame], {
+  width: 4,
+  height: 4,
+  delayCs: 10,
+});
+assert.equal(String.fromCharCode(...gifBytes.slice(0, 4)), "GIF8");
+assert.ok(gifBytes.length > 20);
 const animator = createClockAnimator({
   canvas: fakeCanvas(120),
   getUnitMs: () => 80,

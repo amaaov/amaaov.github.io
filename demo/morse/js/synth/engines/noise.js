@@ -1,4 +1,4 @@
-import { clamp, createVoiceShell, voiceEnvelope } from "./shared.js";
+import { audioNow, clamp, createVoiceShell, voiceEnvelope } from "./shared.js";
 
 function fillWhite(data) {
   for (let index = 0; index < data.length; index += 1) {
@@ -48,7 +48,7 @@ function createColoredNoise(context, color, seconds = 2) {
   const source = context.createBufferSource();
   source.buffer = buffer;
   source.loop = true;
-  source.start(context.currentTime);
+  source.start(audioNow(context));
   return source;
 }
 

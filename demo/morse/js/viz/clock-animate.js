@@ -2,7 +2,7 @@
  * Smooth hand motion timed to Morse units, plus Casio-style letter scroll.
  * Hand uses constant angular speed along the beat-mark circle (no jumps).
  */
-export function createClockAnimator({ canvas, draw, getUnitMs }) {
+export function createClockAnimator({ canvas, draw, getUnitMs, keepAlive }) {
   let frame = 0;
   let displayProgress = 0;
   let view = null;
@@ -12,6 +12,10 @@ export function createClockAnimator({ canvas, draw, getUnitMs }) {
   let labelDurationMs = 160;
   let sweep = null;
   let running = false;
+
+  function shouldKeepAlive() {
+    return Boolean(keepAlive?.());
+  }
 
   const scheduleFrame =
     typeof requestAnimationFrame === "function"
@@ -78,7 +82,7 @@ export function createClockAnimator({ canvas, draw, getUnitMs }) {
 
     paint();
 
-    if (labelScroll < 1 || sweep) {
+    if (labelScroll < 1 || sweep || shouldKeepAlive()) {
       frame = scheduleFrame(tick);
     } else {
       finish();
@@ -112,7 +116,8 @@ export function createClockAnimator({ canvas, draw, getUnitMs }) {
       previousLabel = "";
       labelScroll = 1;
       paint();
-      finish();
+      if (shouldKeepAlive()) startLoop();
+      else finish();
     },
 
     scrub(nextView) {
@@ -120,7 +125,8 @@ export function createClockAnimator({ canvas, draw, getUnitMs }) {
       view = nextView;
       displayProgress = nextView?.progress ?? 0;
       paint();
-      finish();
+      if (shouldKeepAlive()) startLoop();
+      else finish();
     },
 
     playBeat(nextView) {
@@ -164,7 +170,15 @@ export function createClockAnimator({ canvas, draw, getUnitMs }) {
       previousLabel = "";
       labelScroll = 1;
       paint();
-      finish();
+      if (shouldKeepAlive()) startLoop();
+      else finish();
+    },
+
+    /** Restart idle keep-alive when the active visual style changes. */
+    refresh() {
+      paint();
+      if (shouldKeepAlive()) startLoop();
+      else if (!sweep && labelScroll >= 1) finish();
     },
 
     getProgress() {

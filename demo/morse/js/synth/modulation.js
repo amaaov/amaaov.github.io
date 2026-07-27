@@ -1,3 +1,4 @@
+import { isOfflineContext } from "./engines/shared.js";
 import { lfoShapeName } from "./mod-params.js";
 import { attachVoiceModulation } from "./voice-mod.js";
 
@@ -115,7 +116,10 @@ export function createModulatorBank(context) {
       chainNodes = nodes;
       buses.filter.connect(nodes.filter.frequency);
       buses.res.connect(nodes.filter.Q);
-      buses.delay.connect(nodes.delay.delayTime);
+      // LFO into DelayNode.delayTime + feedback can hang OfflineAudioContext.
+      if (!isOfflineContext(context)) {
+        buses.delay.connect(nodes.delay.delayTime);
+      }
       buses.drive.connect(nodes.wet.gain);
       buses.amp.connect(tremolo.gain);
     },

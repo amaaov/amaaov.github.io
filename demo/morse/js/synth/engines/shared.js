@@ -1,19 +1,38 @@
 import { getAudioContext } from "../context.js";
 
+/** Absolute start time for offline-scheduled marks; null = live currentTime. */
+let scheduledWhen = null;
+
+export function beginScheduledWhen(when) {
+  scheduledWhen = Number(when);
+}
+
+export function endScheduledWhen() {
+  scheduledWhen = null;
+}
+
+export function audioNow(context = getAudioContext()) {
+  if (scheduledWhen != null && Number.isFinite(scheduledWhen)) return scheduledWhen;
+  return context.currentTime;
+}
+
 export function createVoiceShell({
   attack = 0.01,
   decay = 0.08,
   sustain = 0.7,
   release = 0.05,
   peak = 1,
+  when,
+  context: contextArg,
 } = {}) {
-  const context = getAudioContext();
-  const now = context.currentTime;
+  const context = contextArg || getAudioContext();
+  const now = when ?? audioNow(context);
+  const hold = Math.max(peak * Math.max(0.0001, sustain), 0.0001);
   const gain = context.createGain();
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(peak, now + Math.max(0.001, attack));
   gain.gain.linearRampToValueAtTime(
-    peak * Math.max(0.0001, sustain),
+    hold,
     now + Math.max(0.001, attack) + Math.max(0.001, decay),
   );
 
@@ -30,11 +49,12 @@ export function createVoiceShell({
     push(...extra) {
       nodes.push(...extra);
     },
-    stop(when = context.currentTime) {
-      const stopAt = Math.max(when, context.currentTime);
+    stop(stopWhen = audioNow(context)) {
+      const stopAt = Math.max(stopWhen, now);
       try {
         gain.gain.cancelScheduledValues(stopAt);
-        gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), stopAt);
+        // Use sustain hold — .value is wrong before OfflineAudioContext renders.
+        gain.gain.setValueAtTime(hold, stopAt);
         gain.gain.exponentialRampToValueAtTime(0.0001, stopAt + release);
       } catch {
         /* automation already cleared */
@@ -51,12 +71,12 @@ export function createVoiceShell({
   };
 }
 
-export function startOscillator(context, { type = "sine", frequency = 440, detune = 0 } = {}) {
+export function startOscillator(context, { type = "sine", frequency = 440, detune = 0, when } = {}) {
   const oscillator = context.createOscillator();
   oscillator.type = type;
   oscillator.frequency.value = frequency;
   oscillator.detune.value = detune;
-  oscillator.start(context.currentTime);
+  oscillator.start(when ?? audioNow(context));
   return oscillator;
 }
 
@@ -71,7 +91,7 @@ export function createNoiseSource(context, seconds = 2) {
   const source = context.createBufferSource();
   source.buffer = buffer;
   source.loop = true;
-  source.start(context.currentTime);
+  source.start(audioNow(context));
   return source;
 }
 
@@ -126,6 +146,11 @@ export function makePwmCurve(duty) {
 
 export function midiOffsetHz(frequency, semitones) {
   return frequency * 2 ** (semitones / 12);
+}
+
+/** OfflineAudioContext (and webkit) — avoid cyclic graphs that hang render. */
+export function isOfflineContext(context) {
+  return Boolean(context && typeof context.startRendering === "function");
 }
 
 export function unitSeconds(wpm) {

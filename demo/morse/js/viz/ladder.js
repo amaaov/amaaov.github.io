@@ -22,6 +22,7 @@ export function drawBeatLadder(
     previousLabel = "",
     labelScroll = 1,
     activeBeatIndex = -1,
+    showLetters = true,
   } = {},
 ) {
   const context = canvas.getContext("2d");
@@ -37,7 +38,9 @@ export function drawBeatLadder(
   if (!nodes.length) return;
 
   drawRails(context, leftRail, rightRail, top, bottom);
-  drawLetterWindow(context, width, height, label, previousLabel, labelScroll);
+  if (showLetters) {
+    drawLetterWindow(context, width, height, label, previousLabel, labelScroll);
+  }
 
   const { siteswapProgress, activeIndex } = ladderProgress(
     beats,

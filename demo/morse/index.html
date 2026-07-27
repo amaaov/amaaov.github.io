@@ -152,18 +152,36 @@
               ASCII
             </label>
           </div>
-          <div id="clock-variant" class="viz-variant" role="group" aria-label="Clock style" hidden>
-            <button type="button" class="viz-variant-btn" data-clock-variant="face" aria-pressed="true">FACE</button>
-            <button type="button" class="viz-variant-btn" data-clock-variant="ladder" aria-pressed="false">LADDER</button>
+          <div id="clock-controls" class="qr-controls clock-controls" hidden>
+            <div id="clock-variant" class="viz-variant viz-variant--clock" role="group" aria-label="Clock style">
+              <button type="button" class="viz-variant-btn" data-clock-variant="face" aria-pressed="true">FACE</button>
+              <button type="button" class="viz-variant-btn" data-clock-variant="ladder" aria-pressed="false">LADDER</button>
+              <button type="button" class="viz-variant-btn" data-clock-variant="plasma" aria-pressed="false">PLASMA</button>
+            </div>
+            <div class="clock-controls-meta">
+              <label class="viz-ascii">
+                <input id="clock-letters" type="checkbox" checked>
+                LETTERS
+              </label>
+              <label id="plasma-type-pick" class="plasma-pick" hidden>
+                <span class="sr-only">Plasma type</span>
+                <select id="plasma-type" title="Plasma type" aria-label="Plasma type"></select>
+              </label>
+              <label id="plasma-quality-pick" class="plasma-pick plasma-quality-pick" hidden>
+                <span class="sr-only">Plasma quality</span>
+                <select id="plasma-quality" title="Plasma quality" aria-label="Plasma quality"></select>
+              </label>
+              <button type="button" id="clock-fullscreen" class="viz-variant-btn clock-fullscreen-btn" aria-pressed="false" title="Clock full screen (F)">FULL</button>
+            </div>
           </div>
           <div id="output-viz-frame" class="output-viz-frame">
             <canvas id="output-canvas" class="output-canvas" width="520" height="520" aria-label="Morse visualization"></canvas>
             <pre id="output-ascii" class="output-ascii" hidden aria-label="ASCII matrix"></pre>
           </div>
-          <div id="viz-actions" class="viz-actions" hidden>
-            <button type="button" id="viz-export" class="btn btn-ghost viz-export" title="Download">
-              DOWNLOAD
-            </button>
+          <div id="clock-stage-dock" class="clock-stage-dock" hidden>
+            <button type="button" id="clock-stage-play" class="btn btn-primary">Play</button>
+            <button type="button" id="clock-stage-stop" class="btn btn-ghost">Stop</button>
+            <button type="button" id="clock-stage-exit" class="btn btn-ghost" title="Exit full screen">EXIT</button>
           </div>
         </div>
       </div>
@@ -175,7 +193,11 @@
           </div>
           <button type="button" id="loop-btn" class="btn btn-ghost" aria-pressed="false" title="Loop playback (L)">Loop</button>
           <button type="button" id="stop-btn" class="btn btn-ghost">Stop</button>
-          <button type="button" id="wav-btn" class="btn btn-ghost" title="Download CW WAV (W)">WAV</button>
+          <button type="button" id="wav-btn" class="btn btn-ghost" title="Download WAV with current synth (W)">WAV</button>
+          <button type="button" id="viz-export" class="btn btn-ghost viz-export" title="Image" hidden>
+            <span class="viz-export-bar" aria-hidden="true"></span>
+            <span class="viz-export-label">IMAGE</span>
+          </button>
           <button type="button" id="clear-btn" class="btn btn-ghost">Clear</button>
           <label class="toolbar-wpm" title="Speed for play, tap, and mic">
             <span class="sr-only">WPM</span>
@@ -277,13 +299,14 @@
       <li><kbd>Space</kbd> hold to key (TAP)</li>
       <li><kbd>P</kbd> play · <kbd>Shift</kbd>+<kbd>P</kbd> play with loop</li>
       <li><kbd>L</kbd> loop</li>
-      <li><kbd>W</kbd> download CW WAV</li>
-      <li>QR · GO or QR matrix, ASCII text view, Download or Copy; CLOCK · FACE or LADDER, drag to scrub when idle</li>
+      <li><kbd>W</kbd> download WAV (current synth)</li>
+      <li>QR · GO or QR matrix, ASCII text view, Image or Copy; CLOCK · FACE, LADDER, or PLASMA (type dropdown), FULL screen, Video export, drag to scrub when idle</li>
+      <li><kbd>F</kbd> clock full screen (for device screen recording)</li>
       <li><kbd>S</kbd> synth parameters</li>
       <li><kbd>E</kbd> ensemble (separate from toolbar Play)</li>
       <li><kbd>Y</kbd> history</li>
       <li><kbd>H</kbd> this help</li>
-      <li><kbd>Esc</kbd> close panel</li>
+      <li><kbd>Esc</kbd> exit full screen or close panel</li>
     </ul>
   </aside>
 

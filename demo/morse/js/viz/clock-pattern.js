@@ -3,6 +3,12 @@ import { normalizeMorse } from "../morse/encode.js";
 /** Hard cap so the dial stays readable. */
 export const MAX_CLOCK_BEATS = 16;
 
+/**
+ * Minimum tone weight for a letter to fill a clock alone.
+ * O (---) is the reference: three dahs = 9 units.
+ */
+export const MIN_SOLO_CLOCK_WEIGHT = 9;
+
 /** Token stream matching playback (dits, dahs, letter/word gaps). */
 export function tokenizeMorse(morse) {
   return [...normalizeMorse(morse)].filter((character) => ".-/ ".includes(character));
@@ -35,6 +41,10 @@ function clipPattern(pattern, maxBeats = MAX_CLOCK_BEATS) {
   return kept;
 }
 
+function weightOfPatterns(patterns) {
+  return patternUnitWeight(beatsFromPattern(patterns.join("")));
+}
+
 /** One span per letter code in the Morse stream (gaps excluded). */
 export function letterSpansFromMorse(morse) {
   const tokens = tokenizeMorse(morse);
@@ -59,27 +69,65 @@ export function letterSpansFromMorse(morse) {
   return spans;
 }
 
+function tryAppendLetter(patterns, span) {
+  const nextPattern = clipPattern(span.pattern);
+  if (!nextPattern) return false;
+  if (toneCount(patterns.join("")) + toneCount(nextPattern) > MAX_CLOCK_BEATS) {
+    return false;
+  }
+  patterns.push(nextPattern);
+  return true;
+}
+
 /**
- * One or two consecutive letters, never more than MAX_CLOCK_BEATS tones.
- * Adds a second letter only when both fit under the cap.
+ * Pack forward until the window is full enough for a solo-style face, or
+ * no further letter fits under MAX_CLOCK_BEATS.
  */
-export function clockWindowFromSpans(spans, startIndex) {
-  if (!spans.length || startIndex < 0 || startIndex >= spans.length) return null;
-  const firstPattern = clipPattern(spans[startIndex].pattern);
+function packForward(spans, startIndex) {
+  const firstPattern = clipPattern(spans[startIndex]?.pattern || "");
   if (!firstPattern) return null;
 
   const patterns = [firstPattern];
   const windowSpans = [spans[startIndex]];
-  const second = spans[startIndex + 1];
-  if (second) {
-    const secondPattern = clipPattern(second.pattern);
-    if (
-      secondPattern &&
-      toneCount(firstPattern) + toneCount(secondPattern) <= MAX_CLOCK_BEATS
-    ) {
-      patterns.push(secondPattern);
-      windowSpans.push(second);
-    }
+  let index = startIndex + 1;
+
+  while (
+    weightOfPatterns(patterns) < MIN_SOLO_CLOCK_WEIGHT &&
+    index < spans.length
+  ) {
+    if (!tryAppendLetter(patterns, spans[index])) break;
+    windowSpans.push(spans[index]);
+    index += 1;
+  }
+
+  return { patterns, windowSpans, nextIndex: index };
+}
+
+/** True when packing from this index cannot reach a full-clock weight. */
+function isShortOrphanGroup(spans, startIndex) {
+  if (startIndex >= spans.length) return false;
+  const packed = packForward(spans, startIndex);
+  if (!packed) return false;
+  return weightOfPatterns(packed.patterns) < MIN_SOLO_CLOCK_WEIGHT;
+}
+
+/**
+ * One clock revolution: pack short letters together until O-weight (9 units)
+ * or the beat cap. Absorb a trailing short orphan group when it fits so E/S
+ * never sit alone when neighbors are available. O (---) may stand alone.
+ */
+export function clockWindowFromSpans(spans, startIndex) {
+  if (!spans.length || startIndex < 0 || startIndex >= spans.length) return null;
+  const packed = packForward(spans, startIndex);
+  if (!packed) return null;
+
+  const { patterns, windowSpans } = packed;
+  let index = packed.nextIndex;
+
+  while (index < spans.length && isShortOrphanGroup(spans, index)) {
+    if (!tryAppendLetter(patterns, spans[index])) break;
+    windowSpans.push(spans[index]);
+    index += 1;
   }
 
   const pattern = patterns.join("");
@@ -109,7 +157,7 @@ export function windowStartForLetterIndex(spans, letterIndex) {
 }
 
 /**
- * Idle showcase: densest readable window (prefer more beats, then two letters).
+ * Idle showcase: densest readable window (prefer more beats, then more letters).
  */
 export function idleClockWindow(morse) {
   const spans = letterSpansFromMorse(morse);
@@ -141,7 +189,7 @@ export function longestUniqueLetterPattern(morse) {
  * Arc plan on the same circle as the drawn beat marks (tone weights only).
  * Intra-letter gap = 1 unit; inter-letter gap = 3 units after the last tone
  * of each letter. A lone single-letter window also keeps a 3-unit linger so a
- * final E (one dit) does not flash past before the next revolution.
+ * final short letter (when truly alone) does not flash past.
  */
 export function motionPlanForPatterns(patterns) {
   const list = (patterns || []).filter(Boolean);
@@ -209,7 +257,7 @@ function beatIndexInWindow(offset, window, tokens) {
 
 /**
  * Clock view for the letter at `offset`, or null when on a gap.
- * One revolution covers the current 1–2 letter window (≤16 beats).
+ * One revolution covers the current packed letter window (≤16 beats).
  */
 export function clockViewAt(offset, morse, letterAtMorse, displayText) {
   const tokens = tokenizeMorse(morse);

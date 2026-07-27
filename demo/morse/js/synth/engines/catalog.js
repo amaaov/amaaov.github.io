@@ -27,6 +27,13 @@ export const ENGINES = [
   { id: "flux", name: "Magnetic flux", params: ["beat", "sweep", "grit", "field"] },
   { id: "noise", name: "Noise field", params: ["noiseColor", "noiseBand", "noiseWidth", "noiseDensity"] },
   { id: "drum", name: "Drum kit", params: ["kickTone", "hatDecay", "punch", "noiseMix"] },
+  { id: "didgeridoo", name: "Didgeridoo", params: ["drone", "buzz", "circular", "formant"] },
+  { id: "tribal", name: "Tribal", params: ["drone", "buzz", "skin", "slap"] },
+  {
+    id: "amazon",
+    name: "Amazon",
+    params: ["canopy", "mist", "drift", "swell", "birds", "bugs", "fauna"],
+  },
   { id: "sampler", name: "Sampler", params: ["samplePitch", "sampleStart", "grain", "sampleLoop"] },
 ];
 

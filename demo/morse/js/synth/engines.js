@@ -11,8 +11,17 @@ import { startKeygenLeadVoice, startSceneArpVoice } from "./engines/keygen.js";
 import { startPulseChipVoice } from "./engines/chip.js";
 import { startCrystalBellVoice } from "./engines/bell.js";
 import { startSoftCanvasVoice } from "./engines/canvas.js";
+import { startDidgeridooVoice } from "./engines/didgeridoo.js";
+import { startTribalVoice } from "./engines/tribal.js";
+import { createAmazonAtmosphere, startAmazonVoice } from "./engines/amazon.js";
 
-export { ENGINES, paramsForEngine, defaultEngineParams };
+export {
+  ENGINES,
+  paramsForEngine,
+  defaultEngineParams,
+  createAmazonAtmosphere,
+  startAmazonVoice,
+};
 
 const CLASSIC = new Set([
   "sine",
@@ -46,6 +55,9 @@ export function startVoice(destination, params = {}) {
   if (engine === "flux") return startFluxVoice(destination, params);
   if (engine === "noise") return startNoiseVoice(destination, params);
   if (engine === "drum") return startDrumVoice(destination, params);
+  if (engine === "didgeridoo") return startDidgeridooVoice(destination, params);
+  if (engine === "tribal") return startTribalVoice(destination, params);
+  if (engine === "amazon") return startAmazonVoice(destination, params);
   if (engine === "sampler") return startSamplerVoice(destination, params);
   return startClassicVoice(destination, { ...params, engine: "sine" });
 }

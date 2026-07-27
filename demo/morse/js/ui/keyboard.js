@@ -83,6 +83,12 @@ export function bindKeyboard(handlers) {
           handlers.help?.(event);
         }
         break;
+      case "KeyF":
+        if (!event.metaKey && !event.ctrlKey) {
+          event.preventDefault();
+          handlers.fullscreen?.(event);
+        }
+        break;
       case "Space":
         if (!typing && !event.repeat) {
           event.preventDefault();

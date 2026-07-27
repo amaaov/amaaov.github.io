@@ -72,6 +72,7 @@ export function drawBeatClock(
     previousLabel = "",
     labelScroll = 1,
     activeBeatIndex = -1,
+    showLetters = true,
   } = {},
 ) {
   const context = canvas.getContext("2d");
@@ -163,14 +164,16 @@ export function drawBeatClock(
     context.stroke();
   });
 
-  drawCasioWindow(context, {
-    centerX,
-    centerY,
-    radius,
-    label,
-    previousLabel,
-    labelScroll,
-  });
+  if (showLetters) {
+    drawClockLetterWindow(context, {
+      centerX,
+      centerY,
+      radius,
+      label,
+      previousLabel,
+      labelScroll,
+    });
+  }
 
   const clamped = Math.min(1, Math.max(0, progress));
   const handAngle = -Math.PI / 2 + clamped * Math.PI * 2;
@@ -220,7 +223,7 @@ export function drawBeatClock(
   context.stroke();
 }
 
-function drawCasioWindow(
+export function drawClockLetterWindow(
   context,
   { centerX, centerY, radius, label, previousLabel, labelScroll },
 ) {

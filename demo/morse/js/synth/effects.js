@@ -2,8 +2,7 @@ import { getAudioContext } from "./context.js";
 import { createModulatorBank } from "./modulation.js";
 import { MOD_DEFAULTS } from "./mod-params.js";
 
-export function createEffectsChain(defaults = {}) {
-  const context = getAudioContext();
+export function createEffectsChain(defaults = {}, context = getAudioContext()) {
   const input = context.createGain();
   const filter = context.createBiquadFilter();
   const delay = context.createDelay(2);

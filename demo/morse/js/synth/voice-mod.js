@@ -50,9 +50,9 @@ export function attachVoiceModulation(context, { buses, chainNodes }, voice, par
     }
     voice.push?.(env);
     wrapStop(voice, (when, prior) => {
-      const stopAt = Math.max(when, context.currentTime);
+      const stopAt = Math.max(when, now);
       env.offset.cancelScheduledValues(stopAt);
-      env.offset.setValueAtTime(Math.max(env.offset.value, 0), stopAt);
+      env.offset.setValueAtTime(Math.max(peak * sustain, 0), stopAt);
       env.offset.linearRampToValueAtTime(0, stopAt + release);
       try {
         env.stop(stopAt + release + 0.02);
@@ -72,7 +72,7 @@ export function attachVoiceModulation(context, { buses, chainNodes }, voice, par
     param.linearRampToValueAtTime(open, now + attack);
     param.linearRampToValueAtTime(rest + (open - rest) * sustain, now + attack + decay);
     wrapStop(voice, (when, prior) => {
-      const stopAt = Math.max(when, context.currentTime);
+      const stopAt = Math.max(when, now);
       param.cancelScheduledValues(stopAt);
       param.setTargetAtTime(rest, stopAt, Math.max(0.01, release * 0.3));
       prior(when);
