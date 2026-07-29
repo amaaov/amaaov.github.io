@@ -43,7 +43,7 @@ export function paintRowProgress(view, event) {
 }
 
 /** Build one ensemble track row and its highlight view. */
-export function createEnsembleTrackRow(track, { ensemble, onRemove }) {
+export function createEnsembleTrackRow(track, { ensemble, onRemove, onMidiEnabledChange }) {
   const row = document.createElement("li");
   row.className = "ensemble-track";
   row.dataset.trackId = track.id;
@@ -117,7 +117,7 @@ export function createEnsembleTrackRow(track, { ensemble, onRemove }) {
   const muteInput = document.createElement("input");
   muteInput.type = "checkbox";
   muteInput.checked = track.muted;
-  muteInput.setAttribute("aria-label", `Mute track ${track.id}`);
+  muteInput.setAttribute("aria-label", `Mute audio for track ${track.id}`);
   muteInput.addEventListener("change", () => {
     ensemble.updateTrack(track.id, { muted: muteInput.checked });
   });
@@ -125,6 +125,21 @@ export function createEnsembleTrackRow(track, { ensemble, onRemove }) {
   muteText.className = "ensemble-mute-text";
   muteText.textContent = "MUTE";
   muteLabel.append(muteInput, muteText);
+
+  const midiEnableLabel = document.createElement("label");
+  midiEnableLabel.className = "ensemble-mute ensemble-midi-enable";
+  const midiEnableInput = document.createElement("input");
+  midiEnableInput.type = "checkbox";
+  midiEnableInput.checked = track.midiEnabled !== false;
+  midiEnableInput.setAttribute("aria-label", `Send MIDI for track ${track.id}`);
+  midiEnableInput.addEventListener("change", () => {
+    ensemble.updateTrack(track.id, { midiEnabled: midiEnableInput.checked });
+    onMidiEnabledChange?.(track.id, midiEnableInput.checked);
+  });
+  const midiEnableText = document.createElement("span");
+  midiEnableText.className = "ensemble-mute-text";
+  midiEnableText.textContent = "MIDI";
+  midiEnableLabel.append(midiEnableInput, midiEnableText);
 
   const removeButton = document.createElement("button");
   removeButton.type = "button";
@@ -167,6 +182,62 @@ export function createEnsembleTrackRow(track, { ensemble, onRemove }) {
     ensemble.updateTrack(track.id, { delayFeedback: delayFeedbackInput.value });
   });
 
+  const midiChannelInput = document.createElement("input");
+  midiChannelInput.type = "number";
+  midiChannelInput.className = "ensemble-midi-channel";
+  midiChannelInput.min = "1";
+  midiChannelInput.max = "16";
+  midiChannelInput.inputMode = "numeric";
+  midiChannelInput.value = String(track.midiChannel ?? 1);
+  midiChannelInput.setAttribute("aria-label", `Track ${track.id} MIDI channel`);
+  midiChannelInput.addEventListener("change", () => {
+    const updated = ensemble.updateTrack(track.id, {
+      midiChannel: midiChannelInput.value,
+    });
+    if (updated) midiChannelInput.value = String(updated.midiChannel);
+  });
+
+  const midiNoteInput = document.createElement("input");
+  midiNoteInput.type = "number";
+  midiNoteInput.className = "ensemble-midi-note";
+  midiNoteInput.min = "0";
+  midiNoteInput.max = "127";
+  midiNoteInput.inputMode = "numeric";
+  midiNoteInput.value = String(track.midiNote ?? 69);
+  midiNoteInput.setAttribute("aria-label", `Track ${track.id} MIDI note`);
+  midiNoteInput.addEventListener("change", () => {
+    const updated = ensemble.updateTrack(track.id, { midiNote: midiNoteInput.value });
+    if (updated) midiNoteInput.value = String(updated.midiNote);
+  });
+
+  const midiVelocityInput = document.createElement("input");
+  midiVelocityInput.type = "range";
+  midiVelocityInput.className = "ensemble-midi-velocity";
+  midiVelocityInput.min = "1";
+  midiVelocityInput.max = "127";
+  midiVelocityInput.step = "1";
+  midiVelocityInput.value = String(track.midiVelocity ?? 96);
+  midiVelocityInput.setAttribute("aria-label", `Track ${track.id} MIDI velocity`);
+  midiVelocityInput.addEventListener("input", () => {
+    ensemble.updateTrack(track.id, { midiVelocity: midiVelocityInput.value });
+  });
+
+  const midiProgramInput = document.createElement("input");
+  midiProgramInput.type = "number";
+  midiProgramInput.className = "ensemble-midi-program";
+  midiProgramInput.min = "-1";
+  midiProgramInput.max = "127";
+  midiProgramInput.inputMode = "numeric";
+  midiProgramInput.value = String(track.midiProgram ?? -1);
+  midiProgramInput.title = "Program change (−1 = none)";
+  midiProgramInput.setAttribute("aria-label", `Track ${track.id} MIDI program`);
+  midiProgramInput.addEventListener("change", () => {
+    const updated = ensemble.updateTrack(track.id, {
+      midiProgram: midiProgramInput.value,
+    });
+    if (updated) midiProgramInput.value = String(updated.midiProgram);
+  });
+
   const mixRow = document.createElement("div");
   mixRow.className = "ensemble-mix-row";
   mixRow.append(
@@ -182,15 +253,28 @@ export function createEnsembleTrackRow(track, { ensemble, onRemove }) {
     mixLabel("FB", "ensemble-delay-fb-wrap", delayFeedbackInput),
   );
 
+  const midiRow = document.createElement("div");
+  midiRow.className = "ensemble-mix-row ensemble-midi-row";
+  midiRow.append(
+    mixLabel("CH", "ensemble-midi-ch-wrap", midiChannelInput),
+    mixLabel("NOTE", "ensemble-midi-note-wrap", midiNoteInput),
+    mixLabel("VEL", "ensemble-midi-vel-wrap", midiVelocityInput),
+    mixLabel("PGM", "ensemble-midi-pgm-wrap", midiProgramInput),
+  );
+
+  const flagsRow = document.createElement("div");
+  flagsRow.className = "ensemble-flags";
+  flagsRow.append(muteLabel, midiEnableLabel, removeButton);
+
   row.append(
     textInput,
     morseEl,
     mixRow,
     delayRow,
+    midiRow,
     wpmInput,
     engineSelect,
-    muteLabel,
-    removeButton,
+    flagsRow,
   );
   const textWrap = wrapMirror(textInput);
   const view = {

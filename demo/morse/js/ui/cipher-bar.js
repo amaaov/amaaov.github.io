@@ -4,6 +4,10 @@ import {
   generatePad,
 } from "../cipher/index.js";
 import { CIPHER_GUIDES } from "../cipher/guides.js";
+import {
+  compressMorseText,
+  decompressMorseText,
+} from "../morse/compress.js";
 import { bindTablist } from "./tabs.js";
 
 const FIELD_IDS = {
@@ -70,8 +74,16 @@ function hasMissingKeys(cipher, options) {
   });
 }
 
+function compressNote(before, after) {
+  if (before && after) return " Morse compress before and after cipher.";
+  if (before) return " Morse compress before cipher.";
+  if (after) return " Morse compress after cipher.";
+  return "";
+}
+
 /**
  * Top-bar cipher controls. PLAIN passes input through; ENCRYPT / DECRYPT rewrite output only.
+ * Optional Morse digraph compression wraps the cipher (before and/or after on encrypt; reversed on decrypt).
  */
 export function bindCipherBar({
   modeTabs,
@@ -80,12 +92,17 @@ export function bindCipherBar({
   keys,
   guide,
   generatePadButton,
+  compressRow,
+  compressBeforeButton,
+  compressAfterButton,
   getPlainText,
   onChange,
   announce,
 }) {
   let mode = "plain";
   let lastMethod = DEFAULT_METHOD;
+  let compressBefore = false;
+  let compressAfter = false;
 
   select.innerHTML = METHOD_CIPHERS.map(
     (cipher) => `<option value="${cipher.id}">${cipher.name}</option>`,
@@ -108,12 +125,32 @@ export function bindCipherBar({
     }
   }
 
+  function syncCompressUi() {
+    const active = mode !== "plain";
+    if (compressRow) compressRow.hidden = !active;
+    if (compressBeforeButton) {
+      compressBeforeButton.setAttribute(
+        "aria-pressed",
+        compressBefore && active ? "true" : "false",
+      );
+      compressBeforeButton.disabled = !active;
+    }
+    if (compressAfterButton) {
+      compressAfterButton.setAttribute(
+        "aria-pressed",
+        compressAfter && active ? "true" : "false",
+      );
+      compressAfterButton.disabled = !active;
+    }
+  }
+
   function syncMethodVisibility() {
     const active = mode !== "plain";
     if (methodLabel) methodLabel.hidden = !active;
     keys.hidden = !active;
     generatePadButton.hidden = !(active && select.value === "otp");
     if (guide) guide.hidden = !active;
+    syncCompressUi();
   }
 
   function renderGuide(cipher, { pending = false } = {}) {
@@ -124,9 +161,11 @@ export function bindCipherBar({
       return;
     }
     const base = CIPHER_GUIDES[cipher?.id] || "";
-    guide.textContent = pending
-      ? `${base} Enter the parameters above to transform output.`
-      : base;
+    const note = compressNote(compressBefore, compressAfter);
+    const pendingNote = pending
+      ? " Enter the parameters above to transform output."
+      : "";
+    guide.textContent = `${base}${note}${pendingNote}`;
     if (guide.id) select?.setAttribute("aria-describedby", guide.id);
   }
 
@@ -145,28 +184,70 @@ export function bindCipherBar({
     renderGuide(cipher, { pending: hasMissingKeys(cipher, readOptions(cipher)) });
   }
 
+  function runCompressStages(text, direction) {
+    let next = text;
+    if (direction === "encrypt") {
+      if (compressBefore) next = compressMorseText(next);
+      return next;
+    }
+    if (compressAfter) next = decompressMorseText(next);
+    return next;
+  }
+
+  function runPostCipherStages(text, direction) {
+    let next = text;
+    if (direction === "encrypt") {
+      if (compressAfter) next = compressMorseText(next);
+      return next;
+    }
+    if (compressBefore) next = decompressMorseText(next);
+    return next;
+  }
+
   async function emit() {
     const id = activeId();
     const plain = getPlainText();
     if (mode === "plain" || id === "none") {
-      onChange({ id: "none", mode, text: plain });
+      onChange({
+        id: "none",
+        mode,
+        text: plain,
+        compressBefore: false,
+        compressAfter: false,
+      });
       return;
     }
     const cipher = currentCipher();
     const options = readOptions(cipher);
     if (hasMissingKeys(cipher, options)) {
       renderGuide(cipher, { pending: true });
-      onChange({ id, mode, text: plain, pending: true });
+      onChange({
+        id,
+        mode,
+        text: plain,
+        pending: true,
+        compressBefore,
+        compressAfter,
+      });
       return;
     }
     renderGuide(cipher);
     const cipherMode = mode === "plain" ? "encrypt" : mode;
     try {
-      const text = await applyCipher(id, cipherMode, plain, options);
-      onChange({ id, mode, text });
+      const prepared = runCompressStages(plain, cipherMode);
+      const ciphered = await applyCipher(id, cipherMode, prepared, options);
+      const text = runPostCipherStages(ciphered, cipherMode);
+      onChange({ id, mode, text, compressBefore, compressAfter });
     } catch (error) {
       announce(error.message || "Cipher failed");
-      onChange({ id, mode, text: plain, error: true });
+      onChange({
+        id,
+        mode,
+        text: plain,
+        error: true,
+        compressBefore,
+        compressAfter,
+      });
     }
   }
 
@@ -180,6 +261,28 @@ export function bindCipherBar({
     renderKeys();
     emit();
     if (announceChange) announce(MODE_STATUS[mode] || mode);
+  }
+
+  function setCompress(which, enabled) {
+    const next = Boolean(enabled);
+    if (which === "before") {
+      if (next === compressBefore) return;
+      compressBefore = next;
+    } else {
+      if (next === compressAfter) return;
+      compressAfter = next;
+    }
+    syncCompressUi();
+    renderGuide(currentCipher(), {
+      pending: hasMissingKeys(currentCipher(), readOptions(currentCipher())),
+    });
+    emit();
+    const label = which === "before" ? "before" : "after";
+    announce(
+      next
+        ? `Morse compress ${label} cipher`
+        : `Morse compress ${label} off`,
+    );
   }
 
   for (const tab of modeTabs) {
@@ -203,6 +306,12 @@ export function bindCipherBar({
     announce("Pad generated");
     emit();
   });
+  compressBeforeButton?.addEventListener("click", () => {
+    setCompress("before", !compressBefore);
+  });
+  compressAfterButton?.addEventListener("click", () => {
+    setCompress("after", !compressAfter);
+  });
 
   syncModeTabs();
   syncMethodVisibility();
@@ -213,5 +322,7 @@ export function bindCipherBar({
     refresh: emit,
     getMode: () => mode,
     getId: () => activeId(),
+    getCompressBefore: () => compressBefore,
+    getCompressAfter: () => compressAfter,
   };
 }

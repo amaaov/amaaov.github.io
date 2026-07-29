@@ -1,5 +1,6 @@
 /**
- * Web MIDI straight-key output. Reactive note on/off; All Notes Off on stop.
+ * Web MIDI straight-key output. Solo note on/off plus keyed multi-voice
+ * for ensemble layers. All Notes Off on stop.
  */
 export function createMidiPort() {
   let access = null;
@@ -8,6 +9,10 @@ export function createMidiPort() {
   let channel = 0;
   let velocity = 96;
   let down = false;
+  /** @type {Map<string, { channel: number, note: number }>} */
+  const keyed = new Map();
+  /** @type {Set<number>} */
+  const usedChannels = new Set();
 
   function supported() {
     return typeof navigator !== "undefined" && Boolean(navigator.requestMIDIAccess);
@@ -54,10 +59,23 @@ export function createMidiPort() {
     return { note, channel, velocity, outputId };
   }
 
+  function clampChannel(value) {
+    return Math.max(0, Math.min(15, Number(value) || 0));
+  }
+
+  function clampNote(value) {
+    return Math.max(0, Math.min(127, Number(value) || 69));
+  }
+
+  function clampVelocity(value) {
+    return Math.max(1, Math.min(127, Number(value) || 96));
+  }
+
   function noteOn() {
     const output = currentOutput();
     if (!output) return false;
     output.send([0x90 | channel, note, velocity]);
+    usedChannels.add(channel);
     down = true;
     return true;
   }
@@ -72,10 +90,67 @@ export function createMidiPort() {
     down = false;
   }
 
-  function stop() {
+  function keyOff(id) {
+    const key = String(id || "");
+    const active = keyed.get(key);
+    if (!active) return;
+    keyed.delete(key);
     const output = currentOutput();
+    if (!output) return;
+    output.send([0x80 | active.channel, active.note, 0]);
+  }
+
+  function keyOn(id, patch = {}) {
+    const key = String(id || "");
+    if (!key) return false;
+    const output = currentOutput();
+    if (!output) return false;
+    keyOff(key);
+    const ch = clampChannel(patch.channel ?? channel);
+    const n = clampNote(patch.note ?? note);
+    const vel = clampVelocity(patch.velocity ?? velocity);
+    output.send([0x90 | ch, n, vel]);
+    keyed.set(key, { channel: ch, note: n });
+    usedChannels.add(ch);
+    return true;
+  }
+
+  function program(channelNibble, programNumber) {
+    const output = currentOutput();
+    if (!output) return false;
+    const ch = clampChannel(channelNibble);
+    const pgm = Math.max(0, Math.min(127, Number(programNumber) || 0));
+    output.send([0xc0 | ch, pgm]);
+    usedChannels.add(ch);
+    return true;
+  }
+
+  function releaseKeys() {
+    for (const id of [...keyed.keys()]) keyOff(id);
+  }
+
+  function allNotesOff() {
+    const output = currentOutput();
+    if (!output) return;
+    const channels = usedChannels.size ? [...usedChannels] : [channel];
+    for (const ch of channels) {
+      output.send([0xb0 | ch, 123, 0]);
+    }
+    usedChannels.clear();
+  }
+
+  /** Solo-path stop: release the straight-key note and ANO on its channel. */
+  function stop() {
     noteOff();
+    const output = currentOutput();
     if (output) output.send([0xb0 | channel, 123, 0]);
+  }
+
+  /** Release solo + keyed ensemble voices and ANO on every channel used. */
+  function stopAll() {
+    noteOff();
+    releaseKeys();
+    allNotesOff();
   }
 
   return {
@@ -87,12 +162,20 @@ export function createMidiPort() {
     getSettings,
     noteOn,
     noteOff,
+    keyOn,
+    keyOff,
+    program,
+    releaseKeys,
     stop,
+    stopAll,
     get ready() {
       return Boolean(currentOutput());
     },
     get enabled() {
       return Boolean(access);
+    },
+    get activeKeys() {
+      return keyed.size;
     },
   };
 }

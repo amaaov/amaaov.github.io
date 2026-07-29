@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { textToMorse } from "./morse/encode.js";
 import { morseToText } from "./morse/decode.js";
+import {
+  compressMorseText,
+  decompressMorseText,
+} from "./morse/compress.js";
 import { buildTextMorseMap, textMatchesMorse } from "./morse/timeline.js";
 import { applyCipher, generatePad } from "./cipher/index.js";
 import { morbitKeyFromKeyword } from "./cipher/morbit.js";
@@ -29,8 +33,19 @@ import { encodeQrMatrix } from "./viz/qr-matrix.js";
 import { decodeQrMatrix } from "./viz/qr-decode.js";
 import { matrixToAscii } from "./viz/ascii.js";
 import { decodeAsciiQrPayload } from "./viz/ascii-parse.js";
-import { drawGoBoard } from "./viz/draw.js";
-import { goBoardToSvg, qrMatrixToSvg } from "./viz/svg.js";
+import {
+  drawGoBoard,
+  drawQrLand,
+  drawQrPetri,
+  drawQrRug,
+} from "./viz/draw.js";
+import {
+  goBoardToSvg,
+  landToSvg,
+  petriToSvg,
+  qrMatrixToSvg,
+  qrRugToSvg,
+} from "./viz/svg.js";
 import {
   MAX_CLOCK_BEATS,
   MIN_SOLO_CLOCK_WEIGHT,
@@ -101,6 +116,8 @@ import { createMorseVoice, unitMsForWpm } from "./synth/voice.js";
 import { createEnsemble, MAX_ENSEMBLE_TRACKS } from "./synth/ensemble.js";
 import { createCompositionStore } from "./ensemble/compositions.js";
 import { buildMidiEvents, formatMidiText } from "./midi/score.js";
+import { createMidiPort } from "./midi/port.js";
+import { createEnsembleMidiOut } from "./midi/ensemble-out.js";
 
 function fakeCanvas(size = 200) {
   const noop = () => {};
@@ -114,12 +131,15 @@ function fakeCanvas(size = 200) {
       return {
         clearRect: noop,
         fillRect: noop,
+        strokeRect: noop,
         beginPath: noop,
         closePath: noop,
         moveTo: noop,
         lineTo: noop,
         arc: noop,
         quadraticCurveTo: noop,
+        bezierCurveTo: noop,
+        ellipse: noop,
         fill: noop,
         stroke: noop,
         fillText(text, ...rest) {
@@ -129,12 +149,16 @@ function fakeCanvas(size = 200) {
         restore: noop,
         clip: noop,
         rect: noop,
+        translate: noop,
+        rotate: noop,
+        scale: noop,
         createLinearGradient: () => gradient,
         createRadialGradient: () => gradient,
         fillStyle: null,
         strokeStyle: null,
         lineWidth: 1,
         lineCap: "butt",
+        lineJoin: "miter",
         font: "",
         textAlign: "start",
         textBaseline: "alphabetic",
@@ -237,6 +261,22 @@ for (const [id, options] of roundtrips) {
   const decrypted = await applyCipher(id, "decrypt", encrypted, options);
   assert.match(decrypted.toUpperCase().replace(/[^A-Z]/gu, ""), /ATTACK/);
 }
+
+assert.equal(compressMorseText(""), "");
+assert.equal(decompressMorseText(""), "");
+const packedHello = compressMorseText("HELLO WORLD");
+assert.match(packedHello, /^[A-I]+$/u);
+assert.equal(decompressMorseText(packedHello), "HELLO WORLD");
+const packedDawn = compressMorseText("ATTACK AT DAWN");
+const cipherAfterCompress = await applyCipher("caesar", "encrypt", packedDawn, {
+  shift: 7,
+});
+const compressedAfterCipher = compressMorseText(cipherAfterCompress);
+const decompressOuter = decompressMorseText(compressedAfterCipher);
+const decryptMiddle = await applyCipher("caesar", "decrypt", decompressOuter, {
+  shift: 7,
+});
+assert.equal(decompressMorseText(decryptMiddle), "ATTACK AT DAWN");
 
 const pad = generatePad(32);
 const otpCipher = await applyCipher("otp", "encrypt", "HELLO WORLD", { pad });
@@ -359,7 +399,38 @@ assert.match(goAscii, /●/u);
 assert.match(goAscii, /○/u);
 assert.equal(goAscii.split("\n").length, 21);
 assert.equal(decodeAsciiQrPayload(goAscii), qrPayload);
+const rugAscii = matrixToAscii(qr, { kind: "rug" });
+assert.match(rugAscii, /[◆◇·]/u);
+assert.equal(rugAscii.includes("║"), false);
+assert.equal(rugAscii.includes("┊"), false);
+assert.equal(rugAscii.split("\n").length, 21);
+assert.equal(rugAscii.split("\n")[0].length, 21);
 assert.equal(decodeAsciiQrPayload("hello world"), null);
+drawQrRug(fakeCanvas(), qr);
+const rugSvg = qrRugToSvg(qr);
+assert.match(rugSvg, /<svg[\s\S]*<\/svg>/u);
+assert.match(rugSvg, /#070b0a/u);
+assert.match(rugSvg, /#7a3a36/u);
+assert.match(rugSvg, /#a8884a/u);
+assert.match(rugSvg, /rug-pile/u);
+assert.match(rugSvg, /C[\d.-]+ [\d.-]+/u);
+assert.equal(rugSvg.includes('stroke="#d4af37"'), false);
+const landAscii = matrixToAscii(qr, { kind: "land" });
+assert.match(landAscii, /[▲◠↟◉⌢░·]/u);
+assert.equal(landAscii.split("\n").length, 21);
+drawQrLand(fakeCanvas(), qr);
+const landSvg = landToSvg(qr);
+assert.match(landSvg, /<svg[\s\S]*<\/svg>/u);
+assert.match(landSvg, /land-sky/u);
+assert.match(landSvg, /#1a2e28/u);
+const petriAsciiText = matrixToAscii(qr, { kind: "petri" });
+assert.match(petriAsciiText, /[●◉✧· ]/u);
+assert.equal(petriAsciiText.split("\n").length, 21);
+drawQrPetri(fakeCanvas(), qr);
+const petriSvg = petriToSvg(qr);
+assert.match(petriSvg, /<svg[\s\S]*<\/svg>/u);
+assert.match(petriSvg, /petri-agar/u);
+assert.match(petriSvg, /#d8c48a/u);
 const fromQr = payloadToInput(qrPayload);
 assert.equal(fromQr.kind, "qr-morse");
 assert.equal(fromQr.text, "SOS");
@@ -828,6 +899,34 @@ const trackOne = ensemble.addTrack({ text: "A", wpm: 20, engine: "sine" });
 const trackTwo = ensemble.addTrack({ text: "B", wpm: 10, engine: "square" });
 assert.ok(trackOne?.morse);
 assert.ok(trackTwo?.morse);
+assert.equal(trackOne.midiChannel, 1);
+assert.equal(trackTwo.midiChannel, 2);
+assert.equal(trackOne.midiVelocity, 96);
+assert.equal(trackOne.midiNote, 69);
+assert.equal(trackOne.midiEnabled, true);
+assert.equal(trackOne.midiProgram, -1);
+const midiPatched = ensemble.updateTrack(trackOne.id, {
+  midiChannel: 12,
+  midiVelocity: 40,
+  midiNote: 60,
+  midiProgram: 5,
+  midiEnabled: false,
+});
+assert.equal(midiPatched.midiChannel, 12);
+assert.equal(midiPatched.midiVelocity, 40);
+assert.equal(midiPatched.midiNote, 60);
+assert.equal(midiPatched.midiProgram, 5);
+assert.equal(midiPatched.midiEnabled, false);
+assert.equal(ensemble.updateTrack(trackOne.id, { midiChannel: 99 }).midiChannel, 16);
+assert.equal(ensemble.updateTrack(trackOne.id, { midiVelocity: 0 }).midiVelocity, 1);
+assert.equal(ensemble.snapshot().tracks[0].midiProgram, 5);
+ensemble.updateTrack(trackOne.id, {
+  midiChannel: 1,
+  midiVelocity: 96,
+  midiNote: 69,
+  midiProgram: -1,
+  midiEnabled: true,
+});
 await ensemble.startAll();
 await new Promise((resolve) => setTimeout(resolve, 8));
 assert.equal(ensemble.trackPlaying(trackOne.id), true);
@@ -931,6 +1030,11 @@ const savedComposition = compositionStore.save({
       delayMix: 0.25,
       delayMs: 300,
       delayFeedback: 0.5,
+      midiChannel: 3,
+      midiNote: 72,
+      midiVelocity: 80,
+      midiProgram: 12,
+      midiEnabled: false,
     },
     { text: "CQ", wpm: 12, engine: "square" },
   ],
@@ -939,6 +1043,13 @@ const savedComposition = compositionStore.save({
 assert.ok(savedComposition?.id);
 assert.equal(savedComposition.name, "1");
 assert.equal(savedComposition.tracks[0].delayMs, 300);
+assert.equal(savedComposition.tracks[0].midiChannel, 3);
+assert.equal(savedComposition.tracks[0].midiNote, 72);
+assert.equal(savedComposition.tracks[0].midiVelocity, 80);
+assert.equal(savedComposition.tracks[0].midiProgram, 12);
+assert.equal(savedComposition.tracks[0].midiEnabled, false);
+assert.equal(savedComposition.tracks[1].midiChannel, 1);
+assert.equal(savedComposition.tracks[1].midiEnabled, true);
 assert.equal(savedComposition.master.reverb, 0.4);
 assert.equal(compositionStore.nextDefaultName(), "2");
 const secondComposition = compositionStore.save({
@@ -973,6 +1084,70 @@ const midiText = formatMidiText(midiSos, { wpm: 20, note: 69, channel: 0 });
 assert.ok(midiText.includes("ch1 note69"));
 assert.ok(midiText.includes("90 45 60"));
 assert.equal(formatMidiText([], { wpm: 18, note: 60, channel: 1 }).includes("(empty)"), true);
+
+const midiSent = [];
+const fakeMidiAccess = {
+  outputs: new Map([
+    [
+      "out-1",
+      {
+        id: "out-1",
+        name: "Test Out",
+        send(bytes) {
+          midiSent.push([...bytes]);
+        },
+      },
+    ],
+  ]),
+};
+const midiPortUnderTest = createMidiPort();
+assert.equal(midiPortUnderTest.supported(), typeof navigator !== "undefined" && Boolean(navigator.requestMIDIAccess));
+Object.defineProperty(globalThis, "navigator", {
+  configurable: true,
+  value: {
+    ...(globalThis.navigator || {}),
+    requestMIDIAccess: async () => fakeMidiAccess,
+  },
+});
+const midiOutputs = await midiPortUnderTest.enable();
+assert.equal(midiOutputs.length, 1);
+assert.equal(midiPortUnderTest.ready, true);
+assert.equal(midiPortUnderTest.keyOn("a", { channel: 0, note: 60, velocity: 100 }), true);
+assert.equal(midiPortUnderTest.keyOn("b", { channel: 1, note: 64, velocity: 80 }), true);
+assert.equal(midiPortUnderTest.activeKeys, 2);
+assert.deepEqual(midiSent[0], [0x90, 60, 100]);
+assert.deepEqual(midiSent[1], [0x91, 64, 80]);
+midiPortUnderTest.keyOff("a");
+assert.deepEqual(midiSent[2], [0x80, 60, 0]);
+assert.equal(midiPortUnderTest.activeKeys, 1);
+midiPortUnderTest.program(2, 12);
+assert.deepEqual(midiSent[3], [0xc2, 12]);
+midiPortUnderTest.stopAll();
+assert.equal(midiPortUnderTest.activeKeys, 0);
+assert.ok(midiSent.some((bytes) => bytes[0] === 0xb1 && bytes[1] === 123));
+
+midiSent.length = 0;
+const ensembleMidi = createEnsembleMidiOut(midiPortUnderTest);
+ensembleMidi.onTrackProgress(
+  {
+    id: "t1",
+    wpm: 20,
+    midiChannel: 4,
+    midiNote: 67,
+    midiVelocity: 90,
+    midiProgram: 3,
+    midiEnabled: true,
+  },
+  { token: ".", offset: 0 },
+);
+assert.deepEqual(midiSent[0], [0xc3, 3]);
+assert.deepEqual(midiSent[1], [0x93, 67, 90]);
+ensembleMidi.onTrackProgress(
+  { id: "t1", wpm: 20, midiChannel: 4, midiNote: 67, midiVelocity: 90, midiEnabled: false },
+  { token: ".", offset: 1 },
+);
+assert.ok(midiSent.some((bytes) => bytes[0] === 0x83 && bytes[1] === 67));
+ensembleMidi.stop();
 
 function fakeDomField(value = "") {
   const field = {

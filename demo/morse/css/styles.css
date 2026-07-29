@@ -181,6 +181,26 @@ body {
   opacity: 1;
 }
 
+.cipher-compress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.cipher-compress-label {
+  color: var(--ink-dim);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.viz-variant--compress {
+  flex: 1 1 10rem;
+  max-width: 14rem;
+  grid-template-columns: 1fr 1fr;
+}
+
 .cipher-guide {
   margin: 0;
   line-height: 1.35;
@@ -445,7 +465,7 @@ select {
   display: grid;
   gap: 0.35rem;
   justify-items: center;
-  width: min(12rem, 100%);
+  width: min(22rem, 100%);
 }
 
 .clock-controls {
@@ -561,8 +581,18 @@ body.clock-immersive {
   width: 100%;
 }
 
+.viz-variant--qr {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 .viz-variant--clock {
   grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 420px) {
+  .viz-variant--qr {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .viz-ascii {
@@ -1025,12 +1055,34 @@ body.clock-immersive {
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+.ensemble-midi-row {
+  grid-template-columns: 3.2rem 3.6rem minmax(4rem, 1fr) 3.6rem;
+}
+
+@media (max-width: 420px) {
+  .ensemble-midi-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .ensemble-mix {
   display: grid;
   gap: 0.2rem;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   color: var(--ink-dim);
+}
+
+.ensemble-flags {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 0.85rem;
+}
+
+.ensemble-flags .ensemble-remove {
+  margin-left: auto;
 }
 
 .ensemble-track input[type="range"] {
@@ -1105,6 +1157,14 @@ body.clock-immersive {
 .ensemble-remove {
   justify-self: end;
   align-self: center;
+}
+
+.ensemble-midi-row .ensemble-midi-channel,
+.ensemble-midi-row .ensemble-midi-note,
+.ensemble-midi-row .ensemble-midi-program {
+  min-height: 2.2rem;
+  padding: 0.25rem 0.3rem;
+  text-align: center;
 }
 
 .ensemble-library {
@@ -1307,9 +1367,14 @@ body.panel-open {
     align-items: stretch;
   }
 
-  .cipher-keys-inline {
+  .cipher-keys-inline,
+  .cipher-compress {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .viz-variant--compress {
+    max-width: none;
   }
 
   .cipher-keys-inline label {

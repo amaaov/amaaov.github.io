@@ -30,6 +30,33 @@ function clampPan(value) {
   return Math.max(-1, Math.min(1, number));
 }
 
+function clampMidiChannel(value, fallback = 1) {
+  const number = Math.round(Number(value));
+  if (!Number.isFinite(number)) return fallback;
+  return Math.max(1, Math.min(16, number));
+}
+
+function clampMidiNote(value, fallback = 69) {
+  const number = Math.round(Number(value));
+  if (!Number.isFinite(number)) return fallback;
+  return Math.max(0, Math.min(127, number));
+}
+
+function clampMidiVelocity(value, fallback = 96) {
+  const number = Math.round(Number(value));
+  if (!Number.isFinite(number)) return fallback;
+  return Math.max(1, Math.min(127, number));
+}
+
+/** 0–127, or -1 when unset (no program change). */
+function clampMidiProgram(value, fallback = -1) {
+  if (value == null || value === "") return fallback;
+  const number = Math.round(Number(value));
+  if (!Number.isFinite(number)) return fallback;
+  if (number < 0) return -1;
+  return Math.max(0, Math.min(127, number));
+}
+
 /** Concurrent Morse loops into a master bus with reverb and compression. */
 export function createEnsemble({ createRuntime, onTrackProgress } = {}) {
   let masterBus = null;
@@ -152,6 +179,11 @@ export function createEnsemble({ createRuntime, onTrackProgress } = {}) {
       delayMs: track.delayMs,
       delayFeedback: track.delayFeedback,
       muted: track.muted,
+      midiChannel: track.midiChannel,
+      midiNote: track.midiNote,
+      midiVelocity: track.midiVelocity,
+      midiProgram: track.midiProgram,
+      midiEnabled: track.midiEnabled,
     };
   }
 
@@ -160,6 +192,7 @@ export function createEnsemble({ createRuntime, onTrackProgress } = {}) {
     const text = seed.text ?? "";
     const morse =
       seed.morse != null ? normalizeMorse(seed.morse) : text ? textToMorse(text) : "";
+    const defaultChannel = clampMidiChannel(tracks.length + 1);
     const track = {
       id: String(nextTrackId++),
       text,
@@ -173,6 +206,11 @@ export function createEnsemble({ createRuntime, onTrackProgress } = {}) {
       delayMs: clampDelayMs(seed.delayMs ?? 180),
       delayFeedback: clampDelayFeedback(seed.delayFeedback ?? 0.2),
       muted: Boolean(seed.muted),
+      midiChannel: clampMidiChannel(seed.midiChannel, defaultChannel),
+      midiNote: clampMidiNote(seed.midiNote, 69),
+      midiVelocity: clampMidiVelocity(seed.midiVelocity, 96),
+      midiProgram: clampMidiProgram(seed.midiProgram, -1),
+      midiEnabled: seed.midiEnabled == null ? true : Boolean(seed.midiEnabled),
     };
     tracks.push(track);
     return { ...track };
@@ -253,6 +291,19 @@ export function createEnsemble({ createRuntime, onTrackProgress } = {}) {
         track.delayFeedback = clampDelayFeedback(patch.delayFeedback);
       }
       if (patch.frequency != null) track.frequency = Number(patch.frequency) || 700;
+      if (patch.midiChannel != null) {
+        track.midiChannel = clampMidiChannel(patch.midiChannel, track.midiChannel);
+      }
+      if (patch.midiNote != null) {
+        track.midiNote = clampMidiNote(patch.midiNote, track.midiNote);
+      }
+      if (patch.midiVelocity != null) {
+        track.midiVelocity = clampMidiVelocity(patch.midiVelocity, track.midiVelocity);
+      }
+      if (patch.midiProgram !== undefined) {
+        track.midiProgram = clampMidiProgram(patch.midiProgram, track.midiProgram);
+      }
+      if (patch.midiEnabled != null) track.midiEnabled = Boolean(patch.midiEnabled);
       syncMix(id);
       return { ...track };
     },

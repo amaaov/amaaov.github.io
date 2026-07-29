@@ -16,11 +16,23 @@ function clamp01(value, fallback) {
   return Math.max(0, Math.min(1, number));
 }
 
+function clampInt(value, min, max, fallback) {
+  const number = Math.round(Number(value));
+  if (!Number.isFinite(number)) return fallback;
+  return Math.max(min, Math.min(max, number));
+}
+
 function normalizeTrack(track) {
   if (!track || typeof track !== "object") return null;
   const gain = Number(track.gain);
   const pan = Number(track.pan);
   const delayMs = Number(track.delayMs);
+  const midiProgramRaw = track.midiProgram;
+  let midiProgram = -1;
+  if (midiProgramRaw != null && midiProgramRaw !== "") {
+    const parsed = Math.round(Number(midiProgramRaw));
+    if (Number.isFinite(parsed)) midiProgram = parsed < 0 ? -1 : clampInt(parsed, 0, 127, -1);
+  }
   return {
     text: String(track.text || ""),
     morse: String(track.morse || ""),
@@ -35,6 +47,11 @@ function normalizeTrack(track) {
       : 180,
     delayFeedback: clamp01(track.delayFeedback, 0.2),
     muted: Boolean(track.muted),
+    midiChannel: clampInt(track.midiChannel, 1, 16, 1),
+    midiNote: clampInt(track.midiNote, 0, 127, 69),
+    midiVelocity: clampInt(track.midiVelocity, 1, 127, 96),
+    midiProgram,
+    midiEnabled: track.midiEnabled == null ? true : Boolean(track.midiEnabled),
   };
 }
 

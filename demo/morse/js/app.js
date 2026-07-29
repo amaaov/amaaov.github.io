@@ -20,7 +20,14 @@ import { bindTablist } from "./ui/tabs.js";
 import { bindSynthPanel } from "./ui/synth-panel.js";
 import { createPlayHighlighter } from "./ui/play-highlight.js";
 import { encodeQrMatrix } from "./viz/qr-matrix.js";
-import { clearCanvas, drawGoBoard, drawQrModules } from "./viz/draw.js";
+import {
+  clearCanvas,
+  drawGoBoard,
+  drawQrLand,
+  drawQrModules,
+  drawQrPetri,
+  drawQrRug,
+} from "./viz/draw.js";
 import { clockViewAt, idleClockWindow } from "./viz/clock-pattern.js";
 import { drawBeatClock, pointerToClockProgress } from "./viz/clock.js";
 import { createClockAnimator } from "./viz/clock-animate.js";
@@ -39,9 +46,21 @@ import { pointerToClockProgressFromLadder } from "./viz/ladder-geometry.js";
 import {
   downloadSvg,
   goBoardToSvg,
+  landToSvg,
+  petriToSvg,
   qrMatrixToSvg,
+  qrRugToSvg,
   vizSvgFilename,
 } from "./viz/svg.js";
+
+const QR_VARIANTS = ["go", "qr", "rug", "land", "petri"];
+const QR_VARIANT_LABELS = {
+  go: "Go board",
+  qr: "QR matrix",
+  rug: "QR rug",
+  land: "QR landscape",
+  petri: "QR petri dish",
+};
 import {
   EXPORT_CLOCK_SIDE,
   EXPORT_PAINT_MS,
@@ -497,12 +516,12 @@ async function toggleClockFullscreen() {
 }
 
 function setQrVariant(variant) {
-  if (variant !== "go" && variant !== "qr") return;
+  if (!QR_VARIANTS.includes(variant)) return;
   if (variant === state.qrVariant) return;
   state.qrVariant = variant;
   syncQrVariantUi();
   if (state.outputMode === "qr") paintOutput();
-  announce(variant === "go" ? "Go board" : "QR matrix");
+  announce(QR_VARIANT_LABELS[variant] || variant);
 }
 
 function setClockVariant(variant) {
@@ -710,7 +729,7 @@ function paintOutput() {
 
   try {
     const matrix = encodeQrMatrix(payload);
-    const kind = state.qrVariant === "qr" ? "qr" : "go";
+    const kind = QR_VARIANTS.includes(state.qrVariant) ? state.qrVariant : "go";
     state.vizMatrix = matrix;
     state.vizKind = kind;
     const ascii = matrixToAscii(matrix, { kind });
@@ -722,16 +741,19 @@ function paintOutput() {
       els.outputAscii.textContent = useAscii ? ascii : "";
       els.outputAscii.setAttribute(
         "aria-label",
-        kind === "go" ? "Go board ASCII visualization" : "QR ASCII visualization",
+        `${QR_VARIANT_LABELS[kind] || kind} ASCII visualization`,
       );
     }
     els.outputVizFrame?.classList.toggle("output-viz-frame--ascii", useAscii);
     els.outputCanvas.setAttribute(
       "aria-label",
-      kind === "go" ? "Go board Morse visualization" : "QR Morse visualization",
+      `${QR_VARIANT_LABELS[kind] || kind} Morse visualization`,
     );
     if (!useAscii) {
       if (kind === "qr") drawQrModules(els.outputCanvas, matrix);
+      else if (kind === "rug") drawQrRug(els.outputCanvas, matrix);
+      else if (kind === "land") drawQrLand(els.outputCanvas, matrix);
+      else if (kind === "petri") drawQrPetri(els.outputCanvas, matrix);
       else drawGoBoard(els.outputCanvas, matrix);
     } else {
       clearCanvas(els.outputCanvas);
@@ -810,11 +832,15 @@ async function exportVisualization() {
     }
     return;
   }
-  const svg =
-    state.vizKind === "qr"
-      ? qrMatrixToSvg(state.vizMatrix)
-      : goBoardToSvg(state.vizMatrix);
-  downloadSvg(svg, vizSvgFilename(state.vizKind, state.displayMorse));
+  const exporters = {
+    qr: qrMatrixToSvg,
+    rug: qrRugToSvg,
+    land: landToSvg,
+    petri: petriToSvg,
+    go: goBoardToSvg,
+  };
+  const exportSvg = exporters[state.vizKind] || goBoardToSvg;
+  downloadSvg(exportSvg(state.vizMatrix), vizSvgFilename(state.vizKind, state.displayMorse));
   announce(`Downloaded ${state.vizKind.toUpperCase()}`);
 }
 
@@ -981,12 +1007,13 @@ bindHistoryPanel({
   announce,
 });
 
-bindEnsemblePanel({
+const ensemblePanel = bindEnsemblePanel({
   list: document.getElementById("ensemble-list"),
   addButton: document.getElementById("ensemble-add"),
   playButton: document.getElementById("ensemble-play"),
   stopButton: document.getElementById("ensemble-stop"),
   saveButton: document.getElementById("ensemble-save"),
+  midiButton: document.getElementById("ensemble-midi"),
   compositionSelect: document.getElementById("ensemble-composition"),
   compositionDelete: document.getElementById("ensemble-composition-delete"),
   emptyHint: document.getElementById("ensemble-empty"),
@@ -994,6 +1021,11 @@ bindEnsemblePanel({
   compressionInput: document.getElementById("ensemble-compression"),
   ensemble,
   compositions,
+  midiPort,
+  onMidiConnected(outputs) {
+    refreshMidiPortSelect(outputs);
+    syncMidiControls();
+  },
   seedTrack: () => ({
     text: state.text,
     morse: currentPlayableMorse(),
@@ -1011,6 +1043,9 @@ cipherBar = bindCipherBar({
   keys: document.getElementById("cipher-keys"),
   guide: document.getElementById("cipher-guide"),
   generatePadButton: document.getElementById("generate-pad"),
+  compressRow: document.getElementById("cipher-compress"),
+  compressBeforeButton: document.getElementById("compress-before"),
+  compressAfterButton: document.getElementById("compress-after"),
   getPlainText: () => state.text,
   onChange: ({ id, text }) => {
     state.displayText = text;
@@ -1415,6 +1450,8 @@ els.clockStagePlay?.addEventListener("click", () => {
 els.clockStageStop?.addEventListener("click", () => {
   abortPlayback();
   ensemble.stopAll();
+  ensemblePanel.stopMidi();
+  midiPort.stopAll();
   announce("Stopped");
 });
 els.clockStageExit?.addEventListener("click", () => {
@@ -1479,6 +1516,8 @@ els.loop.addEventListener("click", toggleLoop);
 els.stop.addEventListener("click", () => {
   abortPlayback();
   ensemble.stopAll();
+  ensemblePanel.stopMidi();
+  midiPort.stopAll();
   announce("Stopped");
 });
 
@@ -1487,9 +1526,11 @@ els.midiEnable?.addEventListener("click", async () => {
     const outputs = await midiPort.enable();
     refreshMidiPortSelect(outputs);
     syncMidiControls();
+    ensemblePanel.syncMidiButton();
     announce(outputs.length ? "MIDI connected" : "MIDI open · no outputs found");
   } catch (error) {
     syncMidiControls();
+    ensemblePanel.syncMidiButton();
     announce(error.message || "MIDI unavailable");
   }
 });
@@ -1497,6 +1538,7 @@ els.midiEnable?.addEventListener("click", async () => {
 els.midiOutput?.addEventListener("change", () => {
   midiPort.setOutput(els.midiOutput.value);
   syncMidiControls();
+  ensemblePanel.syncMidiButton();
 });
 
 function onMidiScoreChange() {

@@ -2,10 +2,12 @@ import {
   createEnsembleTrackRow,
   paintRowProgress,
 } from "./ensemble-track-row.js";
+import { createEnsembleMidiOut } from "../midi/ensemble-out.js";
 
 /**
  * Bind ensemble track list + composition library.
  * Highlights the playing letter and Morse element while layers run.
+ * Optional midiPort keys per-track MIDI when a Web MIDI output is connected.
  */
 export function bindEnsemblePanel({
   list,
@@ -13,6 +15,7 @@ export function bindEnsemblePanel({
   playButton,
   stopButton,
   saveButton,
+  midiButton,
   compositionSelect,
   compositionDelete,
   emptyHint,
@@ -21,19 +24,42 @@ export function bindEnsemblePanel({
   ensemble,
   compositions,
   seedTrack,
+  midiPort,
+  onMidiConnected,
   announce,
 }) {
   const rowViews = new Map();
   let activeCompositionId = "";
   let switching = false;
+  const midiOut = midiPort ? createEnsembleMidiOut(midiPort) : null;
+
+  function trackById(id) {
+    return ensemble.list().find((track) => track.id === id) || null;
+  }
 
   ensemble.setOnTrackProgress((id, event) => {
     paintRowProgress(rowViews.get(id), event);
+    midiOut?.onTrackProgress(trackById(id), event);
   });
 
   function syncMasterControls(master = ensemble.getMaster()) {
     if (reverbInput) reverbInput.value = String(master.reverb);
     if (compressionInput) compressionInput.value = String(master.compression);
+  }
+
+  function syncMidiButton() {
+    if (!midiButton || !midiPort) return;
+    if (!midiPort.supported()) {
+      midiButton.disabled = true;
+      midiButton.title = "Web MIDI unavailable in this browser";
+      midiButton.textContent = "MIDI";
+      return;
+    }
+    midiButton.disabled = false;
+    midiButton.textContent = midiPort.ready ? "MIDI ✓" : "MIDI";
+    midiButton.title = midiPort.ready
+      ? "MIDI output connected"
+      : "Connect MIDI output for ensemble layers";
   }
 
   reverbInput?.addEventListener("input", () => {
@@ -75,9 +101,13 @@ export function bindEnsemblePanel({
         const { row, view } = createEnsembleTrackRow(track, {
           ensemble,
           onRemove(id) {
+            midiOut?.release(id);
             ensemble.removeTrack(id);
             renderTracks();
             announce("Track removed");
+          },
+          onMidiEnabledChange(id, enabled) {
+            if (!enabled) midiOut?.release(id);
           },
         });
         rowViews.set(track.id, view);
@@ -89,6 +119,7 @@ export function bindEnsemblePanel({
   function render() {
     renderLibrary();
     renderTracks();
+    syncMidiButton();
   }
 
   addButton.addEventListener("click", () => {
@@ -107,12 +138,30 @@ export function bindEnsemblePanel({
       return;
     }
     await ensemble.startAll();
-    announce("Ensemble playing");
+    const midiHint =
+      midiPort?.ready && ensemble.list().some((track) => track.midiEnabled !== false)
+        ? " · MIDI"
+        : "";
+    announce(`Ensemble playing${midiHint}`);
   });
 
   stopButton.addEventListener("click", () => {
     ensemble.stopAll();
+    midiOut?.stop();
     announce("Ensemble stopped");
+  });
+
+  midiButton?.addEventListener("click", async () => {
+    if (!midiPort) return;
+    try {
+      const outputs = await midiPort.enable();
+      onMidiConnected?.(outputs);
+      syncMidiButton();
+      announce(outputs.length ? "MIDI connected" : "MIDI open · no outputs found");
+    } catch (error) {
+      syncMidiButton();
+      announce(error.message || "MIDI unavailable");
+    }
   });
 
   saveButton?.addEventListener("click", () => {
@@ -161,6 +210,7 @@ export function bindEnsemblePanel({
     }
     switching = true;
     try {
+      midiOut?.stop();
       await ensemble.replaceTracks(composition.tracks, {
         master: composition.master,
       });
@@ -188,5 +238,5 @@ export function bindEnsemblePanel({
 
   syncMasterControls();
   render();
-  return { render };
+  return { render, syncMidiButton, stopMidi: () => midiOut?.stop() };
 }

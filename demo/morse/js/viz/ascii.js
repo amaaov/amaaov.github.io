@@ -1,6 +1,9 @@
 /**
- * Text renderings of the same module matrix used by QR and GO canvas views.
+ * Text renderings of QR matrix views (QR, GO, RUG, LAND, PETRI).
  */
+
+import { landAscii } from "./land.js";
+import { petriAscii } from "./petri.js";
 
 export function matrixToAscii(matrix, { kind = "qr", quiet = 4 } = {}) {
   if (!Array.isArray(matrix) || !matrix.length) return "";
@@ -10,6 +13,28 @@ export function matrixToAscii(matrix, { kind = "qr", quiet = 4 } = {}) {
       .map((row) => row.map((dark) => (dark ? "●" : "○")).join(" "))
       .join("\n");
   }
+
+  if (kind === "rug") {
+    const size = matrix.length;
+    const last = size - 1;
+    const glyph = (row, col) => {
+      const raw = Boolean(matrix[row][col]);
+      const foldedRow = Math.min(row, last - row);
+      const foldedCol = Math.min(col, last - col);
+      const mirrored =
+        Boolean(matrix[foldedRow][foldedCol]) ||
+        Boolean(matrix[foldedCol]?.[foldedRow]);
+      if (raw && mirrored) return "◆";
+      if (raw || mirrored) return "◇";
+      return "·";
+    };
+    return matrix
+      .map((row, rowIndex) => row.map((_, col) => glyph(rowIndex, col)).join(""))
+      .join("\n");
+  }
+
+  if (kind === "land") return landAscii(matrix);
+  if (kind === "petri") return petriAscii(matrix);
 
   const size = matrix.length;
   const full = size + quiet * 2;
