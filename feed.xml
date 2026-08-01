@@ -5,10 +5,32 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Sat, 18 Jul 2026 17:15:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 02 Aug 2026 09:00:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Poi as a Sport-Juggling Prop</title>
+      <description>Selective conventions for toss poi in sport juggling: modality, plane, entry, and reference executions. Continuation of On the Modality of Spinning. Boris Fontanov. EN and RU.</description>
+      <link>https://amaaov.github.io/pages/20260802120000_poi_as_sport_juggling_prop.html</link>
+      <guid>https://amaaov.github.io/pages/20260802120000_poi_as_sport_juggling_prop.html</guid>
+      <pubDate>Sun, 02 Aug 2026 09:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>juggling</category>
+      <category>poi</category>
+      <category>sport</category>
+    </item>
+    <item>
+      <title>Пои как спортивный реквизит жонглирования</title>
+      <description>Избирательные конвенции для toss-пои в спортивном жонглировании: модальность, плоскость, вход и эталонные исполнения. Продолжение «О модальности кручения». Борис Фонтанов.</description>
+      <link>https://amaaov.github.io/pages/20260802120000_poi_as_sport_juggling_prop_ru.html</link>
+      <guid>https://amaaov.github.io/pages/20260802120000_poi_as_sport_juggling_prop_ru.html</guid>
+      <pubDate>Sun, 02 Aug 2026 09:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>juggling</category>
+      <category>poi</category>
+      <category>sport</category>
+    </item>
     <item>
       <title>Временный чат на годы</title>
       <description>Сказка из реальности: друзья-интернетчики, временные чаты и созвоны, которые случаются через месяцы и годы.</description>

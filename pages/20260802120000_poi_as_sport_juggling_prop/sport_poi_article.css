@@ -1,0 +1,337 @@
+:root {
+  --void: #06080f;
+  --ink: #e6e4dc;
+  --ink-soft: #a8a69c;
+  --ink-mute: #78766e;
+  --rule: rgba(230, 228, 220, 0.12);
+  --accent: #7a9ec4;
+  --accent-hover: #a8c4e0;
+  --focus: #e0c46a;
+  --heading: #e4c97a;
+  --heading-soft: #cbb56a;
+  --strip-edge: #3d5a7a;
+  --strip-ink: #b8b6ae;
+  --plane-line: rgba(80, 120, 180, 0.12);
+  --max: 40rem;
+  --pad: clamp(1rem, 0.85rem + 1.4vw, 1.75rem);
+  --serif: "Source Serif 4", "Source Serif Pro", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  --sans: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --body-size: clamp(1.05rem, 1rem + 0.28vw, 1.14rem);
+  --lh: 1.64;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--void);
+  scroll-behavior: smooth;
+}
+
+body.sport-poi {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--serif);
+  font-size: var(--body-size);
+  line-height: var(--lh);
+  color: var(--ink);
+  background: transparent;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#plasma-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  mix-blend-mode: screen;
+}
+
+body.sport-poi::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 95% 75% at 50% 100%, rgba(4, 6, 14, 0.88), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 20% 15%, rgba(30, 50, 100, 0.18), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 85% 25%, rgba(40, 70, 130, 0.12), transparent 48%);
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--heading);
+  color: var(--void);
+  padding: 0.5rem 0.75rem;
+  z-index: 100;
+  font-family: var(--sans);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: var(--pad);
+  top: var(--pad);
+}
+
+.language-nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  max-width: calc(var(--max) + 2 * var(--pad));
+  margin: 0 auto;
+  padding: 0.85rem var(--pad) 0;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.language-link {
+  color: var(--ink-mute);
+  text-decoration: none;
+  padding: 0.15rem 0.25rem;
+}
+
+.language-link[aria-current="page"] {
+  color: var(--heading);
+}
+
+.language-link:hover {
+  color: var(--ink);
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: calc(var(--max) + 2 * var(--pad));
+  margin: 0 auto;
+  padding: clamp(0.75rem, 0.5rem + 1vw, 1.25rem) var(--pad) clamp(3.5rem, 2.5rem + 4vw, 6rem);
+}
+
+.shell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--plane-line);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.article {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding-top: 1.25rem;
+}
+
+.article > :first-child {
+  margin-top: 0;
+}
+
+.article > h1 {
+  margin: 0 0 0.5rem;
+  font-family: var(--sans);
+  font-size: clamp(1.65rem, 1.3rem + 1.5vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--heading);
+  letter-spacing: -0.02em;
+}
+
+.page-lede {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.05rem, 1rem + 0.25vw, 1.18rem);
+  line-height: 1.45;
+  color: var(--ink-soft);
+  max-width: 36rem;
+}
+
+.page-meta {
+  margin: 0 0 2.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+}
+
+.page-meta a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.page-meta a:hover {
+  color: var(--accent-hover);
+}
+
+.article h2 {
+  margin: 2.35rem 0 0.85rem;
+  font-family: var(--sans);
+  font-size: clamp(1.15rem, 1.05rem + 0.45vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  color: var(--heading);
+  text-wrap: balance;
+}
+
+.article p {
+  margin: 0 0 1.1rem;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-wrap: pretty;
+  orphans: 3;
+  widows: 3;
+}
+
+.article a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.article a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.article ul,
+.article ol {
+  margin: 0 0 1.15rem;
+  padding-left: 1.35rem;
+}
+
+.article li {
+  margin-bottom: 0.35rem;
+  text-wrap: pretty;
+}
+
+.article li::marker {
+  color: var(--accent);
+}
+
+.descriptor {
+  margin: 1.35rem 0;
+  padding: 0.25rem 0 0.25rem 0.9rem;
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--strip-ink);
+  overflow-x: auto;
+}
+
+.descriptor div {
+  margin-bottom: 0.2rem;
+}
+
+.descriptor dt {
+  font-weight: 700;
+  color: var(--accent);
+  display: inline;
+}
+
+.descriptor dt::after {
+  content: ": ";
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.descriptor dd {
+  margin: 0;
+  display: inline;
+}
+
+.sources {
+  margin-top: 2.75rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--rule);
+}
+
+.sources h2 {
+  margin-top: 0;
+}
+
+.sources ol {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+.sources li {
+  margin-bottom: 0.45rem;
+}
+
+.live-note {
+  margin: 1.65rem 0 0;
+  padding: 0;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-mute);
+  background: transparent;
+  border: none;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  #plasma-canvas {
+    display: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --ink: #f5f2e8;
+    --ink-soft: #d8d2c4;
+    --rule: rgba(245, 242, 232, 0.28);
+    --plane-line: rgba(94, 196, 184, 0.28);
+  }
+
+  #plasma-canvas {
+    opacity: 0.18;
+  }
+}
+
+@media (max-width: 520px) {
+  .article p {
+    text-align: left;
+  }
+
+  .shell::before {
+    opacity: 0.35;
+  }
+
+}
