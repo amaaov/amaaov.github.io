@@ -5,7 +5,13 @@
  * AmaaovGlossary.init({
  *   storageKey: "amaaov-hints:slug",
  *   root: "#main",
- *   terms: [{ match: "siteswap", tip: "rhythmic throw schedule" }, ...],
+ *   terms: [{
+ *     match: "siteswap",
+ *     tip: "Rhythmic throw schedule…",
+ *     wikipedia: "Siteswap",
+ *     juggleWiki: "Siteswap",
+ *     // or links: [{ href: "https://…", label: "Wikipedia" }]
+ *   }, …],
  *   firstOnly: false,
  *   defaultOn: true,
  *   enhanceSelector: ".term",
@@ -57,8 +63,75 @@
     '<path d="M6.2 6.2l11.6 11.6"></path>' +
     "</svg>";
 
+  var ALLOWED_LINK_HOSTS = {
+    "amaaov.github.io": 1,
+    "amkisko.github.io": 1,
+    "juggle.fandom.com": 1,
+    "www.juggling.wiki": 1,
+    "juggling.wiki": 1,
+  };
+
+  function isAllowedHost(hostname) {
+    if (!hostname) return false;
+    if (ALLOWED_LINK_HOSTS[hostname]) return true;
+    return /\.wikipedia\.org$/i.test(hostname);
+  }
+
   function isElement(node) {
     return node && node.nodeType === 1;
+  }
+
+  function safeHttpUrl(raw) {
+    if (!raw) return "";
+    var href = String(raw).trim();
+    if (!/^https:\/\//i.test(href)) return "";
+    try {
+      var u = new URL(href);
+      if (u.protocol !== "https:") return "";
+      if (!isAllowedHost(u.hostname)) return "";
+      return u.href;
+    } catch (err) {
+      return "";
+    }
+  }
+
+  function wikiUrl(kind, value) {
+    if (!value) return "";
+    var raw = String(value).trim();
+    if (/^https:\/\//i.test(raw)) return safeHttpUrl(raw);
+    var slug = encodeURIComponent(raw.replace(/ /g, "_"));
+    if (kind === "wikipedia") {
+      return safeHttpUrl("https://en.wikipedia.org/wiki/" + slug);
+    }
+    if (kind === "juggleWiki") {
+      return safeHttpUrl("https://juggle.fandom.com/wiki/" + slug);
+    }
+    return "";
+  }
+
+  function normalizeLinks(item) {
+    var links = [];
+    var seen = {};
+    function pushLink(href, label) {
+      var safe = safeHttpUrl(href);
+      if (!safe || seen[safe]) return;
+      seen[safe] = 1;
+      links.push({ href: safe, label: label || "More" });
+    }
+    if (!item || typeof item !== "object") return links;
+    if (item.wikipedia) pushLink(wikiUrl("wikipedia", item.wikipedia), "Wikipedia");
+    if (item.juggleWiki || item.wikia) {
+      pushLink(wikiUrl("juggleWiki", item.juggleWiki || item.wikia), "Juggle Wiki");
+    }
+    if (item.href) pushLink(item.href, item.linkLabel || "More");
+    if (Array.isArray(item.links)) {
+      item.links.forEach(function (link) {
+        if (!link) return;
+        if (typeof link === "string") pushLink(link, "More");
+        else pushLink(link.href || link.url, link.label || link.title || "More");
+      });
+    }
+    return links;
   }
 
   function normalizeTerms(raw) {
@@ -70,12 +143,29 @@
         if (typeof item === "string") return;
         var match = item.match || item.term || item.word || "";
         var tip = item.tip || item.def || item.definition || "";
-        if (match && tip) list.push({ match: String(match), tip: String(tip) });
+        if (!match || !tip) return;
+        list.push({
+          match: String(match),
+          tip: String(tip),
+          links: normalizeLinks(item),
+        });
       });
       return list;
     }
     Object.keys(raw).forEach(function (key) {
-      if (raw[key]) list.push({ match: key, tip: String(raw[key]) });
+      var val = raw[key];
+      if (!val) return;
+      if (typeof val === "string") {
+        list.push({ match: key, tip: val, links: [] });
+        return;
+      }
+      var tip = val.tip || val.def || val.definition || "";
+      if (!tip) return;
+      list.push({
+        match: key,
+        tip: String(tip),
+        links: normalizeLinks(val),
+      });
     });
     return list;
   }
@@ -123,7 +213,26 @@
     return out;
   }
 
-  function makeTermSpan(surface, tip) {
+  function fillTipEl(tipEl, tip, links) {
+    tipEl.textContent = "";
+    tipEl.appendChild(document.createTextNode(tip));
+    if (!links || !links.length) return;
+    tipEl.classList.add("has-links");
+    var row = document.createElement("span");
+    row.className = "glossary-tip-links";
+    links.forEach(function (link, i) {
+      if (i) row.appendChild(document.createTextNode(" · "));
+      var a = document.createElement("a");
+      a.href = link.href;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = link.label;
+      row.appendChild(a);
+    });
+    tipEl.appendChild(row);
+  }
+
+  function makeTermSpan(surface, tip, links) {
     var span = document.createElement("span");
     span.className = "glossary-term";
     span.setAttribute("tabindex", "0");
@@ -135,7 +244,7 @@
     tipEl.className = "glossary-tip";
     tipEl.setAttribute("role", "tooltip");
     tipEl.setAttribute("aria-hidden", "true");
-    tipEl.textContent = tip;
+    fillTipEl(tipEl, tip, links);
     span.appendChild(tipEl);
     return span;
   }
@@ -153,6 +262,7 @@
           index: idx,
           surface: text.slice(idx, end),
           tip: term.tip,
+          links: term.links || [],
           key: needle,
         };
       }
@@ -195,7 +305,7 @@
       if (hit.index > last) {
         frag.appendChild(document.createTextNode(text.slice(last, hit.index)));
       }
-      frag.appendChild(makeTermSpan(hit.surface, hit.tip));
+      frag.appendChild(makeTermSpan(hit.surface, hit.tip, hit.links));
       used[hit.key] = true;
       last = hit.index + hit.surface.length;
     }
@@ -207,7 +317,7 @@
   function tipMapFromTerms(terms) {
     var map = {};
     terms.forEach(function (t) {
-      map[t.match.toLowerCase()] = t.tip;
+      map[t.match.toLowerCase()] = { tip: t.tip, links: t.links || [] };
     });
     return map;
   }
@@ -228,20 +338,20 @@
       surface = surface.trim();
       if (!surface) return;
       var key = surface.toLowerCase();
-      var tip = tipMap[key];
-      if (!tip) return;
+      var entry = tipMap[key];
+      if (!entry) return;
       if (firstOnly && used[key]) return;
       used[key] = true;
       el.classList.add("glossary-term");
       el.setAttribute("tabindex", "0");
       el.setAttribute("data-glossary-term", surface);
-      el.setAttribute("data-glossary-tip", tip);
-      el.setAttribute("aria-label", surface + ": " + tip);
+      el.setAttribute("data-glossary-tip", entry.tip);
+      el.setAttribute("aria-label", surface + ": " + entry.tip);
       var tipEl = document.createElement("span");
       tipEl.className = "glossary-tip";
       tipEl.setAttribute("role", "tooltip");
       tipEl.setAttribute("aria-hidden", "true");
-      tipEl.textContent = tip;
+      fillTipEl(tipEl, entry.tip, entry.links);
       el.appendChild(tipEl);
     });
   }
@@ -294,8 +404,9 @@
 
   function applyEnabled(on) {
     document.documentElement.classList.toggle("glossary-hints-off", !on);
-    document.querySelectorAll(".glossary-term.is-tip-open").forEach(function (el) {
+    document.querySelectorAll(".glossary-term.is-tip-open, .glossary-term.is-hovering").forEach(function (el) {
       el.classList.remove("is-tip-open");
+      el.classList.remove("is-hovering");
       var tip = el.querySelector(".glossary-tip");
       if (tip) {
         tip.setAttribute("aria-hidden", "true");
@@ -307,6 +418,7 @@
   function closeTerm(el) {
     if (!el) return;
     el.classList.remove("is-tip-open");
+    el.classList.remove("is-hovering");
     var tip = el.querySelector(".glossary-tip");
     if (tip) {
       tip.setAttribute("aria-hidden", "true");
@@ -329,6 +441,39 @@
     if (!root || root.getAttribute("data-glossary-bound") === "1") return;
     root.setAttribute("data-glossary-bound", "1");
 
+    var hoverClearTimer = null;
+    var hoverTerm = null;
+
+    function clearHoverSoon(term) {
+      if (hoverClearTimer) clearTimeout(hoverClearTimer);
+      hoverClearTimer = setTimeout(function () {
+        hoverClearTimer = null;
+        if (!term) return;
+        term.classList.remove("is-hovering");
+        if (hoverTerm === term) hoverTerm = null;
+        if (term.classList.contains("is-tip-open")) return;
+        var tip = term.querySelector(".glossary-tip");
+        if (tip && global.AmaaovTipViewport) global.AmaaovTipViewport.clear(tip);
+      }, 200);
+    }
+
+    function setHover(term) {
+      if (hoverClearTimer) {
+        clearTimeout(hoverClearTimer);
+        hoverClearTimer = null;
+      }
+      if (hoverTerm && hoverTerm !== term) {
+        hoverTerm.classList.remove("is-hovering");
+        if (!hoverTerm.classList.contains("is-tip-open")) {
+          var prevTip = hoverTerm.querySelector(".glossary-tip");
+          if (prevTip && global.AmaaovTipViewport) global.AmaaovTipViewport.clear(prevTip);
+        }
+      }
+      hoverTerm = term;
+      term.classList.add("is-hovering");
+      openOrPlace(term);
+    }
+
     function closeOthers(except) {
       document.querySelectorAll(".glossary-term.is-tip-open").forEach(function (el) {
         if (el === except) return;
@@ -338,6 +483,7 @@
 
     document.addEventListener("click", function (e) {
       if (document.documentElement.classList.contains("glossary-hints-off")) return;
+      if (e.target.closest && e.target.closest(".glossary-tip a")) return;
       var term = e.target.closest ? e.target.closest(".glossary-term") : null;
       closeOthers(term);
       if (!term || !root.contains(term)) return;
@@ -359,7 +505,7 @@
         if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
         var term = e.target.closest ? e.target.closest(".glossary-term") : null;
         if (!term || !root.contains(term)) return;
-        openOrPlace(term);
+        setHover(term);
       },
       true
     );
@@ -372,8 +518,7 @@
         var next = e.relatedTarget;
         if (next && term.contains(next)) return;
         if (term.classList.contains("is-tip-open")) return;
-        var tip = term.querySelector(".glossary-tip");
-        if (tip && global.AmaaovTipViewport) global.AmaaovTipViewport.clear(tip);
+        clearHoverSoon(term);
       },
       true
     );
@@ -382,30 +527,36 @@
       if (document.documentElement.classList.contains("glossary-hints-off")) return;
       var term = e.target.closest ? e.target.closest(".glossary-term") : null;
       if (!term || !root.contains(term)) return;
-      openOrPlace(term);
+      setHover(term);
     });
 
     document.addEventListener("focusout", function (e) {
       var term = e.target.closest ? e.target.closest(".glossary-term") : null;
       if (!term || !root.contains(term)) return;
       if (term.classList.contains("is-tip-open")) return;
-      var tip = term.querySelector(".glossary-tip");
-      if (tip && global.AmaaovTipViewport) global.AmaaovTipViewport.clear(tip);
+      var next = e.relatedTarget;
+      if (next && term.contains(next)) return;
+      clearHoverSoon(term);
     });
 
     window.addEventListener(
       "scroll",
       function () {
-        document.querySelectorAll(".glossary-term.is-tip-open").forEach(closeTerm);
+        document.querySelectorAll(".glossary-term.is-tip-open, .glossary-term.is-hovering").forEach(function (el) {
+          el.classList.remove("is-hovering");
+          closeTerm(el);
+        });
         if (global.AmaaovTipViewport) global.AmaaovTipViewport.clearAll(".glossary-tip.is-placed");
       },
       true
     );
 
     window.addEventListener("resize", function () {
-      document.querySelectorAll(".glossary-term.is-tip-open").forEach(function (term) {
-        openOrPlace(term);
-      });
+      document
+        .querySelectorAll(".glossary-term.is-tip-open, .glossary-term.is-hovering")
+        .forEach(function (term) {
+          openOrPlace(term);
+        });
     });
   }
 
