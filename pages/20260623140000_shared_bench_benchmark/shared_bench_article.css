@@ -17,6 +17,13 @@
   --bench-ok: #2d6a4f;
   --bench-w: min(calc(100vw - 1.6rem), 40rem);
   --focus: #c47a2c;
+  --glossary-underline: var(--bench-teal);
+  --glossary-tip-bg: #102024;
+  --glossary-tip-fg: #e8eef0;
+  --glossary-tip-border: rgba(232, 238, 240, 0.2);
+  --glossary-tip-font: var(--bench-sans);
+  --glossary-toggle-fg: var(--bench-ink-muted);
+  --glossary-toggle-muted: var(--bench-ink-muted);
 }
 
 * { box-sizing: border-box; }
@@ -53,10 +60,16 @@ body {
   right: 0;
   z-index: 20;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.75rem;
   padding: 0.7rem 1rem;
   pointer-events: none;
+}
+
+.site-top .glossary-hints-toggle {
+  pointer-events: auto;
+  align-self: center;
+  margin-inline-start: 0.15rem;
 }
 
 .home-link {

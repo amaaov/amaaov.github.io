@@ -11,6 +11,13 @@
   --meter: #c9a227;
   --trace: #6d5f8c;
   --focus: #e0c060;
+  --glossary-underline: var(--meter);
+  --glossary-tip-bg: #15131c;
+  --glossary-tip-fg: var(--paper);
+  --glossary-tip-border: rgba(221, 216, 206, 0.22);
+  --glossary-tip-font: var(--serif);
+  --glossary-toggle-fg: var(--ink-muted);
+  --glossary-toggle-muted: var(--ink-muted);
 }
 
 *,
@@ -58,6 +65,13 @@ body {
   gap: 1rem;
   padding: 0.85rem 1.1rem;
   background: linear-gradient(180deg, rgba(11, 10, 15, 0.92) 0%, rgba(11, 10, 15, 0.55) 70%, transparent 100%);
+}
+
+.site-top .glossary-hints-toggle {
+  order: 3;
+  align-self: center;
+  margin-inline-start: 0.15rem;
+  margin-inline-end: 0;
 }
 
 .home-link {

@@ -8,6 +8,13 @@
   --tex-paper: #fffaf4;
   --tex-block-bg: #f6f0e6;
   --tex-block-line: #c8bfb0;
+  --glossary-underline: #6b4ea3;
+  --glossary-tip-bg: #1a1524;
+  --glossary-tip-fg: #f6f1ea;
+  --glossary-tip-border: rgba(246, 241, 234, 0.2);
+  --glossary-tip-font: var(--tex-serif);
+  --glossary-toggle-fg: var(--tex-ink-muted);
+  --glossary-toggle-muted: var(--tex-ink-muted);
   --page-a4-w: 21cm;
   --page-pad-y: 2.1cm;
   --page-pad-x: 2cm;
@@ -126,7 +133,7 @@ body::after {
   z-index: 1;
   display: flex;
   flex-wrap: nowrap;
-  align-items: baseline;
+  align-items: center;
   gap: 0.75rem;
   width: var(--page-sheet-w);
   margin: 0 auto 0.45rem;
@@ -139,6 +146,13 @@ body::after {
     0 8px 28px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.06);
   border-bottom: 0.4pt solid var(--tex-ink);
+}
+
+.site-top .glossary-hints-toggle {
+  flex: 0 0 auto;
+  align-self: center;
+  margin-inline-start: 0.15rem;
+  white-space: nowrap;
 }
 
 .home-link {
