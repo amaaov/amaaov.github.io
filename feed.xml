@@ -5,10 +5,42 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Sun, 02 Aug 2026 06:45:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 04 Aug 2026 11:00:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Executable Traces</title>
+      <description>Research essay on generative continuation, media infrastructure, and reproduction beyond the studio: from plastic joints and reduct-construct to factories, recordings, and sufficient effects without contact.</description>
+      <link>https://amaaov.github.io/pages/20260804140000_executable_traces.html</link>
+      <guid>https://amaaov.github.io/pages/20260804140000_executable_traces.html</guid>
+      <pubDate>Tue, 04 Aug 2026 11:00:00 +0000</pubDate>
+      <category>media</category>
+      <category>juggling</category>
+      <category>research</category>
+      <category>post-simulacrum</category>
+    </item>
+    <item>
+      <title>Free-Wheel Unicycle Skill Quest</title>
+      <description>Interactive freewheel unicycle skill quest: FW1–FW4 grades, posture and brake–coast tasks, local practice log and certificate. Independent of IUF.</description>
+      <link>https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html</link>
+      <guid>https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html</guid>
+      <pubDate>Tue, 04 Aug 2026 10:00:00 +0000</pubDate>
+      <category>unicycling</category>
+      <category>freewheel</category>
+      <category>programme</category>
+      <category>quest</category>
+    </item>
+    <item>
+      <title>How to Learn Free-Wheel Unicycle</title>
+      <description>Learning path for freewheel unicycling: fixed-gear prerequisites, posture, brakes, exercise ladder, and FW1–FW4 quest grades. Andrei Makarov.</description>
+      <link>https://amaaov.github.io/pages/20260804120000_how_to_learn_free_wheel_unicycle.html</link>
+      <guid>https://amaaov.github.io/pages/20260804120000_how_to_learn_free_wheel_unicycle.html</guid>
+      <pubDate>Tue, 04 Aug 2026 09:00:00 +0000</pubDate>
+      <category>unicycling</category>
+      <category>freewheel</category>
+      <category>howto</category>
+    </item>
     <item>
       <title>Poi Juggling Skill Quest — Cumulative BN Charter</title>
       <description>Full poi juggling attestation programme as a mobile-first MMORPG quest log: BN foundation, digit-locked siteswaps, plane authorship, grades Entry–4C.</description>

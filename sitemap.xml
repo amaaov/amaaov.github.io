@@ -2,11 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://amaaov.github.io/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-08-04</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/demo/morse/</loc>
     <lastmod>2026-07-26</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260804140000_executable_traces.html</loc>
+    <lastmod>2026-08-04</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html</loc>
+    <lastmod>2026-08-04</lastmod>
+  </url>
+  <url>
+    <loc>https://amaaov.github.io/pages/20260804120000_how_to_learn_free_wheel_unicycle.html</loc>
+    <lastmod>2026-08-04</lastmod>
   </url>
   <url>
     <loc>https://amaaov.github.io/pages/20260802094500_poi_juggling_skill_quest.html</loc>
