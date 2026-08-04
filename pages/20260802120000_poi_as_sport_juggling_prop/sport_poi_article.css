@@ -19,6 +19,13 @@
   --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   --body-size: clamp(1.05rem, 1rem + 0.28vw, 1.14rem);
   --lh: 1.64;
+  --glossary-underline: var(--heading-soft);
+  --glossary-tip-bg: #12151f;
+  --glossary-tip-fg: var(--ink);
+  --glossary-tip-border: rgba(230, 228, 220, 0.18);
+  --glossary-tip-font: var(--sans);
+  --glossary-toggle-fg: var(--ink-soft);
+  --glossary-toggle-muted: var(--ink-mute);
 }
 
 *,
@@ -88,7 +95,9 @@ body.sport-poi::after {
   position: relative;
   z-index: 2;
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: center;
   gap: 0.55rem;
   max-width: calc(var(--max) + 2 * var(--pad));
   margin: 0 auto;
@@ -98,6 +107,15 @@ body.sport-poi::after {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.language-nav .glossary-hints-toggle {
+  margin-inline-start: auto;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+  --glossary-toggle-size: 1.2em;
+  color: var(--ink-soft);
 }
 
 .language-link {
