@@ -1,10 +1,10 @@
 (function () {
-  var STORAGE_KEY = "poi-quest-v03-checks";
-  var NAME_KEY = "poi-quest-v03-name";
-  var GEAR_KEY = "poi-quest-v03-gear";
-  var SCROLL_KEY = "poi-quest-v03-scroll";
-  var OPEN_KEY = "poi-quest-v03-open";
-  var TERMS_KEY = "poi-quest-v03-terms-full";
+  var STORAGE_KEY = "poi-quest-v04-checks";
+  var NAME_KEY = "poi-quest-v04-name";
+  var GEAR_KEY = "poi-quest-v04-gear";
+  var SCROLL_KEY = "poi-quest-v04-scroll";
+  var OPEN_KEY = "poi-quest-v04-open";
+  var TERMS_KEY = "poi-quest-v04-terms-full";
 
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
@@ -32,7 +32,7 @@
   var certCanvas = document.getElementById("cert-canvas");
   var certFormatMeta = document.getElementById("cert-format-meta");
   var certificateWrap = document.getElementById("certificate");
-  var FORMAT_KEY = "poi-quest-v03-cert-format";
+  var FORMAT_KEY = "poi-quest-v04-cert-format";
   var lastFocusBeforeModal = null;
   var modalKeyHandler = null;
 
@@ -472,7 +472,7 @@
       mark: "VEN",
       denom: "12",
       motto: "ROSE DWELL",
-      capability: "Extra-spin cascade, body throws, orientation-preserving turns.",
+      capability: "Extra-spin cascade, wallplane BC, orientation-preserving turns.",
       paper: ["#f8f0f2", "#f2e6ea", "#ecdee4"],
       ink: "#281418",
       accent: "#a04068",
@@ -1595,7 +1595,7 @@
         note.mark +
         " · " +
         SITESWAP_LADDER.join(" ") +
-        " · SERIES V0.3 · CC BY 4.0",
+        " · SERIES V0.4 · CC BY 4.0",
       metal,
       padX,
       s
@@ -1688,7 +1688,7 @@
     ctx.textBaseline = "alphabetic";
     ctx.fillStyle = accent;
     ctx.font = font("600", type.label, "'JetBrains Mono', monospace");
-    ctx.fillText("SERIES V0.3", padX, y);
+    ctx.fillText("SERIES V0.4", padX, y);
     ctx.fillStyle = metal;
     ctx.font = font("700", type.headerSeal, "'Source Serif 4', Georgia, serif");
     ctx.fillText(data.seal, padX, y + 48 * s);
@@ -1713,7 +1713,7 @@
     ctx.textAlign = "center";
     ctx.fillStyle = accent;
     ctx.font = font("600", type.eyebrow, "'JetBrains Mono', monospace");
-    ctx.fillText("HISTORICAL PRACTICE RECORD  ·  v0.3", w / 2, y);
+    ctx.fillText("HISTORICAL PRACTICE RECORD  ·  v0.4", w / 2, y);
     y += lh.label + gap.tight;
 
     var sealCx = w / 2;
@@ -1905,7 +1905,7 @@
       gear: gear,
       date: date,
       count: h.done,
-      programme: "Poi Juggling Skill Quest · Cumulative BN Charter · v0.3",
+      programme: "Poi Juggling Skill Quest · Cumulative BN Charter · v0.4",
     };
   }
 
