@@ -2171,7 +2171,10 @@
     document.querySelectorAll(".term").forEach(function (el) {
       el.classList.remove("is-tip-open");
       var tip = el.querySelector(".term-tip");
-      if (tip) tip.setAttribute("aria-hidden", "true");
+      if (tip) {
+        tip.setAttribute("aria-hidden", "true");
+        if (window.AmaaovTipViewport) window.AmaaovTipViewport.clear(tip);
+      }
       var key = el.getAttribute("data-term") || "";
       var fullName = el.getAttribute("data-full") || "";
       if (full) {
@@ -2195,14 +2198,30 @@
     });
   }
 
+  function closeQuestTerm(el) {
+    if (!el) return;
+    el.classList.remove("is-tip-open");
+    var tip = el.querySelector(".term-tip");
+    if (tip) {
+      tip.setAttribute("aria-hidden", "true");
+      if (window.AmaaovTipViewport) window.AmaaovTipViewport.clear(tip);
+    }
+  }
+
+  function placeQuestTerm(term) {
+    var tip = term.querySelector(".term-tip");
+    if (!tip || !window.AmaaovTipViewport) return;
+    requestAnimationFrame(function () {
+      window.AmaaovTipViewport.place(term, tip);
+    });
+  }
+
   document.addEventListener("click", function (e) {
     if (document.body.classList.contains("terms-full")) return;
     var term = e.target.closest ? e.target.closest(".term") : null;
     document.querySelectorAll(".term.is-tip-open").forEach(function (el) {
       if (el === term) return;
-      el.classList.remove("is-tip-open");
-      var tip = el.querySelector(".term-tip");
-      if (tip) tip.setAttribute("aria-hidden", "true");
+      closeQuestTerm(el);
     });
     if (!term) return;
     if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
@@ -2211,8 +2230,54 @@
       e.preventDefault();
     }
     var open = !term.classList.contains("is-tip-open");
-    term.classList.toggle("is-tip-open", open);
+    if (!open) {
+      closeQuestTerm(term);
+      return;
+    }
+    term.classList.add("is-tip-open");
     var tip = term.querySelector(".term-tip");
-    if (tip) tip.setAttribute("aria-hidden", open ? "false" : "true");
+    if (tip) tip.setAttribute("aria-hidden", "false");
+    placeQuestTerm(term);
+  });
+
+  document.addEventListener(
+    "mouseover",
+    function (e) {
+      if (document.body.classList.contains("terms-full")) return;
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      var term = e.target.closest ? e.target.closest(".term") : null;
+      if (!term) return;
+      placeQuestTerm(term);
+    },
+    true
+  );
+
+  document.addEventListener(
+    "mouseout",
+    function (e) {
+      var term = e.target.closest ? e.target.closest(".term") : null;
+      if (!term) return;
+      var next = e.relatedTarget;
+      if (next && term.contains(next)) return;
+      if (term.classList.contains("is-tip-open")) return;
+      var tip = term.querySelector(".term-tip");
+      if (tip && window.AmaaovTipViewport) window.AmaaovTipViewport.clear(tip);
+    },
+    true
+  );
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      document.querySelectorAll(".term.is-tip-open").forEach(closeQuestTerm);
+      if (window.AmaaovTipViewport) {
+        window.AmaaovTipViewport.clearAll(".term-tip.is-placed");
+      }
+    },
+    true
+  );
+
+  window.addEventListener("resize", function () {
+    document.querySelectorAll(".term.is-tip-open").forEach(placeQuestTerm);
   });
 })();

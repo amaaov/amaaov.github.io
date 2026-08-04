@@ -538,14 +538,29 @@ input:focus-visible,
   user-select: none;
 }
 
+.term .term-tip.is-placed {
+  position: fixed;
+  right: auto;
+  bottom: auto;
+  transform: none;
+  z-index: 80;
+}
+
 .term .term-tip::after {
   content: "";
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: var(--tip-arrow-left, 50%);
   margin-left: -5px;
   border: 5px solid transparent;
   border-top-color: var(--panel);
+}
+
+.term .term-tip.tip-below::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--panel);
 }
 
 .term:hover .term-tip,
