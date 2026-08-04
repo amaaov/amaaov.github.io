@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260612120000_o_modalnosti_krucheniya/modality_article.css">
   <script type="application/ld+json">
   {
@@ -87,7 +88,7 @@
           <div class="page-prelude">
             <div class="tex-block abstract-block">
               <span class="tex-block-label">Résumé</span>
-              <p>Cet article examine les limites du saitswop—notation rythmique du jonglage—lorsqu'il est appliqué à des objets flexibles et soumis au moment de force. Il montre que l'absence du paramètre temps de maintien et de spécificité spatiale rend la notation précise pour les objets rigides, mais insuffisante pour le poi et les ensembles mixtes.</p>
+              <p>Cet article examine les limites du saitswop, notation rythmique du jonglage, lorsqu'il est appliqué à des objets flexibles et soumis au moment de force. Il montre que l'absence du paramètre temps de maintien et de spécificité spatiale rend la notation précise pour les objets rigides, mais insuffisante pour le poi et les ensembles mixtes.</p>
             </div>
           </div>
           <footer class="page-footer"><span class="page-num">i</span></footer>
@@ -119,7 +120,7 @@
           <p class="page-chapter">§ 2</p>
           <h2 class="page-title">Temps de maintien et dynamique continue</h2>
           <div class="page-body">
-            <p>Lorsque ce système est transposé à des objets à dynamique continue, comme le poi, des divergences fondamentales apparaissent. La principale est que le <span class="term">temps de maintien</span>—qui varie considérablement selon la technique—n'est pas représenté dans la notation, malgré son rôle critique dans la formation du rythme et de la structure du mouvement.</p>
+            <p>Lorsque ce système est transposé à des objets à dynamique continue, comme le poi, des divergences fondamentales apparaissent. La principale est que le <span class="term">temps de maintien</span>, qui varie considérablement selon la technique, n'est pas représenté dans la notation, malgré son rôle critique dans la formation du rythme et de la structure du mouvement.</p>
             <div class="tex-block">
               <span class="tex-block-label">Observation 2.1</span>
               <p>En jonglage classique, le temps de maintien est traité comme un élément inertiel n'affectant pas le rythme de base : un objet peut rester dans la main un tiers ou la moitié d'un temps sans invalider le motif.</p>
@@ -179,7 +180,7 @@
               <span class="tex-block-label">Scénario 5.1</span>
               <p>Un participant travaillant avec des balles exécute <span class="notation">3</span> comme une cascade standard. Un autre, en faisant tourner des poi, utilise le même dessin rythmique, mais au niveau de la cinématique corporelle accomplit une action fondamentalement différente.</p>
             </div>
-            <p>Sans précision des paramètres d'exécution—mode de tenue, direction de rotation, plan, caractère de l'accélération—une divergence sémantique survient malgré la coïncidence formelle de la notation.</p>
+            <p>Sans précision des paramètres d'exécution (mode de tenue, direction de rotation, plan, caractère de l'accélération) une divergence sémantique survient malgré la coïncidence formelle de la notation.</p>
           </div>
           <footer class="page-footer"><span class="page-num">5</span></footer>
         </div>
@@ -197,7 +198,7 @@
               <span class="tex-block-label">Conclusion</span>
               <p>Dans sa forme actuelle, le saitswop continue d'assurer une fonction communicative et rythmique importante, mais ne peut servir de descripteur unique dans une pratique corporelle fondée sur des mouvements continus et dépendants de la phase.</p>
             </div>
-            <p>Le Saitswop est donc moins un langage de description qu'un outil d'ordonnancement. Il indique à l'interprète à quel moment doit se produire le prochain acte d'interaction avec l'objet, mais laisse ouverte la question de la manière dont cet acte se réalise. Cela le rend précieux comme grille rythmique, mais limité comme modèle de mouvement—surtout dans les disciplines où la frontière entre lancer et rotation est floue.</p>
+            <p>Le Saitswop est donc moins un langage de description qu'un outil d'ordonnancement. Il indique à l'interprète à quel moment doit se produire le prochain acte d'interaction avec l'objet, mais laisse ouverte la question de la manière dont cet acte se réalise. Cela le rend précieux comme grille rythmique, mais limité comme modèle de mouvement, surtout dans les disciplines où la frontière entre lancer et rotation est floue.</p>
           </div>
           <footer class="page-footer"><span class="page-num">6</span></footer>
         </div>
@@ -206,6 +207,14 @@
 
   </main>
 
+  <script src="shared/tip_viewport.js" defer></script>
+  <script src="shared/glossary_hints.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.AmaaovGlossary) return;
+  AmaaovGlossary.init({"storageKey": "amaaov-hints:modality", "root": "main.book", "firstOnly": true, "defaultOn": true, "terms": [{"match": "Saitswop", "tip": "Notation rythmique de jonglerie : quand un objet doit être repris."}, {"match": "saitswop", "tip": "Notation rythmique de jonglerie : quand un objet doit être repris."}, {"match": "temps de maintien", "tip": "Intervalle où l’objet est tenu ou géré activement."}, {"match": "cascade", "tip": "Motif classique alterné à trois objets ; en poi la forme ne se transfère pas sans déformation."}, {"match": "moment de force", "tip": "Force de rotation qui maintient le mouvement de l’accessoire souple."}], "enhanceSelector": ".term", "toggle": {"mount": ".site-top", "labelOn": "Indices du glossaire", "labelOff": "Indices du glossaire", "ariaLabel": "Activer les indices du glossaire", "prepend": false}});
+});
+</script>
   <script src="20260612120000_o_modalnosti_krucheniya/modality_article.js" defer></script>
 </body>
 </html>

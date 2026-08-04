@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260612120000_o_modalnosti_krucheniya/modality_article.css">
   <script type="application/ld+json">
   {
@@ -87,7 +88,7 @@
           <div class="page-prelude">
             <div class="tex-block abstract-block">
               <span class="tex-block-label">Muhtasari</span>
-              <p>Makala hii inachunguza mipaka ya saitiswapi—uandishi wa midundo wa utawanyaji—inapotumika kwa vifaa vinavyobadilika na vinavyotegemea momenti ya mzunguko. Inaonyesha kuwa ukosefu wa muda wa kushikilia na utambulisho wa nafasi hufanya uandishi kuwa sahihi kwa vitu vigumu, lakini hautoshi kwa poi na makundi ya mchanganyiko.</p>
+              <p>Makala hii inachunguza mipaka ya saitiswapi, uandishi wa midundo wa utawanyaji, inapotumika kwa vifaa vinavyobadilika na vinavyotegemea momenti ya mzunguko. Inaonyesha kuwa ukosefu wa muda wa kushikilia na utambulisho wa nafasi hufanya uandishi kuwa sahihi kwa vitu vigumu, lakini hautoshi kwa poi na makundi ya mchanganyiko.</p>
             </div>
           </div>
           <footer class="page-footer"><span class="page-num">i</span></footer>
@@ -119,7 +120,7 @@
           <p class="page-chapter">§ 2</p>
           <h2 class="page-title">Muda wa Kushikilia na Mienendo Endelevu</h2>
           <div class="page-body">
-            <p>Mfumo huu unapohamishwa kwa vifaa vyenye mienendo endelevu, kama poi, hutokea tofauti za msingi. Kuu kati yake ni kwamba <span class="term">muda wa kushikilia</span> wa kitu—unaobadilika sana kulingana na mbinu—hauonyeshwi katika uandishi, ingawa una jukumu muhimu katika kuunda midundo na muundo wa mwendo.</p>
+            <p>Mfumo huu unapohamishwa kwa vifaa vyenye mienendo endelevu, kama poi, hutokea tofauti za msingi. Kuu kati yake ni kwamba <span class="term">muda wa kushikilia</span> wa kitu, unaobadilika sana kulingana na mbinu, hauonyeshwi katika uandishi, ingawa una jukumu muhimu katika kuunda midundo na muundo wa mwendo.</p>
             <div class="tex-block">
               <span class="tex-block-label">Angalio 2.1</span>
               <p>Katika utawanyaji wa jadi, muda wa kushikilia huchukuliwa kama kipengele cha uvivu kisichoathiri ritimu ya msingi: kitu kinaweza kubaki mkononi kwa theluthi moja au nusu ya pigo bila kuharibu muundo.</p>
@@ -179,7 +180,7 @@
               <span class="tex-block-label">Hali 5.1</span>
               <p>Mshiriki mmoja anayetumia mipira hutekeleza <span class="notation">3</span> kama cascade ya kawaida. Mwingine, akizungusha poi, hutumia muundo sawa wa midundo, lakini katika kiwango cha mienendo ya mwili hutekeleza tendo tofauti kabisa.</p>
             </div>
-            <p>Bila kubainisha vigezo vya utendaji—njia ya kushikilia, mwelekeo wa mzunguko, ndege, tabia ya kuongeza kasi—hutokea tofauti ya maana licha ya kufanana kwa muundo wa uandishi.</p>
+            <p>Bila kubainisha vigezo vya utendaji (njia ya kushikilia, mwelekeo wa mzunguko, ndege, tabia ya kuongeza kasi) hutokea tofauti ya maana licha ya kufanana kwa muundo wa uandishi.</p>
           </div>
           <footer class="page-footer"><span class="page-num">5</span></footer>
         </div>
@@ -197,7 +198,7 @@
               <span class="tex-block-label">Matokeo</span>
               <p>Katika umbo lake la sasa, saitiswapi unaendelea kutekeleza kazi muhimu ya mawasiliano na midundo, lakini hauwezi kutumika kama kielezo pekee katika mazoezi ya mwili yanayotegemea mwendo endelevu unaotegemea awamu.</p>
             </div>
-            <p>Kwa hiyo saitiswapi si lugha ya maelezo bali zana ya kupanga. Humwambia mtendaji lini tendo linalofuata la mwingiliano na kitu linapaswa kutokea, lakini huacha wazi swali la jinsi tendo hilo linavyotekelezwa. Hii inalifanya liwe na thamani kama msururu wa midundo, lakini lenye mipaka kama mfano wa mwendo—hasa katika taaluma ambazo mpaka kati ya kurusha na kuzungusha umefifia.</p>
+            <p>Kwa hiyo saitiswapi si lugha ya maelezo bali zana ya kupanga. Humwambia mtendaji lini tendo linalofuata la mwingiliano na kitu linapaswa kutokea, lakini huacha wazi swali la jinsi tendo hilo linavyotekelezwa. Hii inalifanya liwe na thamani kama msururu wa midundo, lakini lenye mipaka kama mfano wa mwendo, hasa katika taaluma ambazo mpaka kati ya kurusha na kuzungusha umefifia.</p>
           </div>
           <footer class="page-footer"><span class="page-num">6</span></footer>
         </div>
@@ -206,6 +207,14 @@
 
   </main>
 
+  <script src="shared/tip_viewport.js" defer></script>
+  <script src="shared/glossary_hints.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.AmaaovGlossary) return;
+  AmaaovGlossary.init({"storageKey": "amaaov-hints:modality", "root": "main.book", "firstOnly": true, "defaultOn": true, "terms": [{"match": "Saitiswapi", "tip": "Uandishi wa midundo wa utawanyaji: lini kitu kinapaswa kutumika tena."}, {"match": "saitiswapi", "tip": "Uandishi wa midundo wa utawanyaji: lini kitu kinapaswa kutumika tena."}, {"match": "muda wa kushikilia", "tip": "Kipindi kitu kinashikwa au kudhibitiwa kikamilifu kabla ya mwingiliano unaofuata."}, {"match": "cascade", "tip": "Muundo wa kawaida wa vitu vitatu vinavyobadilishana; kwa poi umbo halioani bila kupotoshwa."}, {"match": "momenti ya mzunguko", "tip": "Nguvu ya mzunguko inayoshikilia mwendo wa kifaa laini kati ya miruko."}], "enhanceSelector": ".term", "toggle": {"mount": ".site-top", "labelOn": "Vidokezo vya kamusi", "labelOff": "Vidokezo vya kamusi", "ariaLabel": "Washa vidokezo vya kamusi", "prepend": false}});
+});
+</script>
   <script src="20260612120000_o_modalnosti_krucheniya/modality_article.js" defer></script>
 </body>
 </html>

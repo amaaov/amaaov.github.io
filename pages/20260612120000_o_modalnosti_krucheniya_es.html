@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260612120000_o_modalnosti_krucheniya/modality_article.css">
   <script type="application/ld+json">
   {
@@ -87,7 +88,7 @@
           <div class="page-prelude">
             <div class="tex-block abstract-block">
               <span class="tex-block-label">Resumen</span>
-              <p>Este artículo examina los límites del saitswap—notación rítmica del malabarismo—cuando se aplica a objetos flexibles y basados en el momento de fuerza. Muestra que la ausencia del parámetro tiempo de retención y de especificidad espacial hace la notación precisa para objetos rígidos, pero insuficiente para poi y conjuntos mixtos.</p>
+              <p>Este artículo examina los límites del saitswap, notación rítmica del malabarismo, cuando se aplica a objetos flexibles y basados en el momento de fuerza. Muestra que la ausencia del parámetro tiempo de retención y de especificidad espacial hace la notación precisa para objetos rígidos, pero insuficiente para poi y conjuntos mixtos.</p>
             </div>
           </div>
           <footer class="page-footer"><span class="page-num">i</span></footer>
@@ -119,7 +120,7 @@
           <p class="page-chapter">§ 2</p>
           <h2 class="page-title">Tiempo de retención y dinámica continua</h2>
           <div class="page-body">
-            <p>Al trasladar este sistema a objetos con dinámica continua, como el poi, surgen divergencias fundamentales. La principal es que el <span class="term">tiempo de retención</span>—que varía sustancialmente según la técnica—no queda reflejado en la notación, a pesar de su papel crítico en la formación del ritmo y la estructura del movimiento.</p>
+            <p>Al trasladar este sistema a objetos con dinámica continua, como el poi, surgen divergencias fundamentales. La principal es que el <span class="term">tiempo de retención</span>, que varía sustancialmente según la técnica, no queda reflejado en la notación, a pesar de su papel crítico en la formación del ritmo y la estructura del movimiento.</p>
             <div class="tex-block">
               <span class="tex-block-label">Observación 2.1</span>
               <p>En el malabarismo clásico, el tiempo de retención se trata como un elemento inercial que no afecta al ritmo básico: un objeto puede permanecer en la mano un tercio o la mitad de un tiempo sin invalidar el patrón.</p>
@@ -179,7 +180,7 @@
               <span class="tex-block-label">Escenario 5.1</span>
               <p>Un participante que trabaja con pelotas ejecuta <span class="notation">3</span> como una cascada estándar. Otro, haciendo girar poi, utiliza el mismo dibujo rítmico, pero a nivel de cinemática corporal realiza una acción fundamentalmente distinta.</p>
             </div>
-            <p>Sin precisar los parámetros de ejecución—modo de sujeción, dirección de rotación, plano, carácter de la aceleración—surge una divergencia semántica a pesar de la coincidencia formal de la notación.</p>
+            <p>Sin precisar los parámetros de ejecución (modo de sujeción, dirección de rotación, plano, carácter de la aceleración) surge una divergencia semántica a pesar de la coincidencia formal de la notación.</p>
           </div>
           <footer class="page-footer"><span class="page-num">5</span></footer>
         </div>
@@ -197,7 +198,7 @@
               <span class="tex-block-label">Conclusión</span>
               <p>En su forma actual, el saitswap sigue cumpliendo una importante función comunicativa y rítmica, pero no puede emplearse como único descriptor en una práctica corporal basada en movimientos continuos y dependientes de la fase.</p>
             </div>
-            <p>El Saitswap es, por tanto, menos un lenguaje de descripción que una herramienta de ordenación. Indica al intérprete en qué momento debe producirse el siguiente acto de interacción con el objeto, pero deja abierta la cuestión de cómo se realiza ese acto. Esto lo hace valioso como rejilla rítmica, pero limitado como modelo de movimiento—especialmente en disciplinas donde el límite entre lanzamiento y giro está difuminado.</p>
+            <p>El Saitswap es, por tanto, menos un lenguaje de descripción que una herramienta de ordenación. Indica al intérprete en qué momento debe producirse el siguiente acto de interacción con el objeto, pero deja abierta la cuestión de cómo se realiza ese acto. Esto lo hace valioso como rejilla rítmica, pero limitado como modelo de movimiento, especialmente en disciplinas donde el límite entre lanzamiento y giro está difuminado.</p>
           </div>
           <footer class="page-footer"><span class="page-num">6</span></footer>
         </div>
@@ -206,6 +207,14 @@
 
   </main>
 
+  <script src="shared/tip_viewport.js" defer></script>
+  <script src="shared/glossary_hints.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.AmaaovGlossary) return;
+  AmaaovGlossary.init({"storageKey": "amaaov-hints:modality", "root": "main.book", "firstOnly": true, "defaultOn": true, "terms": [{"match": "Saitswap", "tip": "Notación rítmica de malabarismo: cuándo debe volver a usarse un objeto."}, {"match": "saitswap", "tip": "Notación rítmica de malabarismo: cuándo debe volver a usarse un objeto."}, {"match": "tiempo de retención", "tip": "Intervalo en que el objeto se sostiene o se gestiona activamente."}, {"match": "cascada", "tip": "Patrón clásico alternado de tres objetos; en poi la forma no se traslada sin distorsión."}, {"match": "momento de fuerza", "tip": "Fuerza de rotación con la que el atrezzo flexible sostiene el movimiento."}], "enhanceSelector": ".term", "toggle": {"mount": ".site-top", "labelOn": "Pistas del glosario", "labelOff": "Pistas del glosario", "ariaLabel": "Activar pistas del glosario", "prepend": false}});
+});
+</script>
   <script src="20260612120000_o_modalnosti_krucheniya/modality_article.js" defer></script>
 </body>
 </html>

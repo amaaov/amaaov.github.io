@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260612120000_o_modalnosti_krucheniya/modality_article.css">
   <script type="application/ld+json">
   {
@@ -87,7 +88,7 @@
           <div class="page-prelude">
             <div class="tex-block abstract-block">
               <span class="tex-block-label">Zusammenfassung</span>
-              <p>Der Artikel untersucht die Grenzen des Saitswop—einer rhythmischen Jonglage-Notation—bei Anwendung auf flexible und drehmomentbasierte Requisiten. Es zeigt sich, dass das Fehlen der Verweilzeit und räumlicher Spezifität die Notation für starre Objekte präzise macht, für Poi und gemischte Gruppen jedoch unzureichend bleibt.</p>
+              <p>Der Artikel untersucht die Grenzen des Saitswop, einer rhythmischen Jonglage-Notation, bei Anwendung auf flexible und drehmomentbasierte Requisiten. Es zeigt sich, dass das Fehlen der Verweilzeit und räumlicher Spezifität die Notation für starre Objekte präzise macht, für Poi und gemischte Gruppen jedoch unzureichend bleibt.</p>
             </div>
           </div>
           <footer class="page-footer"><span class="page-num">i</span></footer>
@@ -119,7 +120,7 @@
           <p class="page-chapter">§ 2</p>
           <h2 class="page-title">Verweilzeit und kontinuierliche Dynamik</h2>
           <div class="page-body">
-            <p>Wird dieses System auf Requisiten mit kontinuierlicher Dynamik übertragen, etwa Poi, treten grundlegende Abweichungen auf. Die wesentliche besteht darin, dass die <span class="term">Verweilzeit</span> des Objekts—die je nach Technik erheblich variiert—in der Notation nicht erfasst wird, obwohl sie eine entscheidende Rolle bei der Bildung von Rhythmus und Bewegungsstruktur spielt.</p>
+            <p>Wird dieses System auf Requisiten mit kontinuierlicher Dynamik übertragen, etwa Poi, treten grundlegende Abweichungen auf. Die wesentliche besteht darin, dass die <span class="term">Verweilzeit</span> des Objekts, die je nach Technik erheblich variiert, in der Notation nicht erfasst wird, obwohl sie eine entscheidende Rolle bei der Bildung von Rhythmus und Bewegungsstruktur spielt.</p>
             <div class="tex-block">
               <span class="tex-block-label">Beobachtung 2,1</span>
               <p>In der klassischen Jonglage wird die Verweilzeit als träges Element behandelt, das den Grundrhythmus nicht beeinflusst: Ein Objekt kann ein Drittel oder die Hälfte eines Takts in der Hand verbleiben, ohne das Muster zu entwerten.</p>
@@ -179,7 +180,7 @@
               <span class="tex-block-label">Szenario 5,1</span>
               <p>Ein Teilnehmer, der mit Bällen jongliert, führt <span class="notation">3</span> als übliche Kaskade aus. Ein anderer, der Poi dreht, verwendet dasselbe rhythmische Muster, vollzieht auf der Ebene der Körperkinematik jedoch eine grundsätzlich andere Handlung.</p>
             </div>
-            <p>Ohne Angabe der Ausführungsparameter—Haltungsweise, Drehrichtung, Ebene, Beschleunigungscharakter—entsteht trotz formaler Übereinstimmung der Notation eine semantische Divergenz.</p>
+            <p>Ohne Angabe der Ausführungsparameter (Haltungsweise, Drehrichtung, Ebene, Beschleunigungscharakter) entsteht trotz formaler Übereinstimmung der Notation eine semantische Divergenz.</p>
           </div>
           <footer class="page-footer"><span class="page-num">5</span></footer>
         </div>
@@ -197,7 +198,7 @@
               <span class="tex-block-label">Ergebnis</span>
               <p>In seiner gegenwärtigen Form erfüllt der Saitswop weiterhin eine wichtige kommunikative und rhythmische Funktion, kann jedoch nicht als alleiniges Bezeichnungsmittel in körperlicher Praxis dienen, die auf kontinuierliche, phasenabhängige Bewegungen angewiesen ist.</p>
             </div>
-            <p>Der Saitswop ist somit weniger eine Beschreibungssprache als ein Ordnungswerkzeug. Er teilt dem Ausführenden mit, wann der nächste Akt der Interaktion mit einem Objekt erfolgen soll, lässt jedoch offen, wie dieser Akt verwirklicht wird. Das macht ihn als rhythmisches Raster wertvoll, als Bewegungsmodell jedoch begrenzt—besonders in Disziplinen, in denen die Grenze zwischen Wurf und Drehung verschwimmt.</p>
+            <p>Der Saitswop ist somit weniger eine Beschreibungssprache als ein Ordnungswerkzeug. Er teilt dem Ausführenden mit, wann der nächste Akt der Interaktion mit einem Objekt erfolgen soll, lässt jedoch offen, wie dieser Akt verwirklicht wird. Das macht ihn als rhythmisches Raster wertvoll, als Bewegungsmodell jedoch begrenzt, besonders in Disziplinen, in denen die Grenze zwischen Wurf und Drehung verschwimmt.</p>
           </div>
           <footer class="page-footer"><span class="page-num">6</span></footer>
         </div>
@@ -206,6 +207,14 @@
 
   </main>
 
+  <script src="shared/tip_viewport.js" defer></script>
+  <script src="shared/glossary_hints.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.AmaaovGlossary) return;
+  AmaaovGlossary.init({"storageKey": "amaaov-hints:modality", "root": "main.book", "firstOnly": true, "defaultOn": true, "terms": [{"match": "Saitswop", "tip": "Rhythmische Jonglage-Notation: wann ein Objekt erneut verwendet werden muss."}, {"match": "Verweilzeit", "tip": "Intervall, in dem das Objekt gehalten oder aktiv geführt wird."}, {"match": "Kaskade", "tip": "Klassisches Wechselmuster mit drei Objekten; beim Poi nicht formtreu übertragbar."}, {"match": "Drehmoment", "tip": "Rotationskraft, mit der flexible Requisiten Bewegung zwischen Würfen halten."}], "enhanceSelector": ".term", "toggle": {"mount": ".site-top", "labelOn": "Glossar-Hinweise", "labelOff": "Glossar-Hinweise", "ariaLabel": "Glossar-Hinweise aktivieren", "prepend": false}});
+});
+</script>
   <script src="20260612120000_o_modalnosti_krucheniya/modality_article.js" defer></script>
 </body>
 </html>

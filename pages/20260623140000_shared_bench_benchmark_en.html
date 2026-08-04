@@ -24,6 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Inconsolata:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260623140000_shared_bench_benchmark/shared_bench_article.css">
   <script type="application/ld+json">
   {
@@ -62,7 +63,7 @@
           <p class="article-meta article-companion">Falsifies the <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">Collaborative Concurrent Extreme manifesto</a></p>
         </header>
         <div class="page-prelude">
-          <p>The hypothesis on the whiteboard is falsifiable — the same one the <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">Collaborative Concurrent Extreme manifesto</a> states as an exact formula, not a loose keyword pile: can a shared workshop with visible concurrent participation produce verified results faster, with better quality and better recovery, without exploding cost and conflict? The benchmark’s candidate method is <strong>Collaborative Concurrent Extreme (CCE)</strong> — visible shared bench, WIP-limited escalation from solo through pair, swarm, and set-based probes — not “everyone touches everything.” The other nine patterns in the live viz are experimental controls and tail stressors. We ran the Shared Bench Delivery Benchmark across those contrasts, four usage heats, and thirty-six market climates to find out — not to crown a single winner on every lane.</p>
+          <p>The hypothesis on the whiteboard is falsifiable: the same one the <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">Collaborative Concurrent Extreme manifesto</a> states as an exact formula, not a loose keyword pile. Can a shared workshop with visible concurrent participation produce verified results faster, with better quality and better recovery, without exploding cost and conflict? The benchmark’s candidate method is <strong>Collaborative Concurrent Extreme (CCE)</strong> (visible shared bench, WIP-limited escalation from solo through pair, swarm, and set-based probes), not “everyone touches everything.” The other nine patterns in the live viz are experimental controls and tail stressors. We ran the Shared Bench Delivery Benchmark across those contrasts, four usage heats, and thirty-six market climates to find out, not to crown a single winner on every lane.</p>
         </div>
       </section>
 
@@ -224,7 +225,7 @@
         <p class="section-label">Ia</p>
         <h2 class="section-title">The manifesto pattern — Collaborative Concurrent Extreme</h2>
         <div class="page-body">
-          <p>The <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">manifesto</a> names <em>collaborative concurrent extreme</em> as an exact formula. The workshop it describes is not ticket-factory concurrency and not “everybody on every task.” It is the shared bench where nobody holds everything, unfinished material stays visible, and the team keeps patterns alive through timing, attention, awareness, recovery, and handoff. The simulation encodes that as one primary pattern — <strong>CCE</strong> — and nine controls to falsify it.</p>
+          <p>The <a href="20260608120000_manifesto_collaborative_concurrent_extreme.html">manifesto</a> names <em>collaborative concurrent extreme</em> as an exact formula. The workshop it describes is not ticket-factory concurrency and not “everybody on every task.” It is the shared bench where nobody holds everything, unfinished material stays visible, and the team keeps patterns alive through timing, attention, awareness, recovery, and handoff. The simulation encodes that as one primary pattern (<strong>CCE</strong>) and nine controls to falsify it.</p>
           <p>Each tick, each forager reads local patch signals: uncertainty (feedback, task mass, hyphae gap, forecast miss) and conflict risk (debt, overlap, recovery). The routing rule escalates — manifesto §12 in benchmark form:</p>
           <div class="code-ref">low uncertainty + low conflict → solo or least-loaded<br>
 uneven load + visible trails → trail-gradient foraging (work-stealing)<br>
@@ -443,6 +444,14 @@ everybody × task → never in CCE — tail control only</div>
     </article>
   </main>
 
+  <script src="shared/tip_viewport.js" defer></script>
+  <script src="shared/glossary_hints.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.AmaaovGlossary) return;
+  AmaaovGlossary.init({"storageKey": "amaaov-hints:shared-bench", "root": "main.article-wrap", "firstOnly": true, "defaultOn": true, "terms": [{"match": "Collaborative Concurrent Extreme", "tip": "Manifesto candidate: visible shared bench with WIP-limited escalation of collaboration."}, {"match": "CCE", "tip": "Collaborative Concurrent Extreme — shared bench with escalating solo → pair → swarm → set-based work."}, {"match": "shared bench", "tip": "Common workshop surface where work is visible and authorship stays individual."}, {"match": "WIP-limited", "tip": "Work-in-progress capped so escalation stays intentional rather than crowding everything."}, {"match": "set-based", "tip": "Exploring several alternatives in parallel before converging."}, {"match": "swarm", "tip": "Several people briefly converge on a blocker, then disperse."}, {"match": "hyphae", "tip": "Collaboration filaments in the live viz — links grown by concurrent work."}, {"match": "trail-gradient", "tip": "Foraging-style work attraction along trails — not classic deque work-stealing."}], "enhanceSelector": null, "toggle": {"mount": "header.site-top", "labelOn": "Glossary hints", "labelOff": "Glossary hints", "ariaLabel": "Enable glossary hints", "prepend": false}});
+});
+</script>
   <script src="20260623140000_shared_bench_benchmark/shared_bench_article.js" defer></script>
 </body>
 </html>

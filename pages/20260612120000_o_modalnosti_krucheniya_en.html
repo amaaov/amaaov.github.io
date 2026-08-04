@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260612120000_o_modalnosti_krucheniya/modality_article.css">
   <script type="application/ld+json">
   {
@@ -87,7 +88,7 @@
           <div class="page-prelude">
             <div class="tex-block abstract-block">
               <span class="tex-block-label">Abstract</span>
-              <p>This article examines the limits of siteswap—a rhythmic juggling notation—when applied to flexible and torque-based props. It shows that the absence of dwell time and spatial specificity makes the notation precise for rigid objects but insufficient for poi and mixed ensembles.</p>
+              <p>This article examines the limits of siteswap, a rhythmic juggling notation, when applied to flexible and torque-based props. It shows that the absence of dwell time and spatial specificity makes the notation precise for rigid objects but insufficient for poi and mixed ensembles.</p>
             </div>
           </div>
           <footer class="page-footer"><span class="page-num">i</span></footer>
@@ -119,7 +120,7 @@
           <p class="page-chapter">§ 2</p>
           <h2 class="page-title">Dwell Time and Continuous Dynamics</h2>
           <div class="page-body">
-            <p>When this system is transferred to props with continuous dynamics, such as poi, fundamental discrepancies arise. The principal one is that object <span class="term">dwell time</span>—which varies substantially depending on technique—is not represented in the notation, despite its critical role in shaping rhythm and movement structure.</p>
+            <p>When this system is transferred to props with continuous dynamics, such as poi, fundamental discrepancies arise. The principal one is that object <span class="term">dwell time</span>, which varies substantially depending on technique, is not represented in the notation, despite its critical role in shaping rhythm and movement structure.</p>
             <div class="tex-block">
               <span class="tex-block-label">Observation 2.1</span>
               <p>In classical juggling, dwell time is treated as an inertial element that does not affect basic rhythm: an object may remain in the hand for one-third or half a beat without invalidating the pattern.</p>
@@ -179,7 +180,7 @@
               <span class="tex-block-label">Scenario 5.1</span>
               <p>One participant juggling balls performs <span class="notation">3</span> as a standard cascade. Another, spinning poi, uses the same rhythmic pattern but at the level of bodily kinematics performs a fundamentally different action.</p>
             </div>
-            <p>Without specifying performance parameters—hold method, rotation direction, plane, character of acceleration—a semantic divergence arises despite formal notational agreement.</p>
+            <p>Without specifying performance parameters (hold method, rotation direction, plane, character of acceleration), a semantic divergence arises despite formal notational agreement.</p>
           </div>
           <footer class="page-footer"><span class="page-num">5</span></footer>
         </div>
@@ -197,7 +198,7 @@
               <span class="tex-block-label">Conclusion</span>
               <p>In its current form, siteswap continues to perform an important communicative and rhythmic function, but cannot serve as the sole descriptor in bodily practice that relies on continuous, phase-dependent movement.</p>
             </div>
-            <p>Siteswap is thus less a language of description than a tool of ordering. It tells the performer when the next act of interaction with an object should occur, but leaves open the question of how that act is realised. This makes it valuable as a rhythmic grid, yet limited as a model of movement—especially in disciplines where the boundary between throw and spin is blurred.</p>
+            <p>Siteswap is thus less a language of description than a tool of ordering. It tells the performer when the next act of interaction with an object should occur, but leaves open the question of how that act is realised. This makes it valuable as a rhythmic grid, yet limited as a model of movement, especially in disciplines where the boundary between throw and spin is blurred.</p>
           </div>
           <footer class="page-footer"><span class="page-num">6</span></footer>
         </div>
@@ -206,6 +207,14 @@
 
   </main>
 
+  <script src="shared/tip_viewport.js" defer></script>
+  <script src="shared/glossary_hints.js" defer></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.AmaaovGlossary) return;
+  AmaaovGlossary.init({"storageKey": "amaaov-hints:modality", "root": "main.book", "firstOnly": true, "defaultOn": true, "terms": [{"match": "siteswap", "tip": "Rhythmic juggling notation: when an object must next be acted upon."}, {"match": "Siteswap", "tip": "Rhythmic juggling notation: when an object must next be acted upon."}, {"match": "dwell time", "tip": "Interval while the object is held or actively managed before the next interaction."}, {"match": "cascade", "tip": "Classic alternating three-object pattern; with poi the form does not transfer without distortion."}, {"match": "torque", "tip": "Rotational force that flexible props use to sustain motion between throws."}], "enhanceSelector": ".term", "toggle": {"mount": ".site-top", "labelOn": "Glossary hints", "labelOff": "Glossary hints", "ariaLabel": "Enable glossary hints", "prepend": false}});
+});
+</script>
   <script src="20260612120000_o_modalnosti_krucheniya/modality_article.js" defer></script>
 </body>
 </html>
