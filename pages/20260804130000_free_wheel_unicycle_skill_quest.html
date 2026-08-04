@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Free-Wheel Unicycle Skill Quest</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="description" content="Interactive freewheel unicycle skill quest: FW1–FW4 grades, posture and brake–coast tasks, local practice log and cosmology certificate. Independent of IUF.">
+  <meta name="keywords" content="freewheel unicycle, skill quest, coasting, disc brake, certificate, Andrei Makarov">
+  <meta name="author" content="Andrei Makarov">
+  <meta property="article:published_time" content="2026-08-04T13:00:00+03:00">
+  <meta property="article:modified_time" content="2026-08-04T13:00:00+03:00">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html">
+  <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html">
+  <link rel="alternate" hreflang="x-default" href="https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html">
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+  <meta property="og:title" content="Free-Wheel Unicycle Skill Quest">
+  <meta property="og:description" content="FW1–FW4 freewheel unicycle skill quest log with local practice checks and certificate.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Free-Wheel Unicycle Skill Quest">
+  <meta name="twitter:description" content="Interactive FW1–FW4 freewheel skill quest with certificate.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="20260804130000_free_wheel_unicycle_skill_quest/fw_quest_article.css">
+  <script src="20260804130000_free_wheel_unicycle_skill_quest/fw_quest_article.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Free-Wheel Unicycle Skill Quest",
+    "author": {"@type": "Person", "name": "Andrei Makarov", "url": "https://amaaov.github.io"},
+    "datePublished": "2026-08-04T13:00:00+03:00",
+    "dateModified": "2026-08-04T13:00:00+03:00",
+    "url": "https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html",
+    "inLanguage": "en",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "isAccessibleForFree": true
+  }
+  </script>
+</head>
+<body class="fw-quest">
+  <a class="skip-link" href="#main">Skip to quest log</a>
+  <canvas id="cosmos-canvas" aria-hidden="true"></canvas>
+  <div class="page">
+  <div class="film-layer" aria-hidden="true">
+    <div class="film-strip">
+      <div class="film-gate"></div>
+      <div class="film-rail film-rail--left"></div>
+      <div class="film-rail film-rail--right"></div>
+    </div>
+  </div>
+
+  <header class="quest-banner">
+      <h1>Free-Wheel Unicycle Skill Quest</h1>
+      <p class="quest-meta">Andrei Makarov · 4 August 2026 · continues <a href="20260804120000_how_to_learn_free_wheel_unicycle.html">How to Learn Free-Wheel Unicycle</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></p>
+      <p class="quest-disclaimer">Independent programme. Unaffiliated with IUF / USA skill levels. IUF glide and coast cards are fixed-gear freestyle; they do not seal freewheel grades here.</p>
+  </header>
+
+  <nav class="rank-rail" aria-label="Grade navigator">
+      <div class="rail-inner">
+        <a href="#charter">Charter</a>
+        <a href="#gate">Gate</a>
+        <a href="#fw1">FW1</a>
+        <a href="#fw2">FW2</a>
+        <a href="#fw3">FW3</a>
+        <a href="#fw4">FW4</a>
+      </div>
+  </nav>
+
+  <main id="main">
+      <section class="charter" id="charter" tabindex="-1">
+        <h2>Charter</h2>
+        <p>Grades are cumulative riding under freewheel constraints. Still sitting with the brake locked against a wall is a setup drill, not a seal. Every grade after the gate mixes scrubbing (brake) and floating (coast). Posture passes when the back and shoulders stay straight and the lean lives in the hips.</p>
+        <ul>
+          <li>Pass prior grades before claiming the next seal.</li>
+          <li>Declare wheel size, hub, brake, and surface when attesting.</li>
+          <li>Checks stay on this device (localStorage). Export a certificate when a grade completes.</li>
+          <li>Fail reasons belong in your notes: rounded back on stop, late lever on the down, upright release into a backward dump.</li>
+        </ul>
+      </section>
+
+      <details class="quest-log" id="gate" data-grade-id="gate" data-seal="GATE" data-title="Entry gate — fixed + setup" open>
+        <summary>
+          <span class="seal">GATE</span>
+          <span class="title-wrap">
+            <strong>Entry gate</strong>
+            <span>Fixed-gear prerequisites and freewheel setup drill</span>
+          </span>
+          <span class="grade-progress" aria-live="polite">0/5</span>
+        </summary>
+        <div class="quest-body">
+          <h3>Fixed gear</h3>
+          <ul class="task-list">
+            <li>
+              <input type="checkbox" id="g0-1" data-grade="gate">
+              <label for="g0-1"><span class="task-id">G0.1</span> Solid fixed-gear mount, dismount, flat and gentle hills until looking around is boring.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="g0-2" data-grade="gate">
+              <label for="g0-2"><span class="task-id">G0.2</span> Hand-brake feathering on fixed while pedaling feels ordinary.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="g0-3" data-grade="gate">
+              <label for="g0-3"><span class="task-id">G0.3</span> Gliding attempt on fixed (feet on frame or pegs, wheel rolling).</label>
+            </li>
+            <li>
+              <input type="checkbox" id="g0-4" data-grade="gate">
+              <label for="g0-4"><span class="task-id">G0.4</span> Brake-assisted coast attempt on fixed (feet off pedals; soft downhill OK).</label>
+            </li>
+          </ul>
+          <h3>Setup drill (not a riding grade)</h3>
+          <ul class="task-list">
+            <li>
+              <input type="checkbox" id="g0-5" data-grade="gate">
+              <label for="g0-5"><span class="task-id">G0.5</span> Mount with support; brake held; sit tall long enough to find pedals and lever without staring at the tire; clean dismount.</label>
+            </li>
+          </ul>
+          <p class="note">Fail G0.1–G0.4 and stay on fixed. Use G0.5 as warm-up every freewheel session.</p>
+        </div>
+      </details>
+
+      <details class="quest-log" id="fw1" data-grade-id="fw1" data-seal="FW1" data-title="FW1 — Start">
+        <summary>
+          <span class="seal">FW1</span>
+          <span class="title-wrap">
+            <strong>Start</strong>
+            <span>Hip-tip start, assisted coast, first free float</span>
+          </span>
+          <span class="grade-progress" aria-live="polite">0/6</span>
+        </summary>
+        <div class="quest-body">
+          <ul class="task-list">
+            <li>
+              <input type="checkbox" id="fw1-1" data-grade="fw1">
+              <label for="fw1-1"><span class="task-id">FW1.1</span> Forward lean from the hips/butt; release brake into the first revolution (support OK for the mount).</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw1-2" data-grade="fw1">
+              <label for="fw1-2"><span class="task-id">FW1.2</span> Ride 25–50 m on flat or slight downhill; back and shoulders stay straight.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw1-3" data-grade="fw1">
+              <label for="fw1-3"><span class="task-id">FW1.3</span> Controlled stop; clean step-off or dismount.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw1-4" data-grade="fw1">
+              <label for="fw1-4"><span class="task-id">FW1.4</span> Coast ≥10 m hands off the lever. A short light brake-coast may bridge while free-coast forms; free-coast ≥10 m must land before the seal.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw1-5" data-grade="fw1">
+              <label for="fw1-5"><span class="task-id">FW1.5</span> Assisted acceleration into coast: wall push, partner shove, or short run-up, then free coast without panicking the first metres.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw1-6" data-grade="fw1">
+              <label for="fw1-6"><span class="task-id">FW1.6</span> Practiced clear throw-exit once if a backward tip wins (safe exit).</label>
+            </li>
+          </ul>
+          <p class="note">Pass when starts no longer dump backward from upright release, and a short free coast exists.</p>
+        </div>
+      </details>
+
+      <details class="quest-log" id="fw2" data-grade-id="fw2" data-seal="FW2" data-title="FW2 — Brake–coast">
+        <summary>
+          <span class="seal">FW2</span>
+          <span class="title-wrap">
+            <strong>Brake–coast</strong>
+            <span>Scrub, float, free pedals, crank positions</span>
+          </span>
+          <span class="grade-progress" aria-live="polite">0/7</span>
+        </summary>
+        <div class="quest-body">
+          <ul class="task-list">
+            <li>
+              <input type="checkbox" id="fw2-1" data-grade="fw2">
+              <label for="fw2-1"><span class="task-id">FW2.1</span> Unassisted mount on flat (no wall).</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw2-2" data-grade="fw2">
+              <label for="fw2-2"><span class="task-id">FW2.2</span> Pulse-brake stretch, then coast ≥20 m with lever quiet.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw2-3" data-grade="fw2">
+              <label for="fw2-3"><span class="task-id">FW2.3</span> Full stop without dismounting; regain balance; continue (≥3 linked cycles).</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw2-4" data-grade="fw2">
+              <label for="fw2-4"><span class="task-id">FW2.4</span> Continuous ride ≥100 m flat, alternating pedal and coast.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw2-5" data-grade="fw2">
+              <label for="fw2-5"><span class="task-id">FW2.5</span> Tall posture held through the stop–start cycles.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw2-6" data-grade="fw2">
+              <label for="fw2-6"><span class="task-id">FW2.6</span> Pedal cranks backward while the wheel rolls forward (clutch free); keep balance and line.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw2-7" data-grade="fw2">
+              <label for="fw2-7"><span class="task-id">FW2.7</span> Hold at least three crank clock positions (e.g. horizontal, near-vertical, mid-angle) for a few metres each while coasting or light-pedaling.</label>
+            </li>
+          </ul>
+          <p class="note">Pass when brake, coast, and free-crank feel belong to the same ride.</p>
+        </div>
+      </details>
+
+      <details class="quest-log" id="fw3" data-grade-id="fw3" data-seal="FW3" data-title="FW3 — Continuous">
+        <summary>
+          <span class="seal">FW3</span>
+          <span class="title-wrap">
+            <strong>Continuous</strong>
+            <span>Distance, crank flip under brake, uphill restore</span>
+          </span>
+          <span class="grade-progress" aria-live="polite">0/6</span>
+        </summary>
+        <div class="quest-body">
+          <ul class="task-list">
+            <li>
+              <input type="checkbox" id="fw3-1" data-grade="fw3">
+              <label for="fw3-1"><span class="task-id">FW3.1</span> Outing ≥500 m with honest coast segments.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw3-2" data-grade="fw3">
+              <label for="fw3-2"><span class="task-id">FW3.2</span> Stand-jump or rolling-jump mount.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw3-3" data-grade="fw3">
+              <label for="fw3-3"><span class="task-id">FW3.3</span> Gentle uphill and downhill; feathering early on the down.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw3-4" data-grade="fw3">
+              <label for="fw3-4"><span class="task-id">FW3.4</span> Firm stop from moderate speed, stay mounted, remount cadence.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw3-5" data-grade="fw3">
+              <label for="fw3-5"><span class="task-id">FW3.5</span> Crank flip while braking: scrub with the lever, flip cranks ~180° to a new foot position, keep the stop or slow-roll controlled.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw3-6" data-grade="fw3">
+              <label for="fw3-6"><span class="task-id">FW3.6</span> Uphill restore: on a gentle climb, let forward drive fade into roll-back or stall, then re-engage forward pedaling and resume without a panic step-off.</label>
+            </li>
+          </ul>
+          <p class="note">Pass when the brake hand is boring and uphill fade does not end the outing.</p>
+        </div>
+      </details>
+
+      <details class="quest-log" id="fw4" data-grade-id="fw4" data-seal="FW4" data-title="FW4 — Terrain &amp; options">
+        <summary>
+          <span class="seal">FW4</span>
+          <span class="title-wrap">
+            <strong>Terrain &amp; options</strong>
+            <span>Undulation, hop, long float, electives</span>
+          </span>
+          <span class="grade-progress" aria-live="polite">0/4 req</span>
+        </summary>
+        <div class="quest-body">
+          <h3>Required</h3>
+          <ul class="task-list">
+            <li>
+              <input type="checkbox" id="fw4-1" data-grade="fw4">
+              <label for="fw4-1"><span class="task-id">FW4.1</span> Undulating path or pumptrack-style transitions without stepping off every crest.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw4-2" data-grade="fw4">
+              <label for="fw4-2"><span class="task-id">FW4.2</span> Intentional small hop or hop-stop.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw4-3" data-grade="fw4">
+              <label for="fw4-3"><span class="task-id">FW4.3</span> Coast ≥50 m in one float (declare surface).</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw4-4" data-grade="fw4">
+              <label for="fw4-4"><span class="task-id">FW4.4</span> Remount after a chosen tip or step-off without walking the uni home as the default.</label>
+            </li>
+          </ul>
+          <h3>Electives (at least one)</h3>
+          <ul class="task-list">
+            <li>
+              <input type="checkbox" id="fw4-e1" data-grade="fw4" data-optional="1">
+              <label for="fw4-e1"><span class="task-id">FW4.E1</span> Extreme stop, stay mounted, continue.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw4-e2" data-grade="fw4" data-optional="1">
+              <label for="fw4-e2"><span class="task-id">FW4.E2</span> Trail freewheel segment with a declared brake plan.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="fw4-e3" data-grade="fw4" data-optional="1">
+              <label for="fw4-e3"><span class="task-id">FW4.E3</span> Uphill backward attempt, then restore clean forward travel (advanced).</label>
+            </li>
+          </ul>
+          <p class="note">Seal FW4 when all required tasks are checked and at least one elective is logged.</p>
+        </div>
+      </details>
+    </main>
+  </div>
+
+  <div class="dock" role="region" aria-label="Quest progress">
+    <div>
+      <div class="dock-grade" id="dock-grade" tabindex="-1" aria-live="polite">No riding grade sealed yet</div>
+      <div class="dock-meta" id="dock-meta">0 tasks</div>
+      <div
+        class="dock-bar"
+        id="dock-bar"
+        role="progressbar"
+        aria-labelledby="dock-grade"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        aria-valuetext="0 of 0 tasks"
+      ><div class="dock-fill" id="dock-fill"></div></div>
+    </div>
+    <div class="dock-actions">
+      <button type="button" id="btn-reset" aria-label="Reset all checked tasks">Reset</button>
+      <button type="button" class="primary" id="btn-certificate" disabled aria-disabled="true" aria-label="Certificate locked until a riding grade FW1–FW4 is sealed">Certificate</button>
+    </div>
+  </div>
+
+  <div class="modal" id="cert-modal" hidden>
+    <div class="cert-dialog" role="dialog" aria-modal="true" aria-labelledby="cert-title" tabindex="-1">
+      <h2 id="cert-title">Certificate</h2>
+      <div class="cert-fields">
+        <label for="cert-name">Rider name
+          <input type="text" id="cert-name" autocomplete="name" placeholder="Your name">
+        </label>
+        <label for="cert-gear">Gear / surface
+          <textarea id="cert-gear" rows="2" placeholder="e.g. 29″ Pipifax · 160 mm disc · grass"></textarea>
+        </label>
+      </div>
+      <div class="cert-formats" role="radiogroup" aria-label="Certificate format">
+        <label class="cert-format-option"><input type="radio" name="cert-format" value="landscape-16x9" checked> 16:9 landscape</label>
+        <label class="cert-format-option"><input type="radio" name="cert-format" value="classic-4x3"> 4:3 classic</label>
+        <label class="cert-format-option"><input type="radio" name="cert-format" value="square-1x1"> 1:1 square</label>
+        <label class="cert-format-option"><input type="radio" name="cert-format" value="portrait-4x5"> 4:5 portrait</label>
+      </div>
+      <p class="dock-meta" id="cert-format-meta"></p>
+      <div id="certificate"><canvas id="cert-canvas" width="1920" height="1080" role="img" aria-label="Certificate preview"></canvas></div>
+      <div class="cert-actions">
+        <button type="button" id="btn-redraw-cert">Redraw</button>
+        <button type="button" class="primary" id="btn-download-cert">Download PNG</button>
+        <button type="button" id="btn-close-cert">Close</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
