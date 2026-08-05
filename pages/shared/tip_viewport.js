@@ -1,3 +1,9 @@
+/*
+ * © Andrei Makarov / amaaov
+ * Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ * SPDX-License-Identifier: CC-BY-4.0
+ */
+
 /**
  * Keep tooltip bubbles inside the viewport (mobile-safe).
  * Used by glossary hints and optional callers (e.g. poi quest).

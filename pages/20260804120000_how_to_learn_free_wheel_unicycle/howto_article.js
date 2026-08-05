@@ -1,3 +1,9 @@
+/*
+ * © Andrei Makarov / amaaov
+ * Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ * SPDX-License-Identifier: CC-BY-4.0
+ */
+
 /* Slow plasma field continuous through the document; fixed canvas shows the viewport slice. */
 (function () {
   var canvas = document.getElementById("orbit-canvas");

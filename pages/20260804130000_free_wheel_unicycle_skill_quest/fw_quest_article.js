@@ -1,3 +1,9 @@
+/*
+ * © Andrei Makarov / amaaov
+ * Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ * SPDX-License-Identifier: CC-BY-4.0
+ */
+
 (function () {
   var STORAGE_KEY = "fw-quest-v01-checks";
   var NAME_KEY = "fw-quest-v01-name";

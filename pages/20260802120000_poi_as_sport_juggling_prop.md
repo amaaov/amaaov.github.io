@@ -5,6 +5,7 @@
 **Language:** English  
 **HTML:** [20260802120000_poi_as_sport_juggling_prop.html](20260802120000_poi_as_sport_juggling_prop.html)  
 **Continues:** [On the Modality of Spinning](20260612120000_o_modalnosti_krucheniya_en.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

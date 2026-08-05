@@ -4,6 +4,7 @@
 **Author:** amaaov
 **Language:** Russian
 **HTML:** [20260718201500_vremennyi_chat_na_gody.html](20260718201500_vremennyi_chat_na_gody.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

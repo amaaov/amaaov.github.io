@@ -1,4 +1,5 @@
 # PDF Extraction Results
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ## Source File
 - **File**: `Download Past_Year_Review_24_25_Zine_LargeText_SafeLayout.pdf`

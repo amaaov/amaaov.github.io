@@ -5,6 +5,7 @@
 **Language:** English
 **Manifesto:** [Collaborative Concurrent Extreme](20260608120000_manifesto_collaborative_concurrent_extreme.html)
 **HTML:** [20260623140000_shared_bench_benchmark_en.html](20260623140000_shared_bench_benchmark_en.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

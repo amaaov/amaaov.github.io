@@ -1,3 +1,9 @@
+/*
+ * © Andrei Makarov / amaaov
+ * Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ * SPDX-License-Identifier: CC-BY-4.0
+ */
+
 (function () {
   var STORAGE_KEY = "poi-quest-v04-checks";
   var NAME_KEY = "poi-quest-v04-name";

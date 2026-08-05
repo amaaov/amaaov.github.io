@@ -1,3 +1,9 @@
+/*
+ * © Andrei Makarov / amaaov
+ * Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ * SPDX-License-Identifier: CC-BY-4.0
+ */
+
 /**
  * Interactive glossary hints for amaaov article pages.
  * Hover / focus / touch tips + icon toggle (hints on/off).

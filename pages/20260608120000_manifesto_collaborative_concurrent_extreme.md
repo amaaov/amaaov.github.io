@@ -4,6 +4,7 @@
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260608120000_manifesto_collaborative_concurrent_extreme.html](20260608120000_manifesto_collaborative_concurrent_extreme.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

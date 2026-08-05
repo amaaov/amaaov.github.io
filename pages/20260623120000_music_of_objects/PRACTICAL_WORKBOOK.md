@@ -1,4 +1,5 @@
 # Practical Workbook — Music of Objects × Modality × Juggling
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 Daily reference for scene work, notation gaps, attention, and fixation.  
 Sources: [Music of Objects](../20260623120000_music_of_objects.md) · [Modality of Spinning](../20260612120000_o_modalnosti_krucheniya.md) · [Juggling](../20260427101600_juggling_en.md)

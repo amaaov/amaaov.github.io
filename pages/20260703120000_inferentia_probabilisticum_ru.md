@@ -4,6 +4,7 @@
 **Author:** amaaov
 **Language:** Russian
 **HTML:** [20260703120000_inferentia_probabilisticum_ru.html](20260703120000_inferentia_probabilisticum_ru.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

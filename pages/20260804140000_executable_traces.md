@@ -5,6 +5,7 @@
 **Language:** English  
 **HTML:** [20260804140000_executable_traces.html](20260804140000_executable_traces.html)  
 **Spine:** A work begins to look autonomous once media have detached a reconstructible organization from the room where it was made; later systems can assemble a sufficient effect from that organization without returning to the room.
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

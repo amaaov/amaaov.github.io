@@ -6,6 +6,7 @@
 **Hosted:** amaaov.github.io · 12 июня 2026  
 **Language:** Russian  
 **HTML:** [20260612120000_o_modalnosti_krucheniya.html](20260612120000_o_modalnosti_krucheniya.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

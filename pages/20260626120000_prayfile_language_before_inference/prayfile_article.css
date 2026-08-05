@@ -1,3 +1,9 @@
+/*
+ * © Andrei Makarov / amaaov
+ * Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ * SPDX-License-Identifier: CC-BY-4.0
+ */
+
 :root {
   --body-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.28rem);
   --body-leading: 1.72;

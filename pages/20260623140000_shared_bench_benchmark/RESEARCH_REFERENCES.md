@@ -1,4 +1,5 @@
 # Shared Bench simulation — research alignment
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 This document maps the Shared Bench ecology simulation (`shared_bench_simulation.exs`, `shared_bench_article.js`) to published software-engineering and adjacent research. The model is a **pedagogical falsification toy**, not a calibrated predictive engine. Alignment is judged on whether mechanisms point in the same direction as evidence, not on numerical fit.
 

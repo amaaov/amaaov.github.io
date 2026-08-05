@@ -5,6 +5,7 @@
 **Language:** Russian  
 **HTML:** [20260607120000_lyudi_bez_prikola.html](20260607120000_lyudi_bez_prikola.html)  
 **Stylesheet:** [lyudi_bez_prikola_article.css](20260607120000_lyudi_bez_prikola/lyudi_bez_prikola_article.css)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 

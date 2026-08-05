@@ -1,3 +1,9 @@
+/*
+ * © Andrei Makarov / amaaov
+ * Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ * SPDX-License-Identifier: CC-BY-4.0
+ */
+
 // Service Worker for Audio Caching
 const CACHE_NAME = 'audio-cache-v1';
 const AUDIO_CACHE_NAME = 'audio-files-v1';

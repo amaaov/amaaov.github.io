@@ -1,4 +1,5 @@
 # 2024 okaupunki lyrics
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 Original ideas which went through GPT shredder into Suno sound generator.
 

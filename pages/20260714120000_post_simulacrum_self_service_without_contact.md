@@ -4,6 +4,7 @@
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260714120000_post_simulacrum_self_service_without_contact_en.html](20260714120000_post_simulacrum_self_service_without_contact_en.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 *Language, digitalisation, production, renting, inference, and the separation of effects from reality*
 

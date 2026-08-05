@@ -4,6 +4,7 @@
 **Author:** amaaov
 **Language:** English
 **HTML:** [20260626120000_prayfile_language_before_inference_en.html](20260626120000_prayfile_language_before_inference_en.html)
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 
