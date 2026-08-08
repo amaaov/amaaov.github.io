@@ -9,6 +9,4 @@
 
 ---
 
-Interactive practice log for freewheel grades GATE + FW1–FW4. Local checkboxes, progress dock, PNG certificate. Independent of IUF / USA skill levels.
-
-Full task text mirrors `tmp/free_wheel_unicycle/FREEWHEEL_QUEST_GRADES.md`.
+Interactive practice log for freewheel grades GATE + FW1–FW4. Local checkboxes, progress dock, PNG certificate. Independent of IUF / USA skill levels. Task text lives in the HTML edition.
