@@ -10,4 +10,4 @@
 
 ---
 
-Interactive practice log for freewheel grades GATE + FW1–FW4. Local checkboxes, progress dock, PNG certificate. Independent of IUF / USA skill levels. Task text lives in the HTML edition.
+Interactive practice log for freewheel grades GATE + FW1–FW4. Local checkboxes, progress dock, PNG certificate. Independent of IUF / USA skill levels. Practice notes, not coaching: freewheel falls can injure; wear a helmet and pads, use soft ground, and treat posture cues as one route among several. Task text lives in the HTML edition.
