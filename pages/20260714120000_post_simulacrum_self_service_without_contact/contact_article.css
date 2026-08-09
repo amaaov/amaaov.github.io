@@ -546,15 +546,6 @@ body {
   outline: none;
 }
 
-.materials-quote {
-  margin: 0.35rem 0 0;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-  color: var(--signal);
-}
-
 .materials-meta {
   margin: 0.25rem 0 0;
   font-family: var(--mono);

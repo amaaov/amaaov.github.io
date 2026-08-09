@@ -88,7 +88,7 @@ Ride a loop so failures stay on the same path. Keep using the static brake-on mo
 
 There is no official freewheel skill ladder. IUF freestyle Level 8 asks for a *glide* and Level 10 for a *coast* on fixed gear; those cards cover fixed-gear freestyle only. The bands below are a working quest for this path: cumulative, mixed brake and coast, with posture as a pass condition. Still sitting with the brake locked is a warm-up drill; grades begin when the freewheel is in motion. Full interactive checklist: [Free-Wheel Unicycle Skill Quest](20260804130000_free_wheel_unicycle_skill_quest.html).
 
-**Entry gate.** On fixed gear, show solid riding until looking around is boring, brake feathering while pedaling, an honest gliding attempt, and an honest brake-assisted coast. On freewheel, the ungraded setup drill is the static brake-on mount: one pedal down and one up, mounting leg on the down pedal, brake held, sit tall long enough to find the up pedal and lever without staring at the tire, then dismount cleanly. Fail the fixed gate and stay on fixed.
+**Entry gate.** On fixed gear, show solid riding until looking around is boring, brake feathering while pedaling, an honest gliding attempt, and an honest brake-assisted coast. On freewheel, complete the supported static mount described above, settle without looking down, and dismount cleanly; return to fixed gear if the fixed gate is not yet reliable.
 
 | Grade | Name | What you show |
 |-------|------|----------------|
@@ -97,7 +97,7 @@ There is no official freewheel skill ladder. IUF freestyle Level 8 asks for a *g
 | **FW3 Continuous** | Outing | ≥500 m with real coast segments; first stand-jump or rolling-jump mount (after the static mount is boring); gentle up and down with early feathering; firm stop from moderate speed, stay mounted; crank flip ~180° while braking; uphill fade into roll-back then restore forward. |
 | **FW4 Terrain & options** | Ground | Undulating path or pumptrack-style transitions; intentional small hop; coast ≥50 m in one float; remount after a chosen tip. Electives (log at least one): extreme stop stay mounted; trail freewheel with a declared brake plan; uphill backward attempt then restore forward. |
 
-Self- or peer-attestation means filming the required list, naming wheel size, hub, brake, and surface, and writing fail reasons (`rounded back on stop`, `late lever on the down`, `shoulders back into the brake`). Grades mark completed tasks.
+Self- or peer-attestation means filming the required list, naming wheel size, hub, brake, and surface, and noting whether the back rounded, the lever arrived after the lower pedal, or the shoulders retreated during braking. Grades mark completed tasks.
 
 The exercise ladder feeds the quest in order: sitting as the setup drill; free coast and start/stop into FW1; pulse and coast in motion into FW2; continuous mounts and terrain into FW3–FW4. The feeling called “learned” below is roughly solid FW2 with FW3 underway.
 
