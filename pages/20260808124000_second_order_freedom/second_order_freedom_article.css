@@ -1,0 +1,63 @@
+:root {
+  --desk: #d9d0bb;
+  --paper: #faf4e5;
+  --ink: #26242b;
+  --carbon: #5a477a;
+  --rule: #b9ac91;
+  --red: #9a493f;
+  --sans: "IBM Plex Sans", Arial, sans-serif;
+  --serif: "Lora", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background-color: var(--desk); background-image: linear-gradient(rgba(255,255,255,.17) 1px, transparent 1px), linear-gradient(90deg, rgba(50,40,30,.05) 1px, transparent 1px); background-size: 100% 2rem, 2rem 100%; font-family: var(--serif); }
+a { color: var(--carbon); text-underline-offset: .18em; }
+a:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
+.skip-link { position: fixed; z-index: 20; top: .5rem; left: .5rem; padding: .7rem 1rem; color: #fff; background: var(--ink); transform: translateY(-180%); }
+.skip-link:focus { transform: none; }
+.site-top { display: flex; justify-content: space-between; gap: 1rem; padding: .85rem clamp(1rem,4vw,3rem); border-bottom: 1px solid #a99d87; font: 600 .72rem/1.2 var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+.copy-desk { width: min(calc(100% - 2rem), 68rem); margin: clamp(2rem,6vw,6rem) auto; }
+.original-slip, .decision-slip, .first-impression, .series-nav { background: var(--paper); border: 1px solid var(--rule); box-shadow: .55rem .7rem 0 rgba(90,71,122,.13), 0 1.3rem 2rem rgba(55,43,30,.12); }
+.original-slip { position: relative; z-index: 2; padding: clamp(2rem,6vw,5rem); transform: rotate(-.45deg); }
+.original-slip::after { content: "ORIGINAL"; position: absolute; top: 1.4rem; right: 1.5rem; color: rgba(90,71,122,.25); border: 2px solid; padding: .25rem .55rem; font: 600 .78rem/1 var(--sans); letter-spacing: .12em; transform: rotate(3deg); }
+.article-logo { width: clamp(7rem, 15vw, 10rem); margin: 0 0 2.2rem auto; padding: .38rem; background: #e7dcbe; border: 1px solid var(--rule); box-shadow: -.45rem .5rem 0 rgba(90,71,122,.35), .35rem -.3rem 0 rgba(154,73,63,.2); transform: rotate(1.4deg); }
+.article-logo img { display: block; width: 100%; height: auto; }
+.form-code, .signature-row, .decision-slip::before, .series-nav, .article-foot { font-family: var(--sans); }
+.form-code { margin: 0 0 2.5rem; color: var(--carbon); font-size: .72rem; letter-spacing: .1em; }
+h1 { max-width: 14ch; margin: 0; font: 500 clamp(3.3rem,8vw,7rem)/.91 var(--sans); letter-spacing: -.055em; }
+.dek { max-width: 44rem; margin: 2rem 0 3rem; font-size: clamp(1.15rem,2vw,1.45rem); line-height: 1.48; }
+.signature-row { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: .75rem; }
+.copy-stack { counter-reset: copy; padding: clamp(2rem,6vw,5rem) 0; }
+.first-impression, .decision-slip { position: relative; max-width: 57rem; padding: clamp(2rem,6vw,4.8rem); font-size: clamp(1.04rem,1.7vw,1.18rem); line-height: 1.73; text-align: justify; text-wrap: pretty; hyphens: auto; orphans: 3; widows: 3; }
+.first-impression { margin: 0 auto 4rem 2%; transform: rotate(.32deg); }
+.first-impression::before { content: "INITIAL CONDITIONS"; display: block; margin-bottom: 2rem; color: var(--red); font: 600 .7rem/1 var(--sans); letter-spacing: .12em; }
+.decision-slip { counter-increment: copy; margin: 4rem 1% 4rem auto; transform: rotate(-.3deg); }
+.decision-slip:nth-child(even) { margin-left: 0; margin-right: auto; transform: rotate(.38deg); }
+.decision-slip::before { content: "COPY " counter(copy, decimal-leading-zero) " / REVIEW"; position: absolute; top: 1.2rem; right: 1.4rem; color: var(--carbon); font-size: .66rem; letter-spacing: .1em; }
+.decision-slip h2 { max-width: 18ch; margin: 0 0 2rem; padding-bottom: 1rem; color: var(--carbon); border-bottom: 2px solid rgba(90,71,122,.32); font: 500 clamp(2rem,5vw,3.8rem)/1 var(--sans); letter-spacing: -.035em; }
+.decision-slip h3 { margin-top: 2.3rem; font: 600 1rem/1.25 var(--sans); text-transform: uppercase; letter-spacing: .035em; }
+.decision-slip p, .decision-slip li { max-width: 67ch; }
+.section-body { min-width: 0; }
+.section-art { margin: 0 0 2.6rem; padding: .42rem; border: 1px solid var(--rule); background: #eee4cc; box-shadow: .55rem .55rem 0 rgba(90,71,122,.18), -.25rem -.2rem 0 rgba(154,73,63,.12); transform: rotate(.3deg); }
+.decision-slip:nth-child(even) .section-art { transform: rotate(-.4deg); }
+.section-art img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; filter: contrast(1.02); }
+.decision-slip blockquote { margin: 2.5rem 0; padding: 1rem 1.4rem; color: #413756; background: rgba(90,71,122,.07); border-left: 4px double var(--carbon); }
+.decision-slip li + li { margin-top: .55rem; }
+.references { font-size: .9em; }
+.series-nav { padding: 2rem clamp(1.5rem,5vw,4rem); transform: rotate(.2deg); }
+.series-nav > p { margin-top: 0; color: var(--red); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+.series-nav ol { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.series-nav a { display: grid; grid-template-columns: 1.5rem 1fr; gap: .4rem; padding-top: .7rem; border-top: 1px solid var(--rule); text-decoration: none; }
+.series-nav [aria-current="page"] { color: var(--red); }
+.series-nav span { font-size: .67rem; }
+.article-foot { display: flex; justify-content: space-between; gap: 1rem; padding: 1.3rem .5rem; color: #5f5546; font-size: .68rem; letter-spacing: .07em; text-transform: uppercase; }
+
+@media (max-width: 680px) {
+  .copy-desk { width: calc(100% - 1rem); margin-top: 1rem; }
+  .original-slip, .first-impression, .decision-slip, .series-nav { transform: none !important; margin-left: 0; margin-right: 0; }
+  .original-slip::after { position: static; display: inline-block; margin-top: 1rem; }
+  .article-logo { width: 6.5rem; margin-left: 0; }
+  .signature-row, .article-foot { flex-direction: column; }
+  .series-nav ol { grid-template-columns: 1fr; }
+}
+@media print { body { background: #fff; } .site-top, .series-nav { display: none; } .copy-desk { width: 100%; margin: 0; } .original-slip, .first-impression, .decision-slip { box-shadow: none; transform: none; page-break-inside: avoid; } }
