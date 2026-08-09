@@ -1,6 +1,7 @@
 # Poi as a Sport-Juggling Prop
 
 **Published:** 2 August 2026, Helsinki  
+**Modified:** 9 August 2026
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802120000_poi_as_sport_juggling_prop.html](20260802120000_poi_as_sport_juggling_prop.html)  

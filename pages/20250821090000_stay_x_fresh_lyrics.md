@@ -1,4 +1,5 @@
 # Stay X Fresh lyrics
+**Modified:** 11 November 2025
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 Тексты группы стэй фреш, написанные в 2008-2010 годах Сашей (за исключением DIY от Андрея) и сыгранные вместе с Артёмом.

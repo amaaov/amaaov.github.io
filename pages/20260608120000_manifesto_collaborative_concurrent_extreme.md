@@ -1,6 +1,7 @@
 # Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans
 
 **Published:** 8 June 2026, Helsinki  
+**Modified:** 4 July 2026
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260608120000_manifesto_collaborative_concurrent_extreme.html](20260608120000_manifesto_collaborative_concurrent_extreme.html)

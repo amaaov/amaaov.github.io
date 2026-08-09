@@ -3,6 +3,7 @@
 **Subtitle:** Ограничения и трансформации сайтсвопа при применении к гибким реквизитам  
 **Author:** Борис Фонтанов  
 **Published:** 2025  
+**Modified:** 4 August 2026
 **Hosted:** amaaov.github.io · 12 июня 2026  
 **Language:** Russian  
 **HTML:** [20260612120000_o_modalnosti_krucheniya.html](20260612120000_o_modalnosti_krucheniya.html)

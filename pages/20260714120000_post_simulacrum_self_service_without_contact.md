@@ -1,6 +1,7 @@
 # Post-Simulacrum Self-Service Without Contact
 
 **Published:** 14 July 2026, Helsinki  
+**Modified:** 9 August 2026
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260714120000_post_simulacrum_self_service_without_contact_en.html](20260714120000_post_simulacrum_self_service_without_contact_en.html)

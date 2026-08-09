@@ -1,6 +1,7 @@
 # pray
 
 **Published:** 26 June 2026, Helsinki
+**Modified:** 4 July 2026
 **Author:** amaaov
 **Language:** English
 **HTML:** [20260626120000_prayfile_language_before_inference_en.html](20260626120000_prayfile_language_before_inference_en.html)

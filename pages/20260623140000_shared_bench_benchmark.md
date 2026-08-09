@@ -1,6 +1,7 @@
 # Shared Bench
 
 **Published:** 23 June 2026, Helsinki
+**Modified:** 9 August 2026
 **Author:** amaaov
 **Language:** English
 **Manifesto:** [Collaborative Concurrent Extreme](20260608120000_manifesto_collaborative_concurrent_extreme.html)

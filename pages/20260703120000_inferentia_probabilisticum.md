@@ -1,6 +1,7 @@
 # Inferentia & Probabilisticum
 
 **Published:** 3 July 2026, Helsinki
+**Modified:** 9 August 2026
 **Author:** amaaov
 **Language:** English · [Russian](20260703120000_inferentia_probabilisticum_ru.md)
 **HTML:** [EN](20260703120000_inferentia_probabilisticum_en.html) · [RU](20260703120000_inferentia_probabilisticum_ru.html)

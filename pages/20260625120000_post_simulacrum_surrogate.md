@@ -1,6 +1,7 @@
 # Post-Simulacrum Surrogate
 
 **Published:** 25 June 2026, Helsinki
+**Modified:** 4 July 2026
 **Author:** amaaov
 **Language:** English
 **HTML:** [20260625120000_post_simulacrum_surrogate_en.html](20260625120000_post_simulacrum_surrogate_en.html)

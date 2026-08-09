@@ -1,6 +1,7 @@
 # Люди с приколом
 
 **Published:** 7 июня 2026, Хельсинки  
+**Modified:** 4 July 2026
 **Author:** amaaov  
 **Language:** Russian  
 **HTML:** [20260607120000_lyudi_bez_prikola.html](20260607120000_lyudi_bez_prikola.html)  

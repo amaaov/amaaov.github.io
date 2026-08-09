@@ -1,6 +1,7 @@
 # Poi Juggling Skill Quest — Cumulative BN Charter
 
 **Published:** 2 August 2026, Helsinki  
+**Modified:** 4 August 2026
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802094500_poi_juggling_skill_quest.html](20260802094500_poi_juggling_skill_quest.html)  

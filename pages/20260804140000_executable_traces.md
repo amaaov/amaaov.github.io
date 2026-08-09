@@ -1,6 +1,7 @@
 # Executable Traces
 
 **Published:** 4 August 2026, Helsinki  
+**Modified:** 4 August 2026
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260804140000_executable_traces.html](20260804140000_executable_traces.html)  

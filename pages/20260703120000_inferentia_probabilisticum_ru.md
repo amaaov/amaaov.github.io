@@ -1,6 +1,7 @@
 # Инференция и Пробабилистикум
 
 **Published:** 3 июля 2026, Хельсинки
+**Modified:** 4 August 2026
 **Author:** amaaov
 **Language:** Russian
 **HTML:** [20260703120000_inferentia_probabilisticum_ru.html](20260703120000_inferentia_probabilisticum_ru.html)

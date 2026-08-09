@@ -1,6 +1,7 @@
 # Пои как спортивный реквизит жонглирования
 
 **Published:** 2 August 2026, Helsinki  
+**Modified:** 4 August 2026
 **Author:** Борис Фонтанов  
 **Language:** Russian  
 **HTML:** [20260802120000_poi_as_sport_juggling_prop_ru.html](20260802120000_poi_as_sport_juggling_prop_ru.html)  
