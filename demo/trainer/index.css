@@ -1,11 +1,29 @@
-body {
-  font-size: 24px;
-  margin: 0;
-  padding: 0;
-  background-color: hsl(0deg 0% 95%);
+:root {
+  --bg: hsl(40deg 20% 96%);
+  --ink: hsl(220deg 20% 12%);
+  --panel: hsl(0deg 0% 100%);
+  --line: hsl(220deg 10% 80%);
+  --accent: hsl(199deg 81% 38%);
+  --ok: hsl(140deg 45% 34%);
+  --bad: hsl(0deg 65% 42%);
 }
 
-/* Screen reader only - visually hidden but accessible to screen readers and search engines */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 1.25rem;
+  min-height: 100vh;
+  font: 18px/1.4 "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 20% 0%, hsl(48deg 80% 90%), transparent 45%),
+    radial-gradient(circle at 90% 20%, hsl(199deg 60% 90%), transparent 40%),
+    var(--bg);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -18,91 +36,159 @@ body {
   border-width: 0;
 }
 
-.note {
-  color: hsl(0deg 0% 95%);
-  border: 1px solid black;
+.trainer-app {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  width: 1.7em;
-  height: 1.7em;
+  gap: 1rem;
 }
-.note-C {
-  background-color: hsl(350deg 58% 50%);
-  border-radius: 0;
+
+.trainer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px hsl(220deg 20% 20% / 0.06);
 }
-.note-G {
-  background-color: hsl(12deg 69% 55%);
-  border-radius: 50%;
+
+.trainer-controls select,
+.trainer-controls button {
+  font: inherit;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
 }
-.note-D {
-  background-color: hsl(27, 84%, 61%);
-  border-radius: 0;
+
+.trainer-controls button {
+  cursor: pointer;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  font-weight: 600;
 }
-.note-A {
-  background-color: hsl(69, 77%, 60%);
-  border-radius: 50%;
-  color: hsl(0, 0%, 5%);
+
+.note-display,
+.score-display {
+  min-width: 4.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
-.note-E {
-  background-color: hsl(100, 82%, 61%);
-  border-radius: 0;
-  color: hsl(0, 0%, 5%);
-}
-.note-B {
-  background-color: hsl(135deg 100% 65%);
-  border-radius: 50%;
-  color: hsl(0, 0%, 5%);
-}
-.note-Gb {
-  background-color: hsl(155deg 100% 65%);
-  border-radius: 0;
-  color: hsl(0, 0%, 5%);
-}
-.note-Db {
-  background-color: hsl(175deg 73% 38%);
-  border-radius: 50%;
-}
-.note-Ab {
-  background-color: hsl(198deg 87% 43%);
-  border-radius: 0;
-}
-.note-Eb {
-  background-color: hsl(199deg 81% 45%);
-  border-radius: 50%;
-}
-.note-Bb {
-  background-color: hsl(220deg 51% 47%);
-  border-radius: 0;
-}
-.note-F {
-  background-color: hsl(277deg 39% 44%);
-  border-radius: 50%;
+
+.hint {
+  max-width: 36rem;
+  margin: 0;
+  text-align: center;
+  color: hsl(220deg 10% 35%);
 }
 
 .circle-of-fifths {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  margin: 1em;
-  .major-key-circle {
-    display: flex;
-    position: absolute;
-    top: 100px;
-    left: 200px;
-    width: 500px;
-    height: 500px;
-    overflow: hidden;
-    .major-key {
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .current-note {
-      z-index: 999;
-    }
+  margin: 1rem 0 2rem;
+}
+
+.major-key-circle {
+  position: relative;
+  width: min(500px, 88vw);
+  height: min(500px, 88vw);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, hsl(0deg 0% 100%) 0 28%, transparent 29%),
+    conic-gradient(from -15deg, hsl(40deg 30% 92%), hsl(199deg 40% 92%), hsl(40deg 30% 92%));
+  border: 1px solid var(--line);
+  box-shadow: inset 0 0 0 1px hsl(0deg 0% 100% / 0.7);
+}
+
+.major-key {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.current-note {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 3.2em;
+  height: 3.2em;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.note {
+  color: hsl(0deg 0% 98%);
+  border: 1px solid hsl(220deg 15% 20% / 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.1em;
+  height: 2.1em;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+button.note:hover,
+button.note:focus-visible {
+  transform: scale(1.08);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.note.is-prompt {
+  box-shadow: 0 0 0 3px hsl(48deg 95% 45%);
+}
+
+.note.is-awaiting {
+  box-shadow: 0 0 0 3px var(--accent);
+}
+
+.note.is-correct {
+  box-shadow: 0 0 0 3px var(--ok);
+}
+
+.note.is-wrong {
+  box-shadow: 0 0 0 3px var(--bad);
+}
+
+.note.is-expected {
+  box-shadow: 0 0 0 3px hsl(280deg 55% 45%);
+}
+
+.note-C { background-color: hsl(350deg 58% 50%); border-radius: 0; }
+.note-G { background-color: hsl(12deg 69% 55%); border-radius: 50%; }
+.note-D { background-color: hsl(27deg 84% 61%); border-radius: 0; }
+.note-A { background-color: hsl(69deg 77% 60%); border-radius: 50%; color: hsl(0deg 0% 5%); }
+.note-E { background-color: hsl(100deg 82% 61%); border-radius: 0; color: hsl(0deg 0% 5%); }
+.note-B { background-color: hsl(135deg 100% 65%); border-radius: 50%; color: hsl(0deg 0% 5%); }
+.note-Gb { background-color: hsl(155deg 100% 65%); border-radius: 0; color: hsl(0deg 0% 5%); }
+.note-Db { background-color: hsl(175deg 73% 38%); border-radius: 50%; }
+.note-Ab { background-color: hsl(198deg 87% 43%); border-radius: 0; }
+.note-Eb { background-color: hsl(199deg 81% 45%); border-radius: 50%; }
+.note-Bb { background-color: hsl(220deg 51% 47%); border-radius: 0; }
+.note-F { background-color: hsl(277deg 39% 44%); border-radius: 50%; }
+
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+    padding: 0.75rem;
+  }
+
+  .trainer-controls {
+    width: 100%;
   }
 }

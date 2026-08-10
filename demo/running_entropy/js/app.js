@@ -266,49 +266,54 @@ class RunningEntropyApp {
      * Handle scene navigation input
      */
     handleSceneNavigation() {
-        // Next scene
-        if (this.inputManager.isKeyPressed('ArrowRight') || this.inputManager.isKeyPressed(' ')) {
+        if (!this._keyLatch) this._keyLatch = new Set();
+
+        const edge = (...aliases) => {
+            const isDown = aliases.some((key) => this.inputManager.isKeyPressed(key));
+            const id = aliases[0];
+            if (isDown && !this._keyLatch.has(id)) {
+                this._keyLatch.add(id);
+                return true;
+            }
+            if (!isDown) this._keyLatch.delete(id);
+            return false;
+        };
+
+        if (edge('ArrowRight', 'Right') || edge(' ', 'Space')) {
             this.sceneManager.nextScene();
         }
 
-        // Previous scene
-        if (this.inputManager.isKeyPressed('ArrowLeft')) {
+        if (edge('ArrowLeft', 'Left')) {
             this.sceneManager.previousScene();
         }
 
-        // Jump to specific scenes
-        if (this.inputManager.isKeyPressed('1')) {
+        if (edge('1', 'Digit1')) {
             this.sceneManager.jumpToScene(0);
         }
-        if (this.inputManager.isKeyPressed('2')) {
+        if (edge('2', 'Digit2')) {
             this.sceneManager.jumpToScene(1);
         }
-        if (this.inputManager.isKeyPressed('3')) {
+        if (edge('3', 'Digit3')) {
             this.sceneManager.jumpToScene(2);
         }
 
-        // Development mode controls
-        if (this.inputManager.isKeyPressed('d')) {
+        if (edge('d', 'D', 'KeyD')) {
             this.toggleDevelopmentMode();
         }
 
-        // Toggle info
-        if (this.inputManager.isKeyPressed('i')) {
+        if (edge('i', 'I', 'KeyI')) {
             this.toggleInfo();
         }
 
-        // Toggle stats
-        if (this.inputManager.isKeyPressed('s')) {
+        if (edge('s', 'S', 'KeyS')) {
             this.toggleStats();
         }
 
-        // Toggle sequencer
-        if (this.inputManager.isKeyPressed('q')) {
+        if (edge('q', 'Q', 'KeyQ')) {
             this.toggleSequencer();
         }
 
-        // Fullscreen
-        if (this.inputManager.isKeyPressed('f')) {
+        if (edge('f', 'F', 'KeyF')) {
             this.toggleFullscreen();
         }
     }
@@ -655,6 +660,10 @@ let app = null;
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         app = new RunningEntropyApp();
+        window.__RUNNING_ENTROPY__ = {
+            getApp: () => app,
+            isReady: () => !!(app && app.isRunning),
+        };
 
         if (await app.initialize()) {
             app.start();

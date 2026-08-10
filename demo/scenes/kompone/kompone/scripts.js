@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
 const canvas = document.getElementById('gameCanvas');
 const gl = canvas.getContext('webgl');
+if (!gl) {
+    console.error('WebGL is not available');
+    return;
+}
 
 // --- WebGL helpers ---
 function createShader(gl, type, source) {
@@ -144,8 +148,12 @@ canvas.addEventListener('touchend', e => {
     touchStart = null;
 });
 
-// Gyro controls (mobile)
+// Gyro controls (mobile) — sample at most ~10 Hz to avoid flooding the queue
+let lastGyroAt = 0;
 window.addEventListener('deviceorientation', e => {
+    const now = performance.now();
+    if (now - lastGyroAt < 100) return;
+    lastGyroAt = now;
     if (Math.abs(e.gamma) > Math.abs(e.beta)) {
         if (e.gamma > 15) inputQueue.push({x: 1, y: 0});
         else if (e.gamma < -15) inputQueue.push({x: -1, y: 0});
@@ -156,8 +164,10 @@ window.addEventListener('deviceorientation', e => {
 });
 
 // Bluetooth joystick/gamepad
+let gamepadPollId = null;
 window.addEventListener('gamepadconnected', () => {
-    setInterval(() => {
+    if (gamepadPollId) return;
+    gamepadPollId = setInterval(() => {
         const gp = navigator.getGamepads()[0];
         if (!gp) return;
         if (gp.axes[0] > 0.5) inputQueue.push({x: 1, y: 0});
@@ -165,6 +175,12 @@ window.addEventListener('gamepadconnected', () => {
         else if (gp.axes[1] > 0.5) inputQueue.push({x: 0, y: 1});
         else if (gp.axes[1] < -0.5) inputQueue.push({x: 0, y: -1});
     }, 100);
+});
+window.addEventListener('gamepaddisconnected', () => {
+    if (gamepadPollId) {
+        clearInterval(gamepadPollId);
+        gamepadPollId = null;
+    }
 });
 
 // --- Game Logic ---
@@ -225,14 +241,17 @@ function garbageCollectComponent() {
 function resetGame() {
     snake = [{x: 0, y: 0, type: 'resistor'}];
     direction = {x: 1, y: 0};
+    inputQueue = [];
     nextComponent = randomComponent();
     componentPos = randomVisibleCell();
     componentTimestamp = Date.now();
+    const wasOver = gameOver;
     gameOver = false;
     lastUpdate = 0;
     camera = {x: 0, y: 0};
     cameraTarget = {x: 0, y: 0};
     renderSnake = snake.map(s => ({...s, fx: s.x, fy: s.y}));
+    if (wasOver) requestAnimationFrame(loop);
 }
 
 function moveSnake() {
@@ -500,10 +519,22 @@ function drawGlowLine(x1, y1, x2, y2, color, thickness) {
     );
 }
 
-// Helper: draw an ellipse using a single rectangle (for performance)
+// Helper: draw a filled ellipse as a triangle fan
 function drawEllipse(cx, cy, rx, ry, color) {
-    // For now, just draw a rectangle as a placeholder for an ellipse
-    drawRect(cx - rx, cy - ry, rx * 2, ry * 2, color);
+    const segments = Math.max(12, Math.ceil(Math.max(rx, ry) / 2));
+    const vertices = [cx, cy];
+    for (let i = 0; i <= segments; i += 1) {
+        const angle = (i / segments) * Math.PI * 2;
+        vertices.push(cx + Math.cos(angle) * rx, cy + Math.sin(angle) * ry);
+    }
+    gl.useProgram(program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STREAM_DRAW);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+    gl.uniform4fv(colorLocation, color);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, segments + 2);
 }
 
 function drawComponentShape(type, x, y, size, highlightY = 0.18) {
@@ -552,7 +583,7 @@ function drawComponentShape(type, x, y, size, highlightY = 0.18) {
     drawEllipse(x + size / 2, y + size * (highlightY + 0.04), size * 0.28, size * 0.04, [1, 1, 1, 0.13]);
 }
 
-// --- Rendering (placeholder, not real WebGL yet) ---
+// --- Rendering ---
 function render(ts) {
     renderBackground(ts / 1000 + (new Date().getHours() + new Date().getMinutes() / 60));
     updateCamera();
@@ -642,6 +673,19 @@ function loop(ts) {
 
 // Initialize renderSnake
 renderSnake = snake.map(s => ({...s, fx: s.x, fy: s.y}));
+
+window.__KOMPONE__ = {
+    getSnakeLength: () => snake.length,
+    isGameOver: () => gameOver,
+    getDirection: () => ({ ...direction }),
+    getComponent: () => ({ ...componentPos, type: nextComponent }),
+    reset: () => resetGame(),
+    enqueue: (dir) => inputQueue.push(dir),
+    step: () => moveSnake(),
+    forceGameOver: () => {
+        gameOver = true;
+    },
+};
 
 requestAnimationFrame(loop);
 

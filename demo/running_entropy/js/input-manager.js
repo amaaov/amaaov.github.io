@@ -267,14 +267,17 @@ class InputManager {
             event.preventDefault();
         }
 
-        const key = event.code || event.key;
-        console.log('Key down:', key);
+        const code = event.code || event.key;
+        const key = event.key;
+        console.log('Key down:', code, key);
 
+        this.keyboard.keys.add(code);
         this.keyboard.keys.add(key);
+        this.keyboard.pressed.add(code);
         this.keyboard.pressed.add(key);
 
         if (this.handlers.keyDown) {
-            this.handlers.keyDown(key, event);
+            this.handlers.keyDown(code, event);
         }
     }
 
@@ -287,14 +290,17 @@ class InputManager {
             event.preventDefault();
         }
 
-        const key = event.code || event.key;
-        console.log('Key up:', key);
+        const code = event.code || event.key;
+        const key = event.key;
+        console.log('Key up:', code, key);
 
+        this.keyboard.keys.delete(code);
         this.keyboard.keys.delete(key);
+        this.keyboard.released.add(code);
         this.keyboard.released.add(key);
 
         if (this.handlers.keyUp) {
-            this.handlers.keyUp(key, event);
+            this.handlers.keyUp(code, event);
         }
     }
 

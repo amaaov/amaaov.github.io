@@ -179,6 +179,7 @@ async function initializeChords() {
 
 // Start the application with a delay
 document.addEventListener("DOMContentLoaded", () => {
+  initSidebarToggle();
   // Delay initial load to prevent browser hang
   setTimeout(() => {
     requestAnimationFrame(() => {
@@ -195,7 +196,8 @@ function initSidebarToggle() {
   const sidebarTrigger = document.querySelector(".sidebar-trigger");
   const sidebar = document.querySelector(".sound-controls");
 
-  if (sidebarTrigger && sidebar) {
+  if (sidebarTrigger && sidebar && !sidebarTrigger.dataset.bound) {
+    sidebarTrigger.dataset.bound = "true";
     sidebarTrigger.addEventListener("click", () => {
       sidebar.classList.toggle("collapsed");
     });

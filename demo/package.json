@@ -1,0 +1,15 @@
+{
+  "name": "amaaov-demos",
+  "private": true,
+  "description": "Playwright coverage for interactive demos under demo/",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report",
+    "install-browsers": "npx playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2"
+  }
+}
