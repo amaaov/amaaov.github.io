@@ -1,0 +1,13 @@
+{
+  "name": "amaaov-seo-playwright",
+  "private": true,
+  "type": "module",
+  "description": "Browser submit helpers for search providers without a public URL API",
+  "scripts": {
+    "submit": "node submit.mjs",
+    "install-browsers": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.54.2"
+  }
+}

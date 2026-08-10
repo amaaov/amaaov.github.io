@@ -2,6 +2,19 @@ site_url: https://example.github.io
 host: example.github.io
 sitemap: sitemap.xml
 
+# Local submit ledger (dedupe + retry). Written under tmp/seo_submit/ (gitignored).
+submit_state:
+  enabled: true
+  dir: tmp/seo_submit
+  skip_within_days:
+    indexnow: 7
+    archive_org: 30
+    archive_today: 30
+    bing: 7
+    brave: 14
+    websub: 1
+    default: 7
+
 sitemap_generate:
   static:
     - /
@@ -33,6 +46,8 @@ archive_org:
   enabled: false
   endpoint: https://web.archive.org/save
   rate_limit_seconds: 5
+  rate_limit_backoff_seconds: 60
+  max_retries: 3
   wait_for_status: false
   options:
     force_get: 1
@@ -56,14 +71,32 @@ archive_today:
 
 brave:
   enabled: false
-  mode: manual
+  # mode: manual | open | request | playwright
+  mode: playwright
   submit_page: https://search.brave.com/submit-url
-  max_urls: 10
-  rate_limit_seconds: 2
+  max_urls: 20
+  rate_limit_seconds: 3
+  headed: false
+  slow_mo_ms: 0
+  timeout_ms: 30000
+  results_path: tmp/seo_audit/brave_playwright_results.json
   # Brave has no stable public submit API. mode options:
   #   manual — print URLs to paste at submit_page (default)
   #   open   — open submit_page in browser (macOS only)
   #   request — POST to brave.endpoint (experimental; often blocked)
+  #   playwright — drive the submit form via scripts/playwright/submit.mjs
+  # Setup: cd scripts/playwright && npm install && npx playwright install chromium
+
+# Extra no-API providers (same Playwright helper). Add new names in submit.mjs PROVIDERS.
+playwright:
+  enabled: false
+  headed: false
+  rate_limit_seconds: 3
+  timeout_ms: 30000
+  results_path: tmp/seo_audit/playwright_results.json
+  providers:
+    - name: brave
+      max_urls: 20
 
 bing:
   enabled: false

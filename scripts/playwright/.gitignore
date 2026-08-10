@@ -1,0 +1,3 @@
+# Local Playwright install for scripts/playwright/submit.mjs
+node_modules/
+package-lock.json

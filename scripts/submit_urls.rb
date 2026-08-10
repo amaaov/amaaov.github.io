@@ -5,8 +5,10 @@ require "fileutils"
 require "json"
 require "net/http"
 require "rexml/document"
+require "time"
 require "uri"
 require "yaml"
+require_relative "submit_state"
 
 SCRIPT_DIR = File.expand_path(__dir__)
 ROOT_DIR = File.expand_path("..", SCRIPT_DIR)
@@ -14,8 +16,12 @@ DEFAULT_CONFIG = File.join(SCRIPT_DIR, "submit_urls.yml")
 CREDENTIALS_DIR = File.join(ROOT_DIR, ".submit_urls")
 BING_OAUTH_FILE = File.join(CREDENTIALS_DIR, "bing_oauth.json")
 ARCHIVE_CREDENTIALS_FILE = File.join(CREDENTIALS_DIR, "archive_org.json")
+PLAYWRIGHT_DIR = File.join(SCRIPT_DIR, "playwright")
+PLAYWRIGHT_SCRIPT = File.join(PLAYWRIGHT_DIR, "submit.mjs")
 ARCHIVE_DEFAULT_ENDPOINT = "https://web.archive.org/save"
 ARCHIVE_DEFAULT_RATE_LIMIT_SECONDS = 5
+ARCHIVE_ORG_429_BACKOFF_SECONDS = 60
+ARCHIVE_ORG_MAX_RETRIES = 3
 BING_AUTHORIZE_URL = "https://www.bing.com/webmasters/oauth/authorize"
 BING_TOKEN_URL = "https://www.bing.com/webmasters/oauth/token"
 BING_REFRESH_URL = "https://www.bing.com/webmasters/token"
@@ -49,9 +55,17 @@ def usage
       #{File.basename($PROGRAM_NAME)} submit [options] [URL ...]
       #{File.basename($PROGRAM_NAME)} auth bing
       #{File.basename($PROGRAM_NAME)} ping-sitemap
+      #{File.basename($PROGRAM_NAME)} show-state
 
     Submit changed or sitemap URLs to IndexNow (relay + engines), WebSub hubs,
-    Internet Archive, archive.today, Brave Search, and optionally Bing.
+    Internet Archive, archive.today, Brave Search (manual/open/playwright),
+    and optionally Bing Webmaster API.
+
+    Local state (default on) lives under tmp/seo_submit/:
+      ledger.json  per-URL × channel last ok/fail
+      latest.json  last run summary + events
+      history.ndjson
+      retry_queue.txt
 
     Options for submit:
       --config PATH     Config file (default: scripts/submit_urls.yml)
@@ -60,11 +74,15 @@ def usage
       --stdin           Read URLs from stdin (one per line)
       --verify          Keep only URLs that respond with HTTP 200 or 301
       --dry-run         Print actions without sending requests
+      --force           Ignore skip_within_days freshness window
+      --no-state        Do not read/write submit ledger
+      --retry-failed    Only URLs in ledger retry queue (error/rate_limited)
       --indexnow-only   Skip archive.org, archive.today, Brave, and Bing
       --archive-only    Skip IndexNow, WebSub, archive.today, Brave, and Bing
       --archive-today-only  Skip IndexNow, WebSub, archive.org, Brave, and Bing
       --brave-only      Skip IndexNow, WebSub, archive.org, archive.today, and Bing
       --bing-only       Skip IndexNow, WebSub, archive.org, archive.today, and Brave
+      --playwright-only Skip IndexNow/WebSub/archives/Bing; run Playwright providers only
 
     Setup:
       1. Copy scripts/submit_urls.yml.example to scripts/submit_urls.yml
@@ -73,7 +91,8 @@ def usage
          (or set IA_S3_ACCESS_KEY and IA_S3_SECRET_KEY; keys from https://archive.org/account/s3.php)
       4. Optional Bing OAuth: register app in Bing Webmaster Tools, fill client_id/secret, run `auth bing`
       5. Optional archive.today: set archive_today.enabled (rate-limited; may hit CAPTCHA)
-      6. Optional Brave: set brave.enabled (no public API; manual or open-browser helper)
+      6. Optional Brave: set brave.enabled; mode=manual|open|request|playwright
+      7. Playwright (no-API UIs): cd scripts/playwright && npm install && npx playwright install chromium
   HELP
 end
 
@@ -240,7 +259,13 @@ def submit_archive_today_url(host, submitid, cookies, url, dry_run:)
   false
 end
 
-def submit_archive_today(config, urls, dry_run:)
+def note_skips(channel, skipped)
+  return if skipped.nil? || skipped.empty?
+
+  puts "#{channel}: skipped #{skipped.size} fresh URL(s) (within skip_within_days; use --force to override)"
+end
+
+def submit_archive_today(config, urls, dry_run:, ledger: NullLedger.new)
   archive = config.fetch("archive_today", {})
   return if archive.fetch("enabled", false) != true
 
@@ -248,6 +273,12 @@ def submit_archive_today(config, urls, dry_run:)
   skip_existing = archive.fetch("skip_if_archived", true)
   max_urls = archive.fetch("max_urls", 0).to_i
   urls = urls.first(max_urls) if max_urls.positive?
+
+  filtered = ledger.filter(urls, channel: "archive_today")
+  note_skips("archive.today", filtered[:skipped])
+  filtered[:skipped].each { |url| ledger.record(url, channel: "archive_today", status: "skipped", detail: "fresh") }
+  urls = filtered[:due]
+  return if urls.empty?
 
   if dry_run
     host = archive.fetch("hosts", ARCHIVE_TODAY_HOSTS).first
@@ -262,6 +293,7 @@ def submit_archive_today(config, urls, dry_run:)
   host_info = archive_today_pick_host(config)
   if host_info.nil?
     warn "archive.today: skipped (no responding host; DNS or service outage)"
+    ledger.record_many(urls, channel: "archive_today", status: "error", detail: "no_host")
     return
   end
 
@@ -275,16 +307,22 @@ def submit_archive_today(config, urls, dry_run:)
       if count.positive?
         puts "archive.today: #{url}"
         puts "  skipped (#{count} existing snapshot(s))"
+        ledger.record(url, channel: "archive_today", status: "ok", detail: "already_archived:#{count}")
         next
       end
     end
 
     success = submit_archive_today_url(host, submitid, cookies, url, dry_run: dry_run)
-    sleep(rate_limit * 4) if !success && !dry_run
+    if success
+      ledger.record(url, channel: "archive_today", status: "ok")
+    else
+      ledger.record(url, channel: "archive_today", status: "rate_limited", detail: "submit_failed", http: 503)
+      sleep(rate_limit * 4) unless dry_run
+    end
   end
 end
 
-def submit_brave(config, urls, dry_run:)
+def submit_brave(config, urls, dry_run:, ledger: NullLedger.new)
   brave = config.fetch("brave", {})
   return if brave.fetch("enabled", false) != true
 
@@ -295,6 +333,29 @@ def submit_brave(config, urls, dry_run:)
   rate_limit = brave.fetch("rate_limit_seconds", 2).to_f
   submit_page = brave.fetch("submit_page", BRAVE_SUBMIT_PAGE)
 
+  filtered = ledger.filter(urls, channel: "brave")
+  note_skips("Brave", filtered[:skipped])
+  filtered[:skipped].each { |url| ledger.record(url, channel: "brave", status: "skipped", detail: "fresh") }
+  urls = filtered[:due]
+  return if urls.empty?
+
+  if mode == "playwright"
+    ok = submit_via_playwright(
+      "brave",
+      urls,
+      dry_run: dry_run,
+      submit_page: submit_page,
+      delay: brave.fetch("rate_limit_seconds", 3).to_f,
+      headed: brave.fetch("headed", false),
+      slow_mo: brave.fetch("slow_mo_ms", 0).to_i,
+      timeout_ms: brave.fetch("timeout_ms", 30_000).to_i,
+      results_path: brave["results_path"]
+    )
+    status = ok || dry_run ? "ok" : "error"
+    ledger.record_many(urls, channel: "brave", status: status, detail: "playwright")
+    return
+  end
+
   if mode == "open"
     puts "Brave: opening #{submit_page}"
     if dry_run
@@ -304,6 +365,7 @@ def submit_brave(config, urls, dry_run:)
     else
       warn "Brave open mode needs macOS `open` or set brave.mode to manual"
     end
+    ledger.record_many(urls, channel: "brave", status: "ok", detail: "open_ui")
     return
   end
 
@@ -315,18 +377,110 @@ def submit_brave(config, urls, dry_run:)
       params = params.merge("url" => url) unless params.key?("url")
 
       puts "Brave: #{url} -> #{uri}"
-      next puts "  #{params.inspect}" if dry_run
+      if dry_run
+        puts "  #{params.inspect}"
+        next
+      end
 
       response = post_form(uri, params, brave.fetch("headers", {}))
       puts "  HTTP #{response.code} #{response.message}"
-      warn "  #{response.body[0, 300]}" unless [200, 202, 204].include?(response.code.to_i)
+      ok = [200, 202, 204].include?(response.code.to_i)
+      warn "  #{response.body[0, 300]}" unless ok
+      ledger.record(url, channel: "brave", status: ok ? "ok" : "error", http: response.code.to_i)
     end
     return
   end
 
   puts "Brave: no public submit API; use #{submit_page} manually for each URL"
+  puts "  tip: set brave.mode: playwright after scripts/playwright npm install"
   urls.each do |url|
     puts "  #{url}"
+  end
+  ledger.record_many(urls, channel: "brave", status: "ok", detail: "manual_list")
+end
+
+def which_command(name)
+  ENV["PATH"].to_s.split(File::PATH_SEPARATOR).each do |dir|
+    candidate = File.join(dir, name)
+    return candidate if File.executable?(candidate)
+  end
+  nil
+end
+
+def submit_via_playwright(provider, urls, dry_run:, submit_page: nil, delay: 3.0, headed: false, slow_mo: 0, timeout_ms: 30_000, results_path: nil)
+  abort "Playwright helper missing: #{PLAYWRIGHT_SCRIPT}" unless File.exist?(PLAYWRIGHT_SCRIPT)
+
+  node = which_command("node")
+  abort "node not found on PATH (needed for Playwright submit)" if node.nil?
+
+  unless Dir.exist?(File.join(PLAYWRIGHT_DIR, "node_modules", "playwright"))
+    abort "Playwright deps missing. Run:\n  cd #{PLAYWRIGHT_DIR} && npm install && npx playwright install chromium"
+  end
+
+  require "tempfile"
+  Tempfile.create(["playwright-urls", ".txt"]) do |file|
+    urls.each { |url| file.puts(url) }
+    file.flush
+
+    cmd = [
+      node,
+      PLAYWRIGHT_SCRIPT,
+      "--provider", provider,
+      "--urls-file", file.path,
+      "--delay", delay.to_s,
+      "--timeout", timeout_ms.to_s
+    ]
+    cmd += ["--submit-page", submit_page] if submit_page && !submit_page.empty?
+    cmd << "--headed" if headed
+    cmd += ["--slow-mo", slow_mo.to_s] if slow_mo.positive?
+    cmd << "--dry-run" if dry_run
+    if results_path && !results_path.empty?
+      path = File.expand_path(results_path, ROOT_DIR)
+      FileUtils.mkdir_p(File.dirname(path))
+      cmd += ["--results", path]
+    end
+
+    puts "Playwright: #{provider} (#{urls.size} URL(s))"
+    puts "  #{cmd.join(' ')}" if dry_run
+    return true if dry_run
+
+    ok = system(*cmd)
+    warn "Playwright submit exited non-zero for #{provider}" unless ok
+    ok
+  end
+end
+
+def submit_playwright_providers(config, urls, dry_run:, ledger: NullLedger.new)
+  section = config.fetch("playwright", {})
+  return if section.fetch("enabled", false) != true
+
+  providers = section.fetch("providers", [])
+  return if providers.nil? || providers.empty?
+
+  providers.each do |entry|
+    entry = entry.transform_keys(&:to_s)
+    name = entry.fetch("name")
+    channel = "playwright:#{name}"
+    max_urls = entry.fetch("max_urls", section.fetch("max_urls", 0)).to_i
+    batch = max_urls.positive? ? urls.first(max_urls) : urls
+    filtered = ledger.filter(batch, channel: channel)
+    note_skips(channel, filtered[:skipped])
+    filtered[:skipped].each { |url| ledger.record(url, channel: channel, status: "skipped", detail: "fresh") }
+    due = filtered[:due]
+    next if due.empty?
+
+    ok = submit_via_playwright(
+      name,
+      due,
+      dry_run: dry_run,
+      submit_page: entry["submit_page"],
+      delay: entry.fetch("rate_limit_seconds", section.fetch("rate_limit_seconds", 3)).to_f,
+      headed: entry.fetch("headed", section.fetch("headed", false)),
+      slow_mo: entry.fetch("slow_mo_ms", section.fetch("slow_mo_ms", 0)).to_i,
+      timeout_ms: entry.fetch("timeout_ms", section.fetch("timeout_ms", 30_000)).to_i,
+      results_path: entry["results_path"] || section["results_path"]
+    )
+    ledger.record_many(due, channel: channel, status: (ok || dry_run ? "ok" : "error"), detail: "playwright")
   end
 end
 
@@ -388,7 +542,7 @@ rescue JSON::ParserError
   warn "  invalid status response"
 end
 
-def submit_archive_org(config, urls, dry_run:)
+def submit_archive_org(config, urls, dry_run:, ledger: NullLedger.new)
   archive = config.fetch("archive_org", {})
   return if archive.fetch("enabled", false) != true
 
@@ -401,7 +555,15 @@ def submit_archive_org(config, urls, dry_run:)
   endpoint = URI(archive.fetch("endpoint", ARCHIVE_DEFAULT_ENDPOINT))
   rate_limit = archive.fetch("rate_limit_seconds", ARCHIVE_DEFAULT_RATE_LIMIT_SECONDS).to_f
   wait = archive.fetch("wait_for_status", false)
+  backoff = archive.fetch("rate_limit_backoff_seconds", ARCHIVE_ORG_429_BACKOFF_SECONDS).to_f
+  max_retries = archive.fetch("max_retries", ARCHIVE_ORG_MAX_RETRIES).to_i
   options = archive.fetch("options", {}).transform_keys(&:to_s).transform_values(&:to_s)
+
+  filtered = ledger.filter(urls, channel: "archive_org")
+  note_skips("Archive.org", filtered[:skipped])
+  filtered[:skipped].each { |url| ledger.record(url, channel: "archive_org", status: "skipped", detail: "fresh") }
+  urls = filtered[:due]
+  return if urls.empty?
 
   urls.each_with_index do |url, index|
     sleep(rate_limit) if index.positive? && !dry_run
@@ -416,28 +578,55 @@ def submit_archive_org(config, urls, dry_run:)
       next
     end
 
-    response = post_form(endpoint, params, headers)
-    puts "  HTTP #{response.code} #{response.message}"
-    unless response.is_a?(Net::HTTPSuccess)
-      warn "  #{response.body}"
-      next
-    end
+    attempt = 0
+    loop do
+      response = post_form(endpoint, params, headers)
+      code = response.code.to_i
+      puts "  HTTP #{code} #{response.message}"
 
-    begin
-      data = JSON.parse(response.body)
-    rescue JSON::ParserError
-      warn "  invalid JSON: #{response.body[0, 200]}"
-      next
-    end
+      if code == 429
+        attempt += 1
+        detail = begin
+          JSON.parse(response.body)["message"]
+        rescue StandardError
+          "session_limit"
+        end
+        if attempt <= max_retries
+          warn "  rate limited; backoff #{backoff}s (retry #{attempt}/#{max_retries})"
+          sleep(backoff)
+          next
+        end
+        warn "  #{response.body}"
+        ledger.record(url, channel: "archive_org", status: "rate_limited", detail: detail, http: 429)
+        break
+      end
 
-    job_id = data["job_id"]
-    if job_id.nil?
-      puts "  #{data}"
-      next
-    end
+      unless response.is_a?(Net::HTTPSuccess)
+        warn "  #{response.body}"
+        ledger.record(url, channel: "archive_org", status: "error", detail: response.message, http: code)
+        break
+      end
 
-    puts "  job_id=#{job_id}"
-    poll_archive_status(job_id, credentials, archive) if wait
+      begin
+        data = JSON.parse(response.body)
+      rescue JSON::ParserError
+        warn "  invalid JSON: #{response.body[0, 200]}"
+        ledger.record(url, channel: "archive_org", status: "error", detail: "invalid_json", http: code)
+        break
+      end
+
+      job_id = data["job_id"]
+      if job_id.nil?
+        puts "  #{data}"
+        ledger.record(url, channel: "archive_org", status: "error", detail: "no_job_id", http: code)
+        break
+      end
+
+      puts "  job_id=#{job_id}"
+      poll_archive_status(job_id, credentials, archive) if wait
+      ledger.record(url, channel: "archive_org", status: "ok", detail: "job_id=#{job_id}", http: code)
+      break
+    end
   end
 end
 
@@ -459,7 +648,12 @@ def indexnow_success?(response)
   code == 200 || code == 202
 end
 
-def submit_indexnow(config, urls, dry_run:)
+def indexnow_channel(endpoint_url)
+  host = URI(endpoint_url).host
+  "indexnow:#{host}"
+end
+
+def submit_indexnow(config, urls, dry_run:, ledger: NullLedger.new)
   indexnow = config.fetch("indexnow", {})
   return if indexnow.fetch("enabled", true) == false
 
@@ -471,8 +665,15 @@ def submit_indexnow(config, urls, dry_run:)
   abort "indexnow.key missing in config" if key.nil? || key.empty?
 
   indexnow_endpoints(config).each do |endpoint_url|
+    channel = indexnow_channel(endpoint_url)
+    filtered = ledger.filter(urls, channel: channel)
+    note_skips(channel, filtered[:skipped])
+    filtered[:skipped].each { |url| ledger.record(url, channel: channel, status: "skipped", detail: "fresh") }
+    due = filtered[:due]
+    next if due.empty?
+
     endpoint = URI(endpoint_url)
-    urls.each_slice(batch_size).with_index(1) do |batch, index|
+    due.each_slice(batch_size).with_index(1) do |batch, index|
       payload = {
         "host" => host,
         "key" => key,
@@ -481,16 +682,24 @@ def submit_indexnow(config, urls, dry_run:)
       }
 
       puts "IndexNow batch #{index}: #{batch.size} URL(s) -> #{endpoint}"
-      next puts JSON.pretty_generate(payload) if dry_run
+      if dry_run
+        puts JSON.pretty_generate(payload)
+        next
+      end
 
       response = post_json(endpoint, payload)
       puts "  HTTP #{response.code} #{response.message}"
-      warn "  #{response.body[0, 300]}" unless indexnow_success?(response)
+      if indexnow_success?(response)
+        ledger.record_many(batch, channel: channel, status: "ok", http: response.code.to_i)
+      else
+        warn "  #{response.body[0, 300]}"
+        ledger.record_many(batch, channel: channel, status: "error", detail: response.message, http: response.code.to_i)
+      end
     end
   end
 end
 
-def submit_websub(config, dry_run:)
+def submit_websub(config, dry_run:, ledger: NullLedger.new)
   websub = config.fetch("websub", {})
   return if websub.fetch("enabled", true) == false
 
@@ -498,14 +707,27 @@ def submit_websub(config, dry_run:)
   hubs = websub.fetch("hubs", WEBSUB_DEFAULT_HUBS)
 
   hubs.each do |hub_url|
+    channel = "websub:#{URI(hub_url).host}"
+    filtered = ledger.filter([feed_url], channel: channel)
+    if filtered[:due].empty?
+      note_skips(channel, filtered[:skipped])
+      filtered[:skipped].each { |url| ledger.record(url, channel: channel, status: "skipped", detail: "fresh") }
+      next
+    end
+
     endpoint = URI(hub_url)
     params = { "hub.mode" => "publish", "hub.url" => feed_url }
     puts "WebSub publish: #{feed_url} -> #{endpoint}"
-    next puts "  #{params.inspect}" if dry_run
+    if dry_run
+      puts "  #{params.inspect}"
+      next
+    end
 
     response = post_form(endpoint, params)
     puts "  HTTP #{response.code} #{response.message}"
-    warn "  #{response.body[0, 300]}" unless [200, 202, 204].include?(response.code.to_i)
+    ok = [200, 202, 204].include?(response.code.to_i)
+    warn "  #{response.body[0, 300]}" unless ok
+    ledger.record(feed_url, channel: channel, status: ok ? "ok" : "error", http: response.code.to_i)
   end
 end
 
@@ -566,13 +788,20 @@ def bing_access_token(config)
   tokens.fetch("access_token")
 end
 
-def submit_bing(config, urls, dry_run:)
+def submit_bing(config, urls, dry_run:, ledger: NullLedger.new)
   bing = config.fetch("bing", {})
   return if bing.fetch("enabled", false) != true
 
   site_url = config.fetch("site_url")
   batch_size = bing.fetch("batch_size", BING_BATCH_SIZE).to_i
   endpoint = URI("https://www.bing.com/webmaster/api.svc/json/SubmitUrlBatch")
+
+  filtered = ledger.filter(urls, channel: "bing")
+  note_skips("Bing", filtered[:skipped])
+  filtered[:skipped].each { |url| ledger.record(url, channel: "bing", status: "skipped", detail: "fresh") }
+  urls = filtered[:due]
+  return if urls.empty?
+
   access_token = bing_access_token(config) unless dry_run
 
   urls.each_slice(batch_size).with_index(1) do |batch, index|
@@ -582,11 +811,19 @@ def submit_bing(config, urls, dry_run:)
     }
 
     puts "Bing batch #{index}: #{batch.size} URL(s)"
-    next puts JSON.pretty_generate(payload) if dry_run
+    if dry_run
+      puts JSON.pretty_generate(payload)
+      next
+    end
 
     response = post_json(endpoint, payload, { "Authorization" => "Bearer #{access_token}" })
     puts "  HTTP #{response.code} #{response.message}"
-    warn "  #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+    if response.is_a?(Net::HTTPSuccess)
+      ledger.record_many(batch, channel: "bing", status: "ok", http: response.code.to_i)
+    else
+      warn "  #{response.body}"
+      ledger.record_many(batch, channel: "bing", status: "error", detail: response.message, http: response.code.to_i)
+    end
   end
 end
 
@@ -679,11 +916,15 @@ def parse_submit_options(args)
     stdin: false,
     verify: false,
     dry_run: false,
+    force: false,
+    state: true,
+    retry_failed: false,
     indexnow_only: false,
     archive_only: false,
     archive_today_only: false,
     brave_only: false,
     bing_only: false,
+    playwright_only: false,
     config: DEFAULT_CONFIG,
     urls: []
   }
@@ -696,11 +937,15 @@ def parse_submit_options(args)
     when "--stdin" then options[:stdin] = true; args.shift
     when "--verify" then options[:verify] = true; args.shift
     when "--dry-run" then options[:dry_run] = true; args.shift
+    when "--force" then options[:force] = true; args.shift
+    when "--no-state" then options[:state] = false; args.shift
+    when "--retry-failed" then options[:retry_failed] = true; args.shift
     when "--indexnow-only" then options[:indexnow_only] = true; args.shift
     when "--archive-only" then options[:archive_only] = true; args.shift
     when "--archive-today-only" then options[:archive_today_only] = true; args.shift
     when "--brave-only" then options[:brave_only] = true; args.shift
     when "--bing-only" then options[:bing_only] = true; args.shift
+    when "--playwright-only" then options[:playwright_only] = true; args.shift
     when "-h", "--help" then puts usage; exit 0
     else
       options[:urls] << args.shift
@@ -710,11 +955,21 @@ def parse_submit_options(args)
   options
 end
 
-def collect_urls(options)
+def collect_urls(options, ledger: nil)
   config = load_config(options[:config])
   urls = options[:urls].dup
 
-  if options[:sitemap] || urls.empty? && !options[:file] && !options[:stdin]
+  if options[:retry_failed]
+    abort "submit state disabled; cannot use --retry-failed" if ledger.nil? || ledger.is_a?(NullLedger)
+
+    queue_path = File.join(ledger.dir, "retry_queue.txt")
+    queued = ledger.retry_urls
+    if File.exist?(queue_path)
+      queued |= File.readlines(queue_path, chomp: true).map(&:strip).reject(&:empty?)
+    end
+    urls.concat(queued)
+    puts "Retry queue: #{queued.size} URL(s)"
+  elsif options[:sitemap] || (urls.empty? && !options[:file] && !options[:stdin])
     sitemap_path = File.join(ROOT_DIR, config.fetch("sitemap", "sitemap.xml"))
     abort "Sitemap not found: #{sitemap_path}" unless File.exist?(sitemap_path)
     urls.concat(parse_urls_from_sitemap(sitemap_path))
@@ -740,25 +995,41 @@ def main(argv)
   case command
   when "submit"
     options = parse_submit_options(argv)
-    config, urls = collect_urls(options)
+    config_for_state = load_config(options[:config])
+    ledger = SubmitLedger.from_config(config_for_state, state: options[:state], force: options[:force])
+    config, urls = collect_urls(options, ledger: ledger)
 
     puts "Submitting #{urls.size} URL(s)"
-    unless options[:bing_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
-      submit_indexnow(config, urls, dry_run: options[:dry_run])
-      submit_websub(config, dry_run: options[:dry_run])
+    if options[:playwright_only]
+      submit_brave(config, urls, dry_run: options[:dry_run], ledger: ledger)
+      submit_playwright_providers(config, urls, dry_run: options[:dry_run], ledger: ledger)
+    else
+      unless options[:bing_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
+        submit_indexnow(config, urls, dry_run: options[:dry_run], ledger: ledger)
+        submit_websub(config, dry_run: options[:dry_run], ledger: ledger)
+      end
+      unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_today_only]
+        submit_archive_org(config, urls, dry_run: options[:dry_run], ledger: ledger)
+      end
+      unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_only]
+        submit_archive_today(config, urls, dry_run: options[:dry_run], ledger: ledger)
+      end
+      unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:bing_only]
+        submit_brave(config, urls, dry_run: options[:dry_run], ledger: ledger)
+        submit_playwright_providers(config, urls, dry_run: options[:dry_run], ledger: ledger)
+      end
+      unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
+        submit_bing(config, urls, dry_run: options[:dry_run], ledger: ledger)
+      end
     end
-    unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_today_only]
-      submit_archive_org(config, urls, dry_run: options[:dry_run])
+
+    if options[:state] && !options[:dry_run]
+      ledger.persist!(extra: { "url_count" => urls.size, "dry_run" => false })
     end
-    unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_only]
-      submit_archive_today(config, urls, dry_run: options[:dry_run])
-    end
-    unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:bing_only]
-      submit_brave(config, urls, dry_run: options[:dry_run])
-    end
-    unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
-      submit_bing(config, urls, dry_run: options[:dry_run])
-    end
+  when "show-state"
+    config = load_config(DEFAULT_CONFIG)
+    ledger = SubmitLedger.from_config(config, state: true, force: false)
+    ledger.show
   when "auth"
     sub = argv.shift
     abort usage unless sub == "bing"
