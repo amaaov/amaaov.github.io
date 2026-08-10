@@ -1,7 +1,7 @@
 # Second Order Freedom
 
 **Published:** 8 August 2026, Helsinki  
-**Modified:** 9 August 2026  
+**Modified:** 10 August 2026  
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260808124000_second_order_freedom_en.html](20260808124000_second_order_freedom_en.html)  
@@ -15,7 +15,7 @@ Repetition changes the boundaries of the situation: an almost free message gives
 
 First-order freedom asks whether I can make my chosen move, while Second Order Freedom looks toward the world that becomes normal when enough people make the same move and institutions rebuild around their choice, bringing a person who may later want to refuse into view.
 
-The phrase has more than one genealogy. Harry Frankfurt distinguished first-order desires from desires about one's own desires, including second-order volitions ([Frankfurt 1971](https://doi.org/10.2307/2024717)); political-economy writing has used second-order choice for choice about the conditions of later choices ([Cammack 2014](https://scholar.harvard.edu/files/dlcammack/files/marx_hayek_and_the_relationship_between_capitalism_and_freedom.pdf)). This essay extends the second line: freedom's object is the shared environment that present decisions leave to the next participant. Personal adjustment of attention already happens inside somebody else’s order of signals, where a person chooses what to look at while the environment has already set the regime in which that choice takes place.
+The phrase has more than one genealogy. Harry Frankfurt distinguished first-order desires from desires about one's own desires, including second-order volitions ([Frankfurt 1971](https://doi.org/10.2307/2024717)); political-economy writing has used second-order choice for choice about the conditions of later choices ([Cammack 2014](https://scholar.harvard.edu/files/dlcammack/files/marx_hayek_and_the_relationship_between_capitalism_and_freedom.pdf)). This essay extends the second line: freedom's object is the shared environment that present decisions leave to the next participant. Personal adjustment of attention already happens inside somebody else’s order of signals, where a person chooses what to look at while the environment has already set the regime in which that choice takes place. Recommender research reaches a related distinction when it treats preferences about one’s own preferences, including exposure and change, as necessary for autonomy-respecting systems ([Ashton and Franklin, 2022](https://arxiv.org/abs/2209.11801)); observed response can coexist with refusal of the environment that keeps producing the stimulus.
 
 ## From choice to default
 
@@ -43,7 +43,7 @@ In [*People with Spark*](https://amaaov.github.io/pages/20260607120000_lyudi_bez
 
 Work has the same pattern when task visibility aids coordination and gradually turns the visible trace into a substitute for presence and contribution. [*Past Year Review 24/25*](https://amaaov.github.io/pages/20250712000000_past_year_review.html) already describes a system reinforcing performed busyness and making people work for the surface of observation; Second Order Freedom adds the design question of which behaviour gains advantage after every participant has learned from this system for several years.
 
-Denmark's digital welfare state gives this pattern a concrete form. Automation and electronic communication were expected to reduce the need for in-person support and improve services, yet Barbara Carreras's ethnography found a different result in the cases studied: access labour moved to individuals, families, and third-sector organizations, while marginalized groups faced greater difficulty obtaining benefits ([Carreras 2024](https://pure.itu.dk/en/publications/frictional-infrastructures-an-ethnography-of-compulsory-digital-s/)). One user's convenience and an agency's saving accumulated into an environment where other people's unpaid labour sustained the promised efficiency.
+Denmark's digital welfare state is already examined in [*Antidigitism*](20260808122000_antidigitism_en.html) through Carreras’s ethnography. One user's convenience and an agency's saving accumulated into an environment where other people's unpaid labour sustained the promised efficiency. The second-order mechanism matters here: good intentions and local savings leave the next person a more expensive refusal.
 
 Moral assessment includes good intention, immediate benefit, and the later path by which a form scales, enters a budget, becomes habit, displaces its fallback, and eventually meets somebody beyond the original design.
 
@@ -53,7 +53,7 @@ Before declaring a preference progress, the repetition test traces future condit
 
 The test moves part of the burden from personal choice to its surrounding environment: a career built from a hobby leaves the community responsible for space held by other forms of participation, mandatory recording of every meeting makes people without media traces prove their belonging separately, and developing an app preserves a full route to the service through another channel, which [*Antidigitism*](20260808122000_antidigitism_en.html) associates with meaningful refusal.
 
-A longitudinal study of the YouTube beauty community shows how entrepreneurial practices adopted by some members altered collective norms and relations for non-entrepreneurial members ([Mardon, Cocker, and Daunt 2023](https://academic.oup.com/jcr/article/50/3/617/6978199)); the ordinariness of this bounded case reveals a norm growing through mutual observation, imitation, and environmental adaptation long before a formal requirement appears.
+[*Hobby Crisis*](20260808121000_hobby_crisis_en.html) already shows, through the YouTube beauty community, how entrepreneurial practices adopted by some members alter norms for others ([Mardon, Cocker, and Daunt 2023](https://academic.oup.com/jcr/article/50/3/617/6978199)); the mechanism is enough here: a norm grows through mutual observation and environmental adaptation long before a formal requirement appears.
 
 The second order reveals the distribution of benefits and losses: a person earning income from the new norm and a person losing permission to remain an amateur occupy different positions in the same system. A user saving one minute through an app and a person without a compatible device occupy similarly different positions; average convenience hides the edge where refusal becomes expensive.
 
@@ -91,8 +91,8 @@ First-order freedom opens a door before me, while Second Order Freedom leaves an
 
 - Rebecca Mardon, Hayley Cocker, Kate Daunt. “How Social Media Influencers Impact Consumer Collectives: An Embeddedness Perspective.” *Journal of Consumer Research* 50(3), 2023. https://doi.org/10.1093/jcr/ucad003
 - W. Brian Arthur. “Competing Technologies, Increasing Returns, and Lock-In by Historical Events.” *The Economic Journal* 99(394), 1989. https://doi.org/10.2307/2234208
-- David B. Nieborg, Thomas Poell. “The Platformization of Cultural Production: Theorizing the Contingent Cultural Commodity.” *New Media & Society* 20(11), 2018. https://doi.org/10.1177/1461444818769694
 - Harry G. Frankfurt. “Freedom of the Will and the Concept of a Person.” *The Journal of Philosophy* 68(1), 1971, 5–20. https://doi.org/10.2307/2024717
+- Hal Ashton, Matija Franklin. “Solutions to preference manipulation in recommender systems require knowledge of meta-preferences.” arXiv:2209.11801, 2022. https://arxiv.org/abs/2209.11801
 - Daniela Cammack. *Marx, Hayek and the Relationship between Capitalism and Freedom*. 2014. https://scholar.harvard.edu/files/dlcammack/files/marx_hayek_and_the_relationship_between_capitalism_and_freedom.pdf
 - Barbara N. Carreras. *Frictional Infrastructures: An Ethnography of Compulsory Digital Self-Reliance and Collective Access in the Danish Welfare State*. IT University of Copenhagen, 2024. https://pure.itu.dk/en/publications/frictional-infrastructures-an-ethnography-of-compulsory-digital-s/
 - Anton Törnberg. “Prefigurative Politics and Social Change: A Typology Drawing on Transition Studies.” *Distinktion* 22(1), 2021, 83–107. https://doi.org/10.1080/1600910X.2020.1856161
