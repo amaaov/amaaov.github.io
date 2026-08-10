@@ -1,7 +1,7 @@
 # People with Spark
 
 **Published:** 7 June 2026, Helsinki
-**Modified:** 4 July 2026
+**Modified:** 10 August 2026
 **Author:** amaaov
 **Language:** English
 **HTML:** [20260607120000_lyudi_bez_prikola_en.html](20260607120000_lyudi_bez_prikola_en.html)
@@ -105,7 +105,7 @@ X
 
 At work the same line became more hidden. Concepts of professionalism are specific: they grew from particular environments, economies, languages, habits, schools of attention, and therefore cannot be a universal measure of human worth.
 
-One person thinks through regulation, another through prototype, a third through conversation, a fourth through long manual checking, a fifth through a demo where suddenly becomes visible what was not in the task.
+One person thinks through regulation, another through prototype, a third through conversation, a fourth through long manual checking, a fifth through a demo where what was not in the task suddenly becomes visible.
 
 Good work sometimes requires form, but bad culture turns form into a moral pedestal. Then a person with different experience looks not differently built but supposedly less mature, less disciplined, less professional, although in fact they may simply come from another school of reality.
 

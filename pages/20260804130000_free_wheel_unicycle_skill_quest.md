@@ -11,15 +11,15 @@
 
 ---
 
-Independent programme. Unaffiliated with IUF / USA skill levels. IUF glide and coast cards are fixed-gear freestyle; freewheel grades here stay separate. Practice notes: freewheel falls can injure; wear a helmet and pads, use soft ground, and treat posture cues as one route among several.
+This is an independent programme, unaffiliated with IUF / USA skill levels. IUF glide and coast cards are fixed-gear freestyle, and freewheel grades here stay separate. Freewheel falls can injure, so wear a helmet and pads, use soft ground, and treat posture cues as one route among several.
 
 ## Charter
 
-Grades are cumulative riding under freewheel constraints. Still sitting with the brake locked against a wall is a setup drill; seals begin when the freewheel is in motion. Early mounts stay static with the brake on (one pedal down, one up). Every grade after the gate mixes scrubbing (brake) and floating (coast). Posture passes when the back stays straight, forward lean means shoulders forward, and any backward seat correction lives only in the butt. Braking practice starts with shoulders already forward and keeps them forward through pulses and stops; shoulders back into the lever is a heavy, hard-to-control dump. Early grades may keep the lever busy; later grades lengthen brakeless coast and pedal stretches as the hand relaxes. Stand-jump and rolling-jump mounts belong in FW3.
+Grades are cumulative riding under freewheel constraints. Still sitting with the brake locked against a wall is a setup drill, and seals begin when the freewheel is in motion. Early mounts stay static with the brake on (one pedal down, one up). Every grade after the gate mixes scrubbing with the brake and floating in a coast. Posture passes when the back stays straight, forward lean means shoulders forward, and any backward seat correction lives only in the butt. Braking practice starts with shoulders already forward and keeps them forward through pulses and stops, because shoulders back into the lever is a heavy, hard-to-control dump. Early grades may keep the lever busy; later grades lengthen brakeless coast and pedal stretches as the hand relaxes. Stand-jump and rolling-jump mounts belong in FW3.
 
 - Pass prior grades before claiming the next seal.
 - Declare wheel size, hub, brake, and surface when attesting.
-- Checks stay on this device (localStorage). Export a certificate when a grade completes.
+- Checks stay on this device (localStorage); export a certificate when a grade completes.
 - Fail reasons belong in your notes: rounded back on stop, late lever on the down, shoulders back into the brake, upright release into a backward dump.
 
 ## Entry gate — fixed + setup
@@ -46,7 +46,7 @@ Fail G0.1–G0.4 and stay on fixed. Use G0.5 as warm-up every freewheel session.
 - FW1.5 Assisted acceleration into coast: wall push, partner shove, or short run-up, then free coast without panicking the first metres.
 - FW1.6 Practiced clear throw-exit once if a backward tip wins (safe exit).
 
-Pass when starts and early stops keep shoulders forward (shoulders back into the brake dumps hard), and a short free coast exists.
+Pass when starts and early stops keep shoulders forward (shoulders back into the brake often ends in a heavy dump) and a short free coast exists.
 
 ## FW2 — Brake–coast
 
@@ -65,9 +65,9 @@ Pass when brake, coast, and free-crank feel belong to the same ride, braking kee
 - FW3.1 Outing ≥500 m with honest coast segments.
 - FW3.2 First stand-jump or rolling-jump mount, after the static brake-on mount is already boring.
 - FW3.3 Gentle uphill and downhill; feathering early on the down.
-- FW3.4 Firm stop from moderate speed, stay mounted, remount cadence.
-- FW3.5 Crank flip while braking: scrub with the lever, flip cranks ~180° to a new foot position, keep the stop or slow-roll controlled.
-- FW3.6 Uphill restore: on a gentle climb, let forward drive fade into roll-back or stall, then re-engage forward pedaling and resume without a panic step-off.
+- FW3.4 Firm stop from moderate speed, stay mounted, then find remount cadence.
+- FW3.5 Crank flip while braking. Scrub with the lever, flip cranks ~180° to a new foot position, and keep the stop or slow-roll controlled.
+- FW3.6 Uphill restore. On a gentle climb, let forward drive fade into roll-back or stall, then re-engage forward pedaling and resume without a panic step-off.
 
 Pass when the brake hand is boring and uphill fade does not end the outing.
 

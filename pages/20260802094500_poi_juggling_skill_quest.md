@@ -128,7 +128,7 @@ Side planes = beside the body. Front wall = facing the camera wall. BN3 and F3 s
 
 ### Body throws
 
-Labelling front planebackcross (wallplane-first; not fully blind BTB) as behind-the-back (fully blind) when the catch was not blind fails honesty. behind-the-back (fully blind) must recover the named pattern. Halfshower behind-the-back (fully blind) without declaring low-pass, high-pass, or all-passes fails. Early plane turns expect crossing throws / backcross (wallplane-first; not fully blind BTB); requiring only behind-the-back (fully blind) there over-grades the soft path.
+Labelling front plane backcross (wallplane-first; not fully blind BTB) as behind-the-back (fully blind) when the catch was not blind fails honesty. behind-the-back (fully blind) must recover the named pattern. Halfshower behind-the-back (fully blind) without declaring low-pass, high-pass, or all-passes fails. Early plane turns expect crossing throws / backcross (wallplane-first; not fully blind BTB); requiring only behind-the-back (fully blind) there over-grades the soft path.
 
 ### Camera
 
@@ -186,8 +186,8 @@ Short-form descriptor allowed: objects, siteswap, modality, body-relative class,
 
 ### Body throws
 
-- One front planebackcross (wallplane-first; not fully blind BTB) from each side (from wallplane synchronous 3 (extra spin)).
-- Three connected front planebackcross (wallplane-first; not fully blind BTB) from wallplane synchronous 3 (extra spin).
+- One front plane backcross (wallplane-first; not fully blind BTB) from each side (from wallplane synchronous 3 (extra spin)).
+- Three connected front plane backcross (wallplane-first; not fully blind BTB) from wallplane synchronous 3 (extra spin).
 - Three connected overhead throws.
 - Three connected under-arm throws.
 
@@ -221,7 +221,7 @@ backward no-beat cascade 3 stays beside you. Front wall = wallplane synchronous 
 ### Body throws & pirouettes
 
 - Six connected overhead throws.
-- Six connected front planebackcross (wallplane-first; not fully blind BTB) from wallplane synchronous 3 (extra spin) or wallplane halfshower (extra spin).
+- Six connected front plane backcross (wallplane-first; not fully blind BTB) from wallplane synchronous 3 (extra spin) or wallplane halfshower (extra spin).
 - Three-up 360 from backward no-beat cascade 3; opposite phase; then six-throw backward no-beat cascade 3 qualification.
 
 ### Plane task
@@ -289,7 +289,7 @@ Modality stratum opens for forward cascade 3 endurance; rhythm stratum continues
 
 ### Plane tasks
 
-- Body-turn change between side-plane backward no-beat cascade 3 and front-wall wallplane synchronous 3 (extra spin) without stopping — both ways. Crossing throws and front planebackcross (wallplane-first; not fully blind BTB) are the expected aids; behind-the-back (fully blind) is allowed but harder. Land in the named pattern (backward no-beat cascade 3 or wallplane synchronous 3 (extra spin)), not an unnamed mix.
+- Body-turn change between side-plane backward no-beat cascade 3 and front-wall wallplane synchronous 3 (extra spin) without stopping — both ways. Crossing throws and front plane backcross (wallplane-first; not fully blind BTB) are the expected aids; behind-the-back (fully blind) is allowed but harder. Land in the named pattern (backward no-beat cascade 3 or wallplane synchronous 3 (extra spin)), not an unnamed mix.
 - Same backward no-beat cascade 3↔wallplane synchronous 3 (extra spin) destinations via the 2A hand-driven path. The two mechanisms must look different on video.
 - One coupled transition with declared approximate body and prop angles.
 

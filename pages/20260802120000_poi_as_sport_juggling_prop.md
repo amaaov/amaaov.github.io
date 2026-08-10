@@ -1,7 +1,7 @@
 # Poi as a Sport-Juggling Prop
 
 **Published:** 2 August 2026, Helsinki  
-**Modified:** 9 August 2026
+**Modified:** 10 August 2026
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802120000_poi_as_sport_juggling_prop.html](20260802120000_poi_as_sport_juggling_prop.html)  
@@ -28,7 +28,7 @@ With balls, rings, and clubs there is a broad distinction between the period in 
 
 The initial convention should be categorical: sport-poi requirements must contain repeated throws and dwell, while continuous spinning alone stays outside that core. Weaves, flowers, stalls, contact sequences, wraps, and choreography without repeated throws and dwell remain available, but they do not belong to the sport; they may appear inside transitions, yet they are excluded from the core definition because they leave the flight-and-dwell structure that toss juggling shares.
 
-Spin and weave already have a mathematical state treatment of their own. [Iivari Varpanen’s toss-and-spin state graphs](https://arxiv.org/abs/1405.2628) model continuous spinning structure; that work supports description, while the sport syllabus proposed here still has to choose a narrower throw-and-dwell surface for comparison.
+Spin and weave already have a mathematical state treatment of their own. [Harri Varpanen’s toss-and-spin state graphs](https://arxiv.org/abs/1405.2628) model continuous spinning structure; that work supports description, while the sport syllabus proposed here still has to choose a narrower throw-and-dwell surface for comparison.
 
 Once repeated throws and dwell are required, the word cascade becomes partially recoverable: a three-poi pattern may share siteswap 3 with a three-ball cascade, but the word still names only the rhythm. Under that number lives a family of kinetic tasks (pendulum 3, backward no-beat 3, wallplane synchronous 3, backward 3 with an additional spin, forward 3, synchronous forward 3), so the rhythmic identity is shared while the kinetic task is not.
 
@@ -145,7 +145,7 @@ This essay continues [On the Modality of Spinning](20260612120000_o_modalnosti_k
 6. [Juggling Edge — poi records (PropTextID 8)](https://www.jugglingedge.com/records1.php?Solo=1&PropTextID=8&PropNumber=3)
 7. [Chris Kelly — IJA Tricks of the Month (2016)](https://www.juggle.org/ija-tricks-of-the-month-june-2016-usa-by-chris-kelly/)
 8. [David Cain — History of Poi Swinging Within the Juggling Community](https://www.juggle.org/the-history-of-poi-swinging-within-the-juggling-community/)
-9. [Iivari Varpanen — Toss and Spin Juggling State Graphs (arXiv:1405.2628)](https://arxiv.org/abs/1405.2628)
+9. [Harri Varpanen — Toss and Spin Juggling State Graphs (arXiv:1405.2628)](https://arxiv.org/abs/1405.2628)
 10. [Ben Beever — Guide to Juggling Patterns (Generalised Siteswap)](https://www.jugglingedge.com/pdf/BenBeeversGuidetoJugglingPatterns.pdf)
 11. [Daniel Simu — Existing Juggling Notation Systems](https://danielsimu.nl/research/posts/existing_juggling_notations/)
 12. [Rauli Katajavuori — Graphic Juggling Notation](https://www.juggle.org/graphic-juggling-notation-by-rauli-katajavuori/)

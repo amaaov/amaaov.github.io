@@ -1,7 +1,7 @@
 # Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans
 
 **Published:** 8 June 2026, Helsinki  
-**Modified:** 4 July 2026
+**Modified:** 10 August 2026
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260608120000_manifesto_collaborative_concurrent_extreme.html](20260608120000_manifesto_collaborative_concurrent_extreme.html)
@@ -183,11 +183,11 @@ Do not apply computer terminology when interpreting statements about humans and 
 
 The title phrase *collaborative concurrent extreme* is an exact formula. The manifesto only makes sense when read through that formula as a whole. Without it, the text will be misread.
 
-Most principles in this document are indicators: they describe what a workshop looks like when it is actually *collaborative concurrent extreme*. If the indicators do not match, the workshop is something else, for example authoritative, waterfall, ticket-factory, or another mode, not this one.
+Most principles in this document are indicators: they describe what a workshop looks like when it is actually *collaborative concurrent extreme*. If the indicators do not match, the workshop is something else — for example authoritative, waterfall, ticket-factory, or another mode.
 
 The central fact of this manifesto is the shared workshop: work belongs to everyone on the team, on a shared bench. The most important expressions of this are the Workshop principle and Collective Juggling, especially *nobody holds everything*. Nobody holds everything, but everyone keeps the patterns and sequences alive through timing, attention, awareness, recovery, and handoff.
 
-Collective care applies to shared work on the bench, not to personal self-service. Self-service remains under individual self-responsibility and must not become team debt or team responsibility. There is no obligation to make private maintenance visible to others, only when the information may be valuable to others, such as security risk or danger.
+Collective care applies to shared work on the bench. Personal self-service remains under individual self-responsibility and must not become team debt or team responsibility. There is no obligation to make private maintenance visible to others, only when the information may be valuable to others, such as security risk or danger.
 
 Always measure distance between everything: between person and artefact, between role and work, between show and substance, between summary and situation. Mass culture often protects itself by creating distance between the person and the thing being shown; do not collapse that distance into false equivalence or false ownership.
 

@@ -1,7 +1,7 @@
 # Inferentia & Probabilisticum
 
 **Published:** 3 July 2026, Helsinki
-**Modified:** 9 August 2026
+**Modified:** 10 August 2026
 **Author:** amaaov
 **Language:** English · [Russian](20260703120000_inferentia_probabilisticum_ru.md)
 **HTML:** [EN](20260703120000_inferentia_probabilisticum_en.html) · [RU](20260703120000_inferentia_probabilisticum_ru.html)
@@ -15,7 +15,7 @@ If simulacra marked the age of autonomous symbols, Probabilisticum marks the age
 
 In Probabilisticum, the symbolic surround is set at a distance from any fixed structure. The figure is no longer a stable object waiting to be consumed, repeated, believed, rejected, mocked, or decoded. It is inferred: assembled on demand, ranked through prediction, adjusted through feedback, regenerated through context, delivered as if it had always belonged to the moment. Before, one idea arrived in one form, or did not arrive at all. Now a whole corridor of variations opens around a single meaning: different tone, different argument, different persuasion, same frame. Reality is increasingly mediated by autonomous inference. Inferentia is the mechanism; Probabilisticum is the name of the era.
 
-Media are becoming personal as surround: the landscape rebuilds around the person, not only the headline inside a shared feed. Privacy no longer fits the description, because the individual surround is assembled through observation, prediction, extraction, and continuous behavioral modeling. It approaches the person and still belongs to machinery outside the person. This is the dramatic shift: the screen was once a common hall; now the hall rebuilds while I stand in it.
+Media are becoming personal as surround: the landscape rebuilds around the person, including the headline inside a shared feed. Privacy no longer fits the description, because the individual surround is assembled through observation, prediction, extraction, and continuous behavioral modeling. It approaches the person and still belongs to machinery outside the person. This is the dramatic shift: the screen was once a common hall; now the hall rebuilds while I stand in it.
 
 The older media economy was built around attention at scale, while the inferential economy asks for continuous interaction, regeneration, spending, and demand. Its systems can produce more symbolic variants than existing human desire can absorb, creating a void from excess possibility after production has outrun the available forms of consumption. I keep opening essays about decline in music, journalism, retail, cinema, and software, and each one names a crisis while the same week brings more tools, channels, formats, automation, and possible audiences. This contradiction is structural: capacity to generate offerings expanded, while the human base did not expand its capacity to care, pay, choose, verify, or remain attentive.
 
