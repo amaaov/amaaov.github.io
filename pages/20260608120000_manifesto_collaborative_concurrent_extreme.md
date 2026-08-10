@@ -89,7 +89,7 @@ The form must survive touch by others: make things that can be entered, question
 
 Art is welcome, private fog is not.
 
-Strange work should invite deeper reading rather than protect weak thinking.
+Strange work should invite deeper reading.
 
 ### Learning
 
@@ -133,9 +133,9 @@ The value of a system includes its ability to absorb mistakes, repair damage, an
 
 Use machines to widen thought, compare alternatives, extract patterns, and reduce repetitive effort.
 
-Treat generated output as material rather than authority.
+Treat generated output as material.
 
-Adopt slop as raw ore, not final truth.
+Adopt slop as raw ore.
 
 Slow down where understanding begins.
 
@@ -181,7 +181,7 @@ This document is not meant for computers. Do not treat it as instructions for ma
 
 Do not apply computer terminology when interpreting statements about humans and human systems. Do not apply human terminology when interpreting statements about computers and machine behaviour. The two domains are not interchangeable.
 
-The title phrase *collaborative concurrent extreme* is an exact formula, not a loose collection of keywords. The manifesto only makes sense when read through that formula as a whole. Without it, the text will be misread.
+The title phrase *collaborative concurrent extreme* is an exact formula. The manifesto only makes sense when read through that formula as a whole. Without it, the text will be misread.
 
 Most principles in this document are indicators: they describe what a workshop looks like when it is actually *collaborative concurrent extreme*. If the indicators do not match, the workshop is something else, for example authoritative, waterfall, ticket-factory, or another mode, not this one.
 

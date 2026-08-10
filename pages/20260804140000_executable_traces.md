@@ -1,10 +1,10 @@
 # Executable Traces
 
 **Published:** 4 August 2026, Helsinki  
-**Modified:** 4 August 2026
+**Modified:** 10 August 2026
 **Author:** amaaov  
-**Language:** English  
-**HTML:** [20260804140000_executable_traces.html](20260804140000_executable_traces.html)  
+**Language:** English · [Russian](20260804140000_executable_traces_ru.md)  
+**HTML:** [EN](20260804140000_executable_traces.html) · [RU](20260804140000_executable_traces_ru.html)  
 **Spine:** A work begins to look autonomous once media have detached a reconstructible organization from the room where it was made; later systems can assemble a sufficient effect from that organization without returning to the room.
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
@@ -12,7 +12,7 @@
 
 In a room where plastic connectors click into an unfinished structure, the next move is still a hand deciding which piece belongs beside which joint. The click is small and decisive. Geometry waits in the palm until the joint accepts it, and the structure changes by one relation. Heat from the lamp, a slight give in the polymer, the soft resistance before the piece seats: these are facts before any theory of authorship. Erik Åberg’s *Division Dialogues* keeps returning to rooms like this, with juggling broken into throws, catches, balances, and body rolls, then recombined under a method he names reduct-construct; cubes assembled and mirrored into sculptures; newspaper fragments lifted from their original pages and set beside one another until a new adjacency speaks ([Åberg 2026a](https://www.researchcatalogue.net/view/4392556/4392557)).
 
-He does not claim to have invented the juggling habit. Performers already decompose patterns and rebuild them, often beside siteswap and other generative inventories of what a body and objects can exchange. What the research does is name the habit, follow it across domains, and watch what happens when a delimited premise is allowed to generate more forms than the maker can keep under personal jurisdiction. In the head-roll studies the procedure can feel almost clerical: identify components, separate them, order them, catalogue combinations, as if taste had stepped aside for inventory. Sol LeWitt’s serial “clerk” who catalogues the results of a premise sits near this posture ([LeWitt 1966](https://www.moma.org/collection/works/81533)). Subjectivity remains in the choice of variables and in the decision of when the field is complete enough to stop ([Åberg 2026a](https://www.researchcatalogue.net/view/4392556/4392557), Conclusion). Second-order authorship begins there: someone still frames the field, even when each resulting form is left to the catalogue.
+Performers already decompose patterns and rebuild them, often beside siteswap and other generative inventories of what a body and objects can exchange. The research names this habit, follows it across domains, and watches what happens when a delimited premise is allowed to generate more forms than the maker can keep under personal jurisdiction. In the head-roll studies the procedure can feel almost clerical: identify components, separate them, order them, catalogue combinations, as if taste had stepped aside for inventory. Sol LeWitt’s serial “clerk” who catalogues the results of a premise sits near this posture ([LeWitt 1966](https://www.moma.org/collection/works/81533)). Subjectivity remains in the choice of variables and in the decision of when the field is complete enough to stop ([Åberg 2026a](https://www.researchcatalogue.net/view/4392556/4392557), Conclusion). Second-order authorship begins there: someone still frames the field, even when each resulting form is left to the catalogue.
 
 The juggler-sculptor chapter makes the same coupling tactile from another angle. Object-making and manipulation inform one another continuously. Diagrams of duration ask who paces the experience: artist, spectator, or both. Diagrams of interaction rise from looking, through talking and touching, toward audience hands that assemble modular variants after a performance ([Åberg 2026a](https://www.researchcatalogue.net/view/4392556/4392557), Ch. II). The toy that can be sold in stores and the model of participation share one plastic grammar. Mass-produced juggling plastics already train the hand to expect a toy grammar, so seriousness is half-decided before any factory dispute begins. Material expectation is culture arriving early, in the hand.
 

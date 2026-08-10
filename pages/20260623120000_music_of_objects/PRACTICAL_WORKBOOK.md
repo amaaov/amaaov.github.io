@@ -87,8 +87,8 @@ Use `template_scene.txt`. Minimum fields:
 - [ ] **Duration**
 - [ ] **Intention** (one sentence, spoken)
 - [ ] **Action** (10 sec of clear motion beats 5 min of fog)
-- [ ] **Freedom bounded** (what you narrowed on purpose)
-- [ ] **Held back** (decoration, defaults, tricks you already know)
+- [ ] **Allowed on this pass** (what you narrowed on purpose)
+- [ ] **Leave out** (decoration, defaults, tricks you already know)
 - [ ] **Sync mode** (pick one; see Sync relation picker below)
 - [ ] **Expected difference**
 - [ ] **Completion** (how you know the pass is done)
@@ -133,7 +133,7 @@ When mixing notation + body + attention:
 
 ---
 
-## Evaluation (skip beautiful / ugly)
+## Evaluating a scene
 
 Half true is enough to keep the scene.
 

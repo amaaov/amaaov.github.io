@@ -5,7 +5,7 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Sun, 09 Aug 2026 11:50:41 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 10 Aug 2026 12:50:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
@@ -55,7 +55,7 @@
     </item>
     <item>
       <title>Antidigitism</title>
-      <description>Antidigitism resists compulsory datafication and defends access, recognition, and appeal beyond exclusive machine-readable proof.</description>
+      <description>They owe us a living. Our living does not owe them data.</description>
       <link>https://amaaov.github.io/pages/20260808122000_antidigitism_en.html</link>
       <guid>https://amaaov.github.io/pages/20260808122000_antidigitism_en.html</guid>
       <pubDate>Sat, 08 Aug 2026 09:20:00 +0000</pubDate>
@@ -66,7 +66,7 @@
     </item>
     <item>
       <title>Антидигитизм</title>
-      <description>Антидигитизм сопротивляется обязательной датафикации и защищает доступ, признание и обжалование без исключительной машиночитаемой записи.</description>
+      <description>Они должны нам жизнь. Наша жизнь не должна им данные.</description>
       <link>https://amaaov.github.io/pages/20260808122000_antidigitism.html</link>
       <guid>https://amaaov.github.io/pages/20260808122000_antidigitism.html</guid>
       <pubDate>Sat, 08 Aug 2026 09:20:00 +0000</pubDate>
@@ -131,10 +131,32 @@
       <category>post-simulacrum</category>
     </item>
     <item>
+      <title>Исполняемые следы</title>
+      <description>Исследовательское эссе о порождающем продолжении, медиа-инфраструктуре и воспроизводстве за пределами студии: от пластиковых стыков и reduct-construct к фабрикам, записям и достаточным эффектам без контакта.</description>
+      <link>https://amaaov.github.io/pages/20260804140000_executable_traces_ru.html</link>
+      <guid>https://amaaov.github.io/pages/20260804140000_executable_traces_ru.html</guid>
+      <pubDate>Tue, 04 Aug 2026 11:00:00 +0000</pubDate>
+      <category>media</category>
+      <category>juggling</category>
+      <category>research</category>
+      <category>post-simulacrum</category>
+    </item>
+    <item>
       <title>Free-Wheel Unicycle Skill Quest</title>
       <description>Interactive freewheel unicycle skill quest: FW1–FW4 grades, posture and brake–coast tasks, local practice log and certificate. Independent of IUF.</description>
       <link>https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html</link>
       <guid>https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest.html</guid>
+      <pubDate>Tue, 04 Aug 2026 10:00:00 +0000</pubDate>
+      <category>unicycling</category>
+      <category>freewheel</category>
+      <category>programme</category>
+      <category>quest</category>
+    </item>
+    <item>
+      <title>Квест навыков: уницикл со свободным ходом</title>
+      <description>Интерактивный квест навыков фривил-уницикла: грейды FW1–FW4, задачи позы и тормоз–коастинг, локальный журнал практики и сертификат. Независим от IUF.</description>
+      <link>https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest_ru.html</link>
+      <guid>https://amaaov.github.io/pages/20260804130000_free_wheel_unicycle_skill_quest_ru.html</guid>
       <pubDate>Tue, 04 Aug 2026 10:00:00 +0000</pubDate>
       <category>unicycling</category>
       <category>freewheel</category>
@@ -152,10 +174,31 @@
       <category>howto</category>
     </item>
     <item>
+      <title>Как научиться ездить на уницикле со свободным ходом</title>
+      <description>Путь обучения езде на уницикле со свободным ходом: предпосылки фикса, поза, тормоза, лестница упражнений и грейды квеста FW1–FW4. Andrei Makarov.</description>
+      <link>https://amaaov.github.io/pages/20260804120000_how_to_learn_free_wheel_unicycle_ru.html</link>
+      <guid>https://amaaov.github.io/pages/20260804120000_how_to_learn_free_wheel_unicycle_ru.html</guid>
+      <pubDate>Tue, 04 Aug 2026 09:00:00 +0000</pubDate>
+      <category>unicycling</category>
+      <category>freewheel</category>
+      <category>howto</category>
+    </item>
+    <item>
       <title>Poi Juggling Skill Quest — Cumulative BN Charter</title>
       <description>Full poi juggling attestation programme as a mobile-first MMORPG quest log: BN foundation, digit-locked siteswaps, plane authorship, grades Entry–4C.</description>
       <link>https://amaaov.github.io/pages/20260802094500_poi_juggling_skill_quest.html</link>
       <guid>https://amaaov.github.io/pages/20260802094500_poi_juggling_skill_quest.html</guid>
+      <pubDate>Sun, 02 Aug 2026 06:45:00 +0000</pubDate>
+      <category>juggling</category>
+      <category>poi</category>
+      <category>sport</category>
+      <category>programme</category>
+    </item>
+    <item>
+      <title>Квест навыков: жонглирование пои — накопительный BN-устав</title>
+      <description>Полная аттестационная программа жонглирования пои как мобильный журнал квеста MMORPG: фундамент BN, сайтсвопы с цифровой блокировкой, авторство плоскости, грейды Entry–4C.</description>
+      <link>https://amaaov.github.io/pages/20260802094500_poi_juggling_skill_quest_ru.html</link>
+      <guid>https://amaaov.github.io/pages/20260802094500_poi_juggling_skill_quest_ru.html</guid>
       <pubDate>Sun, 02 Aug 2026 06:45:00 +0000</pubDate>
       <category>juggling</category>
       <category>poi</category>
@@ -175,7 +218,7 @@
     </item>
     <item>
       <title>Пои как спортивный реквизит жонглирования</title>
-      <description>Избирательные конвенции для toss-пои в спортивном жонглировании: модальность, плоскость, вход и эталонные исполнения. Продолжение «О модальности кручения». Борис Фонтанов.</description>
+      <description>Избирательные конвенции для бросковых пои в спортивном жонглировании: модальность, плоскость, вход и эталонные исполнения. Продолжение «О модальности кручения». Борис Фонтанов.</description>
       <link>https://amaaov.github.io/pages/20260802120000_poi_as_sport_juggling_prop_ru.html</link>
       <guid>https://amaaov.github.io/pages/20260802120000_poi_as_sport_juggling_prop_ru.html</guid>
       <pubDate>Sun, 02 Aug 2026 09:00:00 +0000</pubDate>
@@ -183,6 +226,16 @@
       <category>juggling</category>
       <category>poi</category>
       <category>sport</category>
+    </item>
+    <item>
+      <title>Temporary Chat for Years</title>
+      <description>A fairy tale from reality: internet friends, temporary chats, and calls that happen after months and years.</description>
+      <link>https://amaaov.github.io/pages/20260718201500_vremennyi_chat_na_gody_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260718201500_vremennyi_chat_na_gody_en.html</guid>
+      <pubDate>Sat, 18 Jul 2026 17:15:00 +0000</pubDate>
+      <category>essay</category>
+      <category>fairy tale</category>
+      <category>friendship</category>
     </item>
     <item>
       <title>Временный чат на годы</title>
@@ -260,6 +313,18 @@
       <description>Scenes, synchronization, error, and the practice of finding a personal system between movement, sound, voice, and code.</description>
       <link>https://amaaov.github.io/pages/20260623120000_music_of_objects_en.html</link>
       <guid>https://amaaov.github.io/pages/20260623120000_music_of_objects_en.html</guid>
+      <pubDate>Mon, 23 Jun 2026 12:00:00 +0000</pubDate>
+      <category>essay</category>
+      <category>poi</category>
+      <category>juggling</category>
+      <category>improvisation</category>
+      <category>programming</category>
+    </item>
+    <item>
+      <title>Музыка объектов: сцены, синхронизация, ошибка и поиск своих отношений</title>
+      <description>Сцены, синхронизация, ошибка и поиск своих отношений между движением, звуком, голосом и кодом.</description>
+      <link>https://amaaov.github.io/pages/20260623120000_music_of_objects_ru.html</link>
+      <guid>https://amaaov.github.io/pages/20260623120000_music_of_objects_ru.html</guid>
       <pubDate>Mon, 23 Jun 2026 12:00:00 +0000</pubDate>
       <category>essay</category>
       <category>poi</category>

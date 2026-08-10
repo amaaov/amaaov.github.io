@@ -50,7 +50,7 @@ REPEAT
 HOLD BACK NEXT PASS
 
 
-EVALUATION (skip beautiful / ugly)
+EVALUATING A SCENE
   [ ] Intention was explicit
   [ ] Difference could be named
   [ ] Error appeared and could repeat

@@ -177,6 +177,32 @@ body.fw-quest {
   background: transparent;
   text-shadow: none;
 }
+.language-nav {
+  display: flex;
+  gap: 0.85rem;
+  margin: 0 0 1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.language-nav a {
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.18em;
+}
+.language-nav a:hover,
+.language-nav a:focus-visible {
+  color: var(--process-c-ink);
+  text-decoration-color: var(--process-c-ink);
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+.language-nav a[aria-current="page"] {
+  color: var(--process-y-ink);
+  text-decoration-color: var(--process-y-ink);
+}
 .quest-banner h1 {
   font-family: var(--display);
   font-weight: 700;

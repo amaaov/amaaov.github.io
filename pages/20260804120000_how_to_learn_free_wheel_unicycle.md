@@ -1,19 +1,20 @@
 # How to Learn Free-Wheel Unicycle
 
 **Published:** 4 August 2026, Helsinki  
-**Modified:** 9 August 2026
+**Modified:** 10 August 2026
 **Author:** Andrei Makarov  
 **Language:** English  
 **HTML:** [20260804120000_how_to_learn_free_wheel_unicycle.html](20260804120000_how_to_learn_free_wheel_unicycle.html)  
 **Quest:** [20260804130000_free_wheel_unicycle_skill_quest.html](20260804130000_free_wheel_unicycle_skill_quest.html)  
+**RU:** [20260804120000_how_to_learn_free_wheel_unicycle_ru.html](20260804120000_how_to_learn_free_wheel_unicycle_ru.html)  
 **Source spine:** [gist](https://gist.github.com/amaaov/8a0f25cb8f5d2e49f91b4611e39d04d0) · [megathread](https://unicyclist.com/t/freewheel-unicycling-megathread/267800) · practice notes on posture and brakes
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 
-The freewheel takes away the thing fixed-gear riders trust most: pedal resistance as a second brake and as a feel for where the wheel is. When you stop pedaling, the wheel keeps turning, and speed lives in the brake lever and in how your mass sits over the seat. Falls feel different: backward ones come when the wheel runs out from under you and you have no crank to push against; forward ones arrive without the scrub of a locked drive. People who already ride well on fixed still hit asphalt the first week if they treat freewheel as “same unicycle, loose hub.”
+On fixed gear, pedal resistance holds both speed and a feel for where the wheel is. On freewheel you stop pedaling and the wheel keeps turning, while speed stays in the brake lever and in how you sit over the seat. Backward tips come when the wheel runs out and there is no pedal to push against; forward tips come when a locked drive no longer scrubs the roll. A solid fixed rider still hits asphalt the first week if they expect “same unicycle, loose hub.”
 
-This learning path keeps a short spine: arrive with real fixed-gear control, bring gliding and coasting into the body before the free hub, keep the back quiet, lean forward with the shoulders through braking, and treat brake and coast as one skill. It is one rider’s practice notes drawn from community routes and lived falls, meant to sit beside local coaching when the skill is new.
+The path is short. Real fixed-gear control first. Gliding and coasting in the body before the free hub. A quiet back, shoulders forward through braking, brake and coast as one skill. These are one rider’s notes from community routes and lived falls; they sit beside local coaching while the skill is new.
 
 **Risk.** Freewheel riding can cause serious injury. Wear a helmet and pads, start on soft ground away from traffic, and stop when tired or hurt. Local coaching and supervised practice beat following text alone when the skill is new.
 
@@ -31,7 +32,7 @@ Wear a BMX helmet, knee and elbow pads, and gloves, and start on grass or soft d
 
 ## Posture: shoulders forward, butt for the back seat
 
-A large share of early freewheel falls come from trying to steer balance with the upper body the way a nervous fixed rider does when tired. The back rounds, the shoulders drop back, the head folds, and the hips arrive late; on freewheel the wheel does not argue through the cranks, so that late hip plus a shoulder-back lean is often the whole story of the crash.
+A large share of early freewheel falls come from trying to steer balance with the upper body the way a nervous fixed rider does when tired. The back rounds, the shoulders drop back, the head folds, and the hips arrive late; on freewheel the cranks no longer carry wheel resistance, so that late hip plus a shoulder-back lean is often the whole story of the crash.
 
 Keep the back straight and the torso quiet: chest open, eyes out. Forward lean means the shoulders commit forward. Saving a tip by throwing the shoulders farther into a fall only accelerates the tip; pulling the shoulders back while you brake is worse, a heavy uncontrollable dump with high injury risk.
 
@@ -59,9 +60,9 @@ Slight downhill helps the first starts; extreme downhill comes after feathering 
 
 ## Two doors into the same room
 
-Some riders enter with the brake always available (finnspin’s tutorial path), which lowers fear and often means more lever time at first; that overuse is allowed, and the hand relaxes as balance grows into longer coast and pedal stretches. Others enter without relying on the brake early (Austin Kinsella’s mounting/pedaling then coasting pair), which builds float sooner and bruises more. Either door works if the other skill is scheduled on purpose, because coasting and braking are one curriculum with two chapters.
+Some riders enter with the brake always available (finnspin’s tutorial path), which lowers fear and often means more lever time at first; that overuse is allowed, and the hand relaxes as balance grows into longer coast and pedal stretches. Others enter without relying on the brake early (AJ Kinsella-Johnson’s mounting/pedaling then coasting pair), which builds float sooner and bruises more. Either door works if the other skill is scheduled on purpose, because coasting and braking are one curriculum with two chapters.
 
-Carl Hunt’s short and longer freewheel clips, UniMyra’s riding series, and the Unicyclist freewheel megathread remain the living scrapbook. Watch for posture as much as for tricks: shoulders forward, butt handling the back seat, lever hand calm.
+Carl Hunt’s short and longer freewheel tutorials (shared on the Unicyclist megathread), UniMyra’s riding series, and that megathread remain the living scrapbook. Simon Jan du Voyage’s street rides and indoor freewheel training are dense inspiration once coast and brake share a line; Rebekka Wiedener’s Freewheel Revolution and Tomas Haluza’s FlickFlock footage sit with the hub half of the same album. Watch for posture as much as for tricks: shoulders forward, butt handling the back seat, lever hand calm.
 
 ## Exercise ladder
 
@@ -81,7 +82,7 @@ Use a slight downhill if needed, set the shoulders forward before you touch the 
 
 ### 4. Brake and coast in motion (50–100 m)
 
-Use the same shoulders-forward start, pulse the brake every half-second for a stretch with that lean kept (early sessions may keep the lever busy, and that is fine), then lengthen coasts between pulses as the hand relaxes, pedaling only enough to keep the line, because racing the cadence makes stops and falls uglier. Practice full stops without dismounting, find balance again, and continue, keeping the shoulders out of the steering and still forward into each scrub. While rolling forward, pedal the cranks backward under free feet so the clutch stays quiet, and hold different crank positions (horizontal, near-vertical, mid-angle) for a few metres each.
+Use the same shoulders-forward start, pulse the brake every half-second for a stretch with that lean kept (early sessions may keep the lever busy, and that is fine), then lengthen coasts between pulses as the hand relaxes, pedaling only enough to keep the line, Extra cadence makes stops sharper and falls harder to control. Practice full stops without dismounting, find balance again, and continue, keeping the shoulders out of the steering and still forward into each scrub. While rolling forward, pedal the cranks backward under free feet without engaging the drive, and hold different crank positions (horizontal, near-vertical, mid-angle) for a few metres each.
 
 ### 5. Continuous riding, mounts, terrain (100 m+)
 
@@ -89,7 +90,7 @@ Ride a loop so failures stay on the same path. Keep using the static brake-on mo
 
 ## Freewheel quest / grades
 
-There is no official freewheel skill ladder. IUF freestyle Level 8 asks for a *glide* and Level 10 for a *coast* on fixed gear; those cards cover fixed-gear freestyle only. The bands below are a working quest for this path: cumulative, mixed brake and coast, with posture as a pass condition. Still sitting with the brake locked is a warm-up drill; grades begin when the freewheel is in motion. Full interactive checklist: [Free-Wheel Unicycle Skill Quest](20260804130000_free_wheel_unicycle_skill_quest.html).
+There is no official freewheel skill ladder. IUF freestyle Level 8 asks for a *glide* and Level 10 for a *coast* on fixed gear; those cards cover fixed-gear freestyle only. The grades below are a working quest for this path. They are cumulative, mix brake and coast, and treat posture as a pass condition. Still sitting with the brake locked is a warm-up drill; grades begin when the freewheel is in motion. Full interactive checklist: [Free-Wheel Unicycle Skill Quest](20260804130000_free_wheel_unicycle_skill_quest.html).
 
 **Entry gate.** On fixed gear, show solid riding until looking around is boring, brake feathering while pedaling, an honest gliding attempt, and an honest brake-assisted coast. On freewheel, complete the supported static mount described above, settle without looking down, and dismount cleanly; return to fixed gear if the fixed gate is not yet reliable.
 
@@ -117,10 +118,14 @@ Then the megathread’s other half begins: hub choices, crank length (often a si
 - [Freewheel Unicycling Megathread](https://unicyclist.com/t/freewheel-unicycling-megathread/267800) ([archive](https://web.archive.org/web/20230922050148/https://unicyclist.com/t/freewheel-unicycling-megathread/267800))
 - [Facebook Freewheel unicycle chat](https://www.facebook.com/groups/freewheelunicyclechat/)
 - [finnspin — freewheel tutorial](https://www.youtube.com/watch?v=X8iuIDhxTvI)
-- [Carl Hunt — short](https://www.youtube.com/watch?v=BU6vReQYMLM) · [longer](https://www.youtube.com/watch?v=isCMbwx2vrE)
-- [Austin Kinsella — mounting/pedaling](https://www.youtube.com/watch?v=xFU8EKBkA3g) · [coasting](https://www.youtube.com/watch?v=hQwYmls-Esg)
+- [Carl Hunt — short tutorial (megathread)](https://unicyclist.com/t/freewheel-unicycling-megathread/267800/320) · [longer (megathread)](https://unicyclist.com/t/freewheel-unicycling-megathread/267800/322)
+- [AJ Kinsella-Johnson — mounting/pedaling](https://www.youtube.com/watch?v=xFU8EKBkA3g) · [coasting](https://www.youtube.com/watch?v=hQwYmls-Esg)
 - [Corbin Dunn — brake-assisted coasting](https://www.youtube.com/watch?v=_9uPOXrBbHY)
 - [David Weichenberger — A Coasting Dream](https://www.youtube.com/watch?v=dDuYggnJRYQ)
 - [UniMyra — freewheel riding series](https://www.youtube.com/watch?v=HGXwDENeep8&list=PLvqXqWkBQYQkEkYm7KcXbVo069_BamuLD&index=39)
+- [Simon Jan du Voyage](https://www.youtube.com/@simonjanduvoyage1693) — [indoor training](https://www.youtube.com/watch?v=XniPvrzZ1NM) · [street training](https://www.youtube.com/watch?v=r3BXPc9vexw) · [1200 m city (uncut)](https://www.youtube.com/watch?v=Ao5FQ-1KCn4)
+- [Rebekka Wiedener — Freewheel Revolution](https://www.youtube.com/watch?v=YT_269iUdU4) · [Freewheel Friday with Maxence, Flo & Becky](https://www.youtube.com/watch?v=bPv9xOCTuuk)
+- [Tomas Haluza — FlickFlock (TWO IN ONE)](https://www.youtube.com/watch?v=RCuGuX97Op4)
+- [Ola Kåre Risa — Freewheel Unicycle Coasting](https://www.youtube.com/watch?v=UnlYuwqre4s)
 
 Research cache (offline): `tmp/free_wheel_unicycle/` · licences: `tmp/free_wheel_unicycle/licenses.txt`
