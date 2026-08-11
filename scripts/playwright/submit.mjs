@@ -4,12 +4,13 @@
  *
  * Usage:
  *   node submit.mjs --provider brave --url https://example.com/page
+ *   node submit.mjs --provider ghostarchive --url https://example.com/page
  *   node submit.mjs --provider brave --urls-file urls.txt --headed
  *   node submit.mjs --provider brave --urls-file urls.txt --dry-run
  *   node submit.mjs --list-providers
  *
- * Called from scripts/submit_urls.rb when brave.mode=playwright (or other
- * providers under playwright.providers later).
+ * Called from scripts/submit_urls.rb when brave.mode=playwright, ghostarchive.enabled,
+ * or other providers under playwright.providers.
  */
 
 import { createRequire } from "node:module";
@@ -35,6 +36,18 @@ function loadPlaywright() {
 }
 
 /** @typedef {{ name: string, submitPage: string, submit: (page: import('playwright').Page, url: string, opts: object) => Promise<{ok: boolean, detail?: string}> }} Provider */
+
+const GHOSTARCHIVE_ARCHIVE_RE = /\/archive\/([A-Za-z0-9]+)/;
+
+function ghostarchiveNormalizeHref(href) {
+  if (!href || !href.includes("/archive/") || href.includes("/replay/")) return null;
+  if (href.startsWith("/")) return `https://ghostarchive.org${href}`;
+  if (href.startsWith("http://ghostarchive.org")) {
+    return href.replace("http://", "https://");
+  }
+  if (href.startsWith("https://ghostarchive.org")) return href;
+  return null;
+}
 
 /** @type {Record<string, Provider>} */
 const PROVIDERS = {
@@ -104,6 +117,78 @@ const PROVIDERS = {
 
       // No clear failure banner → treat as submitted; UI may not change much.
       return { ok: true, detail: "submitted_no_clear_ack" };
+    },
+  },
+  ghostarchive: {
+    name: "Ghost Archive",
+    submitPage: "https://ghostarchive.org/",
+    async submit(page, url, opts) {
+      await page.goto(opts.submitPage || this.submitPage, {
+        waitUntil: "domcontentloaded",
+        timeout: opts.timeoutMs,
+      });
+
+      const challengeText = (
+        (await page.locator("body").innerText().catch(() => "")) || ""
+      ).toLowerCase();
+      if (
+        challengeText.includes("verify you are human") ||
+        challengeText.includes("just a moment") ||
+        challengeText.includes("cf-challenge")
+      ) {
+        return { ok: false, detail: "captcha_or_challenge" };
+      }
+
+      const input = page.locator('input[name="archive"]').first();
+      await input.waitFor({ state: "visible", timeout: opts.timeoutMs });
+      await input.fill("");
+      await input.fill(url);
+
+      const button = page
+        .locator(
+          [
+            'input[type="submit"][value="Submit for archival"]',
+            'input[type="submit"][value*="archival" i]',
+            'button:has-text("Submit for archival")',
+            'input[type="submit"]',
+            'button[type="submit"]',
+          ].join(", ")
+        )
+        .first();
+      await button.click({ timeout: opts.timeoutMs });
+
+      const deadline = Date.now() + opts.timeoutMs;
+      while (Date.now() < deadline) {
+        const current = page.url().split("?")[0];
+        if (GHOSTARCHIVE_ARCHIVE_RE.test(current)) {
+          return { ok: true, detail: `archived:${current}` };
+        }
+
+        const bodyText = (
+          (await page.locator("body").innerText().catch(() => "")) || ""
+        ).toLowerCase();
+        if (
+          bodyText.includes("verify you are human") ||
+          bodyText.includes("captcha") ||
+          bodyText.includes("unusual traffic")
+        ) {
+          return { ok: false, detail: "captcha_or_challenge" };
+        }
+
+        const hrefs = await page.$$eval("a[href]", (anchors) =>
+          anchors.map((a) => a.getAttribute("href") || "")
+        );
+        for (const href of hrefs) {
+          const archiveUrl = ghostarchiveNormalizeHref(href);
+          if (archiveUrl) {
+            return { ok: true, detail: `archived:${archiveUrl}` };
+          }
+        }
+
+        await sleep(1000);
+      }
+
+      return { ok: false, detail: "no_archive_url" };
     },
   },
 };

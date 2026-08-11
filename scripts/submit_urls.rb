@@ -48,6 +48,13 @@ ARCHIVE_TODAY_USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " \
   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 ARCHIVE_TODAY_DEFAULT_RATE_LIMIT_SECONDS = 15
+GHOSTARCHIVE_BASE = "https://ghostarchive.org"
+GHOSTARCHIVE_SEARCH = "#{GHOSTARCHIVE_BASE}/search"
+GHOSTARCHIVE_DEFAULT_RATE_LIMIT_SECONDS = 8
+GHOSTARCHIVE_USER_AGENT =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " \
+  "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+GHOSTARCHIVE_ARCHIVE_HREF = %r{href=["'](/archive/[A-Za-z0-9]+|https?://ghostarchive\.org/archive/[A-Za-z0-9]+)["']}i
 
 def usage
   <<~HELP
@@ -58,8 +65,8 @@ def usage
       #{File.basename($PROGRAM_NAME)} show-state
 
     Submit changed or sitemap URLs to IndexNow (relay + engines), WebSub hubs,
-    Internet Archive, archive.today, Brave Search (manual/open/playwright),
-    and optionally Bing Webmaster API.
+    Internet Archive, archive.today, Ghost Archive, Brave Search
+    (manual/open/playwright), and optionally Bing Webmaster API.
 
     Local state (default on) lives under tmp/seo_submit/:
       ledger.json  per-URL × channel last ok/fail
@@ -77,11 +84,12 @@ def usage
       --force           Ignore skip_within_days freshness window
       --no-state        Do not read/write submit ledger
       --retry-failed    Only URLs in ledger retry queue (error/rate_limited)
-      --indexnow-only   Skip archive.org, archive.today, Brave, and Bing
-      --archive-only    Skip IndexNow, WebSub, archive.today, Brave, and Bing
-      --archive-today-only  Skip IndexNow, WebSub, archive.org, Brave, and Bing
-      --brave-only      Skip IndexNow, WebSub, archive.org, archive.today, and Bing
-      --bing-only       Skip IndexNow, WebSub, archive.org, archive.today, and Brave
+      --indexnow-only   Skip archives, Brave, and Bing
+      --archive-only    Skip IndexNow, WebSub, archive.today, Ghost Archive, Brave, Bing
+      --archive-today-only  Skip IndexNow, WebSub, archive.org, Ghost Archive, Brave, Bing
+      --ghostarchive-only   Skip IndexNow, WebSub, archive.org, archive.today, Brave, Bing
+      --brave-only      Skip IndexNow, WebSub, archives, and Bing
+      --bing-only       Skip IndexNow, WebSub, archives, and Brave
       --playwright-only Skip IndexNow/WebSub/archives/Bing; run Playwright providers only
 
     Setup:
@@ -91,8 +99,9 @@ def usage
          (or set IA_S3_ACCESS_KEY and IA_S3_SECRET_KEY; keys from https://archive.org/account/s3.php)
       4. Optional Bing OAuth: register app in Bing Webmaster Tools, fill client_id/secret, run `auth bing`
       5. Optional archive.today: set archive_today.enabled (rate-limited; may hit CAPTCHA)
-      6. Optional Brave: set brave.enabled; mode=manual|open|request|playwright
-      7. Playwright (no-API UIs): cd scripts/playwright && npm install && npx playwright install chromium
+      6. Optional Ghost Archive: set ghostarchive.enabled (Playwright; Cloudflare may need --headed)
+      7. Optional Brave: set brave.enabled; mode=manual|open|request|playwright
+      8. Playwright (no-API UIs): cd scripts/playwright && npm install && npx playwright install chromium
   HELP
 end
 
@@ -263,6 +272,80 @@ def note_skips(channel, skipped)
   return if skipped.nil? || skipped.empty?
 
   puts "#{channel}: skipped #{skipped.size} fresh URL(s) (within skip_within_days; use --force to override)"
+end
+
+def ghostarchive_normalize_href(href)
+  return nil if href.nil? || href.empty?
+  return nil unless href.include?("/archive/")
+  return nil if href.include?("/replay/")
+
+  if href.start_with?("/")
+    "#{GHOSTARCHIVE_BASE}#{href}"
+  elsif href.start_with?("http://ghostarchive.org")
+    href.sub("http://", "https://")
+  elsif href.start_with?("https://ghostarchive.org")
+    href
+  end
+end
+
+def ghostarchive_find_existing(url)
+  uri = URI(GHOSTARCHIVE_SEARCH)
+  uri.query = URI.encode_www_form("term" => url)
+  response = get_request(uri, { "User-Agent" => GHOSTARCHIVE_USER_AGENT })
+  return nil unless response.is_a?(Net::HTTPSuccess)
+
+  response.body.to_enum(:scan, GHOSTARCHIVE_ARCHIVE_HREF).map { Regexp.last_match(1) }.each do |href|
+    archive_url = ghostarchive_normalize_href(href)
+    return archive_url if archive_url
+  end
+  nil
+rescue StandardError
+  nil
+end
+
+def submit_ghostarchive(config, urls, dry_run:, ledger: NullLedger.new)
+  archive = config.fetch("ghostarchive", {})
+  return if archive.fetch("enabled", false) != true
+
+  rate_limit = archive.fetch("rate_limit_seconds", GHOSTARCHIVE_DEFAULT_RATE_LIMIT_SECONDS).to_f
+  skip_existing = archive.fetch("skip_if_archived", true)
+  max_urls = archive.fetch("max_urls", 0).to_i
+  urls = urls.first(max_urls) if max_urls.positive?
+
+  filtered = ledger.filter(urls, channel: "ghostarchive")
+  note_skips("Ghost Archive", filtered[:skipped])
+  filtered[:skipped].each { |url| ledger.record(url, channel: "ghostarchive", status: "skipped", detail: "fresh") }
+  urls = filtered[:due]
+  return if urls.empty?
+
+  due = []
+  urls.each do |url|
+    if skip_existing && !dry_run
+      existing = ghostarchive_find_existing(url)
+      if existing
+        puts "Ghost Archive: #{url}"
+        puts "  already archived: #{existing}"
+        ledger.record(url, channel: "ghostarchive", status: "ok", detail: "already_archived:#{existing}")
+        next
+      end
+    end
+    due << url
+  end
+  return if due.empty?
+
+  ok = submit_via_playwright(
+    "ghostarchive",
+    due,
+    dry_run: dry_run,
+    submit_page: archive.fetch("submit_page", "#{GHOSTARCHIVE_BASE}/"),
+    delay: rate_limit,
+    headed: archive.fetch("headed", false),
+    slow_mo: archive.fetch("slow_mo_ms", 0).to_i,
+    timeout_ms: archive.fetch("timeout_ms", 60_000).to_i,
+    results_path: archive["results_path"]
+  )
+  status = ok || dry_run ? "ok" : "error"
+  ledger.record_many(due, channel: "ghostarchive", status: status, detail: "playwright")
 end
 
 def submit_archive_today(config, urls, dry_run:, ledger: NullLedger.new)
@@ -922,6 +1005,7 @@ def parse_submit_options(args)
     indexnow_only: false,
     archive_only: false,
     archive_today_only: false,
+    ghostarchive_only: false,
     brave_only: false,
     bing_only: false,
     playwright_only: false,
@@ -943,6 +1027,7 @@ def parse_submit_options(args)
     when "--indexnow-only" then options[:indexnow_only] = true; args.shift
     when "--archive-only" then options[:archive_only] = true; args.shift
     when "--archive-today-only" then options[:archive_today_only] = true; args.shift
+    when "--ghostarchive-only" then options[:ghostarchive_only] = true; args.shift
     when "--brave-only" then options[:brave_only] = true; args.shift
     when "--bing-only" then options[:bing_only] = true; args.shift
     when "--playwright-only" then options[:playwright_only] = true; args.shift
@@ -1004,21 +1089,24 @@ def main(argv)
       submit_brave(config, urls, dry_run: options[:dry_run], ledger: ledger)
       submit_playwright_providers(config, urls, dry_run: options[:dry_run], ledger: ledger)
     else
-      unless options[:bing_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
+      unless options[:bing_only] || options[:archive_only] || options[:archive_today_only] || options[:ghostarchive_only] || options[:brave_only]
         submit_indexnow(config, urls, dry_run: options[:dry_run], ledger: ledger)
         submit_websub(config, dry_run: options[:dry_run], ledger: ledger)
       end
-      unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_today_only]
+      unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_today_only] || options[:ghostarchive_only]
         submit_archive_org(config, urls, dry_run: options[:dry_run], ledger: ledger)
       end
-      unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_only]
+      unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_only] || options[:ghostarchive_only]
         submit_archive_today(config, urls, dry_run: options[:dry_run], ledger: ledger)
       end
-      unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:bing_only]
+      unless options[:indexnow_only] || options[:bing_only] || options[:brave_only] || options[:archive_only] || options[:archive_today_only]
+        submit_ghostarchive(config, urls, dry_run: options[:dry_run], ledger: ledger)
+      end
+      unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:ghostarchive_only] || options[:bing_only]
         submit_brave(config, urls, dry_run: options[:dry_run], ledger: ledger)
         submit_playwright_providers(config, urls, dry_run: options[:dry_run], ledger: ledger)
       end
-      unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:brave_only]
+      unless options[:indexnow_only] || options[:archive_only] || options[:archive_today_only] || options[:ghostarchive_only] || options[:brave_only]
         submit_bing(config, urls, dry_run: options[:dry_run], ledger: ledger)
       end
     end

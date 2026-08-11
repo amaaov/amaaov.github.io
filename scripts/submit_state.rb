@@ -20,6 +20,7 @@ class SubmitLedger
     "indexnow" => 7,
     "archive_org" => 30,
     "archive_today" => 30,
+    "ghostarchive" => 30,
     "bing" => 7,
     "brave" => 14,
     "websub" => 1,

@@ -10,6 +10,7 @@ submit_state:
     indexnow: 7
     archive_org: 30
     archive_today: 30
+    ghostarchive: 30
     bing: 7
     brave: 14
     websub: 1
@@ -68,6 +69,19 @@ archive_today:
     - archive.fo
     - archive.today
     - archive.is
+
+# Ghost Archive has no public API; submit form is Cloudflare-protected.
+# Uses scripts/playwright/submit.mjs provider=ghostarchive.
+ghostarchive:
+  enabled: false
+  rate_limit_seconds: 8
+  skip_if_archived: true
+  max_urls: 0
+  headed: false
+  timeout_ms: 60000
+  results_path: tmp/seo_audit/ghostarchive_playwright_results.json
+  # Setup: cd scripts/playwright && npm install && npx playwright install chromium
+  # If Cloudflare challenges, re-run with headed: true (or --ghostarchive-only after enabling).
 
 brave:
   enabled: false
