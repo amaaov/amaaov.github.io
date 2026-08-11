@@ -1,7 +1,7 @@
 # Second Order Freedom
 
 **Published:** 8 August 2026, Helsinki  
-**Modified:** 10 August 2026  
+**Modified:** 11 August 2026  
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260808124000_second_order_freedom_en.html](20260808124000_second_order_freedom_en.html)  
@@ -35,7 +35,7 @@ Publication of amateur work undergoes the same transition because a camera and a
 
 A network effect intensifies the process: a channel becomes more valuable as more people join it, so every new participant makes their personal choice more reasonable while raising the cost of another route for the next person. An alternative may still exist technically, but an empty chat, a rarely staffed desk, or a forum without replies loses its social function. Once relationships have moved, the organization cuts the fallback budget, workers lose the skill of maintaining it, data accumulates in the new format, and path dependence raises the cost of reversal ([Arthur 1989](https://doi.org/10.2307/2234208)).
 
-Many locally defensible choices can therefore create an outcome nobody ordered separately: a participant chose the convenient channel, a manager reduced duplication, and a developer improved the dominant scenario, while their combined action produced compulsory infrastructure. Second-order freedom attends to this distance between the intention of one decision and the conditions formed after aggregation.
+Many locally defensible choices can therefore create an outcome nobody ordered separately: a participant chose the convenient channel, a manager reduced duplication, and a developer improved the dominant scenario, while their combined action produced compulsory infrastructure. Second-order freedom attends to this distance between the intention of one decision and the conditions formed after aggregation. The same aggregation can force payment without demand: once one technical arrangement monopolises the channel, its upkeep is socialised through tariffs and taxes paid by people who sought only a narrower function, as when a telephone bill funds internet infrastructure that the subscriber never asked to purchase.
 
 ## Good intention and form
 
@@ -61,11 +61,11 @@ The second order reveals the distribution of benefits and losses: a person earni
 
 The repetition test faces an obvious objection: a person who publishes a video, opens a shop, or chooses a convenient app cannot answer for every possible consequence of mass repetition. Requiring every ordinary action to be universalized in advance would immobilize everyday life and burden people with little influence most heavily, while institutions continued setting defaults through budgets, protocols, and access conditions.
 
-Second-order responsibility follows the capacity to alter the shared environment: an individual participant can notice pressure and decline to use their own path as a measure of somebody else’s seriousness; an organizer controls admission rules and must make room for different forms of participation; a platform determines interfaces, portability, and visibility; a state or large organization holds the resources required for equivalent access. The greater the power over a default, the stronger the duty to investigate the system’s edge and finance freedom of refusal.
+Second-order responsibility follows the capacity to alter the shared environment: an individual participant can notice pressure and decline to use their own path as a measure of somebody else’s seriousness; an organizer controls admission rules and must make room for different forms of participation; a platform determines interfaces, portability, and visibility; a state or large organization holds the resources required for equivalent access. The greater the power over a default, the stronger the duty to investigate the system’s edge and finance freedom of refusal. A state that treats telecommunications as critical infrastructure can finance access as a civil capability and leave unused package layers optional, while a commercial default that bundles several functions into one priced object transfers the cost of one mono-arrangement onto people who asked only for a call.
 
 The repetition test makes consequences visible and helps locate the appropriate level of intervention while preserving room for personal experiment, eccentric projects, and risky new forms. One person may move their whole life into a new channel, while collective responsibility arises when that preference becomes a rule for others. This threshold connects ethics to the distribution of power and avoids imposing the same burden of caution on a user and an institution.
 
-The object worth preserving is a meaningful capability, especially access to an essential service, community, work, and review of a decision. A particular paper form, machine, or obsolete procedure may fall out of use when its function is carried by a genuinely accessible route with different ownership, human review, and acceptable cost. Redundancy consists of several independent ways to exercise a right and allows infrastructure to change without turning technical modernization into a socially closed door.
+The object worth preserving is a meaningful capability, especially access to an essential service, community, work, and review of a decision. A particular paper form, machine, or obsolete procedure may fall out of use when its function is carried by a genuinely accessible route with different ownership, human review, and acceptable cost, including a digital mode that completes the task without continuous behavioural logging. Redundancy consists of several independent ways to exercise a right and allows infrastructure to change without turning technical modernization into a socially closed door.
 
 ## Freedom with reserve
 
@@ -81,7 +81,7 @@ Freedom’s reserve also lives in skills and people a system does not use every 
 
 Regular testing keeps a fallback route alive: an occasional request has to reach completion, a local copy has to be restored, a telephone number checked, and an exception reviewed with the person who genuinely holds authority over the decision.
 
-The four articles in this series meet in an environment where a hobby retains permission to remain economically pointless, a digital intermediary remains a tool while exit survives, and a person continues across a pause with the right to end the line; the environment itself holds difference and releases participation from the demand for one persuasive biography.
+The four articles in this series meet in an environment where a hobby retains permission to remain economically pointless, a digital intermediary remains a tool while exit survives with comparable comfort, and a person continues across a pause with the right to end the line; the environment itself holds difference and releases participation from the demand for one persuasive biography.
 
 First-order freedom opens a door before me, while Second Order Freedom leaves another door for the person who arrives later.
 
