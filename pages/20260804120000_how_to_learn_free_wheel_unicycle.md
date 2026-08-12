@@ -107,7 +107,7 @@ The exercise ladder feeds the quest in order, from sitting as the setup drill th
 
 ## What “learned” feels like
 
-You can start on flat without a wall, ride a few hundred meters while alternating coast and pedal, stop fully without stepping off, and remount without panic. The torso stays long on bumps and turns, the hand reaches for the brake less often, and falls still happen, though they are shorter and more chosen. On the quest sheet that is FW2 held and FW3 in progress.
+You can start on flat without a wall, ride a few hundred meters while alternating coast and pedaling, stop fully without stepping off, and remount without panic. The torso stays long on bumps and turns, the hand reaches for the brake less often, and falls still happen, though they are shorter and more chosen. On the quest sheet that is FW2 held and FW3 in progress.
 
 ## References
 
