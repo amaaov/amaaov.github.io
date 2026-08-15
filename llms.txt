@@ -10,7 +10,7 @@ Related technical blog: [amkisko.github.io](https://amkisko.github.io/llms.txt)
 
 Thematic pairs with essays on this site — probabilistic media, inner formation, collective practice, music tooling.
 
-- [LLMs as Probabilistic Medium](https://amkisko.github.io/posts/20251111160000_llms_probabilistic_medium.html) ↔ [Inferentia & Probabilisticum](https://amaaov.github.io/pages/20260703120000_inferentia_probabilisticum_en.html), [pray](https://amaaov.github.io/pages/20260626120000_prayfile_language_before_inference_en.html), [Post-Simulacrum Surrogate](https://amaaov.github.io/pages/20260625120000_post_simulacrum_surrogate_en.html)
+- [LLMs as Probabilistic Medium](https://amkisko.github.io/posts/20251111160000_llms_probabilistic_medium.html) ↔ [Inferentia & Probabilisticum](https://amaaov.github.io/pages/20260703120000_inferentia_probabilisticum_en.html), [pray](https://amaaov.github.io/pages/20260626120000_prayfile_language_before_inference_en.html), [Post-Simulacrum Surrogate](https://amaaov.github.io/pages/20260625120000_post_simulacrum_surrogate_en.html), [Vibe Justice](https://amaaov.github.io/pages/20260815124900_vibe_justice_en.html)
 - [The Distance Grows](https://amkisko.github.io/posts/20260313142000_the_distance_grows.html) ↔ Inferentia & Probabilisticum
 - [When Reading Costs More Than Writing](https://amkisko.github.io/posts/20260313103000_when_reading_costs_more_than_writing.html) ↔ Inferentia & Probabilisticum
 - [Inner Formation in the Age of Bots](https://amkisko.github.io/posts/20260306130050_inner_formation_in_the_age_of_bots.html) ↔ pray, Post-Simulacrum, [Past Year Review](https://amaaov.github.io/pages/20250712000000_past_year_review.html)

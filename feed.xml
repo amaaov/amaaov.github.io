@@ -5,10 +5,30 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Mon, 10 Aug 2026 12:50:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 15 Aug 2026 12:20:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Вайб-правосудие</title>
+      <description>Формально человеческое юридическое решение как результат вывода после инференции внутри подготовленного поля, где подпись ставит прокси машины в реальности.</description>
+      <link>https://amaaov.github.io/pages/20260815124900_vibe_justice.html</link>
+      <guid>https://amaaov.github.io/pages/20260815124900_vibe_justice.html</guid>
+      <pubDate>Sat, 15 Aug 2026 09:49:00 +0000</pubDate>
+      <category>essay</category>
+      <category>digitism</category>
+      <category>law</category>
+    </item>
+    <item>
+      <title>Vibe Justice</title>
+      <description>A formally human legal decision as the result of inference after Inferentia, inside a prepared field, where a person signs as the machine’s proxy in reality.</description>
+      <link>https://amaaov.github.io/pages/20260815124900_vibe_justice_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260815124900_vibe_justice_en.html</guid>
+      <pubDate>Sat, 15 Aug 2026 09:49:00 +0000</pubDate>
+      <category>essay</category>
+      <category>digitism</category>
+      <category>law</category>
+    </item>
     <item>
       <title>Second Order Freedom</title>
       <description>An ethical test of personal choice through the norms, infrastructure, and refusal costs produced by its repetition.</description>
