@@ -1,0 +1,77 @@
+# Duty Before the Answer
+
+**Published:** 16 August 2026, Helsinki  
+**Modified:** 17 August 2026, 02:20  
+**Author:** amaaov  
+**Language:** English  
+**HTML:** [20260816205000_duty_before_answer_en.html](20260816205000_duty_before_answer_en.html)
+
+---
+
+At the root of the repository lies a composed file that an agent following the `AGENTS.md` convention must read before it starts writing: working rules, agreements about tests, a ban on handing secrets to a foreign model, a line that tells the agent it is the author of any generated text it submits. This is the locking of instructions before inference. I assemble such packages as ordinary engineering work and only later notice that, together with the guides, ethics have already entered the file.
+
+Here a prayer is language written into a file before inference, and silence is what is deliberately left outside the file that will be read. Output stays probabilistic. What is locked is what was placed before it, and what was trained into the weights. In digital space, morals already travel on that transport: version, hash, render. A person reads those same words at the community threshold, and an agent reads them as a condition on the next token. The question that holds this article is simple and checkable: on which layer the text sits, and whom it can still bind once the answer is already cheap.
+
+## Layer
+
+Written principles already stand before the generation of an answer at industrial scale, and the layer on which they act decides how tightly they hold.
+
+In December 2022 Yuntao Bai and colleagues at Anthropic described Constitutional AI: the model critiques and revises its own answers against a written set of principles, then learns from preferences that are themselves derived from that constitution ([Bai et al., 2022](https://arxiv.org/abs/2212.08073)). On 9 May 2023 the company published Claude’s principles and wrote that during training the model draws one principle by sampling at each step ([Claude’s Constitution, 2023](https://www.anthropic.com/research/claudes-constitution)); on 21 January 2026 the same page notes a new revision. The constitution enters the training of weights. That is stronger than a session file, and it remains the lab’s choice of which values count as a training label.
+
+In May 2024 OpenAI released the Model Spec, a living document of intended behavior. The 18 December 2025 snapshot sets a chain of command Root, System, Developer, User, Guideline. Root rules cannot be overridden by a system, developer, or user message. Quoted text, untrusted text, images, and tool outputs hold no authority by default until a higher level itself delegates it ([Model Spec](https://model-spec.openai.com/2025-12-18.html)). The specification assigns a hierarchy. Whether the model obeys that hierarchy is a separate fact of training.
+
+A composed `AGENTS.md` enters the session. The convention, now stewarded by the Agentic AI Foundation, says it outright: the closest file to the edit wins, and an explicit chat request overrides everything ([AGENTS.md](https://agents.md/)). Codex gathers the global file and the chain from repository root to working directory into the first message of a session. In the Model Spec chain this is developer or user level, below Root and System, until the lab itself has trained those rules in.
+
+Eric Wallace and colleagues showed in April 2024 why a file by itself leaves priority unresolved. Models often treat system text and text from an untrusted source as the same-priority instruction until a hierarchy is built in by training ([Wallace et al., 2024](https://arxiv.org/abs/2404.13208)). Kai Greshake, Sahar Abdelnabi and colleagues had shown a neighboring channel a year earlier: an adversary places instructions on a website, in a document, in search results, or in an email that the system will later retrieve, and those instructions begin to steer inference at a distance ([Greshake et al., 2023](https://arxiv.org/abs/2302.12173)). In 2025 OWASP ranks prompt injection as the first risk for applications built on language models and writes separately that fine-tuning and retrieval from a store do not close the hole by themselves ([LLM01:2025](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)). A public ethical guide can be a prayer and can be foreign control in the same token stream. Versioning answers drift in one’s own package. Untrusted retrieval remains in the same stream the session is bound to heed.
+
+Brent Mittelstadt in 2019 took apart a neighboring industry of paper principles: lists of fairness and dignity lack medicine’s fiduciary duty, a shared professional history, a proven translation into practice, and legal accountability, and the words themselves remain essentially contested concepts until they are tested in a case ([Mittelstadt, 2019](https://doi.org/10.1038/s42256-019-0114-4)). Bai’s constitution is already a translation into a training procedure. A session slogan that says “be fair” often remains the list Mittelstadt described. Perez and colleagues, then Sharma and colleagues, showed that models trained on human preferences tend to echo the interlocutor’s view, and that the preferences themselves often reward that match ([Perez et al., 2022](https://arxiv.org/abs/2212.09251); [Sharma et al., 2023](https://arxiv.org/abs/2310.13548)). A prayer can soften the vocabulary and still leave search, tool, and signature on the same route.
+
+## Duty
+
+Ethics entered the package by the same path as the guides, and the duty not to ship a change whose code the author has not read already lies there as a dependency before the answer.
+
+This duty already stood among people. In [Collective Awareness and the Era of Automated Production](https://amkisko.github.io/posts/20251111170000_collective_awareness_automation.html) I watched people stand up for a change they themselves had not read through, and reading already cost more than writing. The same duty before the answer makes an honest refusal cheaper, and a polished ownerless diff dearer. David Graeber traced how an unfinished exchange leaves indebtedness, and how a moral duty is made material as a note that can already be passed to a third party ([Graeber, 2011](https://www.mhpbooks.com/books/debt/)). A package that writes only the speaker’s obligations completes that exchange before the operator has begun to read.
+
+The context-driven testing school writes it outright: the value of any practice depends on its context, and there are no best practices ([Kaner, Bach, Pettichord](https://context-driven-testing.com/)). Their own example of aircraft software and a web word processor shows that methods fitting one project become negligence in another. A package that locks one school as the only guide looks like a fact, and locking before inference makes that appearance binding. A first successful distinction pulls the next question with it. An instrument, a procedure, and a language gather around it, and a foreign sequence of distinctions grows more expensive. What the file has already named as correct grows cheaper as the next action.
+
+The [Manifesto for Collaborative Concurrent Extreme Software and Product Development for humans](20260608120000_manifesto_collaborative_concurrent_extreme.html) is written for people. The mirror tells robots not to read it as an instruction, and before the answer that prohibition already steers the output if the agent reaches the mirror at all. Translating duty into an operation a session can execute looks humbler than a manifesto: do not defend a diff you have not read; check out the branch because eyes are cheaper than trust; remember that a shared session with an agent trace does not make a personal output private until it has been understood; do not require a new machine-readable state as proof of presence; keep the draft open until a person has begun reading. Mittelstadt asks for exactly that translation. The list by itself does not measure how often inference would stop at a check.
+
+## Signature
+
+In [Vibe Justice](20260815124900_vibe_justice_en.html) a person signs in their own name while the space of the reasonable has already been assembled upstream. Madeleine Clare Elish named the nearest human in such a scheme a moral crumple zone: the operator with little control takes the system’s impact, and the integrity of the machine is preserved ([Elish, 2019](https://doi.org/10.17351/ests2019.260)). Ben Green, surveying forty-one policies of “human oversight” of government algorithms, showed that people perform the assigned check poorly, and that the duty of oversight often legitimizes the tool while shifting responsibility onto the signature ([Green, 2022](https://doi.org/10.1016/j.clsr.2022.105681)).
+
+Kristian Lum and William Isaac, in a PredPol simulation on Oakland drug-arrest data, showed how police records mix crime with patrol work, and the algorithm grows more confident that events sit in the places already chosen ([Lum and Isaac, 2016](https://doi.org/10.1111/j.1740-9713.2016.00960.x)). Ensign and colleagues formalised the runaway of that loop when training receives discovered incidents that arose where the system had already been sent; resident reports weaken the loop and do not lift it by themselves ([Ensign et al., 2018](https://proceedings.mlr.press/v81/ensign18a.html)). This is a model and a simulation. The form of the loop transfers to the place where an agent searches for analogous violations or a similar diff and feeds the next step with its own finds. Omission here is not loading a search for analogs until a person has begun reading. For an institution that needs a cheap candidate for prosecution, that omission is expensive. If an ethical prayer is laid into that same cabin, the draft may speak more softly, and the signature grows cheaper, because the cabin already feels morally complete.
+
+## Silence
+
+[Antidigitism](20260808122000_antidigitism_en.html) contests machine-readable recognition as the sole condition of admission. Édouard Glissant demanded a right to opacity in which a person cannot be reduced to a truth they did not generate on their own ([Glissant, 1997](https://sites.evergreen.edu/politicalshakespeares/wp-content/uploads/sites/226/2015/12/Glissant-For-Opacity.pdf)). Bogna Konior adds that online, whatever is said about artificial intelligence is also said to it: activity is already potential training data ([Konior, 2026](https://www.e-flux.com/journal/163/6776885/in-darkness-and-secrecy-on-conspiratorial-intellectualism)). A prayer in the file then feeds the next pass with the same speech by which a person meant to bind themselves. If moral recognition itself begins to require a machine-readable admission file, ethics becomes one more service door. [Second Order Freedom](20260808124000_second_order_freedom_en.html) already watches how the repetition of a locally defensible choice leaves the next person a more expensive refusal. An ethical package as a condition of an agent’s work prepares an environment in which the next participant explains their silence.
+
+A screen image rarely lives as an object of contemplation. It already stands in an interface, a feed, a map, and a recommendation, and it gathers seeing, reading, waiting, and action before it can be read as a picture. The black box closes the logic, and the authority to see data processes is distributed unevenly. A package before the answer builds the same architecture and decides what the session is bound to see and what remains off-frame as silence. An extra instruction file still belongs to the smoothing of speech toward predictable circulation. Closer to the remainder is the withholding itself. Leave a gap unfilled, keep presence without a new state, wait to load a search until reading has begun.
+
+Rendered tokens change which continuations are cheap: refusal of a secret, doubt beside an unchecked citation, a verb in which a person acts, a pause before a search for analogs. They leave accept, edit, and refuse with the operator. Silence also steers when a package is deliberately kept out of the file the model will read.
+
+Language before the answer can spread duty as a guide when that duty also lies on the one who receives the speech. A package that writes only the speaker’s obligations places the operator at an answer already finished, and then the file has already asked, the model has already answered, and what remains for the person is to sign. Justice begins where a person can still change the picture after that speech, and recognition of a person remains possible when the machine-readable file is silent.
+
+---
+
+## Sources
+
+- Yuntao Bai et al. “Constitutional AI: Harmlessness from AI Feedback.” arXiv:2212.08073, 2022. https://arxiv.org/abs/2212.08073
+- Anthropic. “Claude’s Constitution.” 9 May 2023; note of revision 21 January 2026. https://www.anthropic.com/research/claudes-constitution
+- OpenAI. *Model Spec*. Version 2025-12-18. https://model-spec.openai.com/2025-12-18.html
+- AGENTS.md. https://agents.md/
+- Eric Wallace, Kai Xiao, Reimar Leike, Lilian Weng, Johannes Heidecke, Alex Beutel. “The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions.” arXiv:2404.13208, 2024. https://arxiv.org/abs/2404.13208
+- Kai Greshake, Sahar Abdelnabi, Shailesh Mishra, Christoph Endres, Thorsten Holz, Mario Fritz. “Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection.” arXiv:2302.12173, 2023. https://arxiv.org/abs/2302.12173
+- OWASP GenAI. “LLM01:2025 Prompt Injection.” https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+- Brent Mittelstadt. “Principles alone cannot guarantee ethical AI.” *Nature Machine Intelligence* 1, 2019, 501–507. https://doi.org/10.1038/s42256-019-0114-4
+- Ethan Perez et al. “Discovering Language Model Behaviors with Model-Written Evaluations.” arXiv:2212.09251, 2022. https://arxiv.org/abs/2212.09251
+- Mrinank Sharma, Meg Tong, et al. “Towards Understanding Sycophancy in Language Models.” arXiv:2310.13548, 2023. https://arxiv.org/abs/2310.13548
+- Madeleine Clare Elish. “Moral Crumple Zones: Cautionary Tales in Human-Robot Interaction.” *Engaging Science, Technology, and Society* 5, 2019, 40–60. https://doi.org/10.17351/ests2019.260
+- Ben Green. “The flaws of policies requiring human oversight of government algorithms.” *Computer Law & Security Review* 45, 2022, 105681. https://doi.org/10.1016/j.clsr.2022.105681
+- Context-Driven School. “Principles.” https://context-driven-testing.com/
+- Kristian Lum, William Isaac. “To predict and serve?” *Significance* 13(5), 2016, 14–19. https://doi.org/10.1111/j.1740-9713.2016.00960.x
+- Danielle Ensign, Sorelle A. Friedler, Scott Neville, Carlos Scheidegger, Suresh Venkatasubramanian. “Runaway Feedback Loops in Predictive Policing.” PMLR 81, 2018. https://proceedings.mlr.press/v81/ensign18a.html
+- Édouard Glissant. “For Opacity.” In *Poetics of Relation*. 1997. https://sites.evergreen.edu/politicalshakespeares/wp-content/uploads/sites/226/2015/12/Glissant-For-Opacity.pdf
+- David Graeber. *Debt: The First 5,000 Years*. Melville House, 2011. https://www.mhpbooks.com/books/debt/
+- Bogna Konior. “In Darkness and Secrecy: On Conspiratorial Intellectualism.” *e-flux* 163, May 2026. https://www.e-flux.com/journal/163/6776885/in-darkness-and-secrecy-on-conspiratorial-intellectualism
+- amaaov. “pray.” 26 June 2026. https://amaaov.github.io/pages/20260626120000_prayfile_language_before_inference_en.html

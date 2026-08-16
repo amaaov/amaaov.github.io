@@ -5,10 +5,30 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Sat, 15 Aug 2026 12:20:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 16 Aug 2026 20:00:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Долг до ответа</title>
+      <description>Этика уже ездит тем же транспортом, что рабочие гайды.</description>
+      <link>https://amaaov.github.io/pages/20260816205000_duty_before_answer.html</link>
+      <guid>https://amaaov.github.io/pages/20260816205000_duty_before_answer.html</guid>
+      <pubDate>Sun, 16 Aug 2026 17:50:00 +0000</pubDate>
+      <category>essay</category>
+      <category>ethics</category>
+      <category>inference</category>
+    </item>
+    <item>
+      <title>Duty Before the Answer</title>
+      <description>Ethics already travels on the same transport as working guides.</description>
+      <link>https://amaaov.github.io/pages/20260816205000_duty_before_answer_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260816205000_duty_before_answer_en.html</guid>
+      <pubDate>Sun, 16 Aug 2026 17:50:00 +0000</pubDate>
+      <category>essay</category>
+      <category>ethics</category>
+      <category>inference</category>
+    </item>
     <item>
       <title>Вайб-правосудие</title>
       <description>Формально человеческое юридическое решение как результат вывода после инференции внутри подготовленного поля, где подпись ставит прокси машины в реальности.</description>
