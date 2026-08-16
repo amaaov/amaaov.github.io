@@ -1,7 +1,7 @@
 # Second Order Freedom
 
 **Published:** 8 August 2026, Helsinki  
-**Modified:** 11 August 2026  
+**Modified:** 16 August 2026, 23:50  
 **Author:** amaaov  
 **Language:** English  
 **HTML:** [20260808124000_second_order_freedom_en.html](20260808124000_second_order_freedom_en.html)  
@@ -29,13 +29,13 @@ An emergent norm grows without a single author or finished doctrine through assu
 
 ## The price of a cheap signal
 
-A letter required paper, an address, travel, and days of waiting, so silence retained many ordinary explanations. The nearly free instant message created a valuable freedom to sustain relationships across distance, while its mass adoption changed how a pause is interpreted: the person presumably saw the notification, could technically reply, and now owes an explanation for delay. The material cost of a signal approached zero as the social cost of its absence increased.
+A letter required paper, an address, travel, and days of waiting, so silence retained many ordinary explanations. The nearly free instant message created a valuable freedom to sustain relationships across distance, while its mass adoption changed how a pause is interpreted: the person presumably saw the notification, could technically reply, and now owes an explanation for delay. The material cost of a signal approached zero as the social cost of its absence increased. George Woodcock already saw this move on the factory clock, where time became a commodity, “wasting time” turned into a sin, and a person became an observer of the hands ([Woodcock, 1944](https://theanarchistlibrary.org/library/george-woodcock-the-tyranny-of-the-clock)). The nearly free message repeats that dial in another material.
 
 Publication of amateur work undergoes the same transition because a camera and a channel provide access to learning, archives, and people who could never meet locally, while regularity gradually becomes the background against which an individual silence acquires meaning. Cheap transmission changes the surrounding culture because a possibility used by many becomes an expectation and redistributes the duty to explain oneself.
 
 A network effect intensifies the process: a channel becomes more valuable as more people join it, so every new participant makes their personal choice more reasonable while raising the cost of another route for the next person. An alternative may still exist technically, but an empty chat, a rarely staffed desk, or a forum without replies loses its social function. Once relationships have moved, the organization cuts the fallback budget, workers lose the skill of maintaining it, data accumulates in the new format, and path dependence raises the cost of reversal ([Arthur 1989](https://doi.org/10.2307/2234208)).
 
-Many locally defensible choices can therefore create an outcome nobody ordered separately: a participant chose the convenient channel, a manager reduced duplication, and a developer improved the dominant scenario, while their combined action produced compulsory infrastructure. Second-order freedom attends to this distance between the intention of one decision and the conditions formed after aggregation. The same aggregation can force payment without demand: once one technical arrangement monopolises the channel, its upkeep is socialised through tariffs and taxes paid by people who sought only a narrower function, as when a telephone bill funds internet infrastructure that the subscriber never asked to purchase.
+Many locally defensible choices can therefore create an outcome nobody ordered separately: a participant chose the convenient channel, a manager reduced duplication, and a developer improved the dominant scenario, while their combined action produced compulsory infrastructure. Second-order freedom attends to this distance between the intention of one decision and the conditions formed after aggregation. In the summer of 1936 Barcelona’s urban transport workers, most of whom belonged to the CNT, united the tram, metro, bus, and taxi, appointed a union engineer to each section, and renewed the network ([Souchy, 1974](https://theanarchistlibrary.org/library/sam-dolgoff-editor-the-anarchist-collectives)). The mechanism began to run more smoothly. Who would set the image of this infrastructure’s future—engineers, workers’ councils, or passengers—stayed open. A locally defensible improvement of the mechanism leaves the next person at the edge if a narrow circle of knowledge still produces the priorities. The same aggregation can force payment without demand: once one technical arrangement monopolises the channel, its upkeep is socialised through tariffs and taxes paid by people who sought only a narrower function, as when a telephone bill funds internet infrastructure that the subscriber never asked to purchase.
 
 ## Good intention and form
 
@@ -96,3 +96,5 @@ First-order freedom opens a door before me, while Second Order Freedom leaves an
 - Daniela Cammack. *Marx, Hayek and the Relationship between Capitalism and Freedom*. 2014. https://scholar.harvard.edu/files/dlcammack/files/marx_hayek_and_the_relationship_between_capitalism_and_freedom.pdf
 - Barbara N. Carreras. *Frictional Infrastructures: An Ethnography of Compulsory Digital Self-Reliance and Collective Access in the Danish Welfare State*. IT University of Copenhagen, 2024. https://pure.itu.dk/en/publications/frictional-infrastructures-an-ethnography-of-compulsory-digital-s/
 - Anton Törnberg. “Prefigurative Politics and Social Change: A Typology Drawing on Transition Studies.” *Distinktion* 22(1), 2021, 83–107. https://doi.org/10.1080/1600910X.2020.1856161
+- George Woodcock. “The Tyranny of the Clock.” *War Commentary — For Anarchism*, March 1944. https://theanarchistlibrary.org/library/george-woodcock-the-tyranny-of-the-clock
+- Augustin Souchy. “Workers’ Self-Management in Industry.” In Sam Dolgoff, ed. *The Anarchist Collectives: Workers’ Self-Management in the Spanish Revolution, 1936–1939*. 1974. https://theanarchistlibrary.org/library/sam-dolgoff-editor-the-anarchist-collectives
