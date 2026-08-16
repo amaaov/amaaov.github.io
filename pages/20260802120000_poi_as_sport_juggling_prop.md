@@ -1,7 +1,7 @@
 # Poi as a Sport-Juggling Prop
 
 **Published:** 2 August 2026, Helsinki  
-**Modified:** 10 August 2026
+**Modified:** 16 August 2026
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802120000_poi_as_sport_juggling_prop.html](20260802120000_poi_as_sport_juggling_prop.html)  
@@ -12,7 +12,7 @@
 
 Conventions, degrees of freedom, and the construction of comparable technical practice.
 
-I keep returning to a small scene: three poi in the air, a rhythm everyone in the room would call a cascade, and two people arguing politely about whether they just watched the same trick. One saw backward no-beat. The other saw a pendulum that cleaned itself with a half-orbit. Both were right about the beat. Neither had named the kinetic task.
+I keep returning to a small scene: three poi in the air, a rhythm anyone watching would call a cascade, and two people arguing politely about whether they just watched the same trick. One saw backward no-beat. The other saw a pendulum that cleaned itself with a half-orbit. Both were right about the beat. Neither had named the kinetic task.
 
 The previous essay argued that siteswap remains useful for poi as a rhythmic grid while leaving flexible-prop movement under-described. Siteswap records when an object must next be acted upon. How the object moves between interactions, how torque is maintained, which plane is occupied, and what the body does in the interval stay outside that grid. In informal practice that incompleteness is often harmless, because demonstration fills the gap; in graded or competitive systems the same gap becomes structural. A judge needs a finite statement: this performer completed this defined task under these conditions.
 
