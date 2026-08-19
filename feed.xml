@@ -5,10 +5,28 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Sun, 16 Aug 2026 20:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 19 Aug 2026 19:47:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Holding Topology</title>
+      <description>Two present predicates over body, objects, and environment classify juggling and object manipulation. Boris Fontanov.</description>
+      <link>https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html</guid>
+      <pubDate>Wed, 19 Aug 2026 07:08:00 +0000</pubDate>
+      <category>essay</category>
+      <category>juggling</category>
+    </item>
+    <item>
+      <title>Топология удержания</title>
+      <description>Два предиката настоящего разделяют жонглирование и предметную манипуляцию. Борис Фонтанов.</description>
+      <link>https://amaaov.github.io/pages/20260819100800_grip_algebra.html</link>
+      <guid>https://amaaov.github.io/pages/20260819100800_grip_algebra.html</guid>
+      <pubDate>Wed, 19 Aug 2026 07:08:00 +0000</pubDate>
+      <category>essay</category>
+      <category>juggling</category>
+    </item>
     <item>
       <title>Долг до ответа</title>
       <description>Этика уже ездит тем же транспортом, что рабочие гайды.</description>
