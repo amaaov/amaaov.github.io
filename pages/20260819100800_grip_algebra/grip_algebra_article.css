@@ -1,0 +1,363 @@
+:root {
+  --court: #c4a56a;
+  --court-deep: #9a7340;
+  --line: #245c3a;
+  --paper: #f4ead6;
+  --ink: #1d1914;
+  --muted: #5c5348;
+  --grip: #c24a1c;
+  --air: #1b6d8f;
+  --focus: #245c3a;
+  --clipboard-width: min(42rem, calc(100vw - 2rem));
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--court-deep);
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "EB Garamond", "Times New Roman", serif;
+  font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.22rem);
+  line-height: 1.6;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(36, 92, 58, 0.14) 0 2px,
+      transparent 2px 56px
+    ),
+    linear-gradient(180deg, #cbb07a 0%, var(--court) 40%, var(--court-deep) 100%);
+  min-height: 100vh;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.8rem;
+  top: -3rem;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0.4rem 0.7rem;
+  z-index: 20;
+}
+
+.skip-link:focus {
+  top: 0.8rem;
+}
+
+.site-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  max-width: var(--clipboard-width);
+  margin: 0 auto;
+  padding: 1rem 0 0.4rem;
+}
+
+.home-link,
+.language-link {
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.language-nav {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.language-link[aria-current="page"] {
+  border-bottom: 2px solid var(--line);
+}
+
+.clipboard {
+  max-width: var(--clipboard-width);
+  margin: 0.6rem auto 3rem;
+  background: var(--paper);
+  border: 1px solid rgba(29, 25, 20, 0.18);
+  box-shadow: 0 18px 40px rgba(29, 25, 20, 0.18);
+  padding: 2.2rem 1.6rem 2.6rem;
+}
+
+.article-head h1 {
+  font-weight: 600;
+  font-size: clamp(2rem, 1.6rem + 2vw, 3rem);
+  line-height: 1.05;
+  margin: 0 0 0.4rem;
+  text-wrap: balance;
+}
+
+.article-meta {
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.86rem;
+  color: var(--muted);
+  margin: 0 0 1.6rem;
+}
+
+.prose p,
+.prose li {
+  text-align: justify;
+  hyphens: auto;
+  text-wrap: pretty;
+  margin: 0 0 1.1rem;
+}
+
+.prose a {
+  color: var(--line);
+}
+
+.prose h2 {
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: "Red Hat Text", sans-serif;
+  font-weight: 600;
+  margin: 2rem 0 0.8rem;
+}
+
+.formula {
+  display: block;
+  overflow-x: auto;
+  text-align: center;
+  margin: 1.2rem 0 1.4rem;
+  padding: 0.7rem 0.4rem;
+  background: rgba(36, 92, 58, 0.06);
+  border-left: 3px solid var(--line);
+}
+
+.formula math,
+.inline-math math {
+  font-family: math, "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
+}
+
+.formula math {
+  font-size: 1.08em;
+}
+
+.inline-math {
+  display: inline;
+  white-space: nowrap;
+}
+
+.inline-math math {
+  display: inline;
+}
+
+.court-block {
+  margin: 1.4rem -0.4rem 1.8rem;
+  background: var(--court);
+  border: 2px solid var(--line);
+  padding: 0.8rem;
+}
+
+#court-controls {
+  display: grid;
+  gap: 0.7rem;
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.pattern-row,
+.dwell-row,
+.lamp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.9rem;
+  align-items: center;
+}
+
+.pattern-row label,
+.dwell-row label {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+#toss-court,
+#occupancy-tape {
+  width: 100%;
+  display: block;
+}
+
+#toss-court {
+  height: 260px;
+  margin-top: 0.5rem;
+}
+
+.layer-atlas,
+.state-atlas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55rem;
+  margin: 0.2rem 0 1.4rem;
+}
+
+.state-atlas {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.atlas-card {
+  margin: 0;
+}
+
+.atlas-card canvas {
+  width: 100%;
+  height: 110px;
+  display: block;
+  border: 1px solid rgba(36, 92, 58, 0.45);
+}
+
+.atlas-card figcaption {
+  font-family: "EB Garamond", "Times New Roman", serif;
+  font-size: 1.05rem;
+  font-style: normal;
+  letter-spacing: 0;
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+.state-atlas .atlas-card figcaption {
+  font-size: 1.35rem;
+}
+
+#state-code,
+#state-path,
+.lamp i {
+  font-family: "EB Garamond", "Times New Roman", serif;
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+@media (max-width: 640px) {
+  .layer-atlas,
+  .state-atlas {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+#occupancy-tape {
+  height: 1.35rem;
+  margin-top: 0.45rem;
+}
+
+.lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0;
+}
+
+.lamp i {
+  font-size: 1.35rem;
+}
+
+.lamp-dot {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: rgba(29, 25, 20, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(29, 25, 20, 0.35);
+}
+
+#lamp-grip .lamp-dot.is-on,
+#lamp-grip.is-on .lamp-dot {
+  background: var(--grip);
+}
+
+#lamp-no-grip .lamp-dot.is-on,
+#lamp-no-grip.is-on .lamp-dot {
+  background: var(--air);
+}
+
+#state-code {
+  font-weight: 700;
+  font-size: 1.45rem;
+}
+
+#state-path {
+  font-size: 1.05rem;
+  margin: 0.35rem 0 0;
+  color: var(--ink);
+  min-height: 1.2em;
+}
+
+#hexagon-panel {
+  margin-top: 0.6rem;
+  background: rgba(244, 234, 214, 0.45);
+  padding: 0.4rem;
+}
+
+#hexagon-panel svg {
+  width: min(100%, 280px);
+  display: block;
+  margin: 0 auto;
+}
+
+[data-hex] circle {
+  fill: rgba(244, 234, 214, 0.9);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
+[data-hex][data-held="1"] circle {
+  fill: rgba(27, 109, 143, 0.28);
+}
+
+[data-hex][data-held="2"] circle {
+  fill: rgba(194, 74, 28, 0.28);
+}
+
+[data-hex].is-active circle {
+  fill: var(--grip);
+}
+
+.hex-label {
+  font-family: "Red Hat Mono", monospace;
+  font-size: 9px;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+
+[data-hex].is-active .hex-label {
+  font-weight: 700;
+}
+
+.sources ol {
+  padding-left: 1.2rem;
+}
+
+.sources li {
+  margin-bottom: 0.45rem;
+  font-size: 0.95em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #toss-court,
+  #occupancy-tape {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .clipboard {
+    padding: 1.4rem 1rem 2rem;
+  }
+
+  #toss-court {
+    height: 210px;
+  }
+}

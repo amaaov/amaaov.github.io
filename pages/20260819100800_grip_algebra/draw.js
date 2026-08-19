@@ -1,0 +1,299 @@
+import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "./holding.js";
+
+const GRIP_FILL = "#c24a1c";
+const AIR_FILL = "#1b6d8f";
+const MIXED_FILL = "#245c3a";
+const EMPTY_FILL = "#4a433c";
+
+export function occupancyTapeFill(state) {
+  if (state === HOLD_SIGN) {
+    return GRIP_FILL;
+  }
+  if (state === RELEASE_SIGN) {
+    return AIR_FILL;
+  }
+  if (state === MIXED_SIGN) {
+    return MIXED_FILL;
+  }
+  return EMPTY_FILL;
+}
+
+export function appendCourtTrails(trails, pictured, frameLimit = 80) {
+  trails.push({
+    objects: pictured.positions.map((position) => ({
+      x: position.x,
+      y: position.y,
+      held: position.held,
+    })),
+    hands: (pictured.hands ?? []).map((hand) => ({
+      x: hand.x,
+      y: hand.y,
+    })),
+  });
+  if (trails.length > frameLimit) {
+    trails.splice(0, trails.length - frameLimit);
+  }
+  return trails;
+}
+
+function drawTaperedWake(context, points, rgbForPoint, width) {
+  if (points.length < 2) {
+    return;
+  }
+  context.lineCap = "round";
+  context.lineJoin = "round";
+  const last = points.length - 1;
+  for (let index = 1; index <= last; index += 1) {
+    const t = index / last;
+    const alpha = 0.08 + 0.38 * t;
+    context.strokeStyle = `rgba(${rgbForPoint(points[index])}, ${alpha})`;
+    context.lineWidth = width * (0.35 + 0.65 * t);
+    context.beginPath();
+    context.moveTo(points[index - 1].x, points[index - 1].y);
+    context.lineTo(points[index].x, points[index].y);
+    context.stroke();
+  }
+}
+
+function objectWakeRgb(point) {
+  return point.held ? "194, 74, 28" : "27, 109, 143";
+}
+
+function handWakeRgb() {
+  return "154, 115, 64";
+}
+
+function collectWakePoints(frames, live, width, height) {
+  const points = frames.map((frame) => ({
+    x: frame.x * width,
+    y: frame.y * height,
+    held: frame.held,
+  }));
+  points.push({
+    x: live.x * width,
+    y: live.y * height,
+    held: live.held,
+  });
+  return points;
+}
+
+function focusAlpha(layer, role, held) {
+  if (!layer) {
+    return 1;
+  }
+  if (layer === "object") {
+    return role === "object" ? 1 : 0.22;
+  }
+  if (layer === "body") {
+    return role === "hand" || (role === "object" && held) ? 1 : 0.22;
+  }
+  if (layer === "world") {
+    return role === "object" && !held ? 1 : 0.22;
+  }
+  return 1;
+}
+
+function drawForceArrow(context, fromX, fromY, toX, toY, color, width) {
+  const angle = Math.atan2(toY - fromY, toX - fromX);
+  const head = Math.max(4, width * 2.4);
+  context.strokeStyle = color;
+  context.lineWidth = width;
+  context.beginPath();
+  context.moveTo(fromX, fromY);
+  context.lineTo(toX, toY);
+  context.stroke();
+  context.beginPath();
+  context.moveTo(toX, toY);
+  context.lineTo(toX - head * Math.cos(angle - 0.45), toY - head * Math.sin(angle - 0.45));
+  context.moveTo(toX, toY);
+  context.lineTo(toX - head * Math.cos(angle + 0.45), toY - head * Math.sin(angle + 0.45));
+  context.stroke();
+}
+
+function drawLayerForces(context, positions, hands, layer, width, height, scale, ballRadius) {
+  if (layer === "object") {
+    context.lineWidth = Math.max(1.6, 2.2 * scale);
+    for (const position of positions) {
+      context.strokeStyle = position.held ? GRIP_FILL : AIR_FILL;
+      context.beginPath();
+      context.arc(
+        position.x * width,
+        position.y * height,
+        ballRadius + Math.max(4, 5.5 * scale),
+        0,
+        Math.PI * 2,
+      );
+      context.stroke();
+    }
+    return;
+  }
+  if (layer === "body") {
+    const arrowWidth = Math.max(1.6, 2.1 * scale);
+    for (const position of positions) {
+      if (!position.held) {
+        continue;
+      }
+      const hand = hands[position.hand] ?? hands[0];
+      const fromX = hand.x * width;
+      const fromY = hand.y * height;
+      const toX = position.x * width;
+      const toY = position.y * height;
+      const span = Math.hypot(toX - fromX, toY - fromY);
+      if (span < 4) {
+        continue;
+      }
+      const ux = (toX - fromX) / span;
+      const uy = (toY - fromY) / span;
+      const start = Math.min(span * 0.18, Math.max(6, 10 * scale));
+      const end = Math.max(start + 4, span - ballRadius - Math.max(2, 3 * scale));
+      drawForceArrow(
+        context,
+        fromX + ux * start,
+        fromY + uy * start,
+        fromX + ux * end,
+        fromY + uy * end,
+        GRIP_FILL,
+        arrowWidth,
+      );
+    }
+    return;
+  }
+  if (layer === "world") {
+    const arrowWidth = Math.max(1.6, 2.1 * scale);
+    const drop = Math.max(11, 15 * scale);
+    for (const position of positions) {
+      if (position.held) {
+        continue;
+      }
+      const x = position.x * width;
+      const y = position.y * height + ballRadius + Math.max(2, 3 * scale);
+      drawForceArrow(context, x, y, x, y + drop, AIR_FILL, arrowWidth);
+    }
+  }
+}
+
+export function drawTossCourt(canvas, positions, hands, trails = [], layer = null) {
+  const context = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  const scale = Math.min(width, height) / 260;
+  const inset = Math.max(8, 18 * scale);
+  const handWidth = Math.max(8, 22 * scale);
+  const handHeight = Math.max(4, 10 * scale);
+  const ballRadius = Math.max(5, 11 * scale);
+  context.clearRect(0, 0, width, height);
+  context.fillStyle = "#c4a56a";
+  context.fillRect(0, 0, width, height);
+  context.strokeStyle = "rgba(36, 92, 58, 0.55)";
+  context.lineWidth = Math.max(1.2, 3 * scale);
+  context.strokeRect(inset, inset, width - inset * 2, height - inset * 2);
+  context.beginPath();
+  context.moveTo(width / 2, inset);
+  context.lineTo(width / 2, height - inset);
+  context.stroke();
+  context.strokeStyle = "rgba(29, 25, 20, 0.18)";
+  context.lineWidth = 1;
+  for (let line = 1; line < 6; line += 1) {
+    const y = inset + ((height - inset * 2) * line) / 6;
+    context.beginPath();
+    context.moveTo(inset, y);
+    context.lineTo(width - inset, y);
+    context.stroke();
+  }
+  positions.forEach((position, objectIndex) => {
+    const history = trails
+      .map((frame) => frame.objects[objectIndex])
+      .filter(Boolean);
+    drawTaperedWake(
+      context,
+      collectWakePoints(history, position, width, height),
+      objectWakeRgb,
+      Math.max(0.85, 1.7 * scale),
+    );
+  });
+  hands.forEach((hand, handIndex) => {
+    const history = trails
+      .map((frame) => frame.hands[handIndex])
+      .filter(Boolean);
+    drawTaperedWake(
+      context,
+      collectWakePoints(history, hand, width, height),
+      handWakeRgb,
+      Math.max(0.8, 1.45 * scale),
+    );
+  });
+  for (const hand of hands) {
+    context.save();
+    context.globalAlpha = focusAlpha(layer, "hand");
+    const x = hand.x * width;
+    const y = hand.y * height;
+    context.fillStyle = "rgba(29, 25, 20, 0.55)";
+    context.beginPath();
+    context.ellipse(x, y, handWidth, handHeight, 0, 0, Math.PI * 2);
+    context.fill();
+    context.restore();
+  }
+  positions.forEach((position, index) => {
+    context.save();
+    context.globalAlpha = focusAlpha(layer, "object", position.held);
+    const x = position.x * width;
+    const y = position.y * height;
+    context.fillStyle = position.held ? GRIP_FILL : AIR_FILL;
+    context.beginPath();
+    context.arc(x, y, ballRadius, 0, Math.PI * 2);
+    context.fill();
+    context.fillStyle = "#f7f0e4";
+    context.font = `600 ${Math.max(8, 11 * scale)}px 'Red Hat Text', sans-serif`;
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(String(index + 1), x, y + 0.5);
+    context.restore();
+  });
+  drawLayerForces(context, positions, hands, layer, width, height, scale, ballRadius);
+}
+
+export function drawOccupancyTape(canvas, states) {
+  const context = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  context.clearRect(0, 0, width, height);
+  const cell = width / Math.max(states.length, 1);
+  states.forEach((state, index) => {
+    context.fillStyle = occupancyTapeFill(state);
+    context.fillRect(index * cell, 0, cell + 0.5, height);
+  });
+  if (states.length > 0) {
+    context.strokeStyle = "#f7f0e4";
+    context.lineWidth = 1;
+    context.strokeRect((states.length - 1) * cell, 1, cell, height - 2);
+  }
+}
+
+export function compressStates(states) {
+  const compressed = [];
+  for (const state of states) {
+    if (compressed[compressed.length - 1] !== state) {
+      compressed.push(state);
+    }
+  }
+  return compressed;
+}
+
+const MIXED_CYCLE_KEYS = ["100", "110", "010", "011", "001", "101"];
+const MIXED_CYCLE_LABELS = ["{1}", "{1,2}", "{2}", "{2,3}", "{3}", "{3,1}"];
+
+function holdingKey(flags) {
+  return flags.map((held) => (held ? "1" : "0")).join("");
+}
+
+export function hexagonVertexIndex(flags) {
+  return MIXED_CYCLE_KEYS.indexOf(holdingKey(flags));
+}
+
+export function mixedCycleLabel(flags) {
+  const index = hexagonVertexIndex(flags);
+  if (index < 0) {
+    return "";
+  }
+  return MIXED_CYCLE_LABELS[index];
+}

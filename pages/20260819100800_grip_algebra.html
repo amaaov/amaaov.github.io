@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- © Andrei Makarov / amaaov · CC BY 4.0 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Топология удержания — Борис Фонтанов</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+  <meta name="description" content="Два предиката настоящего в системе тела, предметов и окружения разделяют жонглирование и предметную манипуляцию и отделяют робота с настоящими предметами от картинки мячей.">
+  <meta name="author" content="Борис Фонтанов">
+  <meta property="article:published_time" content="2026-08-19T10:08:00+03:00">
+  <meta property="article:modified_time" content="2026-08-19T22:25:00+03:00">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
+  <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
+  <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
+  <link rel="alternate" hreflang="x-default" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
+  <meta property="og:title" content="Топология удержания — Борис Фонтанов">
+  <meta property="og:description" content="Два предиката настоящего разделяют жонглирование и предметную манипуляцию.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://amaaov.github.io/index.jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Топология удержания — Борис Фонтанов">
+  <meta name="twitter:description" content="Два предиката настоящего разделяют жонглирование и предметную манипуляцию.">
+  <meta name="twitter:image" content="https://amaaov.github.io/index.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Red+Hat+Mono:wght@500;700&amp;family=Red+Hat+Text:wght@400;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
+  <link rel="stylesheet" href="20260819100800_grip_algebra/grip_algebra_article.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Топология удержания","description":"Два предиката настоящего разделяют жонглирование и предметную манипуляцию.","author":{"@type":"Person","name":"Борис Фонтанов","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-08-19T22:25:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra.html","inLanguage":"ru"}</script>
+</head>
+<body>
+  <a class="skip-link" href="#article-body">К статье</a>
+  <header class="site-top">
+    <a class="home-link" href="https://amaaov.github.io/">amaaåv</a>
+    <nav class="language-nav" aria-label="Языки статьи">
+      <a class="language-link" href="20260819100800_grip_algebra_en.html">EN</a>
+      <a class="language-link" href="20260819100800_grip_algebra.html" aria-current="page">RU</a>
+    </nav>
+  </header>
+  <main class="clipboard" id="article-body" aria-label="Топология удержания">
+    <header class="article-head">
+      <h1>Топология удержания</h1>
+      <p class="article-meta">Борис Фонтанов · 19 августа 2026 · Хельсинки</p>
+    </header>
+    <article class="prose">
+      <p>Я искал строгое определение жонглирования и его отличие от предметной манипуляции. Поворот случился, когда стало видно, что в одно мгновение состояние сразу двойное: что-то удержано и что-то уже неудержано. Удержание и неудержание здесь измеряемые величины, и из них следуют четыре состояния, которые переходят одно в другое.</p>
+      <p>Система, которую я смотрю, — тело, предметы и окружение. Тело здесь то, что удерживает: ладонь, щипок, прижатие к груди, мяч на стопе, несколько людей с одними предметами, робот. Предмет — самое спокойное звено, он сам почти ничего не меняет, он удержан или неудержан. Окружение всего шумнее и телу неподвластно: тяжесть и воздух в полёте, пол и стена на отскоке, удар, который только сталкивается, сквозняк, неровный мяч. Кратос и акратея читаются по предметам, которые тело держит или которые уже неудержаны. Окружение сильнее влияет на то, что уже неудержано, и увеличивает неопределённость траектории, энтропию системы.</p>
+      <section class="layer-atlas" aria-label="предмет, тело, окружение">
+        <figure class="atlas-card">
+          <canvas id="layer-object" aria-hidden="true"></canvas>
+          <figcaption>предмет</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="layer-body" aria-hidden="true"></canvas>
+          <figcaption>тело</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="layer-world" aria-hidden="true"></canvas>
+          <figcaption>окружение</figcaption>
+        </figure>
+      </section>
+      <h2>Определения</h2>
+      <p>Назовём внимание <span class="inline-math" data-latex="O(t)"></span>: конечные физические предметы в окружении. Предмет входит в него, пока есть фокус, контроль или потенциальный контроль и ожидание, что тело его снова возьмёт. Каждый предмет в <span class="inline-math" data-latex="O"></span> либо удержан телом, либо нет. Удержание значит, что часть тела держит предмет; воздействие на расстоянии сюда не входит.</p>
+      <p>Для предмета <span class="inline-math" data-latex="i"></span> <span class="inline-math" data-latex="b_i(t)"></span> равно <span class="inline-math" data-latex="1"></span>, если его сейчас держит тело, и <span class="inline-math" data-latex="0"></span>, если он неудержан.</p>
+      <div class="formula" data-latex="b_i(t)\in\{0,1\}" data-display="block"></div>
+      <p>Состояние внимания <span class="inline-math" data-latex="S(t)"></span> — два ответа сразу: есть ли сейчас хоть один неудержанный и есть ли сейчас хоть один удержанный.</p>
+      <div class="formula" data-latex="S(t)=(\exists i\,\neg b_i(t),\,\exists i\,b_i(t))" data-display="block"></div>
+      <p>Из этих двух ответов складываются четыре знака: <span class="inline-math" data-latex="\emptyset"></span>, <span class="inline-math" data-latex="\kappa"></span>, <span class="inline-math" data-latex="\alpha"></span>, <span class="inline-math" data-latex="\alpha\kappa"></span>.</p>
+      <p>Число предметов и число рук в эти знаки не входят. При <span class="inline-math" data-latex="n=|O|"></span> и <span class="inline-math" data-latex="h=\sum_i b_i"></span> уже следует знак: <span class="inline-math" data-latex="\emptyset"></span>, когда <span class="inline-math" data-latex="n=0"></span>; <span class="inline-math" data-latex="\kappa"></span>, когда <span class="inline-math" data-latex="h=n>0"></span>; <span class="inline-math" data-latex="\alpha\kappa"></span>, когда <span class="inline-math" data-latex="0\lt h\lt n"></span>; <span class="inline-math" data-latex="\alpha"></span>, когда <span class="inline-math" data-latex="h=0\lt n"></span>. Пустое внимание — <span class="inline-math" data-latex="\emptyset"></span>. Полное удержание — <span class="inline-math" data-latex="\kappa"></span>: предметная манипуляция, каждый предмет в <span class="inline-math" data-latex="O"></span> удержан. Полное неудержание — <span class="inline-math" data-latex="\alpha"></span>. <span class="inline-math" data-latex="\alpha\kappa"></span> — одновременное присутствие удержания и неудержания. Жонглирование поддерживает <span class="inline-math" data-latex="\alpha\kappa"></span>: акратея и кратос сразу, и может коротко заходить в <span class="inline-math" data-latex="\alpha"></span>. Полную акратею долго не удержать. Если лежащий на полу мяч ввести во внимание при уже удержанном, система оказывается в <span class="inline-math" data-latex="\alpha\kappa"></span>, пока ничего не происходит: знакам всё ещё нужно ожидание возврата. Дроп — когда это ожидание оборвалось.</p>
+      <section class="state-atlas" aria-label="Четыре знака">
+        <figure class="atlas-card">
+          <canvas id="atlas-00" aria-hidden="true"></canvas>
+          <figcaption>∅</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="atlas-01" aria-hidden="true"></canvas>
+          <figcaption>κ</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="atlas-10" aria-hidden="true"></canvas>
+          <figcaption>α</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="atlas-11" aria-hidden="true"></canvas>
+          <figcaption>ακ</figcaption>
+        </figure>
+      </section>
+      <p>Сайтсвоп, как его формулирует Juggling Lab, записывает, какая рука следующим бросит предмет и сколько долей пройдёт до этого броска; выдержка, пустота руки и то, остаётся ли другой предмет удержанным, пока один в воздухе, относятся к позднейшему физическому чтению (<a href="http://jugglinglab.org/html/ssnotation.html">Juggling Lab</a>). <em>Состояние</em> сайтсвопа у Чанг и Грэма — описание приземлений, где <span class="inline-math" data-latex="1"></span> в позиции говорит, через сколько долей приземлится предмет в воздухе, а число единиц есть число мячей (<a href="https://fanchung.ucsd.edu/wp/pjs.pdf">Chung and Graham, 2008</a>). По <span class="inline-math" data-latex="S"></span> видно, есть ли сейчас телесное обладание и есть ли сейчас неудержанное в том же внимании.</p>
+      <h2>Примеры</h2>
+      <p>Пустое внимание бывает только в <span class="inline-math" data-latex="\emptyset"></span>.</p>
+      <p>Система из одного предмета бывает только в <span class="inline-math" data-latex="\kappa"></span> и в <span class="inline-math" data-latex="\alpha"></span>. Путь броска идёт <span class="inline-math" data-latex="\kappa\rightarrow\alpha\rightarrow\kappa"></span>.</p>
+      <p>Система из двух предметов бывает в <span class="inline-math" data-latex="\kappa"></span>, в <span class="inline-math" data-latex="\alpha"></span> и в <span class="inline-math" data-latex="\alpha\kappa"></span>. Тогда один предмет удержан, а другой неудержан:</p>
+      <div class="formula" data-latex="\exists i\,b_i \land \exists i\,\neg b_i" data-display="block"></div>
+      <p>Обычно это разные предметы <span class="inline-math" data-latex="x"></span> и <span class="inline-math" data-latex="y"></span>. Из <span class="inline-math" data-latex="\alpha\kappa"></span> ловля или отпускание сразу ведёт в <span class="inline-math" data-latex="\kappa"></span> или в <span class="inline-math" data-latex="\alpha"></span>. Оба сразу неудержаны идут <span class="inline-math" data-latex="\alpha\kappa\rightarrow\alpha\rightarrow\alpha\kappa"></span>.</p>
+      <p>Система из трёх предметов бывает в <span class="inline-math" data-latex="\kappa"></span>, в <span class="inline-math" data-latex="\alpha"></span> и в <span class="inline-math" data-latex="\alpha\kappa"></span> и может оставаться в <span class="inline-math" data-latex="\alpha\kappa"></span>, пока меняются удержанные.</p>
+      <p>При соглашении об удержании <span class="inline-math" data-latex="02"></span> — система из одного предмета, которая остаётся в <span class="inline-math" data-latex="\kappa"></span> на всём протяжении, Juggling Lab уже называет <span class="inline-math" data-latex="2"></span> долей, которую рука вольна толковать как удержание, а <span class="inline-math" data-latex="0"></span> пустой долей. Трёхпредметный каскад может оставаться <span class="inline-math" data-latex="\alpha\kappa"></span>, пока тождества меняются. Конечный флеш <span class="inline-math" data-latex="55500"></span> трёх предметов из покоя ведёт счёт удержанных <span class="inline-math" data-latex="3\to 2\to 1\to 0\to 1\to 2\to 3"></span>, и знак идёт <span class="inline-math" data-latex="\kappa\rightarrow\alpha\kappa\rightarrow\alpha\rightarrow\alpha\kappa\rightarrow\kappa"></span>.</p>
+      <p>Двое, которые делят одно внимание, для этих <span class="inline-math" data-latex="b_i"></span> всё ещё одно тело. Один держит все предметы, у другого все в воздухе — общая система уже в <span class="inline-math" data-latex="\alpha\kappa"></span>.</p>
+      <h2>Площадка</h2>
+      <p>Один и тот же сайтсвоп может дать больше одной траектории удержания. <span class="inline-math" data-latex="2"></span> можно читать как удержание; модификатор <span class="inline-math" data-latex="T"></span> в сайтсвопе Juggling Lab указывает, что тот же <span class="inline-math" data-latex="2"></span> может быть брошен, и такой бросок приводит систему в акратею. Синхронный цикл ([44],4)(0,0)([22],2) выбрасывает все три, проходит пустые руки и снова держит все три. Другой синхронный цикл ходит из трёх в воздухе в удержание и снова в три.</p>
+      <section class="court-block" aria-label="Площадка сайтсвопа">
+        <form id="court-controls">
+          <div class="pattern-row">
+            <label><input type="radio" name="pattern" value="hold02"> 02</label>
+            <label><input type="radio" name="pattern" value="hold2mux"> 2[22]</label>
+            <label><input type="radio" name="pattern" value="cascade3" checked> 3</label>
+            <label><input type="radio" name="pattern" value="multiplexHold"> 55500522</label>
+            <label><input type="radio" name="pattern" value="flashThenAllHeld"> 555001[22]2[23]</label>
+            <label><input type="radio" name="pattern" value="flashThenHeldLong"> 5550022[22]2[25]22</label>
+            <label><input type="radio" name="pattern" value="loop55500"> 55500</label>
+            <label><input type="radio" name="pattern" value="throwRestHold"> ([44],4)(0,0)([22],2)</label>
+            <label><input type="radio" name="pattern" value="threeUpHold"> ([26x],2)(2,6x)(6x,0)(0,2)(2,2)(2,[22])(2,[26x])(6x,2)(0,6x)(2,0)(2,2)([22],2)</label>
+          </div>
+          <div class="dwell-row">
+            <label>выдержка <span id="dwell-readout">0.70</span>
+              <input type="range" name="dwell" min="0" max="1" step="0.01" value="0.70">
+            </label>
+          </div>
+          <div class="lamp-row">
+            <span class="lamp" id="lamp-no-grip"><span class="lamp-dot"></span> акратея <i>α</i></span>
+            <span class="lamp" id="lamp-grip"><span class="lamp-dot"></span> кратос <i>κ</i></span>
+            <span id="state-code">ακ</span>
+          </div>
+        </form>
+        <canvas id="toss-court" aria-hidden="true"></canvas>
+        <canvas id="occupancy-tape" aria-hidden="true"></canvas>
+        <p id="state-path"></p>
+        <div id="hexagon-panel" hidden>
+          <svg viewBox="-28 -18 176 148" aria-hidden="true">
+            <polygon points="60,8 104,34 104,76 60,102 16,76 16,34" fill="none" stroke="#1d1914" stroke-width="1"/>
+            <g data-hex data-held="1">
+              <circle cx="60" cy="8" r="7"></circle>
+              <text class="hex-label" x="60" y="-4">{1}</text>
+            </g>
+            <g data-hex data-held="2">
+              <circle cx="104" cy="34" r="7"></circle>
+              <text class="hex-label" x="130" y="34">{1,2}</text>
+            </g>
+            <g data-hex data-held="1">
+              <circle cx="104" cy="76" r="7"></circle>
+              <text class="hex-label" x="122" y="80">{2}</text>
+            </g>
+            <g data-hex data-held="2">
+              <circle cx="60" cy="102" r="7"></circle>
+              <text class="hex-label" x="60" y="122">{2,3}</text>
+            </g>
+            <g data-hex data-held="1">
+              <circle cx="16" cy="76" r="7"></circle>
+              <text class="hex-label" x="-4" y="80">{3}</text>
+            </g>
+            <g data-hex data-held="2">
+              <circle cx="16" cy="34" r="7"></circle>
+              <text class="hex-label" x="-8" y="34">{3,1}</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+      <h2>Теории</h2>
+      <p>Возьмём конечное внимание, в котором каждый предмет либо удержан телом, либо уже неудержан. Путь сдвигается, когда отпускают или ловят один предмет. Неполное знание живёт вне <span class="inline-math" data-latex="S"></span> отдельной пометкой наблюдения. Четыре значения Белнапа <em>neither / one / the other / both</em> имеют ту же решёточную форму, которой пользуются для неполной и противоречивой информации (<a href="https://link.springer.com/chapter/10.1007/978-94-010-1161-7_2">Belnap, 1977</a>); знаки относятся к физическому удержанию и неудержанию.</p>
+      <p><span class="inline-math" data-latex="\alpha\kappa"></span> есть нетривиальное разбиение внимания на удержанное и неудержанное, поэтому требует <span class="inline-math" data-latex="n\ge 2"></span>. В <span class="inline-math" data-latex="S"></span> нет мощностей, поэтому система из трёх предметов при <span class="inline-math" data-latex="h=1"></span> и при <span class="inline-math" data-latex="h=2"></span> бывает в <span class="inline-math" data-latex="\alpha\kappa"></span>. Сайтсвоп — описание ритма бросков и удержания; это два пространства состояний, ритм <span class="inline-math" data-latex="T"></span> и удержание сейчас <span class="inline-math" data-latex="S"></span>. Общего отображения из сайтсвопа в траекторию удержания нет, и многие сайтсвопы могут делить одну. Совместное чтение — <span class="inline-math" data-latex="(T,S)"></span>.</p>
+      <p>Независимые подсистемы складываются дизъюнкцией:</p>
+      <div class="formula" data-latex="S(A\cup B)=S(A)\lor S(B)" data-display="block"></div>
+      <p><span class="inline-math" data-latex="\emptyset"></span> — единица этого соединения, <span class="inline-math" data-latex="\alpha\kappa"></span> поглощает. Тело тоже может быть сложной системой: один человек, несколько человек, руки как части, робот с настоящими предметами в том же окружении.</p>
+      <p>Возьмём двоих или нескольких. Свои внимания складываются дизъюнкцией: два каскада дают <span class="inline-math" data-latex="\alpha\kappa"></span>, два полных удержания дают <span class="inline-math" data-latex="\kappa"></span>. Общее внимание для <span class="inline-math" data-latex="b_i"></span> — одно тело; пас есть отпускание и ловля на том же <span class="inline-math" data-latex="O"></span>, в полёте предмет неудержан. Кто кинул и кто поймал, в <span class="inline-math" data-latex="S"></span> не видно. Рук становится больше, знак остаётся тем же.</p>
+      <p><span class="inline-math" data-latex="S"></span> видно и без предметов во внимании, будь то картинка с мячами, игра или эта площадка. Знаки читаются там, где есть удержание и окружение. Теория становится прикладной, когда <span class="inline-math" data-latex="(T,S)"></span> и доля выдержки задают условие, которому путь может не удовлетворить. Путь проверяют на площадке, в аниматоре, на роботе, на репетиции и на уроке. Партитура номера держит <span class="inline-math" data-latex="\alpha\kappa"></span> в каскаде, проходит <span class="inline-math" data-latex="\alpha"></span> флешем трёх предметов, собирает двоих в одно внимание или оставляет каждому своё. Кто учит или говорит о номере, смотрит, есть ли удержание и есть ли неудержание; выдержка решает, остаётся ли <span class="inline-math" data-latex="3"></span> в <span class="inline-math" data-latex="\alpha\kappa"></span>.</p>
+      <p>При <span class="inline-math" data-latex="n\ge 2"></span> любой путь от полного удержания к полному неудержанию проходит через <span class="inline-math" data-latex="\alpha\kappa"></span>: <span class="inline-math" data-latex="\kappa\rightarrow\alpha\kappa\rightarrow\alpha"></span>, и обратно. Из <span class="inline-math" data-latex="\kappa"></span> в <span class="inline-math" data-latex="\alpha"></span> нужно не меньше <span class="inline-math" data-latex="n"></span> отпусканий до нового захвата. Эпизод, который начинается и кончается в <span class="inline-math" data-latex="\kappa"></span> на тех же <span class="inline-math" data-latex="n"></span> предметах, имеет столько же ловлей, сколько бросков; дроп — траектория без возврата. По одному <span class="inline-math" data-latex="S"></span> не отличить деятельность от покоя, поэтому ожидание возврата входит во внимание.</p>
+      <p>Для чередующегося двухручного трёхпредметного каскада <span class="inline-math" data-latex="3"></span> руки сдвинуты на половину цикла руки <span class="inline-math" data-latex="C=D+V"></span>, так что хотя бы одна рука остаётся занятой, когда <span class="inline-math" data-latex="D\ge V"></span>, или <span class="inline-math" data-latex="r=D/(D+V)\ge 1/2"></span>, а из мячей хотя бы один остаётся в акратее. Непрерывное <span class="inline-math" data-latex="\alpha\kappa"></span> тогда есть <span class="inline-math" data-latex="3"></span> вместе с этой выдержкой. Бек и Тёрви нашли <span class="inline-math" data-latex="3/4"></span>, <span class="inline-math" data-latex="2/3"></span> и <span class="inline-math" data-latex="5/8"></span> заметными для трёх мячей и около <span class="inline-math" data-latex="3/4"></span> для пяти и семи (<a href="https://doi.org/10.1037/0096-1523.18.4.934">Beek and Turvey, 1992</a>); статья 2024 года сводит человеческое предпочтение к <span class="inline-math" data-latex="r\approx 0.7"></span>. Если сдвинуть <span class="inline-math" data-latex="r"></span> ниже половины, сам каскад начинает заходить в <span class="inline-math" data-latex="\alpha"></span> в пустых промежутках. Теорема Шеннона о равномерном жонглировании даёт средний счёт удержанных при тех же допущениях (<a href="https://ccom.uprrp.edu/~humberto/shannons-juggling-theorem.html">Shannon, 1993</a>). Здесь <span class="inline-math" data-latex="F"></span>, <span class="inline-math" data-latex="D"></span> и <span class="inline-math" data-latex="V"></span> — доли полёта, выдержки и пустой руки, <span class="inline-math" data-latex="B"></span> — мячи, <span class="inline-math" data-latex="H"></span> — руки:</p>
+      <div class="formula" data-latex="\frac{F+D}{V+D}=\frac{B}{H},\qquad \bar h=Hr" data-display="block"></div>
+      <p>Три — первый счёт, при котором разбиение может непрерывно меняться, пока <span class="inline-math" data-latex="S"></span> остаётся <span class="inline-math" data-latex="\alpha\kappa"></span>. При двух предметах ловля или отпускание сразу выводит систему из <span class="inline-math" data-latex="\alpha\kappa"></span> через полное удержание или полное неудержание. При трёх ловля и отпускание идут циклом удержанных:</p>
+      <div class="formula" data-latex="\{1\}\to\{1,2\}\to\{2\}\to\{2,3\}\to\{3\}\to\{3,1\}" data-display="block"></div>
+      <p>Видимая неподвижность каскада и есть этот обмен внутри одного знака. Назначений <span class="inline-math" data-latex="\alpha\kappa"></span> — <span class="inline-math" data-latex="2^n-2"></span>, и только по одной вершине у <span class="inline-math" data-latex="\kappa"></span> и <span class="inline-math" data-latex="\alpha"></span>. Для <span class="inline-math" data-latex="n\ge 3"></span> любое назначение <span class="inline-math" data-latex="\alpha\kappa"></span> достигает любого другого назначения <span class="inline-math" data-latex="\alpha\kappa"></span> одиночными событиями, которые остаются <span class="inline-math" data-latex="\alpha\kappa"></span>. Пятимячевой каскад может оставаться <span class="inline-math" data-latex="\alpha\kappa"></span>, а цена навыка лежит на другой оси: топология макросостояния против сложности микросостояния.</p>
+      <p>Полное неудержание есть <span class="inline-math" data-latex="\alpha"></span>: каждый предмет в <span class="inline-math" data-latex="O"></span> одновременно неудержан. Шеннон брал непрерывное пребывание в <span class="inline-math" data-latex="\alpha"></span> как математический предел нулевой выдержки. Робототехника изучает ударные системы на этом пределе, где сила приходит прерывисто (<a href="https://hybrid.soe.ucsc.edu/sites/default/files/preprints/17.pdf">Sanfelice, Teel, and Sepulchre, 2007</a>; <a href="https://doi.org/10.1109/lra.2018.2801939">Ruggiero, Lippiello, and Siciliano, 2018</a>; <a href="https://arxiv.org/abs/2606.06704">Ramadani et al., 2026</a>). Отскок, удар ногой и удар ракетки в человеческих руках всё ещё возвращают предмет в удержание: система заходит в <span class="inline-math" data-latex="\alpha"></span> и снова проходит <span class="inline-math" data-latex="\alpha\kappa"></span>.</p>
+      <p>Предметная манипуляция живёт в кратосе. Жонглирование поддерживает сразу акратею и кратос и может коротко заходить в полную акратею.</p>
+      <h2>Заметка</h2>
+      <p>Мне нужен был флеш трёх предметов из покоя, затем удержание всех трёх, затем снова флеш, на бумаге <span class="inline-math" data-latex="55500"></span> к <span class="inline-math" data-latex="2[22]"></span>. Я очень долго искал корректный сайтсвоп для этого пути. Прямое <span class="inline-math" data-latex="555002[22]"></span> не сходится.</p>
+
+    </article>
+    <section class="sources" aria-label="Источники">
+      <h2>Источники</h2>
+      <ol>
+        <li>Juggling Lab. “Siteswap notation used in Juggling Lab.” <a href="http://jugglinglab.org/html/ssnotation.html">http://jugglinglab.org/html/ssnotation.html</a></li>
+        <li>Fan Chung and Ron Graham. “Primitive Juggling Sequences.” <em>American Mathematical Monthly</em> 115 (2008): 185–194. <a href="https://fanchung.ucsd.edu/wp/pjs.pdf">PDF</a></li>
+        <li>Claude E. Shannon. “Scientific Aspects of Juggling.” In <em>Claude Elwood Shannon: Collected Papers</em>, IEEE Press, 1993. Exposition: <a href="https://ccom.uprrp.edu/~humberto/shannons-juggling-theorem.html">Ortiz-Zuazaga</a></li>
+        <li>Peter J. Beek and M. T. Turvey. “Temporal Patterning in Cascade Juggling.” <em>Journal of Experimental Psychology: Human Perception and Performance</em> 18, no. 4 (1992): 934–947. <a href="https://doi.org/10.1037/0096-1523.18.4.934">DOI</a></li>
+        <li>Mario Gomez Andreu, Kai Ploeger, and Jan Peters. “Beyond the Cascade: Juggling Vanilla Siteswap Patterns.” arXiv:2410.19591, 2024. <a href="https://arxiv.org/abs/2410.19591">https://arxiv.org/abs/2410.19591</a></li>
+        <li>Nuel D. Belnap. “A Useful Four-Valued Logic.” In <em>Modern Uses of Multiple-Valued Logic</em>, 8–37. Reidel, 1977.</li>
+        <li>R. G. Sanfelice, A. R. Teel, and R. Sepulchre. “A Hybrid Systems Approach to Trajectory Tracking Control for Juggling Systems.” CDC 2007. <a href="https://hybrid.soe.ucsc.edu/sites/default/files/preprints/17.pdf">PDF</a></li>
+        <li>Fabio Ruggiero, Vincenzo Lippiello, and Bruno Siciliano. “Nonprehensile Dynamic Manipulation: A Survey.” <em>IEEE Robotics and Automation Letters</em> 3, no. 3 (2018): 1711–1718. <a href="https://doi.org/10.1109/lra.2018.2801939">DOI</a></li>
+        <li>Joel Ramadani, Vasilije Rakčević, Riddhiman Laha, Arne Sachtler, Valentin Le Mesle, Achim J. Lilienthal, and Sami Haddadin. “Optimal Control Approach for Non-prehensile Ball Juggling Using a 7-DoF Manipulator.” arXiv:2606.06704, 2026. <a href="https://arxiv.org/abs/2606.06704">https://arxiv.org/abs/2606.06704</a></li>
+      </ol>
+    </section>
+  </main>
+  <script src="shared/tip_viewport.js"></script>
+  <script src="shared/glossary_hints.js"></script>
+  <script>
+    AmaaovGlossary.init({
+      storageKey: "amaaov-hints:holding-topology",
+      root: "main.clipboard",
+      firstOnly: true,
+      defaultOn: true,
+      terms: [
+        { match: "сайтсвоп", tip: "Описание ритма бросков и удержания.", wikipedia: "Siteswap", juggleWiki: "Siteswap" },
+        { match: "выдержка", tip: "Интервал, пока рука удерживает предмет между ловлей и броском.", juggleWiki: "Dwell" },
+        { match: "кратос", tip: "Телесное удержание предмета." },
+        { match: "акратея", tip: "Предмет во внимании и уже неудержан." }
+      ]
+    });
+  </script>
+  <script type="module" src="20260819100800_grip_algebra/grip_algebra_article.js"></script>
+</body>
+</html>

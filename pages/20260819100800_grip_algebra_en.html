@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- © Andrei Makarov / amaaov · CC BY 4.0 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Holding Topology — Boris Fontanov</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+  <meta name="description" content="Two present predicates over body, objects, and environment classify juggling and object manipulation, and separate a robot with real objects from a picture of balls.">
+  <meta name="author" content="Boris Fontanov">
+  <meta property="article:published_time" content="2026-08-19T10:08:00+03:00">
+  <meta property="article:modified_time" content="2026-08-19T22:25:00+03:00">
+  <link rel="canonical" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
+  <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
+  <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
+  <link rel="alternate" hreflang="x-default" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
+  <meta property="og:title" content="Holding Topology — Boris Fontanov">
+  <meta property="og:description" content="Two present predicates over body, objects, and environment classify juggling and object manipulation.">
+  <meta property="og:url" content="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://amaaov.github.io/index.jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Holding Topology — Boris Fontanov">
+  <meta name="twitter:description" content="Two present predicates over body, objects, and environment classify juggling and object manipulation.">
+  <meta name="twitter:image" content="https://amaaov.github.io/index.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Red+Hat+Mono:wght@500;700&amp;family=Red+Hat+Text:wght@400;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/glossary_hints.css">
+  <link rel="stylesheet" href="20260819100800_grip_algebra/grip_algebra_article.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Holding Topology","description":"Two present predicates over body, objects, and environment classify juggling and object manipulation.","author":{"@type":"Person","name":"Boris Fontanov","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-08-19T22:25:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html","inLanguage":"en"}</script>
+</head>
+<body>
+  <a class="skip-link" href="#article-body">Skip to article</a>
+  <header class="site-top">
+    <a class="home-link" href="https://amaaov.github.io/">amaaåv</a>
+    <nav class="language-nav" aria-label="Article languages">
+      <a class="language-link" href="20260819100800_grip_algebra_en.html" aria-current="page">EN</a>
+      <a class="language-link" href="20260819100800_grip_algebra.html">RU</a>
+    </nav>
+  </header>
+  <main class="clipboard" id="article-body" aria-label="Holding Topology">
+    <header class="article-head">
+      <h1>Holding Topology</h1>
+      <p class="article-meta">Boris Fontanov · 19 August 2026 · Helsinki</p>
+    </header>
+    <article class="prose">
+      <p>I've been looking for a strict definition of juggling and for its difference from object manipulation. The turn was seeing that, at a single moment, the state is two at once: something held and something already unheld. Hold and unhold are quantities measured here, and from them come four states that pass into one another.</p>
+      <p>The system I look at is body, objects, and environment. Body here is what retains: a palm, a pinch, a press against the chest, a ball parked on a foot, several people who share the same objects, a robot. An object is the stillest member, almost never changing itself, held or unheld. Environment is the noisiest and is outside the body's command: gravity and air in flight, floor and wall in bounce, a strike that only collides, a draught, an uneven ball. Kratos and akrateia are read on the objects the body holds or that are already unheld. Environment acts more strongly on what is already unheld and increases the uncertainty of each trajectory, the entropy of the system.</p>
+      <section class="layer-atlas" aria-label="object, body, environment">
+        <figure class="atlas-card">
+          <canvas id="layer-object" aria-hidden="true"></canvas>
+          <figcaption>object</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="layer-body" aria-hidden="true"></canvas>
+          <figcaption>body</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="layer-world" aria-hidden="true"></canvas>
+          <figcaption>environment</figcaption>
+        </figure>
+      </section>
+      <h2>Definitions</h2>
+      <p>Let attention <span class="inline-math" data-latex="O(t)"></span> be the finite physical objects in an environment. An object belongs to it while there is focus, control or potential control, and an expectation that the body will take it again. Each object in <span class="inline-math" data-latex="O"></span> is either bodily held or not. Held means physical retention by some part of the body; remote influence does not count.</p>
+      <p>For object <span class="inline-math" data-latex="i"></span>, <span class="inline-math" data-latex="b_i(t)"></span> is <span class="inline-math" data-latex="1"></span> if the body holds it now and <span class="inline-math" data-latex="0"></span> if it is unheld.</p>
+      <div class="formula" data-latex="b_i(t)\in\{0,1\}" data-display="block"></div>
+      <p>The state of the attention <span class="inline-math" data-latex="S(t)"></span> is two answers at once: whether any object is unheld now, and whether any is held.</p>
+      <div class="formula" data-latex="S(t)=(\exists i\,\neg b_i(t),\,\exists i\,b_i(t))" data-display="block"></div>
+      <p>From those two answers come four signs: <span class="inline-math" data-latex="\emptyset"></span>, <span class="inline-math" data-latex="\kappa"></span>, <span class="inline-math" data-latex="\alpha"></span>, <span class="inline-math" data-latex="\alpha\kappa"></span>.</p>
+      <p>Object count and hand count do not enter. With <span class="inline-math" data-latex="n=|O|"></span> and <span class="inline-math" data-latex="h=\sum_i b_i"></span>, the sign already follows: <span class="inline-math" data-latex="\emptyset"></span> when <span class="inline-math" data-latex="n=0"></span>, <span class="inline-math" data-latex="\kappa"></span> when <span class="inline-math" data-latex="h=n>0"></span>, <span class="inline-math" data-latex="\alpha\kappa"></span> when <span class="inline-math" data-latex="0\lt h\lt n"></span>, <span class="inline-math" data-latex="\alpha"></span> when <span class="inline-math" data-latex="h=0\lt n"></span>. Empty attention is <span class="inline-math" data-latex="\emptyset"></span>. Total hold is <span class="inline-math" data-latex="\kappa"></span>: object manipulation, every object in <span class="inline-math" data-latex="O"></span> retained. Total unhold is <span class="inline-math" data-latex="\alpha"></span>. <span class="inline-math" data-latex="\alpha\kappa"></span> is the simultaneous presence of hold and unhold. Juggling keeps <span class="inline-math" data-latex="\alpha\kappa"></span>: akrateia and kratos at once, and may briefly enter <span class="inline-math" data-latex="\alpha"></span>. Total akrateia cannot be held for long. If a ball on the floor is brought into attention while something is already held, the system is in <span class="inline-math" data-latex="\alpha\kappa"></span> while nothing is happening: the signs still need an expectation of return. A drop is when that expectation breaks.</p>
+      <section class="state-atlas" aria-label="Four signs">
+        <figure class="atlas-card">
+          <canvas id="atlas-00" aria-hidden="true"></canvas>
+          <figcaption>∅</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="atlas-01" aria-hidden="true"></canvas>
+          <figcaption>κ</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="atlas-10" aria-hidden="true"></canvas>
+          <figcaption>α</figcaption>
+        </figure>
+        <figure class="atlas-card">
+          <canvas id="atlas-11" aria-hidden="true"></canvas>
+          <figcaption>ακ</figcaption>
+        </figure>
+      </section>
+      <p>Siteswap, as Juggling Lab states it, records which hand will next throw an object and how many beats will elapse first; dwell, vacant time, and whether another object remains held while one is airborne belong to a later physical reading (<a href="http://jugglinglab.org/html/ssnotation.html">Juggling Lab</a>). Chung and Graham’s siteswap <em>state</em> is a description of landings, a <span class="inline-math" data-latex="1"></span> at a position meaning some airborne object will land in that many beats, and the number of <span class="inline-math" data-latex="1"></span>s being the number of balls (<a href="https://fanchung.ucsd.edu/wp/pjs.pdf">Chung and Graham, 2008</a>). In <span class="inline-math" data-latex="S"></span> it is visible whether bodily possession is present now, and whether something unheld is present in the same attention.</p>
+      <h2>Examples</h2>
+      <p>Empty attention is only in <span class="inline-math" data-latex="\emptyset"></span>.</p>
+      <p>A system of one object is only in <span class="inline-math" data-latex="\kappa"></span> and in <span class="inline-math" data-latex="\alpha"></span>. The throw path goes <span class="inline-math" data-latex="\kappa\rightarrow\alpha\rightarrow\kappa"></span>.</p>
+      <p>A system of two objects is in <span class="inline-math" data-latex="\kappa"></span>, in <span class="inline-math" data-latex="\alpha"></span>, and in <span class="inline-math" data-latex="\alpha\kappa"></span>. Then one object is held and the other is unheld:</p>
+      <div class="formula" data-latex="\exists i\,b_i \land \exists i\,\neg b_i" data-display="block"></div>
+      <p>Usually <span class="inline-math" data-latex="x"></span> and <span class="inline-math" data-latex="y"></span> are different objects. From <span class="inline-math" data-latex="\alpha\kappa"></span> a catch or release goes at once into <span class="inline-math" data-latex="\kappa"></span> or <span class="inline-math" data-latex="\alpha"></span>. Both unheld at once go <span class="inline-math" data-latex="\alpha\kappa\rightarrow\alpha\rightarrow\alpha\kappa"></span>.</p>
+      <p>A system of three objects is in <span class="inline-math" data-latex="\kappa"></span>, in <span class="inline-math" data-latex="\alpha"></span>, and in <span class="inline-math" data-latex="\alpha\kappa"></span>, and can stay in <span class="inline-math" data-latex="\alpha\kappa"></span> while the held objects change.</p>
+      <p>Under the hold convention, <span class="inline-math" data-latex="02"></span> is a one-object system that remains in <span class="inline-math" data-latex="\kappa"></span> throughout, Juggling Lab already naming <span class="inline-math" data-latex="2"></span> as a count the hand is free to interpret as a hold, and <span class="inline-math" data-latex="0"></span> as an empty beat. A three-object cascade can remain <span class="inline-math" data-latex="\alpha\kappa"></span> while identities change. A finite <span class="inline-math" data-latex="55500"></span> flash of three objects from rest walks holding <span class="inline-math" data-latex="3\to 2\to 1\to 0\to 1\to 2\to 3"></span>, so the sign walks <span class="inline-math" data-latex="\kappa\rightarrow\alpha\kappa\rightarrow\alpha\rightarrow\alpha\kappa\rightarrow\kappa"></span>.</p>
+      <p>Two people sharing one attention are still one body for these <span class="inline-math" data-latex="b_i"></span>. One person holding every object while the other has every object in the air already puts the shared system in <span class="inline-math" data-latex="\alpha\kappa"></span>.</p>
+      <h2>Simulator</h2>
+      <p>The same siteswap can take more than one holding trajectory. A <span class="inline-math" data-latex="2"></span> may be read as a hold; in Juggling Lab siteswap the <span class="inline-math" data-latex="T"></span> modifier marks that the same <span class="inline-math" data-latex="2"></span> may be thrown, and that throw brings the system into akrateia. The synchronous cycle ([44],4)(0,0)([22],2) throws all three, passes empty hands, and holds all three again. Another synchronous cycle walks from three in the air into a hold and back to three.</p>
+      <section class="court-block" aria-label="Siteswap court">
+        <form id="court-controls">
+          <div class="pattern-row">
+            <label><input type="radio" name="pattern" value="hold02"> 02</label>
+            <label><input type="radio" name="pattern" value="hold2mux"> 2[22]</label>
+            <label><input type="radio" name="pattern" value="cascade3" checked> 3</label>
+            <label><input type="radio" name="pattern" value="multiplexHold"> 55500522</label>
+            <label><input type="radio" name="pattern" value="flashThenAllHeld"> 555001[22]2[23]</label>
+            <label><input type="radio" name="pattern" value="flashThenHeldLong"> 5550022[22]2[25]22</label>
+            <label><input type="radio" name="pattern" value="loop55500"> 55500</label>
+            <label><input type="radio" name="pattern" value="throwRestHold"> ([44],4)(0,0)([22],2)</label>
+            <label><input type="radio" name="pattern" value="threeUpHold"> ([26x],2)(2,6x)(6x,0)(0,2)(2,2)(2,[22])(2,[26x])(6x,2)(0,6x)(2,0)(2,2)([22],2)</label>
+          </div>
+          <div class="dwell-row">
+            <label>dwell <span id="dwell-readout">0.70</span>
+              <input type="range" name="dwell" min="0" max="1" step="0.01" value="0.70">
+            </label>
+          </div>
+          <div class="lamp-row">
+            <span class="lamp" id="lamp-no-grip"><span class="lamp-dot"></span> akrateia <i>α</i></span>
+            <span class="lamp" id="lamp-grip"><span class="lamp-dot"></span> kratos <i>κ</i></span>
+            <span id="state-code">ακ</span>
+          </div>
+        </form>
+        <canvas id="toss-court" aria-hidden="true"></canvas>
+        <canvas id="occupancy-tape" aria-hidden="true"></canvas>
+        <p id="state-path"></p>
+        <div id="hexagon-panel" hidden>
+          <svg viewBox="-28 -18 176 148" aria-hidden="true">
+            <polygon points="60,8 104,34 104,76 60,102 16,76 16,34" fill="none" stroke="#1d1914" stroke-width="1"/>
+            <g data-hex data-held="1">
+              <circle cx="60" cy="8" r="7"></circle>
+              <text class="hex-label" x="60" y="-4">{1}</text>
+            </g>
+            <g data-hex data-held="2">
+              <circle cx="104" cy="34" r="7"></circle>
+              <text class="hex-label" x="130" y="34">{1,2}</text>
+            </g>
+            <g data-hex data-held="1">
+              <circle cx="104" cy="76" r="7"></circle>
+              <text class="hex-label" x="122" y="80">{2}</text>
+            </g>
+            <g data-hex data-held="2">
+              <circle cx="60" cy="102" r="7"></circle>
+              <text class="hex-label" x="60" y="122">{2,3}</text>
+            </g>
+            <g data-hex data-held="1">
+              <circle cx="16" cy="76" r="7"></circle>
+              <text class="hex-label" x="-4" y="80">{3}</text>
+            </g>
+            <g data-hex data-held="2">
+              <circle cx="16" cy="34" r="7"></circle>
+              <text class="hex-label" x="-8" y="34">{3,1}</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+      <h2>Theories</h2>
+      <p>Take finite attention in which each object is either held by the body or already unheld. The path moves when one object is released or caught. Incomplete knowledge lives outside <span class="inline-math" data-latex="S"></span> as a separate observation mark. Belnap’s four values <em>neither / one / the other / both</em> are the same lattice shape used for incomplete and conflicting information (<a href="https://link.springer.com/chapter/10.1007/978-94-010-1161-7_2">Belnap, 1977</a>); the signs belong to physical hold and unhold.</p>
+      <p><span class="inline-math" data-latex="\alpha\kappa"></span> is a nontrivial partition of the attention into held and unheld, so it needs <span class="inline-math" data-latex="n\ge 2"></span>. <span class="inline-math" data-latex="S"></span> carries no cardinalities, so a three-object system is in <span class="inline-math" data-latex="\alpha\kappa"></span> at both <span class="inline-math" data-latex="h=1"></span> and <span class="inline-math" data-latex="h=2"></span>. Siteswap is a description of throw and hold rhythm; these are two state spaces, rhythm <span class="inline-math" data-latex="T"></span> and present holding <span class="inline-math" data-latex="S"></span>. There is no general map from a siteswap to a holding trajectory, and many siteswaps can share one. The combined reading is <span class="inline-math" data-latex="(T,S)"></span>.</p>
+      <p>Independent subsystems compose by disjunction:</p>
+      <div class="formula" data-latex="S(A\cup B)=S(A)\lor S(B)" data-display="block"></div>
+      <p><span class="inline-math" data-latex="\emptyset"></span> is the identity of that join; <span class="inline-math" data-latex="\alpha\kappa"></span> absorbs. The body itself can be a complex system: one person, several persons, hands as parts, a robot with real objects in the same environment.</p>
+      <p>Take two people, or several. Separate attentions join by disjunction: two cascades give <span class="inline-math" data-latex="\alpha\kappa"></span>, two total holds give <span class="inline-math" data-latex="\kappa"></span>. Shared attention is one body for these <span class="inline-math" data-latex="b_i"></span>; a pass is a release and a catch on the same <span class="inline-math" data-latex="O"></span>, and the object is unheld in flight. Who threw and who caught is not visible in <span class="inline-math" data-latex="S"></span>. The number of hands grows; the sign stays the same.</p>
+      <p><span class="inline-math" data-latex="S"></span> is visible even without physical objects in attention, whether a picture of balls, a game, or this court. The signs are read where retention and environment are present. The theory becomes applied when <span class="inline-math" data-latex="(T,S)"></span> and the dwell ratio are a condition a path can fail. The path is checked on the court, in an animator, on a robot, in rehearsal, and in a lesson. The score of a piece can keep <span class="inline-math" data-latex="\alpha\kappa"></span> in a cascade, walk <span class="inline-math" data-latex="\alpha"></span> in a three-object flash, gather two people into one attention, or leave each their own. Whoever teaches or talks about the piece watches whether hold is present and whether unhold is present; dwell decides whether <span class="inline-math" data-latex="3"></span> stays in <span class="inline-math" data-latex="\alpha\kappa"></span>.</p>
+      <p>For <span class="inline-math" data-latex="n\ge 2"></span>, any path from total hold to total unhold passes through <span class="inline-math" data-latex="\alpha\kappa"></span>: <span class="inline-math" data-latex="\kappa\rightarrow\alpha\kappa\rightarrow\alpha"></span>, and back the other way. Reaching <span class="inline-math" data-latex="\alpha"></span> from <span class="inline-math" data-latex="\kappa"></span> takes at least <span class="inline-math" data-latex="n"></span> releases before a reacquisition. An episode that starts and ends in <span class="inline-math" data-latex="\kappa"></span> on the same <span class="inline-math" data-latex="n"></span> objects has as many catches as throws; a drop is a trajectory without return. From <span class="inline-math" data-latex="S"></span> alone, activity and rest look the same, which is why the expectation of return belongs with the attention.</p>
+      <p>For an alternating two-hand three-object cascade <span class="inline-math" data-latex="3"></span>, the hands are offset by half a hand cycle <span class="inline-math" data-latex="C=D+V"></span>, so at least one hand remains occupied when <span class="inline-math" data-latex="D\ge V"></span>, or <span class="inline-math" data-latex="r=D/(D+V)\ge 1/2"></span>, while at least one ball stays in akrateia. Continuous <span class="inline-math" data-latex="\alpha\kappa"></span> is then <span class="inline-math" data-latex="3"></span> together with that dwell. Beek and Turvey found <span class="inline-math" data-latex="3/4"></span>, <span class="inline-math" data-latex="2/3"></span>, and <span class="inline-math" data-latex="5/8"></span> prominent for three balls, and about <span class="inline-math" data-latex="3/4"></span> for five and seven (<a href="https://doi.org/10.1037/0096-1523.18.4.934">Beek and Turvey, 1992</a>); the 2024 robot paper summarises human preference near <span class="inline-math" data-latex="r\approx 0.7"></span>. If <span class="inline-math" data-latex="r"></span> drops below one half, the cascade itself begins to enter <span class="inline-math" data-latex="\alpha"></span> in the vacant gaps. Shannon’s uniform-juggle theorem supplies the mean held count under the same assumptions (<a href="https://ccom.uprrp.edu/~humberto/shannons-juggling-theorem.html">Shannon, 1993</a>). Here <span class="inline-math" data-latex="F"></span>, <span class="inline-math" data-latex="D"></span>, and <span class="inline-math" data-latex="V"></span> are flight, dwell, and vacant beats, <span class="inline-math" data-latex="B"></span> the balls, <span class="inline-math" data-latex="H"></span> the hands:</p>
+      <div class="formula" data-latex="\frac{F+D}{V+D}=\frac{B}{H},\qquad \bar h=Hr" data-display="block"></div>
+      <p>Three is the first count at which the partition can keep changing while <span class="inline-math" data-latex="S"></span> stays <span class="inline-math" data-latex="\alpha\kappa"></span>. With two objects a catch or release takes the system out of <span class="inline-math" data-latex="\alpha\kappa"></span> through total hold or total unhold. With three, catch and release walk a cycle of which objects are held:</p>
+      <div class="formula" data-latex="\{1\}\to\{1,2\}\to\{2\}\to\{2,3\}\to\{3\}\to\{3,1\}" data-display="block"></div>
+      <p>The cascade’s visible stillness is that exchange inside one sign. Assignments of <span class="inline-math" data-latex="\alpha\kappa"></span> number <span class="inline-math" data-latex="2^n-2"></span>, and only one vertex each for <span class="inline-math" data-latex="\kappa"></span> and <span class="inline-math" data-latex="\alpha"></span>. For <span class="inline-math" data-latex="n\ge 3"></span> any <span class="inline-math" data-latex="\alpha\kappa"></span> assignment reaches any other <span class="inline-math" data-latex="\alpha\kappa"></span> assignment by single-object events that remain <span class="inline-math" data-latex="\alpha\kappa"></span>. A five-ball cascade can remain <span class="inline-math" data-latex="\alpha\kappa"></span> while its skill cost sits on another axis: macrostate topology versus microstate complexity.</p>
+      <p>Total unhold is <span class="inline-math" data-latex="\alpha"></span>: every object in <span class="inline-math" data-latex="O"></span> is unheld at once. Shannon treated staying in <span class="inline-math" data-latex="\alpha"></span> continuously as a mathematical limit of zero dwell. Robotics studies impact systems on that limit, where force arrives in pulses (<a href="https://hybrid.soe.ucsc.edu/sites/default/files/preprints/17.pdf">Sanfelice, Teel, and Sepulchre, 2007</a>; <a href="https://doi.org/10.1109/lra.2018.2801939">Ruggiero, Lippiello, and Siciliano, 2018</a>; <a href="https://arxiv.org/abs/2606.06704">Ramadani et al., 2026</a>). Bounce, a colliding kick, and a paddle strike in human hands still return the object to holding: the system enters <span class="inline-math" data-latex="\alpha"></span> and crosses <span class="inline-math" data-latex="\alpha\kappa"></span> again.</p>
+      <p>Object manipulation lives in kratos. Juggling keeps akrateia and kratos together and may briefly enter total akrateia.</p>
+      <h2>Note</h2>
+      <p>I wanted a three-object flash from rest, then a hold of all three, then the flash again, written <span class="inline-math" data-latex="55500"></span> into <span class="inline-math" data-latex="2[22]"></span>. I looked a long time for a valid siteswap for that path. Direct <span class="inline-math" data-latex="555002[22]"></span> does not close.</p>
+
+    </article>
+    <section class="sources" aria-label="Sources">
+      <h2>Sources</h2>
+      <ol>
+        <li>Juggling Lab. “Siteswap notation used in Juggling Lab.” <a href="http://jugglinglab.org/html/ssnotation.html">http://jugglinglab.org/html/ssnotation.html</a></li>
+        <li>Fan Chung and Ron Graham. “Primitive Juggling Sequences.” <em>American Mathematical Monthly</em> 115 (2008): 185–194. <a href="https://fanchung.ucsd.edu/wp/pjs.pdf">PDF</a></li>
+        <li>Claude E. Shannon. “Scientific Aspects of Juggling.” In <em>Claude Elwood Shannon: Collected Papers</em>, IEEE Press, 1993. Exposition: <a href="https://ccom.uprrp.edu/~humberto/shannons-juggling-theorem.html">Ortiz-Zuazaga</a></li>
+        <li>Peter J. Beek and M. T. Turvey. “Temporal Patterning in Cascade Juggling.” <em>Journal of Experimental Psychology: Human Perception and Performance</em> 18, no. 4 (1992): 934–947. <a href="https://doi.org/10.1037/0096-1523.18.4.934">DOI</a></li>
+        <li>Mario Gomez Andreu, Kai Ploeger, and Jan Peters. “Beyond the Cascade: Juggling Vanilla Siteswap Patterns.” arXiv:2410.19591, 2024. <a href="https://arxiv.org/abs/2410.19591">https://arxiv.org/abs/2410.19591</a></li>
+        <li>Nuel D. Belnap. “A Useful Four-Valued Logic.” In <em>Modern Uses of Multiple-Valued Logic</em>, 8–37. Reidel, 1977.</li>
+        <li>R. G. Sanfelice, A. R. Teel, and R. Sepulchre. “A Hybrid Systems Approach to Trajectory Tracking Control for Juggling Systems.” CDC 2007. <a href="https://hybrid.soe.ucsc.edu/sites/default/files/preprints/17.pdf">PDF</a></li>
+        <li>Fabio Ruggiero, Vincenzo Lippiello, and Bruno Siciliano. “Nonprehensile Dynamic Manipulation: A Survey.” <em>IEEE Robotics and Automation Letters</em> 3, no. 3 (2018): 1711–1718. <a href="https://doi.org/10.1109/lra.2018.2801939">DOI</a></li>
+        <li>Joel Ramadani, Vasilije Rakčević, Riddhiman Laha, Arne Sachtler, Valentin Le Mesle, Achim J. Lilienthal, and Sami Haddadin. “Optimal Control Approach for Non-prehensile Ball Juggling Using a 7-DoF Manipulator.” arXiv:2606.06704, 2026. <a href="https://arxiv.org/abs/2606.06704">https://arxiv.org/abs/2606.06704</a></li>
+      </ol>
+    </section>
+  </main>
+  <script src="shared/tip_viewport.js"></script>
+  <script src="shared/glossary_hints.js"></script>
+  <script>
+    AmaaovGlossary.init({
+      storageKey: "amaaov-hints:holding-topology",
+      root: "main.clipboard",
+      firstOnly: true,
+      defaultOn: true,
+      terms: [
+        { match: "siteswap", tip: "A description of throw and hold rhythm.", wikipedia: "Siteswap", juggleWiki: "Siteswap" },
+        { match: "dwell", tip: "Interval while a hand holds an object between catch and throw.", juggleWiki: "Dwell" },
+        { match: "kratos", tip: "Bodily holding of an object by the body." },
+        { match: "akrateia", tip: "An object in attention and already unheld." }
+      ]
+    });
+  </script>
+  <script type="module" src="20260819100800_grip_algebra/grip_algebra_article.js"></script>
+</body>
+</html>
