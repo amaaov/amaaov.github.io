@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { latexToMathMl, splitLeadingMathPunctuation } from "../formula.js";
 
-test("renders the freeze pair as existence of unhold and hold", () => {
+test("renders the freeze pair as existence of akrateia and hold", () => {
   const math = latexToMathMl("S(t)=(\\exists i\\,\\neg b_i(t),\\exists i\\,b_i(t))");
   assert.match(math, /<math/);
   assert.match(math, /∃/);
@@ -35,6 +35,30 @@ test("renders Shannon fraction", () => {
   assert.match(math, /<mfrac/);
   assert.match(math, />F</);
   assert.match(math, />B</);
+});
+
+test("renders holding-topology map, boundary, floor, and time integral", () => {
+  const projection = latexToMathMl("P\\longmapsto(\\mathrm{S}(P),H_P(t))");
+  assert.match(projection, /↦/);
+  assert.equal(projection.includes("longmapsto"), false);
+
+  const boundary = latexToMathMl("d_{\\partial}(H)=\\operatorname{min}(q,n-q)");
+  assert.match(boundary, /∂/);
+  assert.match(boundary, /mathvariant="normal">min/);
+  assert.equal(boundary.includes(">partial<"), false);
+
+  const robustness = latexToMathMl("\\lfloor n\/2\\rfloor");
+  assert.match(robustness, /⌊/);
+  assert.match(robustness, /⌋/);
+
+  const average = latexToMathMl("\\bar g=\\frac{1}{nT}\\int_0^T q(t)\\,dt");
+  assert.match(average, /∫/);
+  assert.equal(average.includes(">int<"), false);
+
+  const adjacency = latexToMathMl("H\\sim H'\\iff |H\\triangle H'|=1");
+  assert.match(adjacency, /∼/);
+  assert.match(adjacency, /⇔/);
+  assert.match(adjacency, /△/);
 });
 
 test("renders boxed universal no-grip invariant", () => {
