@@ -37,6 +37,21 @@ test("renders Shannon fraction", () => {
   assert.match(math, />B</);
 });
 
+test("renders a cases environment as a braced two-column table", () => {
+  const math = latexToMathMl(
+    "(p_0,p_1,p_2,p_3)=\\begin{cases}(1-2r,2r,0,0),&0\\le r\\le\\frac{1}{2}\\\\(0,2-2r,2r-1,0),&\\frac{1}{2}\\le r\\le1.\\end{cases}",
+    true,
+  );
+
+  assert.match(math, /<mo fence="true" stretchy="true" form="prefix">\{<\/mo>/);
+  assert.equal((math.match(/<mtr>/g) || []).length, 2);
+  assert.equal((math.match(/<mtd>/g) || []).length, 4);
+  assert.match(math, /<mfrac>/);
+  assert.equal(math.includes("begin"), false);
+  assert.equal(math.includes("cases"), false);
+  assert.equal(math.includes("end"), false);
+});
+
 test("renders holding-topology map, boundary, floor, and time integral", () => {
   const projection = latexToMathMl("P\\longmapsto(\\mathrm{S}(P),H_P(t))");
   assert.match(projection, /↦/);

@@ -85,6 +85,21 @@ function tokenize(source) {
   let absoluteBarOpen = false;
   while (index < source.length) {
     const character = source[index];
+    if (source.startsWith("\\begin{cases}", index)) {
+      tokens.push({ type: "cases_start" });
+      index += "\\begin{cases}".length;
+      continue;
+    }
+    if (source.startsWith("\\end{cases}", index)) {
+      tokens.push({ type: "cases_end" });
+      index += "\\end{cases}".length;
+      continue;
+    }
+    if (character === "\\" && source[index + 1] === "\\") {
+      tokens.push({ type: "row_separator" });
+      index += 2;
+      continue;
+    }
     if (character === "\\" && source.startsWith("\\operatorname", index)) {
       const start = source.indexOf("{", index);
       const end = source.indexOf("}", start);
@@ -183,6 +198,11 @@ function tokenize(source) {
       index += 1;
       continue;
     }
+    if (character === "&") {
+      tokens.push({ type: "column_separator" });
+      index += 1;
+      continue;
+    }
     if ("=+-*/<>',.:;".includes(character)) {
       tokens.push({ type: "op", value: character === "*" ? "⋅" : character });
       index += 1;
@@ -215,6 +235,28 @@ function parseGroup(tokens, cursor) {
     return mrow(inner);
   }
   return parseAtom(tokens, cursor);
+}
+
+function parseCases(tokens, cursor) {
+  const rows = [];
+  while (tokens[cursor.index] && tokens[cursor.index].type !== "cases_end") {
+    const cells = [parseUntilAny(tokens, cursor, new Set(["column_separator", "row_separator", "cases_end"]))];
+    while (tokens[cursor.index]?.type === "column_separator") {
+      cursor.index += 1;
+      cells.push(parseUntilAny(tokens, cursor, new Set(["column_separator", "row_separator", "cases_end"])));
+    }
+    rows.push(`<mtr>${cells.map((cell) => `<mtd>${mrow(cell)}</mtd>`).join("")}</mtr>`);
+    if (tokens[cursor.index]?.type === "row_separator") {
+      cursor.index += 1;
+    }
+  }
+  if (tokens[cursor.index]?.type === "cases_end") {
+    cursor.index += 1;
+  }
+  return mrow(
+    `<mo fence="true" stretchy="true" form="prefix">{</mo>` +
+      `<mtable columnalign="left left" columnspacing="1em">${rows.join("")}</mtable>`,
+  );
 }
 
 function parseAtom(tokens, cursor) {
@@ -276,6 +318,9 @@ function parseAtom(tokens, cursor) {
     const inner = parseGroup(tokens, cursor);
     return `<mover>${inner}<mo>¯</mo></mover>`;
   }
+  if (token.type === "cases_start") {
+    return parseCases(tokens, cursor);
+  }
   if (token.type === "lbrace") {
     const inner = parseUntil(tokens, cursor, "rbrace");
     cursor.index += 1;
@@ -285,8 +330,12 @@ function parseAtom(tokens, cursor) {
 }
 
 function parseUntil(tokens, cursor, stopType) {
+  return parseUntilAny(tokens, cursor, new Set([stopType]));
+}
+
+function parseUntilAny(tokens, cursor, stopTypes) {
   let body = "";
-  while (tokens[cursor.index] && tokens[cursor.index].type !== stopType) {
+  while (tokens[cursor.index] && !stopTypes.has(tokens[cursor.index].type)) {
     body += parseScripted(tokens, cursor);
   }
   return body;
