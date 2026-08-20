@@ -138,6 +138,10 @@ body {
 
 .formula math {
   font-size: 1.08em;
+  inline-size: max-content;
+  min-inline-size: 100%;
+  margin-inline: auto;
+  white-space: nowrap;
 }
 
 .inline-math {

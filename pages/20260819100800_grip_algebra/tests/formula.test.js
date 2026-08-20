@@ -37,6 +37,14 @@ test("renders Shannon fraction", () => {
   assert.match(math, />B</);
 });
 
+test("display formulas scroll as one equation instead of breaking into lines", () => {
+  const displayMath = latexToMathMl("A\\to B\\to C", true);
+  const inlineMath = latexToMathMl("A\\to B\\to C");
+
+  assert.match(displayMath, /<math[^>]* display="block"[^>]* overflow="scroll"/);
+  assert.equal(inlineMath.includes('overflow="scroll"'), false);
+});
+
 test("renders a cases environment as a braced two-column table", () => {
   const math = latexToMathMl(
     "(p_0,p_1,p_2,p_3)=\\begin{cases}(1-2r,2r,0,0),&0\\le r\\le\\frac{1}{2}\\\\(0,2-2r,2r-1,0),&\\frac{1}{2}\\le r\\le1.\\end{cases}",

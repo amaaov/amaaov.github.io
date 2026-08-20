@@ -356,7 +356,7 @@ export function latexToMathMl(source, display = false) {
   const tokens = tokenize(source);
   const cursor = { index: 0 };
   const inner = parseUntil(tokens, cursor, "end");
-  const displayAttr = display ? ' display="block"' : "";
+  const displayAttr = display ? ' display="block" overflow="scroll"' : "";
   return `<math xmlns="http://www.w3.org/1998/Math/MathML"${displayAttr}>${inner}</math>`;
 }
 
