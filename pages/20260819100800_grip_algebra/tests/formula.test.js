@@ -13,6 +13,25 @@ test("renders the freeze pair as existence of akrateia and hold", () => {
   assert.equal(math.includes(">F<"), false);
 });
 
+test("keeps quantified aggregation operators at text size", () => {
+  const quantified = latexToMathMl("\\forall i\\in O,\\exists j\\in O");
+  assert.match(
+    quantified,
+    /<mo form="prefix" stretchy="false" largeop="false" movablelimits="false">∀<\/mo>/,
+  );
+  assert.match(
+    quantified,
+    /<mo form="prefix" stretchy="false" largeop="false" movablelimits="false">∃<\/mo>/,
+  );
+
+  const aggregation = latexToMathMl("\\bigvee_{i\\in O}b_i");
+  assert.match(
+    aggregation,
+    /<mo stretchy="false" largeop="false" movablelimits="false">∨<\/mo>/,
+  );
+  assert.equal(aggregation.includes("⋁"), false);
+});
+
 test("renders held-count sum and composition join", () => {
   const sum = latexToMathMl("h=\\sum_i b_i");
   assert.match(sum, /∑/);
@@ -21,6 +40,26 @@ test("renders held-count sum and composition join", () => {
   const join = latexToMathMl("S(A\\cup B)=S(A)\\lor S(B)");
   assert.match(join, /∪/);
   assert.match(join, /∨/);
+});
+
+test("renders flash load and biomechanical notation without leaking command names", () => {
+  const load = latexToMathMl(
+    "\\nu_\\alpha=\\frac{N_{\\mathrm{enter}}(\\alpha)}{T},F_{z,\\mathrm{rms}}\\ge\\frac{Mg}{\\sqrt{1-P_\\alpha}}",
+  );
+  assert.match(load, /ν/);
+  assert.match(load, /<msqrt>/);
+  assert.equal(load.includes(">sqrt<"), false);
+
+  const mechanics = latexToMathMl(
+    "J_j=m_j\\lVert\\mathbf v_j^+-\\mathbf v_j^-\\rVert+\\sum_\\ell\\max(\\tau_\\ell\\dot\\theta_\\ell,0)",
+  );
+  assert.match(mechanics, /‖/);
+  assert.match(mechanics, /mathvariant="bold"/);
+  assert.match(mechanics, /τ/);
+  assert.match(mechanics, /θ/);
+  assert.match(mechanics, /<mover>/);
+  assert.equal(mechanics.includes(">lVert<"), false);
+  assert.equal(mechanics.includes(">mathbf<"), false);
 });
 
 test("combined reading pair is T with S, not sigma", () => {

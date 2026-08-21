@@ -32,7 +32,7 @@ const COMMANDS = {
   ldots: "…",
   dots: "…",
   sqcup: "⊔",
-  bigvee: "⋁",
+  bigvee: "∨",
   sum: "∑",
   lnot: "¬",
   colon: ":",
@@ -43,6 +43,10 @@ const COMMANDS = {
   approx: "≈",
   alpha: "α",
   kappa: "κ",
+  nu: "ν",
+  theta: "θ",
+  tau: "τ",
+  ell: "ℓ",
   sigma: "σ",
   pi: "π",
   mu: "μ",
@@ -52,9 +56,13 @@ const COMMANDS = {
   rfloor: "⌋",
   Phi: "Φ",
   Sigma: "Σ",
+  max: "max",
+  lVert: "‖",
+  rVert: "‖",
 };
 
 const PREFIX_COMMANDS = new Set(["exists", "forall", "neg", "lnot"]);
+const COMPACT_NARY_COMMANDS = new Set(["bigvee"]);
 
 function escapeXml(text) {
   return String(text)
@@ -129,6 +137,21 @@ function tokenize(source) {
     if (character === "\\" && source.startsWith("\\boxed", index)) {
       tokens.push({ type: "boxed" });
       index += 6;
+      continue;
+    }
+    if (character === "\\" && source.startsWith("\\sqrt", index)) {
+      tokens.push({ type: "sqrt" });
+      index += 5;
+      continue;
+    }
+    if (character === "\\" && source.startsWith("\\mathbf", index)) {
+      tokens.push({ type: "bold" });
+      index += 7;
+      continue;
+    }
+    if (character === "\\" && source.startsWith("\\dot", index)) {
+      tokens.push({ type: "dot" });
+      index += 4;
       continue;
     }
     if (character === "\\" && source.startsWith("\\bar", index)) {
@@ -295,8 +318,11 @@ function parseAtom(tokens, cursor) {
       if (/[A-Za-zα-ωΑ-Ω]/.test(symbol)) {
         return mi(symbol);
       }
+      if (COMPACT_NARY_COMMANDS.has(token.value)) {
+        return `<mo stretchy="false" largeop="false" movablelimits="false">${escapeXml(symbol)}</mo>`;
+      }
       if (PREFIX_COMMANDS.has(token.value)) {
-        return `<mo form="prefix" largeop="false" movablelimits="false">${escapeXml(symbol)}</mo>`;
+        return `<mo form="prefix" stretchy="false" largeop="false" movablelimits="false">${escapeXml(symbol)}</mo>`;
       }
       return mo(symbol);
     }
@@ -313,6 +339,18 @@ function parseAtom(tokens, cursor) {
   if (token.type === "boxed") {
     const inner = parseGroup(tokens, cursor);
     return `<menclose notation="box">${inner}</menclose>`;
+  }
+  if (token.type === "sqrt") {
+    const inner = parseGroup(tokens, cursor);
+    return `<msqrt>${inner}</msqrt>`;
+  }
+  if (token.type === "bold") {
+    const inner = parseGroup(tokens, cursor);
+    return `<mstyle mathvariant="bold">${inner}</mstyle>`;
+  }
+  if (token.type === "dot") {
+    const inner = parseGroup(tokens, cursor);
+    return `<mover>${inner}<mo>˙</mo></mover>`;
   }
   if (token.type === "bar") {
     const inner = parseGroup(tokens, cursor);
