@@ -1,0 +1,2 @@
+result_class,status,outcome_name,predictor,coefficient,standard_error,observations,participants,residual_dof,controls,absorbed_controls,method
+empirical unknown,not_run_no_human_observations,,,,,0,0,0,object_count;hand_count;object_mass_kg;throw_height_m;beat_frequency_hz;dwell_ratio;phase_fraction;catch_compliance_m_per_n;correction_rate_hz,,participant fixed effects by within-person demeaning; constant controls absorbed; homoskedastic OLS SE; no p-values

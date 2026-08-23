@@ -1,3 +1,4 @@
+import { courtGroundFill, paintCourtSky } from "./court_cosmology.js";
 import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "./holding.js";
 
 const GRIP_FILL = "#c24a1c";
@@ -63,18 +64,28 @@ function handWakeRgb() {
   return "154, 115, 64";
 }
 
-function collectWakePoints(frames, live, width, height) {
-  const points = frames.map((frame) => ({
-    x: frame.x * width,
-    y: frame.y * height,
-    held: frame.held,
-  }));
-  points.push({
-    x: live.x * width,
-    y: live.y * height,
-    held: live.held,
-  });
-  return points;
+export function containedCourtRect(width, height, designSize = 260) {
+  const scale = Math.min(width / designSize, height / designSize);
+  const drawn = designSize * scale;
+  return {
+    left: (width - drawn) / 2,
+    top: (height - drawn) / 2,
+    width: drawn,
+    height: drawn,
+    scale,
+  };
+}
+
+function mapCourtPoint(position, rect) {
+  return {
+    x: rect.left + position.x * rect.width,
+    y: rect.top + position.y * rect.height,
+    held: position.held,
+  };
+}
+
+function collectWakePoints(frames, live, rect) {
+  return [...frames.map((frame) => mapCourtPoint(frame, rect)), mapCourtPoint(live, rect)];
 }
 
 function focusAlpha(layer, role, held) {
@@ -110,15 +121,16 @@ function drawForceArrow(context, fromX, fromY, toX, toY, color, width) {
   context.stroke();
 }
 
-function drawLayerForces(context, positions, hands, layer, width, height, scale, ballRadius) {
+function drawLayerForces(context, positions, hands, layer, rect, scale, ballRadius) {
   if (layer === "object") {
     context.lineWidth = Math.max(1.6, 2.2 * scale);
     for (const position of positions) {
+      const point = mapCourtPoint(position, rect);
       context.strokeStyle = position.held ? GRIP_FILL : AIR_FILL;
       context.beginPath();
       context.arc(
-        position.x * width,
-        position.y * height,
+        point.x,
+        point.y,
         ballRadius + Math.max(4, 5.5 * scale),
         0,
         Math.PI * 2,
@@ -133,25 +145,22 @@ function drawLayerForces(context, positions, hands, layer, width, height, scale,
       if (!position.held) {
         continue;
       }
-      const hand = hands[position.hand] ?? hands[0];
-      const fromX = hand.x * width;
-      const fromY = hand.y * height;
-      const toX = position.x * width;
-      const toY = position.y * height;
-      const span = Math.hypot(toX - fromX, toY - fromY);
+      const hand = mapCourtPoint(hands[position.hand] ?? hands[0], rect);
+      const point = mapCourtPoint(position, rect);
+      const span = Math.hypot(point.x - hand.x, point.y - hand.y);
       if (span < 4) {
         continue;
       }
-      const ux = (toX - fromX) / span;
-      const uy = (toY - fromY) / span;
+      const ux = (point.x - hand.x) / span;
+      const uy = (point.y - hand.y) / span;
       const start = Math.min(span * 0.18, Math.max(6, 10 * scale));
       const end = Math.max(start + 4, span - ballRadius - Math.max(2, 3 * scale));
       drawForceArrow(
         context,
-        fromX + ux * start,
-        fromY + uy * start,
-        fromX + ux * end,
-        fromY + uy * end,
+        hand.x + ux * start,
+        hand.y + uy * start,
+        hand.x + ux * end,
+        hand.y + uy * end,
         GRIP_FILL,
         arrowWidth,
       );
@@ -165,39 +174,41 @@ function drawLayerForces(context, positions, hands, layer, width, height, scale,
       if (position.held) {
         continue;
       }
-      const x = position.x * width;
-      const y = position.y * height + ballRadius + Math.max(2, 3 * scale);
-      drawForceArrow(context, x, y, x, y + drop, AIR_FILL, arrowWidth);
+      const point = mapCourtPoint(position, rect);
+      const y = point.y + ballRadius + Math.max(2, 3 * scale);
+      drawForceArrow(context, point.x, y, point.x, y + drop, AIR_FILL, arrowWidth);
     }
   }
 }
 
-export function drawTossCourt(canvas, positions, hands, trails = [], layer = null) {
+export function drawTossCourt(canvas, positions, hands, trails = [], layer = null, sky = null) {
   const context = canvas.getContext("2d");
   const width = canvas.width;
   const height = canvas.height;
-  const scale = Math.min(width, height) / 260;
+  const rect = containedCourtRect(width, height);
+  const scale = rect.scale;
   const inset = Math.max(8, 18 * scale);
   const handWidth = Math.max(8, 22 * scale);
   const handHeight = Math.max(4, 10 * scale);
   const ballRadius = Math.max(5, 11 * scale);
   context.clearRect(0, 0, width, height);
-  context.fillStyle = "#c4a56a";
+  context.fillStyle = courtGroundFill(sky);
   context.fillRect(0, 0, width, height);
+  paintCourtSky(context, rect, sky, scale);
   context.strokeStyle = "rgba(36, 92, 58, 0.55)";
   context.lineWidth = Math.max(1.2, 3 * scale);
-  context.strokeRect(inset, inset, width - inset * 2, height - inset * 2);
+  context.strokeRect(rect.left + inset, rect.top + inset, rect.width - inset * 2, rect.height - inset * 2);
   context.beginPath();
-  context.moveTo(width / 2, inset);
-  context.lineTo(width / 2, height - inset);
+  context.moveTo(rect.left + rect.width / 2, rect.top + inset);
+  context.lineTo(rect.left + rect.width / 2, rect.top + rect.height - inset);
   context.stroke();
   context.strokeStyle = "rgba(29, 25, 20, 0.18)";
   context.lineWidth = 1;
   for (let line = 1; line < 6; line += 1) {
-    const y = inset + ((height - inset * 2) * line) / 6;
+    const y = rect.top + inset + ((rect.height - inset * 2) * line) / 6;
     context.beginPath();
-    context.moveTo(inset, y);
-    context.lineTo(width - inset, y);
+    context.moveTo(rect.left + inset, y);
+    context.lineTo(rect.left + rect.width - inset, y);
     context.stroke();
   }
   positions.forEach((position, objectIndex) => {
@@ -206,7 +217,7 @@ export function drawTossCourt(canvas, positions, hands, trails = [], layer = nul
       .filter(Boolean);
     drawTaperedWake(
       context,
-      collectWakePoints(history, position, width, height),
+      collectWakePoints(history, position, rect),
       objectWakeRgb,
       Math.max(0.85, 1.7 * scale),
     );
@@ -217,7 +228,7 @@ export function drawTossCourt(canvas, positions, hands, trails = [], layer = nul
       .filter(Boolean);
     drawTaperedWake(
       context,
-      collectWakePoints(history, hand, width, height),
+      collectWakePoints(history, hand, rect),
       handWakeRgb,
       Math.max(0.8, 1.45 * scale),
     );
@@ -225,31 +236,29 @@ export function drawTossCourt(canvas, positions, hands, trails = [], layer = nul
   for (const hand of hands) {
     context.save();
     context.globalAlpha = focusAlpha(layer, "hand");
-    const x = hand.x * width;
-    const y = hand.y * height;
+    const point = mapCourtPoint(hand, rect);
     context.fillStyle = "rgba(29, 25, 20, 0.55)";
     context.beginPath();
-    context.ellipse(x, y, handWidth, handHeight, 0, 0, Math.PI * 2);
+    context.ellipse(point.x, point.y, handWidth, handHeight, 0, 0, Math.PI * 2);
     context.fill();
     context.restore();
   }
   positions.forEach((position, index) => {
     context.save();
     context.globalAlpha = focusAlpha(layer, "object", position.held);
-    const x = position.x * width;
-    const y = position.y * height;
+    const point = mapCourtPoint(position, rect);
     context.fillStyle = position.held ? GRIP_FILL : AIR_FILL;
     context.beginPath();
-    context.arc(x, y, ballRadius, 0, Math.PI * 2);
+    context.arc(point.x, point.y, ballRadius, 0, Math.PI * 2);
     context.fill();
     context.fillStyle = "#f7f0e4";
     context.font = `600 ${Math.max(8, 11 * scale)}px 'Red Hat Text', sans-serif`;
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(String(index + 1), x, y + 0.5);
+    context.fillText(String(index + 1), point.x, point.y + 0.5);
     context.restore();
   });
-  drawLayerForces(context, positions, hands, layer, width, height, scale, ballRadius);
+  drawLayerForces(context, positions, hands, layer, rect, scale, ballRadius);
 }
 
 export function drawOccupancyTape(canvas, states) {
@@ -277,6 +286,14 @@ export function compressStates(states) {
     }
   }
   return compressed;
+}
+
+export function recentStatePath(states, limit = 7) {
+  const compressed = compressStates(states);
+  if (compressed.length <= limit) {
+    return compressed;
+  }
+  return ["…", ...compressed.slice(-limit)];
 }
 
 const MIXED_CYCLE_KEYS = ["100", "110", "010", "011", "001", "101"];

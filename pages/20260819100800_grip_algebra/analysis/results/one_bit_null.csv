@@ -1,0 +1,12 @@
+object_count,mixed_state_count,process_assumption,stationary_source_assumption,boundary_hit_probability_from_uniform_mixed,boundary_hit_probability_from_uniform_mixed_exact,stationary_mean_mixed_state_visits_per_excursion,stationary_mean_mixed_state_visits_per_excursion_exact,stationary_mean_boundary_return_flips,stationary_mean_boundary_return_flips_exact,central_start_held_count,central_boundary_distance,central_first_passage_steps,central_first_passage_steps_exact,result_class
+2,2,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,1,1,1,1,2,2,1,1,1,1,theorem
+3,6,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.333333333333,1/3,3,3,4,4,1,1,3,3,theorem
+4,14,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.142857142857,1/7,7,7,8,8,2,2,8,8,theorem
+5,30,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.0666666666667,1/15,15,15,16,16,2,2,17.5,35/2,theorem
+6,62,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.0322580645161,1/31,31,31,32,32,3,3,37,37,theorem
+7,126,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.015873015873,1/63,63,63,64,64,3,3,74.6666666667,224/3,theorem
+8,254,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.00787401574803,1/127,127,127,128,128,4,4,149.333333333,448/3,theorem
+9,510,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.00392156862745,1/255,255,255,256,256,4,4,295.5,591/2,theorem
+10,1022,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.00195694716243,1/511,511,511,512,512,5,5,584.333333333,1753/3,theorem
+11,2046,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.000977517106549,1/1023,1023,1023,1024,1024,5,5,1154.26666667,17314/15,theorem
+12,4094,independent uniform bit choice per event,uniform hypercube stationary law conditioned on the mixed region,0.000488519785051,1/2047,2047,2047,2048,2048,6,6,2283.2,11416/5,theorem

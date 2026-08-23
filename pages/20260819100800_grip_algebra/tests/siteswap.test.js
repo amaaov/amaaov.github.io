@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  parseHybridSiteswap,
   parseSiteswap,
   parseSyncSiteswap,
   parseVanillaSiteswap,
+  readSiteswap,
   scheduleEvents,
   siteswapBallCount,
   siteswapIsValid,
+  siteswapPeriod,
 } from "../siteswap.js";
 import {
   cascadeStaysMixed,
@@ -16,8 +19,8 @@ import {
   shannonMeanHeld,
   throwFlight,
 } from "../schedule.js";
-import { trajectoryPositions } from "../toss.js";
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { courtPicture, trajectoryPositions } from "../toss.js";
+import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
 
 const THREE_UP_HOLD =
   "([26x],2)(2,6x)(6x,0)(0,2)(2,2)(2,[22])(2,[26x])(6x,2)(0,6x)(2,0)(2,2)([22],2)";
@@ -67,6 +70,57 @@ test("parser reads sync crossing 6x and multiplex [26x] as a crossing six with a
   ]);
   assert.deepEqual(pairs[0].right, [{ height: 2, crossing: false }]);
   assert.deepEqual(pairs[1].right, [{ height: 6, crossing: true }]);
+  assert.deepEqual(parseSyncSiteswap("(1x,1x)")[0], {
+    left: [{ height: 1, crossing: false }],
+    right: [{ height: 1, crossing: false }],
+  });
+});
+
+test("hybrid packet notation shares one beat clock across async and sync frames", () => {
+  assert.deepEqual(parseHybridSiteswap("5(2,4)1"), [
+    { kind: "async", duration: 1, throws: [5] },
+    {
+      kind: "sync",
+      duration: 2,
+      left: [{ height: 2, crossing: false }],
+      right: [{ height: 4, crossing: false }],
+    },
+    { kind: "async", duration: 1, throws: [1] },
+  ]);
+  assert.equal(readSiteswap("5(2,4)1").timing, "hybrid");
+  assert.equal(siteswapPeriod("5(2,4)1"), 4);
+  assert.equal(siteswapBallCount("5(2,4)1"), 3);
+  assert.equal(siteswapIsValid("5(2,4)1"), true);
+
+  const live = scheduleEvents("5(2,4)1", true, 8).events.filter(
+    (event) => event.beat >= 0 && event.beat < 4,
+  );
+  assert.deepEqual(
+    live.map(({ beat, height, fromHand }) => ({ beat, height, fromHand })),
+    [
+      { beat: 0, height: 5, fromHand: 1 },
+      { beat: 1, height: 2, fromHand: 0 },
+      { beat: 1, height: 4, fromHand: 1 },
+      { beat: 3, height: 1, fromHand: 0 },
+    ],
+  );
+});
+
+test("suppressed sync spacers import Juggling Lab mixed timing", () => {
+  const source = "(0,5)!(5,0)!(0,5)!(1,0)!";
+  const frames = parseHybridSiteswap(source);
+  assert.ok(frames.every((frame) => frame.kind === "sync" && frame.duration === 1));
+  assert.equal(readSiteswap(source).timing, "hybrid");
+  assert.equal(siteswapPeriod(source), 4);
+  assert.equal(siteswapBallCount(source), 4);
+  assert.equal(siteswapIsValid(source), true);
+});
+
+test("validity is a total predicate for malformed source text", () => {
+  assert.equal(siteswapIsValid(""), false);
+  assert.equal(siteswapIsValid("("), false);
+  assert.equal(siteswapIsValid("[3"), false);
+  assert.equal(siteswapIsValid("?"), false);
 });
 
 test("ball count is the throw average, including multiplex", () => {
@@ -262,6 +316,65 @@ test("[55]5000[22]2 visits all-held and all-airborne occupancy", () => {
   assert.ok(samples.some((sample) => sample.held === 0));
 });
 
+test("one-by-one flash-hold loops walk hold, Amphoteron, and flash", () => {
+  const loops = [
+    { source: "(2,2)(4x,2)(0,4x)(0,2)", objects: 2 },
+    { source: THREE_UP_HOLD, objects: 3 },
+    {
+      source: "([22],[22])([28x],[22])(6x,[22])(0,[26x])(0,6x)(0,[22])(2,[22])",
+      objects: 4,
+    },
+  ];
+  for (const { source, objects } of loops) {
+    assert.equal(siteswapIsValid(source), true, source);
+    assert.equal(siteswapBallCount(source), objects, source);
+    const samples = sampleOccupancy({
+      source,
+      dwellRatio: 0.75,
+      holdTwos: true,
+      durationBeats: siteswapPeriod(source) * 3,
+    });
+    const states = new Set(samples.map((sample) => sample.state));
+    assert.deepEqual(states, new Set([HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN]), source);
+    assert.ok(samples.some((sample) => sample.state === HOLD_SIGN && sample.held === objects), source);
+    assert.ok(samples.some((sample) => sample.state === RELEASE_SIGN && sample.held === 0), source);
+    const period = siteswapPeriod(source);
+    const { events } = scheduleEvents(source, true, period);
+    const releases = events.filter(
+      (event) => event.beat >= 0 && event.beat < period && event.height > 0 && !event.hold,
+    );
+    assert.ok(releases.length >= objects, source);
+    assert.ok(
+      releases.every((event) => event.fromHand !== event.toHand),
+      source,
+    );
+    const releasesOnBeat = new Map();
+    for (const event of releases) {
+      releasesOnBeat.set(event.beat, (releasesOnBeat.get(event.beat) ?? 0) + 1);
+    }
+    assert.ok(
+      [...releasesOnBeat.values()].every((count) => count === 1),
+      source,
+    );
+  }
+});
+
+test("synchronous hold-flash cycle visits only hold and flash", () => {
+  const source = "([22],2)([44],4)(0,0)";
+  assert.equal(siteswapIsValid(source), true);
+  const samples = sampleOccupancy({
+    source,
+    dwellRatio: 0.75,
+    holdTwos: true,
+    durationBeats: 24,
+  });
+  const states = new Set(samples.map((sample) => sample.state));
+  assert.deepEqual(states, new Set([HOLD_SIGN, RELEASE_SIGN]));
+  assert.equal(samples[0].state, HOLD_SIGN);
+  assert.ok(samples.some((sample) => sample.held === 3));
+  assert.ok(samples.some((sample) => sample.held === 0));
+});
+
 test("synchronous ([44],4)(0,0)([22],2) dumps all three, rests empty, then holds all three", () => {
   const samples = sampleOccupancy({
     source: "([44],4)(0,0)([22],2)",
@@ -298,6 +411,7 @@ test("synchronous 3-up-hold cycle visits three in the air and three held", () =>
   const states = new Set(samples.map((sample) => sample.state));
   assert.ok(states.has(HOLD_SIGN));
   assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(MIXED_SIGN));
   assert.ok(samples.some((sample) => sample.held === 3));
   assert.ok(samples.some((sample) => sample.held === 0));
   const { events, ballCount } = scheduleEvents(THREE_UP_HOLD, true, 24);
@@ -459,6 +573,39 @@ test("cascade 3 held count matches occupancy lamps", () => {
     assert.equal(held, pictured.held);
     assert.equal(pictured.positions.length - held, pictured.airborne);
   }
+});
+
+test("an illegal siteswap paints empty hands and no objects", () => {
+  const hands = [
+    { x: 0.32, y: 0.84 },
+    { x: 0.68, y: 0.84 },
+  ];
+  for (const source of ["", "76", "([22],2)([44],4)"]) {
+    const pictured = courtPicture({
+      source,
+      dwellRatio: 0.75,
+      holdTwos: true,
+      timeBeat: 12,
+      hands,
+    });
+    assert.deepEqual(pictured.positions, []);
+    assert.deepEqual(pictured.hands, hands);
+    assert.equal(pictured.state, EMPTY_SIGN);
+    assert.equal(pictured.held, 0);
+    assert.equal(pictured.airborne, 0);
+    assert.equal(pictured.ballCount, 0);
+  }
+});
+
+test("a legal siteswap still paints its objects through courtPicture", () => {
+  const pictured = courtPicture({
+    source: "3",
+    dwellRatio: 0.75,
+    holdTwos: true,
+    timeBeat: 24,
+  });
+  assert.equal(pictured.positions.length, 3);
+  assert.notEqual(pictured.state, EMPTY_SIGN);
 });
 
 test("siteswap 3 flight is a Gunswap ballistic: mid-air sits above the chord", () => {

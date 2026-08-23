@@ -42,6 +42,37 @@ test("renders held-count sum and composition join", () => {
   assert.match(join, /∨/);
 });
 
+test("renders siteswap hypothesis symbols without leaking command names", () => {
+  const structure = latexToMathMl("\\chi=\\eta=T_R/T_S");
+  assert.match(structure, /χ/);
+  assert.match(structure, /η/);
+  assert.equal(structure.includes(">chi<"), false);
+  assert.equal(structure.includes(">eta<"), false);
+
+  const pairs = latexToMathMl(
+    "E_{\\mathrm{pair}}=\\frac{E[a(a-1)]}{2}=\\frac{\\operatorname{Var}(a)+E[a]^2-E[a]}{2}",
+  );
+  assert.match(pairs, /mathvariant="normal">Var/);
+  assert.equal(pairs.includes(">binom<"), false);
+});
+
+test("renders a Bernoulli product without leaking the product command", () => {
+  const math = latexToMathMl(String.raw`P_\alpha=\prod_{i=1}^n(1-\rho_i)`);
+
+  assert.equal(math.includes("∏"), true);
+  assert.equal(math.includes("prod"), false);
+});
+
+test("renders formal-law rho and conditional expectation symbols", () => {
+  const bernoulli = latexToMathMl(String.raw`P_\kappa=\prod_{i=1}^n\rho_i`);
+  const passage = latexToMathMl(String.raw`e_q=\operatorname{E}[\tau_\partial\mid q_0=q]`);
+
+  assert.equal(bernoulli.includes("ρ"), true);
+  assert.equal(bernoulli.includes("rho"), false);
+  assert.equal(passage.includes("τ"), true);
+  assert.equal(passage.includes("mid"), false);
+});
+
 test("renders flash load and biomechanical notation without leaking command names", () => {
   const load = latexToMathMl(
     "\\nu_\\alpha=\\frac{N_{\\mathrm{enter}}(\\alpha)}{T},F_{z,\\mathrm{rms}}\\ge\\frac{Mg}{\\sqrt{1-P_\\alpha}}",

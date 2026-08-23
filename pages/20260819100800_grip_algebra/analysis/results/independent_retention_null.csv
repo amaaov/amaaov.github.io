@@ -1,0 +1,16 @@
+object_count,retention_probability,retention_probability_exact,process_assumption,p_alpha,p_alpha_exact,p_amphoteron,p_amphoteron_exact,p_kappa,p_kappa_exact,expected_held_count,expected_held_count_exact,microstate_entropy_bits,macrostate_entropy_bits,conditional_information_loss_bits,result_class
+3,0.1,1/10,stationary mutually independent Bernoulli retention,0.729,729/1000,0.27,27/100,0.001,1/1000,0.3,3/10,1.40698678077,0.852418095304,0.554568685464,model consequence
+3,0.25,1/4,stationary mutually independent Bernoulli retention,0.421875,27/64,0.5625,9/16,0.015625,1/64,0.75,3/4,2.43383437338,1.08594902171,1.34788535166,model consequence
+3,0.5,1/2,stationary mutually independent Bernoulli retention,0.125,1/8,0.75,3/4,0.125,1/8,1.5,3/2,3,1.06127812446,1.93872187554,model consequence
+3,0.75,3/4,stationary mutually independent Bernoulli retention,0.015625,1/64,0.5625,9/16,0.421875,27/64,2.25,9/4,2.43383437338,1.08594902171,1.34788535166,model consequence
+3,0.9,9/10,stationary mutually independent Bernoulli retention,0.001,1/1000,0.27,27/100,0.729,729/1000,2.7,27/10,1.40698678077,0.852418095304,0.554568685464,model consequence
+5,0.1,1/10,stationary mutually independent Bernoulli retention,0.59049,59049/100000,0.4095,819/2000,1e-05,1/100000,0.5,1/2,2.34497796795,0.976410100964,1.36856786698,model consequence
+5,0.25,1/4,stationary mutually independent Bernoulli retention,0.2373046875,243/1024,0.76171875,195/256,0.0009765625,1/1024,1.25,5/4,4.0563906223,0.801321207909,3.25506941439,model consequence
+5,0.5,1/2,stationary mutually independent Bernoulli retention,0.03125,1/32,0.9375,15/16,0.03125,1/32,2.5,5/2,5,0.399790066617,4.60020993338,model consequence
+5,0.75,3/4,stationary mutually independent Bernoulli retention,0.0009765625,1/1024,0.76171875,195/256,0.2373046875,243/1024,3.75,15/4,4.0563906223,0.801321207909,3.25506941439,model consequence
+5,0.9,9/10,stationary mutually independent Bernoulli retention,1e-05,1/100000,0.4095,819/2000,0.59049,59049/100000,4.5,9/2,2.34497796795,0.976410100964,1.36856786698,model consequence
+10,0.1,1/10,stationary mutually independent Bernoulli retention,0.3486784401,3486784401/10000000000,0.6513215598,3256607799/5000000000,1e-10,1/10000000000,1,1,4.68995593589,0.932882252705,3.75707368319,model consequence
+10,0.25,1/4,stationary mutually independent Bernoulli retention,0.0563135147095,59049/1048576,0.943685531616,494763/524288,9.53674316406e-07,1/1048576,2.5,5/2,8.11278124459,0.312654063929,7.80012718066,model consequence
+10,0.5,1/2,stationary mutually independent Bernoulli retention,0.0009765625,1/1024,0.998046875,511/512,0.0009765625,1/1024,5,5,10,0.0223462602361,9.97765373976,model consequence
+10,0.75,3/4,stationary mutually independent Bernoulli retention,9.53674316406e-07,1/1048576,0.943685531616,494763/524288,0.0563135147095,59049/1048576,7.5,15/2,8.11278124459,0.312654063929,7.80012718066,model consequence
+10,0.9,9/10,stationary mutually independent Bernoulli retention,1e-10,1/10000000000,0.6513215598,3256607799/5000000000,0.3486784401,3486784401/10000000000,9,9,4.68995593589,0.932882252705,3.75707368319,model consequence

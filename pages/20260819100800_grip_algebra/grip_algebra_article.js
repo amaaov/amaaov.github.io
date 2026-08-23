@@ -1,29 +1,38 @@
-import { cascadeHoldingFlags } from "./schedule.js";
-import { trajectoryPositions } from "./toss.js";
+import { cosmologyState } from "./court_cosmology.js";
+import { applyCosmologySoundControls } from "./court_cosmology_sound.js";
+import { cascadeHoldingFlags, playbackTimeBeat, playbackWindowBeats } from "./schedule.js";
+import { courtPicture, trajectoryPositions } from "./toss.js";
 import { renderLatexElements } from "./formula.js";
+import { initializeFormalLawWorkbench } from "./formal_law_ui.js";
 import { RELEASE_SIGN, signHasAkrateia, signHasKratos } from "./holding.js";
+import { initializeSiteswapInterface } from "./siteswap_ui.js";
+import { courtSoundPlan, occupancyChangeHand, soundDocumentOpen, soundSettingsFromForm } from "./court_sound.js";
+import { occupancyGateOpen, soloedSigns, soundEnvelopeClock, soundEnvelopePhase } from "./court_sound_fx.js";
+import { createCourtSoundEngine } from "./court_sound_engine.js";
+import { mountSoundSynthControls, writeSoundDisplays } from "./court_sound_synth.js";
+import { refreshTapeFace } from "./court_sound_marks.js";
+import {
+  courtFrameShouldPaint,
+  courtPlaybackActive,
+  createAnimationScheduler,
+  normalizedPointer,
+  viewportProgress,
+} from "./animation_lifecycle.js";
 import {
   appendCourtTrails,
-  compressStates,
   drawOccupancyTape,
   drawTossCourt,
   hexagonVertexIndex,
+  recentStatePath,
 } from "./draw.js";
-
-const PATTERNS = {
-  hold02: { source: "02", holdTwos: true },
-  hold2mux: { source: "2[22]", holdTwos: true },
-  cascade3: { source: "3", holdTwos: true },
-  multiplexHold: { source: "55500522", holdTwos: true },
-  flashThenAllHeld: { source: "555001[22]2[23]", holdTwos: true },
-  flashThenHeldLong: { source: "5550022[22]2[25]22", holdTwos: true },
-  loop55500: { source: "55500", holdTwos: true },
-  throwRestHold: { source: "([44],4)(0,0)([22],2)", holdTwos: true },
-  threeUpHold: {
-    source: "([26x],2)(2,6x)(6x,0)(0,2)(2,2)(2,[22])(2,[26x])(6x,2)(0,6x)(2,0)(2,2)([22],2)",
-    holdTwos: true,
-  },
-};
+import { bindInspectorLayout, fitDisplayCanvas } from "./simulator_layout.js";
+import {
+  applyIdentifiedRangeValues,
+  applyNamedControlValues,
+  applyRememberedDetails,
+  readStoredSettings,
+  rememberInteractiveSettings,
+} from "./settings_store.js";
 
 const HANDS = [
   { x: 0.32, y: 0.84 },
@@ -42,15 +51,6 @@ const ATLAS = [
   { canvasId: "layer-world", source: "55500", dwellRatio: 0.75, lockState: RELEASE_SIGN, layer: "world" },
 ];
 
-function reducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function currentPattern(form) {
-  const selected = form.querySelector("[name='pattern']:checked");
-  return PATTERNS[selected.value];
-}
-
 function setLamps(state) {
   document.getElementById("lamp-no-grip").classList.toggle("is-on", signHasAkrateia(state));
   document.getElementById("lamp-grip").classList.toggle("is-on", signHasKratos(state));
@@ -67,8 +67,7 @@ function markHexagon(flags) {
 
 function fitCanvas(canvas, pixelRatio) {
   const bounds = canvas.getBoundingClientRect();
-  canvas.width = Math.max(1, Math.floor(bounds.width * pixelRatio));
-  canvas.height = Math.max(1, Math.floor(bounds.height * pixelRatio));
+  return fitDisplayCanvas(canvas, pixelRatio, bounds.width, bounds.height);
 }
 
 function findTimeInState(source, dwellRatio, lockState) {
@@ -98,7 +97,7 @@ function atlasTimeBeat(card, elapsed, beatSeconds) {
     const origin = lockedTimes.get(key);
     return origin + 0.12 * Math.sin(elapsed * 1.4);
   }
-  return (elapsed / beatSeconds) % 48;
+  return ((elapsed / beatSeconds) % 48 + 48) % 48;
 }
 
 function paintAtlasCard(card, elapsed, beatSeconds) {
@@ -127,71 +126,449 @@ function paintAtlasCard(card, elapsed, beatSeconds) {
 function boot() {
   renderLatexElements(document);
   const form = document.getElementById("court-controls");
+  const rememberRoot = form?.closest(".court-block") ?? form;
+  mountSoundSynthControls(form?.querySelector(".sound-controls"), document.documentElement.lang);
+  const stored = readStoredSettings();
+  applyNamedControlValues(rememberRoot, stored.named);
+  applyRememberedDetails(rememberRoot, stored.details);
+  initializeFormalLawWorkbench(document);
+  const workbench = document.getElementById("formal-law-lab");
+  applyIdentifiedRangeValues(workbench, stored.ranges);
+  if (workbench) {
+    for (const input of workbench.querySelectorAll("input[type='range'][id]")) {
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  }
   const court = document.getElementById("toss-court");
   const tape = document.getElementById("occupancy-tape");
   const readout = document.getElementById("state-path");
-  const dwellOutput = document.getElementById("dwell-readout");
   const hexagon = document.getElementById("hexagon-panel");
-  const pixelRatio = window.devicePixelRatio || 1;
   const canvases = [court, tape, ...ATLAS.map((card) => document.getElementById(card.canvasId)).filter(Boolean)];
-  const fitAll = () => {
-    canvases.forEach((canvas) => fitCanvas(canvas, pixelRatio));
-  };
-  fitAll();
+  const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const courtPointer = { x: 0.5, y: 0.5 };
+  const visibleAtlas = new Set();
+  const atlasNeedsPaint = new Set(ATLAS.map((card) => card.canvasId));
+  let courtScrollProgress = 0.5;
+  let courtVisible = false;
+  let courtNeedsPaint = true;
+  let scrollInputsDirty = true;
   let elapsed = 0;
-  let lastStamp = performance.now();
+  let atlasElapsed = 0;
+  let controls = null;
+  let inspector = null;
+
+  function rememberSettings() {
+    rememberInteractiveSettings({
+      form,
+      workbench,
+      rememberRoot,
+      inspector,
+    });
+  }
+
+  const fitAll = () => {
+    const pixelRatio = window.devicePixelRatio || 1;
+    let changed = false;
+    for (const canvas of canvases) {
+      changed = fitCanvas(canvas, pixelRatio) || changed;
+    }
+    if (!changed) {
+      return;
+    }
+    courtNeedsPaint = true;
+    for (const card of ATLAS) {
+      atlasNeedsPaint.add(card.canvasId);
+    }
+  };
+
   const history = [];
   const courtTrails = [];
-  const beatSeconds = 0.4;
+  const soundEngine = createCourtSoundEngine();
+  let previousHeldFlags = [];
+  let lastEventHand = null;
+  let previousSoundState = null;
+  let previousSoloKey = "";
+  let soundStateChangedAt = 0;
 
-  const frame = (stamp) => {
-    const pattern = currentPattern(form);
-    const dwellRatio = Number(form.dwell.value);
-    dwellOutput.textContent = dwellRatio.toFixed(2);
-    if (!reducedMotion()) {
-      elapsed += (stamp - lastStamp) / 1000;
+  const clearPath = () => {
+    elapsed = 0;
+    history.length = 0;
+    courtTrails.length = 0;
+    previousHeldFlags = [];
+    lastEventHand = null;
+    previousSoundState = null;
+    previousSoloKey = "";
+    soundStateChangedAt = 0;
+  };
+
+  function soundEnabled() {
+    return form.elements.namedItem("courtSound")?.checked === true;
+  }
+
+  function soundClockOpen() {
+    if (soundEnabled()) {
+      return true;
     }
-    lastStamp = stamp;
-    const timeBeat = (elapsed / beatSeconds) % 48;
-    const pictured = trajectoryPositions({
+    return form.elements.namedItem("patternCosmology")?.checked === true;
+  }
+
+  function updateSoundPresence() {
+    soundEngine.setDocumentVisible(soundDocumentOpen(document.hidden));
+    updateCourtActivity();
+  }
+
+  function applyCourtSound(pictured, weather) {
+    const changedHand = occupancyChangeHand(
+      previousHeldFlags,
+      pictured.heldFlags ?? [],
+      pictured.positions,
+    );
+    if (changedHand !== null) {
+      lastEventHand = changedHand;
+    }
+    previousHeldFlags = pictured.heldFlags ?? [];
+    applyCosmologySoundControls(form, weather);
+    writeSoundDisplays(form.querySelector(".sound-controls") ?? form);
+    const settings = soundSettingsFromForm(form);
+    const nextPhase = soundEnvelopePhase(pictured.state, settings.solos);
+    const soloKey = soloedSigns(settings.solos).join("+");
+    const gateOpen = occupancyGateOpen(pictured.state, settings.solos);
+    const clock = soundEnvelopeClock(previousSoundState, nextPhase, elapsed, {
+      gateOpen,
+      alreadyClosed: soloKey !== previousSoloKey && !gateOpen,
+    });
+    previousSoloKey = soloKey;
+    if (clock) {
+      previousSoundState = clock.phase;
+      soundStateChangedAt = clock.changedAt;
+    }
+    if (!settings.enabled) {
+      return;
+    }
+    const plan = courtSoundPlan({
+      state: pictured.state,
+      waves: settings.waves,
+      effects: settings.effects,
+      synth: settings.synth,
+      synths: settings.synths,
+      solos: settings.solos,
+      audition: settings.audition,
+      eventHand: lastEventHand,
+      pointer: courtPointer,
+      scrollProgress: courtScrollProgress,
+      timeSeconds: elapsed,
+      stateAgeSeconds: Math.max(0, elapsed - soundStateChangedAt),
+    });
+    soundEngine.apply(plan);
+    refreshTapeFace(form, soundEngine.tapeView());
+  }
+
+  function interactionOffset(pointer, scrollProgress) {
+    if (motionPreference.matches) {
+      return 0;
+    }
+    return (pointer.x - 0.5) * 0.6 + (scrollProgress - 0.5) * 0.3;
+  }
+
+  function updateScrollInputs() {
+    scrollInputsDirty = false;
+    const viewportHeight = window.innerHeight;
+    if (courtVisible) {
+      courtScrollProgress = viewportProgress(court.getBoundingClientRect(), viewportHeight);
+    }
+  }
+
+  function paintCourt(advancing) {
+    const pattern = controls.currentRequest();
+    const cosmology = cosmologyState({
+      elapsedSeconds: elapsed,
       source: pattern.source,
+      enabled: pattern.cosmology,
+    });
+    const weather = cosmology.weather;
+    const dwellRatio = weather
+      ? Math.min(0.98, Math.max(0.05, pattern.dwellRatio + weather.modulation))
+      : pattern.dwellRatio;
+    const beatSeconds = weather ? pattern.beatSeconds * weather.tempoBend : pattern.beatSeconds;
+    const baseTimeBeat = elapsed / beatSeconds;
+    const timeBeat = playbackTimeBeat(
+      baseTimeBeat + interactionOffset(courtPointer, courtScrollProgress),
+      {
+        reverse: pattern.reverse,
+        windowBeats: playbackWindowBeats(cosmology.source, pattern.holdTwos),
+      },
+    );
+    const pictured = courtPicture({
+      source: cosmology.source,
       dwellRatio,
       holdTwos: pattern.holdTwos,
       timeBeat,
       hands: HANDS,
+      gravityScale: weather?.gravity ?? 1,
+      wind: weather ? { x: weather.windX, y: weather.windY } : { x: 0, y: 0 },
     });
     setLamps(pictured.state);
-    appendCourtTrails(courtTrails, pictured);
-    drawTossCourt(court, pictured.positions, pictured.hands ?? HANDS, courtTrails);
-    history.push(pictured.state);
-    if (history.length > 180) {
-      history.shift();
+    controls.updateState(pictured);
+    const patternStatus = document.getElementById("pattern-status");
+    if (patternStatus && patternStatus.dataset.status !== "error") {
+      patternStatus.textContent = cosmology.active && cosmology.source !== pattern.source
+        ? cosmology.source
+        : "";
+    }
+    if (advancing || courtTrails.length === 0) {
+      appendCourtTrails(
+        courtTrails,
+        pictured,
+        weather ? Math.round(80 + weather.storm * 70) : 80,
+      );
+    }
+    drawTossCourt(court, pictured.positions, pictured.hands ?? HANDS, courtTrails, null, weather);
+    if (advancing || history.length === 0) {
+      history.push(pictured.state);
+      if (history.length > 180) {
+        history.shift();
+      }
     }
     drawOccupancyTape(tape, history);
-    readout.textContent = compressStates(history).join(" → ");
-    const cascade = pattern.source === "3";
+    readout.textContent = recentStatePath(history).join(" → ");
+    applyCourtSound(pictured, weather);
+    const cascade = cosmology.source === "3";
     hexagon.hidden = !cascade;
     if (cascade) {
       markHexagon(cascadeHoldingFlags(timeBeat, dwellRatio));
     }
-    ATLAS.forEach((card) => paintAtlasCard(card, elapsed, beatSeconds));
-    if (!reducedMotion()) {
-      window.requestAnimationFrame(frame);
-    }
-  };
+    courtNeedsPaint = false;
+  }
 
-  form.addEventListener("change", () => {
-    elapsed = 0;
-    history.length = 0;
-    courtTrails.length = 0;
-    if (reducedMotion()) {
-      frame(performance.now());
-    }
+  const scheduler = createAnimationScheduler({
+    onFrame({ deltaSeconds }) {
+      if (scrollInputsDirty) {
+        updateScrollInputs();
+      }
+      const courtAdvancing = scheduler.isActive("court") && deltaSeconds > 0;
+      if (courtAdvancing) {
+        elapsed += deltaSeconds;
+      }
+      if (courtFrameShouldPaint({
+        courtVisible,
+        needsPaint: courtNeedsPaint,
+        soundEnabled: soundClockOpen(),
+        advancing: courtAdvancing,
+      })) {
+        paintCourt(courtAdvancing);
+      }
+
+      const animatedAtlasVisible = ATLAS.some(
+        (card) => visibleAtlas.has(card.canvasId) && !card.kind,
+      );
+      if (animatedAtlasVisible) {
+        atlasElapsed += deltaSeconds;
+      }
+      const beatSeconds = controls.currentRequest().beatSeconds;
+      for (const card of ATLAS) {
+        if (!visibleAtlas.has(card.canvasId) && !atlasNeedsPaint.has(card.canvasId)) {
+          continue;
+        }
+        paintAtlasCard(card, atlasElapsed, beatSeconds);
+        atlasNeedsPaint.delete(card.canvasId);
+      }
+    },
   });
+
+  function updateCourtActivity() {
+    if (!controls) return;
+    scheduler.setActive("court", courtPlaybackActive({
+      playing: controls.isPlaying(),
+      courtVisible,
+      soundEnabled: soundClockOpen(),
+    }));
+  }
+
+  function requestCourtPaint() {
+    courtNeedsPaint = true;
+    scheduler.requestRender();
+  }
+
+  controls = initializeSiteswapInterface(form, {
+    initialPlaying: !motionPreference.matches,
+    onPatternChange() {
+      if (!controls) return;
+      history.length = 0;
+      courtTrails.length = 0;
+      previousHeldFlags = [];
+      lastEventHand = null;
+      previousSoundState = null;
+      rememberSettings();
+      requestCourtPaint();
+    },
+    onParametersChange() {
+      if (!controls) return;
+      history.length = 0;
+      courtTrails.length = 0;
+      previousHeldFlags = [];
+      lastEventHand = null;
+      previousSoundState = null;
+      requestCourtPaint();
+    },
+    onPlaybackChange() {
+      if (!controls) return;
+      updateCourtActivity();
+      requestCourtPaint();
+    },
+    onSoundChange() {
+      if (!controls) return;
+      const settings = soundSettingsFromForm(form);
+      soundEngine.setEnabled(settings.enabled).then(() => {
+        updateSoundPresence();
+        requestCourtPaint();
+      });
+    },
+    onStep() {
+      if (!controls) return;
+      elapsed += controls.currentRequest().beatSeconds / 4;
+      requestCourtPaint();
+    },
+    onRestart() {
+      if (!controls) return;
+      clearPath();
+      requestCourtPaint();
+    },
+  });
+
+  function observeVisibility() {
+    if (!("IntersectionObserver" in window)) {
+      courtVisible = true;
+      for (const card of ATLAS) {
+        visibleAtlas.add(card.canvasId);
+        if (!card.kind) {
+          scheduler.setActive(`atlas:${card.canvasId}`, true);
+        }
+      }
+      updateCourtActivity();
+      updateSoundPresence();
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const visible = entry.isIntersecting && entry.intersectionRatio > 0;
+        if (entry.target === court) {
+          courtVisible = visible;
+          courtNeedsPaint ||= visible;
+          updateCourtActivity();
+          updateSoundPresence();
+        } else {
+          const card = ATLAS.find((candidate) => candidate.canvasId === entry.target.id);
+          if (!card) continue;
+          if (visible) {
+            visibleAtlas.add(card.canvasId);
+            atlasNeedsPaint.add(card.canvasId);
+          } else {
+            visibleAtlas.delete(card.canvasId);
+          }
+          if (!card.kind) {
+            scheduler.setActive(`atlas:${card.canvasId}`, visible);
+          }
+        }
+      }
+      scrollInputsDirty = true;
+      scheduler.requestRender();
+    }, { threshold: 0.05 });
+
+    observer.observe(court);
+    for (const card of ATLAS) {
+      observer.observe(document.getElementById(card.canvasId));
+    }
+  }
+
+  function bindPointer(canvas, onPointer) {
+    canvas.addEventListener("pointermove", (event) => {
+      if (motionPreference.matches) return;
+      onPointer(normalizedPointer(event, canvas.getBoundingClientRect()));
+      scheduler.requestRender();
+    });
+    canvas.addEventListener("pointerleave", () => {
+      onPointer({ x: 0.5, y: 0.5 });
+      scheduler.requestRender();
+    });
+  }
+
+  bindPointer(court, (pointer) => {
+    Object.assign(courtPointer, pointer);
+    courtNeedsPaint = true;
+  });
+
+  inspector = bindInspectorLayout(form, {
+    language: document.documentElement.lang,
+    width: stored.inspector?.width,
+    collapsed: stored.inspector?.collapsed,
+    onLayoutChange() {
+      fitAll();
+      scheduler.requestRender();
+      rememberSettings();
+    },
+  });
+  rememberRoot?.addEventListener("input", rememberSettings);
+  rememberRoot?.addEventListener("change", rememberSettings);
+  rememberRoot?.addEventListener("toggle", rememberSettings, true);
+  workbench?.addEventListener("input", rememberSettings);
+  if (soundSettingsFromForm(form).enabled) {
+    const startStoredSound = () => {
+      soundEngine.setEnabled(true).then(() => {
+        updateSoundPresence();
+        requestCourtPaint();
+      });
+    };
+    document.addEventListener("pointerdown", startStoredSound, { once: true });
+  }
+  if ("ResizeObserver" in window) {
+    const resizeObserver = new ResizeObserver(() => {
+      fitAll();
+      scheduler.requestRender();
+    });
+    for (const canvas of canvases) {
+      resizeObserver.observe(canvas);
+    }
+  }
   window.addEventListener("resize", () => {
     fitAll();
+    scrollInputsDirty = true;
+    scheduler.requestRender();
   });
-  window.requestAnimationFrame(frame);
+  window.addEventListener("scroll", () => {
+    scrollInputsDirty = true;
+    const soundOn = soundEnabled();
+    if (!motionPreference.matches) {
+      courtNeedsPaint ||= courtVisible || soundOn;
+    } else if (soundOn) {
+      courtNeedsPaint = true;
+    }
+    if (!motionPreference.matches || soundOn) {
+      scheduler.requestRender();
+    }
+  }, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    scheduler.setDocumentVisible(!document.hidden);
+    updateSoundPresence();
+  });
+
+  const onMotionPreferenceChange = (event) => {
+    scheduler.setMotionAllowed(!event.matches);
+    if (event.matches) {
+      controls.setPlaying(false);
+    }
+    courtNeedsPaint = true;
+    for (const card of ATLAS) {
+      atlasNeedsPaint.add(card.canvasId);
+    }
+    scheduler.requestRender();
+  };
+  motionPreference.addEventListener("change", onMotionPreferenceChange);
+
+  scheduler.setMotionAllowed(!motionPreference.matches);
+  fitAll();
+  observeVisibility();
+  scheduler.requestRender();
 }
 
 boot();

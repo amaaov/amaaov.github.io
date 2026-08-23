@@ -77,12 +77,19 @@ body {
 }
 
 .clipboard {
+  --article-gutter: 1.6rem;
   max-width: var(--clipboard-width);
   margin: 0.6rem auto 3rem;
   background: var(--paper);
   border: 1px solid rgba(29, 25, 20, 0.18);
   box-shadow: 0 18px 40px rgba(29, 25, 20, 0.18);
-  padding: 2.2rem 1.6rem 2.6rem;
+  padding: 2.2rem var(--article-gutter) 2.6rem;
+}
+
+.example-band {
+  width: calc(100% + 2 * var(--article-gutter));
+  max-width: none;
+  margin-inline: calc(-1 * var(--article-gutter));
 }
 
 .article-head h1 {
@@ -154,22 +161,117 @@ body {
 }
 
 .court-block {
-  margin: 1.4rem -0.4rem 1.8rem;
-  background: var(--court);
-  border: 2px solid var(--line);
-  padding: 0.8rem;
+  --simulator-inset: 0.7rem;
+  margin-block: 1.4rem 1.8rem;
+  overflow: hidden;
+  padding-inline: var(--simulator-inset);
+  background: color-mix(in srgb, var(--court) 10%, var(--paper));
 }
 
 #court-controls {
+  --inspector-width: 17.5rem;
   display: grid;
-  gap: 0.7rem;
+  grid-template-columns: minmax(0, 1fr) var(--inspector-width);
+  grid-template-areas:
+    "toolbar toolbar"
+    "stage inspector"
+    "drawers drawers";
   font-family: "Red Hat Text", sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   color: var(--ink);
 }
 
-.pattern-row,
-.dwell-row,
+#court-controls.is-inspector-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "toolbar"
+    "stage"
+    "drawers";
+}
+
+#court-controls.is-inspector-collapsed .simulator-inspector {
+  display: none;
+}
+
+.simulator-toolbar {
+  grid-area: toolbar;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3rem 0.55rem;
+  align-items: center;
+  margin-inline: calc(-1 * var(--simulator-inset));
+  padding: 0.25rem var(--simulator-inset);
+  color: var(--ink);
+  background: #ecdec5;
+}
+
+.simulator-stage {
+  grid-area: stage;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "lamps"
+    "state"
+    "court"
+    "tape"
+    "path"
+    "hexagon";
+  min-width: 0;
+  padding: 0.55rem 0 0.35rem;
+}
+
+.simulator-stage:has(#hexagon-panel:not([hidden])) {
+  grid-template-columns: minmax(0, 1fr) minmax(11rem, 13rem);
+  grid-template-areas:
+    "lamps lamps"
+    "state state"
+    "court hexagon"
+    "tape hexagon"
+    "path hexagon";
+  gap: 0 0.65rem;
+}
+
+.simulator-stage .lamp-row { grid-area: lamps; }
+.simulator-stage .accessible-state { grid-area: state; }
+.simulator-stage .court-frame { grid-area: court; }
+.simulator-stage #occupancy-tape { grid-area: tape; }
+.simulator-stage #state-path { grid-area: path; }
+.simulator-stage #hexagon-panel { grid-area: hexagon; }
+
+.simulator-inspector {
+  grid-area: inspector;
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.55rem 0 0.35rem 0.65rem;
+}
+
+.simulator-splitter {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -0.4rem;
+  z-index: 3;
+  width: 0.8rem;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.simulator-drawers {
+  grid-area: drawers;
+  min-width: 0;
+}
+
+.simulator-inspector #pattern-status:not(:empty) {
+  display: block;
+  margin-bottom: 0.65rem;
+}
+
+.pattern-entry,
+.timing-controls,
+.playback-controls,
+.generator-actions,
 .lamp-row {
   display: flex;
   flex-wrap: wrap;
@@ -177,11 +279,715 @@ body {
   align-items: center;
 }
 
-.pattern-row label,
-.dwell-row label {
+.pattern-entry {
+  display: flex;
+  flex: 1 1 14rem;
+  min-width: 0;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pattern-entry label,
+.timing-controls label,
+.generator-grid label {
   display: inline-flex;
   gap: 0.3rem;
   align-items: center;
+}
+
+#court-controls button,
+#court-controls input,
+#court-controls select,
+.hypothesis-drawer button {
+  color: var(--ink);
+  font: inherit;
+}
+
+#court-controls button,
+.hypothesis-drawer button {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 0.45rem 0.9rem;
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+#court-controls button:hover,
+.hypothesis-drawer button:hover,
+.hypothesis-drawer button[aria-pressed="true"] {
+  background: rgba(36, 92, 58, 0.12);
+}
+
+.simulator-toolbar .pattern-entry label {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.simulator-toolbar #pattern-source {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 2.75rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(29, 25, 20, 0.35);
+  padding: 0.25rem 0.3rem;
+}
+
+.simulator-toolbar #play-pattern[aria-pressed="true"] {
+  background: rgba(194, 74, 28, 0.16);
+}
+
+.playback-controls {
+  flex: none;
+  flex-wrap: nowrap;
+  gap: 0.15rem;
+}
+
+#pattern-source,
+.mask-control input {
+  width: 100%;
+  min-width: 0;
+  font-family: "Red Hat Mono", monospace;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(29, 25, 20, 0.35);
+  padding: 0.35rem 0.3rem;
+}
+
+.pattern-drawer,
+.generator-drawer,
+.suggestions-drawer,
+.hypothesis-drawer {
+  padding-top: 0.15rem;
+}
+
+.pattern-drawer summary,
+.generator-drawer summary,
+.suggestions-drawer summary,
+.hypothesis-drawer summary {
+  min-height: 2.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+.pattern-drawer summary::-webkit-details-marker,
+.generator-drawer summary::-webkit-details-marker,
+.suggestions-drawer summary::-webkit-details-marker,
+.hypothesis-drawer summary::-webkit-details-marker {
+  display: none;
+}
+
+.pattern-drawer summary::after,
+.generator-drawer summary::after,
+.suggestions-drawer summary::after,
+.hypothesis-drawer summary::after {
+  content: "+";
+  flex: none;
+  font-family: "Red Hat Mono", monospace;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.pattern-drawer[open] summary::after,
+.generator-drawer[open] summary::after,
+.suggestions-drawer[open] summary::after,
+.hypothesis-drawer[open] summary::after {
+  content: "−";
+}
+
+.pattern-choice-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  padding-bottom: 0.5rem;
+}
+
+.pattern-choice-list button {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, auto) 1fr;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  text-align: left;
+}
+
+.pattern-choice-list code,
+#suggestions-list code {
+  overflow-wrap: anywhere;
+  font-family: "Red Hat Mono", monospace;
+  font-size: 0.9em;
+}
+
+.pattern-choice-list span {
+  color: var(--muted);
+  font-size: 0.86em;
+}
+
+.timing-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+}
+
+.simulator-inspector .timing-controls {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin-bottom: 0.7rem;
+}
+
+.simulator-inspector .timing-controls label {
+  padding: 0.35rem 0;
+}
+
+.simulator-inspector .timing-controls output {
+  justify-self: end;
+  font-family: "Red Hat Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.timing-controls label:not(.check-control):not(.sound-field):not(.sound-solo) {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.timing-controls input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.check-control {
+  grid-column: 1 / -1;
+  min-height: 2.5rem;
+}
+
+.simulator-inspector .check-control {
+  grid-column: auto;
+}
+
+.sound-controls {
+  display: grid;
+  gap: 0;
+}
+
+.sound-controls[hidden] {
+  display: none;
+}
+
+.sound-controls label {
+  padding: 0.35rem 0;
+}
+
+.sound-controls label:not(.check-control):not(.sound-solo):not(.sound-field) {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.sound-controls input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.sound-controls output {
+  justify-self: end;
+  font-family: "Red Hat Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.sound-controls select {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.sound-rack {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.sound-drawer {
+  border: 0;
+  border-radius: 0.28rem;
+  padding: 0.2rem 0.5rem 0.35rem;
+  box-shadow: inset 0.22rem 0 0 var(--drawer-mark, var(--muted));
+}
+
+.sound-drawer--hold {
+  --drawer-mark: var(--grip);
+  background: color-mix(in srgb, var(--grip) 18%, var(--paper));
+}
+
+.sound-drawer--release {
+  --drawer-mark: var(--air);
+  background: color-mix(in srgb, var(--air) 18%, var(--paper));
+}
+
+.sound-drawer--mixed {
+  --drawer-mark: var(--line);
+  background: color-mix(in srgb, var(--line) 16%, var(--paper));
+}
+
+.sound-drawer--master {
+  --drawer-mark: #6b417d;
+  background: color-mix(in srgb, #6b417d 14%, var(--paper));
+}
+
+.sound-rack summary {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.sound-drawer-flags {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.sound-solo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  padding: 0.32rem 0.7rem;
+  border: 1px solid rgba(36, 92, 58, 0.35);
+  border-radius: 0.2rem;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-transform: lowercase;
+}
+
+.sound-solo input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.sound-solo .sound-icon {
+  width: 0.95rem;
+}
+
+.sound-solo:has(input:checked) {
+  background: var(--grip);
+  border-color: var(--grip);
+  color: var(--paper);
+}
+
+.sound-tape-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0 0.15rem;
+}
+
+.sound-tape-face {
+  position: relative;
+  height: 1.45rem;
+  overflow: hidden;
+  border-radius: 0.2rem;
+  background: color-mix(in srgb, #6b417d 10%, var(--paper));
+  box-shadow: inset 0 0 0 1px rgba(107, 65, 125, 0.28);
+  --tape-record: 0;
+  --tape-play: 0;
+  --tape-filled: 0;
+}
+
+.sound-tape-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--tape-filled) * 100%);
+  background: color-mix(in srgb, #6b417d 26%, transparent);
+}
+
+.sound-tape-record,
+.sound-tape-play {
+  position: absolute;
+  top: 0.12rem;
+  bottom: 0.12rem;
+  width: 0.16rem;
+  border-radius: 0.08rem;
+}
+
+.sound-tape-record {
+  left: calc(var(--tape-record) * 100%);
+  background: var(--grip);
+}
+
+.sound-tape-play {
+  left: calc(var(--tape-play) * 100%);
+  background: var(--air);
+}
+
+.sound-tape-state {
+  position: absolute;
+  left: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: #6b417d;
+}
+
+.sound-tape-face.is-recording .sound-tape-record {
+  box-shadow: 0 0 0.35rem var(--grip);
+  animation: sound-tape-blink 0.45s step-end infinite;
+}
+
+.sound-tape-face.is-held {
+  box-shadow: inset 0 0 0 1px var(--grip);
+}
+
+.sound-tape-face.is-held .sound-tape-state {
+  color: var(--grip);
+}
+
+@keyframes sound-tape-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sound-tape-face.is-recording .sound-tape-record {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.sound-synth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0.12rem;
+}
+
+.sound-synth .sound-synth-wide {
+  grid-column: 1 / -1;
+}
+
+.timing-controls label.sound-field,
+.sound-controls label.sound-field {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) max-content;
+  align-items: start;
+  column-gap: 0.3rem;
+  row-gap: 0.12rem;
+  min-width: 0;
+}
+
+.timing-controls label.sound-field:has(.sound-lfo-lamp),
+.sound-controls label.sound-field:has(.sound-lfo-lamp) {
+  grid-template-columns: auto minmax(0, 1fr) auto max-content;
+}
+
+.sound-control-name {
+  min-width: 0;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.sound-field output {
+  min-width: 11ch;
+  max-width: 16ch;
+  text-align: end;
+  font-size: 0.72em;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.sound-icon,
+.sound-mark {
+  width: 1.55rem;
+  height: 0.8rem;
+  flex: none;
+}
+
+.sound-icon path,
+.sound-mark path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.sound-lfo-lamp {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+  background: var(--grip);
+  box-shadow: 0 0 0.35rem var(--grip);
+  animation: sound-lfo-blink var(--lfo-period, 1.2s) step-end infinite;
+}
+
+@keyframes sound-lfo-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.16; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sound-lfo-lamp {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.generator-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.3rem 0.45rem;
+  align-items: end;
+}
+
+.simulator-drawers > details {
+  padding: 0 0 0.45rem;
+}
+
+.generator-drawer .suggestions-drawer {
+  margin: 0.35rem 0 0.55rem;
+}
+
+.generator-grid label {
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  text-transform: lowercase;
+}
+
+.generator-grid input,
+.generator-grid select {
+  min-width: 0;
+  width: 100%;
+  min-height: 2.75rem;
+  border: 0;
+  border-bottom: 1px solid rgba(29, 25, 20, 0.35);
+  background: transparent;
+  padding: 0.25rem 0.2rem;
+}
+
+.mask-control {
+  grid-column: 1 / -1;
+}
+
+.generator-actions {
+  margin: 0.35rem 0 0.15rem;
+  gap: 0.25rem;
+}
+
+.control-help,
+.hypothesis-drawer > p {
+  margin: 0.35rem 0;
+  color: var(--muted);
+  font-size: 0.78em;
+  text-align: left !important;
+}
+
+.control-status,
+.accessible-state {
+  display: block;
+  min-height: 1.35em;
+  color: var(--muted);
+  text-align: left;
+}
+
+.control-status[data-status="error"] {
+  color: #7e2412;
+  font-weight: 600;
+}
+
+#suggestions-list {
+  margin: 0;
+  padding: 0 0 0.4rem 1.5rem;
+  columns: 2;
+}
+
+#suggestions-list li {
+  break-inside: avoid;
+  margin: 0 0 0.3rem;
+  text-align: left;
+}
+
+#suggestions-list button {
+  width: 100%;
+  padding: 0.4rem 0.7rem;
+  text-align: left;
+}
+
+.hypothesis-drawer {
+  margin: 0;
+  padding: 0 0 0.75rem;
+}
+
+.hypothesis-drawer summary {
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.88rem;
+}
+
+.hypothesis-question {
+  display: block;
+  margin: 0.45rem 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#hypothesis-select {
+  width: 100%;
+  min-height: 2.75rem;
+  margin-bottom: 0.55rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(29, 25, 20, 0.48);
+  background: rgba(244, 234, 214, 0.78);
+  color: var(--ink);
+  font: inherit;
+}
+
+.hypothesis-demonstration {
+  margin-top: 0.65rem;
+}
+
+.prose .hypothesis-demonstration__title,
+.prose .hypothesis-demonstration__instruction {
+  margin: 0;
+  text-align: left;
+}
+
+.hypothesis-demonstration__title {
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hypothesis-demonstration__instruction {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.hypothesis-demonstration__choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+}
+
+.hypothesis-demonstration__choices button {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+  padding: 0.55rem 0.85rem;
+  text-align: left;
+}
+
+.hypothesis-demonstration__choices code {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.hypothesis-demonstration__choices span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.hypothesis-plot-shell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  margin-top: 0.65rem;
+}
+
+#hypothesis-plot {
+  width: 100%;
+  min-height: 220px;
+}
+
+.plot-label {
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+.plot-label--y {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  padding-right: 0.3rem;
+}
+
+.plot-label--x {
+  grid-column: 2;
+  padding-top: 0.2rem;
+}
+
+.plot-axis {
+  stroke: var(--line);
+  stroke-width: 1.2;
+}
+
+.plot-point {
+  fill: var(--air);
+  stroke: var(--paper);
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+.plot-point.is-active {
+  fill: var(--grip);
+  stroke: var(--ink);
+}
+
+.plot-point:focus {
+  outline: none;
+  stroke: var(--focus);
+  stroke-width: 4;
+}
+
+.metric-readout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem 1rem;
+  margin: 0.7rem 0 0;
+}
+
+.metric-readout div {
+  min-width: 0;
+  padding: 0;
+}
+
+.metric-readout dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metric-readout dd {
+  margin: 0.15rem 0 0;
+  overflow-wrap: anywhere;
+  font-family: "Red Hat Mono", monospace;
 }
 
 #toss-court,
@@ -190,9 +996,38 @@ body {
   display: block;
 }
 
+.court-frame {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  justify-self: stretch;
+}
+
+.court-frame #toss-court {
+  height: 100%;
+}
+
+.simulator-stage .lamp-row {
+  flex-wrap: nowrap;
+  gap: 1.1rem;
+  min-height: 2.3rem;
+  padding: 0 0 0.45rem;
+}
+
+.simulator-stage .accessible-state {
+  min-height: 1.8rem;
+  padding: 0.35rem 0;
+  font-family: "Red Hat Mono", monospace;
+  font-size: 0.72rem;
+}
+
+.simulator-stage #state-code {
+  margin-left: 0;
+}
+
 #toss-court {
-  height: 260px;
-  margin-top: 0.5rem;
+  min-height: 0;
+  cursor: crosshair;
+  touch-action: pan-y;
 }
 
 .layer-atlas,
@@ -248,7 +1083,7 @@ body {
 
 #occupancy-tape {
   height: 1.35rem;
-  margin-top: 0.45rem;
+  margin-top: 0.5rem;
 }
 
 .lamp {
@@ -256,12 +1091,12 @@ body {
   align-items: center;
   gap: 0.35rem;
   font-family: "Red Hat Text", sans-serif;
-  font-size: 1.05rem;
+  font-size: 0.84rem;
   letter-spacing: 0;
 }
 
 .lamp i {
-  font-size: 1.35rem;
+  font-size: 1.15rem;
 }
 
 .lamp-dot {
@@ -284,24 +1119,28 @@ body {
 
 #state-code {
   font-weight: 700;
-  font-size: 1.45rem;
+  font-size: 1.3rem;
 }
 
 #state-path {
   font-size: 1.05rem;
   margin: 0.35rem 0 0;
   color: var(--ink);
-  min-height: 1.2em;
+  height: 1.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 
 #hexagon-panel {
-  margin-top: 0.6rem;
-  background: rgba(244, 234, 214, 0.45);
-  padding: 0.4rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.4rem 0;
 }
 
 #hexagon-panel svg {
-  width: min(100%, 280px);
+  width: min(100%, 220px);
   display: block;
   margin: 0 auto;
 }
@@ -335,6 +1174,276 @@ body {
   font-weight: 700;
 }
 
+.formal-law-workbench {
+  margin-block: 1.5rem 1.9rem;
+  padding: 0.9rem 0.55rem;
+  background: color-mix(in srgb, var(--air) 7%, var(--paper));
+}
+
+.formal-law-workbench__title {
+  margin: 0;
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.prose .formal-law-workbench__intro,
+.prose .formal-law-card__scope {
+  text-align: left;
+  hyphens: none;
+}
+
+.formal-law-workbench__intro {
+  margin: 0.35rem 0 0.85rem !important;
+  color: var(--muted);
+  font-size: 0.92em;
+}
+
+.formal-law-cards {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.formal-law-card {
+  min-width: 0;
+  padding: 0.7rem 0.75rem;
+}
+
+.formal-law-card:nth-child(1) {
+  background: color-mix(in srgb, var(--line) 8%, var(--paper));
+}
+
+.formal-law-card:nth-child(2) {
+  background: color-mix(in srgb, var(--air) 8%, var(--paper));
+}
+
+.formal-law-card:nth-child(3) {
+  background: color-mix(in srgb, var(--grip) 7%, var(--paper));
+}
+
+.formal-law-card__title {
+  margin: 0;
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.formal-law-card__scope {
+  margin: 0.3rem 0 0.7rem !important;
+  color: var(--muted);
+  font-size: 0.88em;
+}
+
+.formal-law-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 0.85rem;
+  margin-bottom: 0.65rem;
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.8rem;
+}
+
+.formal-law-control {
+  display: grid;
+  min-width: 0;
+  gap: 0.1rem;
+}
+
+.formal-law-control__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.formal-law-control__label {
+  color: var(--muted);
+}
+
+.formal-law-control__value {
+  font-family: "Red Hat Mono", monospace;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.formal-law-control__input {
+  width: 100%;
+  min-height: 2.5rem;
+  margin: 0;
+  accent-color: var(--line);
+  cursor: pointer;
+}
+
+.formal-law-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.2rem, 1fr));
+  gap: 0.55rem 0.85rem;
+  margin: 0 0 0.65rem;
+}
+
+.formal-law-metrics div {
+  min-width: 0;
+  padding: 0;
+}
+
+.formal-law-metrics__label {
+  color: var(--muted);
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.formal-law-metrics__value {
+  margin: 0.1rem 0 0;
+  overflow-wrap: anywhere;
+  font-family: "Red Hat Mono", monospace;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.prose .formal-law-observation {
+  margin: 0 0 0.65rem;
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.formal-law-plot {
+  margin: 0;
+}
+
+.formal-law-plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 9rem;
+}
+
+.formal-law-grid line {
+  stroke: rgba(36, 92, 58, 0.2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.formal-law-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.formal-law-line--alpha {
+  stroke: var(--air);
+}
+
+.formal-law-line--amphoteron {
+  stroke: var(--line);
+}
+
+.formal-law-line--kappa {
+  stroke: var(--grip);
+}
+
+.formal-law-line--passage {
+  stroke: #6b417d;
+}
+
+.formal-law-marker {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.formal-law-dot {
+  stroke: var(--paper);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.formal-law-dot--alpha {
+  fill: var(--air);
+}
+
+.formal-law-dot--amphoteron {
+  fill: var(--line);
+}
+
+.formal-law-dot--kappa {
+  fill: var(--grip);
+}
+
+.formal-law-dot--passage {
+  fill: #6b417d;
+}
+
+.formal-law-domain {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-family: "Red Hat Mono", monospace;
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.formal-law-domain span:nth-child(2) {
+  text-align: center;
+}
+
+.formal-law-domain span:last-child {
+  text-align: right;
+}
+
+.formal-law-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  color: var(--muted);
+  font-family: "Red Hat Text", sans-serif;
+  font-size: 0.7rem;
+  list-style: none;
+}
+
+.formal-law-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  text-align: left;
+}
+
+.formal-law-swatch {
+  width: 1.15rem;
+  height: 0;
+  border-top: 3px solid currentColor;
+}
+
+.formal-law-swatch--alpha {
+  color: var(--air);
+}
+
+.formal-law-swatch--amphoteron {
+  color: var(--line);
+}
+
+.formal-law-swatch--kappa {
+  color: var(--grip);
+}
+
+.formal-law-swatch--passage {
+  color: #6b417d;
+}
+
 .sources ol {
   padding-left: 1.2rem;
 }
@@ -356,12 +1465,126 @@ body {
   }
 }
 
-@media (max-width: 640px) {
-  .clipboard {
-    padding: 1.4rem 1rem 2rem;
+@media (max-width: 760px) {
+  #court-controls {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "toolbar"
+      "stage"
+      "inspector"
+      "drawers";
   }
 
-  #toss-court {
-    height: 210px;
+  #court-controls.is-inspector-collapsed {
+    grid-template-areas:
+      "toolbar"
+      "stage"
+      "drawers";
+  }
+
+  .simulator-splitter {
+    display: none;
+  }
+
+  .simulator-stage {
+    border-right: 0;
+  }
+
+  .simulator-stage:has(#hexagon-panel:not([hidden])) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "lamps"
+      "state"
+      "court"
+      "tape"
+      "path"
+      "hexagon";
+    gap: 0;
+  }
+
+  #hexagon-panel {
+    border-left: 0;
+  }
+
+  .simulator-inspector {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 640px) {
+  .clipboard {
+    --article-gutter: 1rem;
+    padding: 1.4rem var(--article-gutter) 2rem;
+  }
+
+  .simulator-toolbar .pattern-entry,
+  .playback-controls {
+    flex: 1 1 100%;
+  }
+
+  .playback-controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .pattern-choice-list,
+  .timing-controls,
+  .metric-readout,
+  .hypothesis-demonstration__choices,
+  .formal-law-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .generator-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sound-synth {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mask-control {
+    grid-column: 1 / -1;
+  }
+
+  .check-control {
+    grid-column: auto;
+  }
+
+  .formal-law-metrics div:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  #suggestions-list {
+    columns: 1;
+  }
+
+}
+
+@media (forced-colors: active) {
+  .plot-point,
+  .plot-point.is-active,
+  .formal-law-dot {
+    fill: CanvasText;
+    stroke: Canvas;
+  }
+
+  .formal-law-line,
+  .formal-law-marker,
+  .formal-law-grid line {
+    stroke: CanvasText;
+  }
+
+  .formal-law-swatch {
+    color: CanvasText;
+  }
+
+  .lamp-dot {
+    border: 2px solid CanvasText;
+  }
+
+  .sound-drawer {
+    background: Canvas;
+    box-shadow: inset 0.22rem 0 0 CanvasText;
   }
 }

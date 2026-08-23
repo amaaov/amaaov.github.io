@@ -1,0 +1,8 @@
+result_class,scenario,notation,metrics_compared,matching_metrics,mismatch_count,mismatched_metrics,status,comparison_scope,empirical_status
+model consequence,async_3,3,31,31,0,,match,all shared deterministic exact metrics,not an empirical test
+model consequence,async_55500,55500,31,31,0,,match,all shared deterministic exact metrics,not an empirical test
+model consequence,async_441,441,31,31,0,,match,all shared deterministic exact metrics,not an empirical test
+model consequence,async_531,531,31,31,0,,match,all shared deterministic exact metrics,not an empirical test
+model consequence,multiplex_hold_2_22,2[22],31,31,0,,match,all shared deterministic exact metrics,not an empirical test
+model consequence,sync_dump_rest_hold,"([44],4)(0,0)([22],2)",31,31,0,,match,all shared deterministic exact metrics,not an empirical test
+model consequence,hybrid_5_2_4_1,"5(2,4)1",31,31,0,,match,all shared deterministic exact metrics,not an empirical test

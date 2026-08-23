@@ -34,6 +34,7 @@ const COMMANDS = {
   sqcup: "⊔",
   bigvee: "∨",
   sum: "∑",
+  prod: "∏",
   lnot: "¬",
   colon: ":",
   ge: "≥",
@@ -45,6 +46,9 @@ const COMMANDS = {
   kappa: "κ",
   nu: "ν",
   theta: "θ",
+  chi: "χ",
+  eta: "η",
+  rho: "ρ",
   tau: "τ",
   ell: "ℓ",
   sigma: "σ",
@@ -57,12 +61,13 @@ const COMMANDS = {
   Phi: "Φ",
   Sigma: "Σ",
   max: "max",
+  mid: "|",
   lVert: "‖",
   rVert: "‖",
 };
 
 const PREFIX_COMMANDS = new Set(["exists", "forall", "neg", "lnot"]);
-const COMPACT_NARY_COMMANDS = new Set(["bigvee"]);
+const COMPACT_NARY_COMMANDS = new Set(["bigvee", "prod"]);
 
 function escapeXml(text) {
   return String(text)

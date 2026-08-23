@@ -1,0 +1,9 @@
+scenario,protocol_kind,siteswap,siteswap_period_beats,siteswap_period_beats_exact,observation_period_beats,observation_period_beats_exact,phase_fraction,phase_fraction_exact,dwell_ratio,dwell_ratio_exact,beat_seconds,beat_seconds_exact,period_seconds,period_seconds_exact,p_alpha,p_alpha_exact,alpha_entry_count,alpha_entry_rate_hz,alpha_entry_rate_hz_exact,alpha_bout_count,alpha_bout_lengths_seconds,alpha_bout_lengths_seconds_exact,result_class
+cascade_r025,steady_periodic,3,1,1,3,3,0.5,1/2,0.25,1/4,0.4,2/5,1.2,6/5,0.5,1/2,3,2.5,5/2,3,0.2;0.2;0.2,1/5;1/5;1/5,model consequence
+cascade_r035,steady_periodic,3,1,1,3,3,0.5,1/2,0.35,7/20,0.4,2/5,1.2,6/5,0.3,3/10,3,2.5,5/2,3,0.12;0.12;0.12,3/25;3/25;3/25,model consequence
+cascade_r045,steady_periodic,3,1,1,3,3,0.5,1/2,0.45,9/20,0.4,2/5,1.2,6/5,0.1,1/10,3,2.5,5/2,3,0.04;0.04;0.04,1/25;1/25;1/25,model consequence
+cascade_r050,steady_periodic,3,1,1,3,3,0.5,1/2,0.5,1/2,0.4,2/5,1.2,6/5,0,0,0,0,0,0,"","",model consequence
+cascade_r060,steady_periodic,3,1,1,3,3,0.5,1/2,0.6,3/5,0.4,2/5,1.2,6/5,0,0,0,0,0,0,"","",model consequence
+cascade_r070,steady_periodic,3,1,1,3,3,0.5,1/2,0.7,7/10,0.4,2/5,1.2,6/5,0,0,0,0,0,0,"","",model consequence
+cascade_r080,steady_periodic,3,1,1,3,3,0.5,1/2,0.8,4/5,0.4,2/5,1.2,6/5,0,0,0,0,0,0,"","",model consequence
+cascade_r090,steady_periodic,3,1,1,3,3,0.5,1/2,0.9,9/10,0.4,2/5,1.2,6/5,0,0,0,0,0,0,"","",model consequence

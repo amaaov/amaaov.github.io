@@ -1,0 +1,287 @@
+derivation,case_id,metric,value,exact_value,result_class,assumption
+two_object_phase,d=2/5;phase=0,p_alpha,0.6,3/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=0,p_amphoteron,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=0,p_kappa,0.4,2/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=0,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=0,alpha_mean_bout_fraction,0.6,3/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=0,alpha_maximum_bout_fraction,0.6,3/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=0,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/40,p_alpha,0.575,23/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/40,p_amphoteron,0.05,1/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/40,p_kappa,0.375,3/8,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/40,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/40,alpha_mean_bout_fraction,0.575,23/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/40,alpha_maximum_bout_fraction,0.575,23/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/40,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/20,p_alpha,0.55,11/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/20,p_amphoteron,0.1,1/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/20,p_kappa,0.35,7/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/20,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/20,alpha_mean_bout_fraction,0.55,11/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/20,alpha_maximum_bout_fraction,0.55,11/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/20,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/40,p_alpha,0.525,21/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/40,p_amphoteron,0.15,3/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/40,p_kappa,0.325,13/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/40,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/40,alpha_mean_bout_fraction,0.525,21/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/40,alpha_maximum_bout_fraction,0.525,21/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/40,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/10,p_alpha,0.5,1/2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/10,p_amphoteron,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/10,p_kappa,0.3,3/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/10,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/10,alpha_mean_bout_fraction,0.5,1/2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/10,alpha_maximum_bout_fraction,0.5,1/2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/10,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/8,p_alpha,0.475,19/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/8,p_amphoteron,0.25,1/4,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/8,p_kappa,0.275,11/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/8,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/8,alpha_mean_bout_fraction,0.475,19/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/8,alpha_maximum_bout_fraction,0.475,19/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/8,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/20,p_alpha,0.45,9/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/20,p_amphoteron,0.3,3/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/20,p_kappa,0.25,1/4,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/20,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/20,alpha_mean_bout_fraction,0.45,9/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/20,alpha_maximum_bout_fraction,0.45,9/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/20,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/40,p_alpha,0.425,17/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/40,p_amphoteron,0.35,7/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/40,p_kappa,0.225,9/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/40,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/40,alpha_mean_bout_fraction,0.425,17/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/40,alpha_maximum_bout_fraction,0.425,17/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/40,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/5,p_alpha,0.4,2/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/5,p_amphoteron,0.4,2/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/5,p_kappa,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/5,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/5,alpha_mean_bout_fraction,0.4,2/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/5,alpha_maximum_bout_fraction,0.4,2/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/5,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/40,p_alpha,0.375,3/8,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/40,p_amphoteron,0.45,9/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/40,p_kappa,0.175,7/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/40,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/40,alpha_mean_bout_fraction,0.375,3/8,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/40,alpha_maximum_bout_fraction,0.375,3/8,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/40,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/4,p_alpha,0.35,7/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/4,p_amphoteron,0.5,1/2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/4,p_kappa,0.15,3/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/4,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/4,alpha_mean_bout_fraction,0.35,7/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/4,alpha_maximum_bout_fraction,0.35,7/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/4,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=11/40,p_alpha,0.325,13/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=11/40,p_amphoteron,0.55,11/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=11/40,p_kappa,0.125,1/8,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=11/40,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=11/40,alpha_mean_bout_fraction,0.325,13/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=11/40,alpha_maximum_bout_fraction,0.325,13/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=11/40,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/10,p_alpha,0.3,3/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/10,p_amphoteron,0.6,3/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/10,p_kappa,0.1,1/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/10,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/10,alpha_mean_bout_fraction,0.3,3/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/10,alpha_maximum_bout_fraction,0.3,3/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/10,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=13/40,p_alpha,0.275,11/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=13/40,p_amphoteron,0.65,13/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=13/40,p_kappa,0.075,3/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=13/40,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=13/40,alpha_mean_bout_fraction,0.275,11/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=13/40,alpha_maximum_bout_fraction,0.275,11/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=13/40,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/20,p_alpha,0.25,1/4,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/20,p_amphoteron,0.7,7/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/20,p_kappa,0.05,1/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/20,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/20,alpha_mean_bout_fraction,0.25,1/4,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/20,alpha_maximum_bout_fraction,0.25,1/4,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=7/20,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/8,p_alpha,0.225,9/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/8,p_amphoteron,0.75,3/4,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/8,p_kappa,0.025,1/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/8,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/8,alpha_mean_bout_fraction,0.225,9/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/8,alpha_maximum_bout_fraction,0.225,9/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=3/8,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=2/5,p_alpha,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=2/5,p_amphoteron,0.8,4/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=2/5,p_kappa,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=2/5,alpha_entry_count,1,1,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=2/5,alpha_mean_bout_fraction,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=2/5,alpha_maximum_bout_fraction,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=2/5,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=17/40,p_alpha,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=17/40,p_amphoteron,0.8,4/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=17/40,p_kappa,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=17/40,alpha_entry_count,2,2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=17/40,alpha_mean_bout_fraction,0.1,1/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=17/40,alpha_maximum_bout_fraction,0.175,7/40,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=17/40,alpha_bout_variance_fraction_squared,0.005625,9/1600,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/20,p_alpha,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/20,p_amphoteron,0.8,4/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/20,p_kappa,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/20,alpha_entry_count,2,2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/20,alpha_mean_bout_fraction,0.1,1/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/20,alpha_maximum_bout_fraction,0.15,3/20,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=9/20,alpha_bout_variance_fraction_squared,0.0025,1/400,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=19/40,p_alpha,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=19/40,p_amphoteron,0.8,4/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=19/40,p_kappa,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=19/40,alpha_entry_count,2,2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=19/40,alpha_mean_bout_fraction,0.1,1/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=19/40,alpha_maximum_bout_fraction,0.125,1/8,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=19/40,alpha_bout_variance_fraction_squared,0.000625,1/1600,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/2,p_alpha,0.2,1/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/2,p_amphoteron,0.8,4/5,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/2,p_kappa,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/2,alpha_entry_count,2,2,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/2,alpha_mean_bout_fraction,0.1,1/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/2,alpha_maximum_bout_fraction,0.1,1/10,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+two_object_phase,d=2/5;phase=1/2,alpha_bout_variance_fraction_squared,0,0,model consequence,"two contiguous circular retention intervals; shortest phase in [0, 1/2]"
+bernoulli_temporal,n=3;rho=1/10,p_alpha,0.729,729/1000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/10,p_amphoteron,0.27,27/100,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/10,p_kappa,0.001,1/1000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/10,expected_held_count,0.3,3/10,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/4,p_alpha,0.421875,27/64,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/4,p_amphoteron,0.5625,9/16,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/4,p_kappa,0.015625,1/64,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/4,expected_held_count,0.75,3/4,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/2,p_alpha,0.125,1/8,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/2,p_amphoteron,0.75,3/4,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/2,p_kappa,0.125,1/8,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=1/2,expected_held_count,1.5,3/2,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=3/4,p_alpha,0.015625,1/64,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=3/4,p_amphoteron,0.5625,9/16,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=3/4,p_kappa,0.421875,27/64,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=3/4,expected_held_count,2.25,9/4,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=9/10,p_alpha,0.001,1/1000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=9/10,p_amphoteron,0.27,27/100,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=9/10,p_kappa,0.729,729/1000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=3;rho=9/10,expected_held_count,2.7,27/10,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/10,p_alpha,0.59049,59049/100000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/10,p_amphoteron,0.4095,819/2000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/10,p_kappa,1e-05,1/100000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/10,expected_held_count,0.5,1/2,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/4,p_alpha,0.2373046875,243/1024,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/4,p_amphoteron,0.76171875,195/256,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/4,p_kappa,0.0009765625,1/1024,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/4,expected_held_count,1.25,5/4,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/2,p_alpha,0.03125,1/32,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/2,p_amphoteron,0.9375,15/16,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/2,p_kappa,0.03125,1/32,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=1/2,expected_held_count,2.5,5/2,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=3/4,p_alpha,0.0009765625,1/1024,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=3/4,p_amphoteron,0.76171875,195/256,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=3/4,p_kappa,0.2373046875,243/1024,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=3/4,expected_held_count,3.75,15/4,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=9/10,p_alpha,1e-05,1/100000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=9/10,p_amphoteron,0.4095,819/2000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=9/10,p_kappa,0.59049,59049/100000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=5;rho=9/10,expected_held_count,4.5,9/2,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/10,p_alpha,0.3486784401,3486784401/10000000000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/10,p_amphoteron,0.6513215598,3256607799/5000000000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/10,p_kappa,1e-10,1/10000000000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/10,expected_held_count,1,1,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/4,p_alpha,0.0563135147095,59049/1048576,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/4,p_amphoteron,0.943685531616,494763/524288,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/4,p_kappa,9.53674316406e-07,1/1048576,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/4,expected_held_count,2.5,5/2,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/2,p_alpha,0.0009765625,1/1024,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/2,p_amphoteron,0.998046875,511/512,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/2,p_kappa,0.0009765625,1/1024,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=1/2,expected_held_count,5,5,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=3/4,p_alpha,9.53674316406e-07,1/1048576,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=3/4,p_amphoteron,0.943685531616,494763/524288,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=3/4,p_kappa,0.0563135147095,59049/1048576,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=3/4,expected_held_count,7.5,15/2,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=9/10,p_alpha,1e-10,1/10000000000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=9/10,p_amphoteron,0.6513215598,3256607799/5000000000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=9/10,p_kappa,0.3486784401,3486784401/10000000000,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,n=10;rho=9/10,expected_held_count,9,9,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,rho=1/4|1/2|3/4,p_alpha,0.09375,3/32,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,rho=1/4|1/2|3/4,p_amphoteron,0.8125,13/16,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,rho=1/4|1/2|3/4,p_kappa,0.09375,3/32,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+bernoulli_temporal,rho=1/4|1/2|3/4,expected_held_count,1.5,3/2,model consequence,mutually independent Bernoulli retention indicators at one stationary sample
+one_bit_first_passage,n=2;q=1,expected_steps,1,1,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=3;q=1,expected_steps,3,3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=3;q=2,expected_steps,3,3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=4;q=1,expected_steps,7,7,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=4;q=2,expected_steps,8,8,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=4;q=3,expected_steps,7,7,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=5;q=1,expected_steps,15,15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=5;q=2,expected_steps,17.5,35/2,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=5;q=3,expected_steps,17.5,35/2,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=5;q=4,expected_steps,15,15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=6;q=1,expected_steps,31,31,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=6;q=2,expected_steps,36,36,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=6;q=3,expected_steps,37,37,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=6;q=4,expected_steps,36,36,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=6;q=5,expected_steps,31,31,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=7;q=1,expected_steps,63,63,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=7;q=2,expected_steps,72.3333333333,217/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=7;q=3,expected_steps,74.6666666667,224/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=7;q=4,expected_steps,74.6666666667,224/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=7;q=5,expected_steps,72.3333333333,217/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=7;q=6,expected_steps,63,63,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=8;q=1,expected_steps,127,127,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=8;q=2,expected_steps,144,144,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=8;q=3,expected_steps,148.333333333,445/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=8;q=4,expected_steps,149.333333333,448/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=8;q=5,expected_steps,148.333333333,445/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=8;q=6,expected_steps,144,144,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=8;q=7,expected_steps,127,127,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=1,expected_steps,255,255,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=2,expected_steps,285.75,1143/4,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=3,expected_steps,293.25,1173/4,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=4,expected_steps,295.5,591/2,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=5,expected_steps,295.5,591/2,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=6,expected_steps,293.25,1173/4,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=7,expected_steps,285.75,1143/4,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=9;q=8,expected_steps,255,255,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=1,expected_steps,511,511,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=2,expected_steps,566.666666667,1700/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=3,expected_steps,579.333333333,1738/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=4,expected_steps,583.333333333,1750/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=5,expected_steps,584.333333333,1753/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=6,expected_steps,583.333333333,1750/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=7,expected_steps,579.333333333,1738/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=8,expected_steps,566.666666667,1700/3,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=10;q=9,expected_steps,511,511,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=1,expected_steps,1023,1023,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=2,expected_steps,1124.2,5621/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=3,expected_steps,1145.46666667,17182/15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=4,expected_steps,1152.06666667,17281/15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=5,expected_steps,1154.26666667,17314/15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=6,expected_steps,1154.26666667,17314/15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=7,expected_steps,1152.06666667,17281/15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=8,expected_steps,1145.46666667,17182/15,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=9,expected_steps,1124.2,5621/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=11;q=10,expected_steps,1023,1023,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=1,expected_steps,2047,2047,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=2,expected_steps,2232,2232,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=3,expected_steps,2267.8,11339/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=4,expected_steps,2278.4,11392/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=5,expected_steps,2282.2,11411/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=6,expected_steps,2283.2,11416/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=7,expected_steps,2282.2,11411/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=8,expected_steps,2278.4,11392/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=9,expected_steps,2267.8,11339/5,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=10,expected_steps,2232,2232,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+one_bit_first_passage,n=12;q=11,expected_steps,2047,2047,theorem,one uniformly selected bit flips per event; boundaries are absorbing for the clock
+gaussian_correction,inner=1/4,sigma_over_radius_at_maximum,0.581490885748,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=1/4,maximum_correction_probability,0.581763211314,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=1/4,derivative_at_maximum,3.2834046264e-16,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=1/2,sigma_over_radius_at_maximum,0.735534255037,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=1/2,maximum_correction_probability,0.322674568835,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=1/2,derivative_at_maximum,0,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=3/4,sigma_over_radius_at_maximum,0.872002302131,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=3/4,maximum_correction_probability,0.138269632023,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R
+gaussian_correction,inner=3/4,derivative_at_maximum,7.30037167104e-17,"",model consequence,one-dimensional centered Gaussian error; correction band cR < |X| <= R

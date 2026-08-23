@@ -1,5 +1,5 @@
-import { occupancyState } from "./holding.js";
-import { scheduleEvents, siteswapBallCount } from "./siteswap.js";
+import { EMPTY_SIGN, occupancyState } from "./holding.js";
+import { scheduleEvents, siteswapBallCount, siteswapIsValid } from "./siteswap.js";
 import { eventPhase, maxThrow, throwFlight } from "./schedule.js";
 
 const COURT_PEAK_LIFT = 0.56;
@@ -11,11 +11,12 @@ function gravityForFlight(flight) {
   return (COURT_PEAK_LIFT * 8) / (duration * duration);
 }
 
-function ballisticPoint(from, to, progress, gravity, flight) {
+function ballisticPoint(from, to, progress, gravity, flight, wind = { x: 0, y: 0 }) {
   const lift = 0.5 * gravity * flight * flight * (progress - progress * progress);
+  const gust = 4 * progress * (1 - progress);
   return {
-    x: from.x + (to.x - from.x) * progress,
-    y: from.y + (to.y - from.y) * progress - lift,
+    x: from.x + (to.x - from.x) * progress + (wind.x ?? 0) * gust,
+    y: from.y + (to.y - from.y) * progress - lift + (wind.y ?? 0) * gust,
   };
 }
 
@@ -163,12 +164,39 @@ function spreadHeldInHand(positions) {
   }
 }
 
+const DEFAULT_HANDS = [
+  { x: 0.32, y: 0.82 },
+  { x: 0.68, y: 0.82 },
+];
+
+export function emptyCourtPicture(hands = DEFAULT_HANDS) {
+  return {
+    positions: [],
+    hands: hands.map((hand) => ({ x: hand.x, y: hand.y })),
+    state: EMPTY_SIGN,
+    held: 0,
+    airborne: 0,
+    ballCount: 0,
+    heldFlags: [],
+  };
+}
+
+export function courtPicture(options) {
+  const input = options.source ?? options.throws;
+  if (input == null || !siteswapIsValid(input)) {
+    return emptyCourtPicture(options.hands);
+  }
+  return trajectoryPositions(options);
+}
+
 export function trajectoryPositions({
   source,
   throws,
   dwellRatio,
   holdTwos = true,
   timeBeat,
+  gravityScale = 1,
+  wind = { x: 0, y: 0 },
   hands = [
     { x: 0.32, y: 0.82 },
     { x: 0.68, y: 0.82 },
@@ -189,7 +217,7 @@ export function trajectoryPositions({
   const maxFlight = events.reduce((longest, event) => {
     return Math.max(longest, throwFlight(event.height, dwellRatio, holdTwos));
   }, 0.3);
-  const gravity = gravityForFlight(maxFlight);
+  const gravity = gravityForFlight(maxFlight) / Math.max(0.35, gravityScale);
 
   for (const event of events) {
     const phase = eventPhase(event, timeBeat, dwellRatio, holdTwos);
@@ -204,7 +232,7 @@ export function trajectoryPositions({
     const to = catchPose(hands, event.toHand);
     if (phase === "air") {
       const progress = (timeBeat - throwTime) / Math.max(flight, 1e-6);
-      const point = ballisticPoint(from, to, progress, gravity, flight);
+      const point = ballisticPoint(from, to, progress, gravity, flight, wind);
       positions[event.ball] = { x: point.x, y: point.y, held: false, hand: event.fromHand };
     } else if (event.hold) {
       const point = holdCarryPose(hands, event.toHand, timeBeat, events);
@@ -233,7 +261,8 @@ export function trajectoryPositions({
     }
   }
 
-  const held = positions.filter((position) => position.held).length;
+  const heldFlags = positions.map((position) => position.held);
+  const held = heldFlags.filter(Boolean).length;
   return {
     positions,
     hands: handNow,
@@ -241,5 +270,6 @@ export function trajectoryPositions({
     held,
     airborne: ballCount - held,
     ballCount,
+    heldFlags,
   };
 }

@@ -3,11 +3,13 @@ import test from "node:test";
 import {
   appendCourtTrails,
   compressStates,
+  containedCourtRect,
   drawOccupancyTape,
   drawTossCourt,
   hexagonVertexIndex,
   mixedCycleLabel,
   occupancyTapeFill,
+  recentStatePath,
 } from "../draw.js";
 import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
 
@@ -63,6 +65,20 @@ function mockCanvas(width = 200, height = 80) {
     getContext: () => context,
   };
 }
+
+test("court drawing keeps a square field inside a wide canvas", () => {
+  const rect = containedCourtRect(400, 200);
+  assert.equal(rect.width, 200);
+  assert.equal(rect.height, 200);
+  assert.equal(rect.left, 100);
+  assert.equal(rect.top, 0);
+  const canvas = mockCanvas(400, 200);
+  drawTossCourt(canvas, [{ x: 0.5, y: 0.5, held: true }], [{ x: 0.32, y: 0.84 }]);
+  const ball = canvas.calls.find((call) => call[0] === "arc");
+  assert.ok(ball);
+  assert.ok(Math.abs(ball[1][0] - 200) < 1);
+  assert.ok(Math.abs(ball[1][1] - 100) < 1);
+});
 
 test("occupancy tape maps snapshot codes onto grip, air, mix, and empty fills", () => {
   const grip = occupancyTapeFill(HOLD_SIGN);
@@ -277,6 +293,24 @@ test("court hand wake strokes a clay shadow instead of stacked black ellipses", 
 
 test("compressed occupancy path keeps a run of the same snapshot as one step", () => {
   assert.deepEqual(compressStates([MIXED_SIGN, MIXED_SIGN, RELEASE_SIGN, MIXED_SIGN]), [MIXED_SIGN, RELEASE_SIGN, MIXED_SIGN]);
+});
+
+test("visible occupancy path keeps only recent transitions at a stable length", () => {
+  const states = Array.from(
+    { length: 20 },
+    (_, index) => index % 2 === 0 ? RELEASE_SIGN : MIXED_SIGN,
+  );
+  assert.deepEqual(recentStatePath(states, 4), [
+    "…",
+    RELEASE_SIGN,
+    MIXED_SIGN,
+    RELEASE_SIGN,
+    MIXED_SIGN,
+  ]);
+  assert.deepEqual(recentStatePath([RELEASE_SIGN, RELEASE_SIGN, MIXED_SIGN], 4), [
+    RELEASE_SIGN,
+    MIXED_SIGN,
+  ]);
 });
 
 const LAYER_HANDS = [

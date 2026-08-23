@@ -1,5 +1,5 @@
 function skipSpace(text, index) {
-  while (index < text.length && (text[index] === " " || text[index] === ".")) {
+  while (index < text.length && (text[index] === "." || /\s/.test(text[index]))) {
     index += 1;
   }
   return index;
@@ -23,11 +23,13 @@ function parseThrowToken(text, index) {
   const height = parseThrowHeight(text[index]);
   index += 1;
   let crossing = height % 2 === 1;
+  let crossingExplicit = false;
   if (text[index] === "x" || text[index] === "X") {
-    crossing = true;
+    crossing = !crossing;
+    crossingExplicit = true;
     index += 1;
   }
-  return { height, crossing, index };
+  return { height, crossing, crossingExplicit, index };
 }
 
 function parseHandThrows(text, index, keepCrossing) {
@@ -48,7 +50,11 @@ function parseHandThrows(text, index, keepCrossing) {
         break;
       }
       const token = parseThrowToken(text, cursor);
-      group.push(keepCrossing ? { height: token.height, crossing: token.crossing } : token.height);
+      group.push(
+        keepCrossing || token.crossingExplicit
+          ? { height: token.height, crossing: token.crossing }
+          : token.height,
+      );
       cursor = token.index;
     }
     if (group.length === 0) {
@@ -57,7 +63,9 @@ function parseHandThrows(text, index, keepCrossing) {
     return { heights: group, index: close + 1 };
   }
   const token = parseThrowToken(text, index);
-  const heights = keepCrossing ? [{ height: token.height, crossing: token.crossing }] : [token.height];
+  const heights = keepCrossing || token.crossingExplicit
+    ? [{ height: token.height, crossing: token.crossing }]
+    : [token.height];
   return { heights, index: token.index };
 }
 
@@ -89,26 +97,66 @@ export function parseSyncSiteswap(source) {
     if (index >= text.length) {
       break;
     }
-    if (text[index] !== "(") {
-      throw new Error("sync siteswap expected a pair");
+    const parsed = parseSyncPair(text, index);
+    pairs.push(parsed.pair);
+    index = parsed.index;
+    if (text[index] === "!") {
+      index += 1;
     }
-    const left = parseHandThrows(text, index + 1, true);
-    index = skipSpace(text, left.index);
-    if (text[index] !== ",") {
-      throw new Error("sync pair missing comma");
-    }
-    const right = parseHandThrows(text, index + 1, true);
-    index = skipSpace(text, right.index);
-    if (text[index] !== ")") {
-      throw new Error("unclosed sync pair");
-    }
-    pairs.push({ left: left.heights, right: right.heights });
-    index += 1;
   }
   if (pairs.length === 0) {
     throw new Error("empty siteswap");
   }
   return pairs;
+}
+
+function parseSyncPair(text, index) {
+  if (text[index] !== "(") {
+    throw new Error("sync siteswap expected a pair");
+  }
+  const left = parseHandThrows(text, index + 1, true);
+  index = skipSpace(text, left.index);
+  if (text[index] !== ",") {
+    throw new Error("sync pair missing comma");
+  }
+  const right = parseHandThrows(text, index + 1, true);
+  index = skipSpace(text, right.index);
+  if (text[index] !== ")") {
+    throw new Error("unclosed sync pair");
+  }
+  return {
+    pair: { left: left.heights, right: right.heights },
+    index: index + 1,
+  };
+}
+
+export function parseHybridSiteswap(source) {
+  const frames = [];
+  const text = String(source).trim();
+  let index = 0;
+  while (index < text.length) {
+    index = skipSpace(text, index);
+    if (index >= text.length) {
+      break;
+    }
+    if (text[index] === "(") {
+      const parsed = parseSyncPair(text, index);
+      const shortBeat = text[parsed.index] === "!";
+      frames.push({ kind: "sync", duration: shortBeat ? 1 : 2, ...parsed.pair });
+      index = parsed.index;
+      if (shortBeat) {
+        index += 1;
+      }
+      continue;
+    }
+    const parsed = parseHandThrows(text, index, false);
+    frames.push({ kind: "async", duration: 1, throws: parsed.heights });
+    index = parsed.index;
+  }
+  if (frames.length === 0) {
+    throw new Error("empty siteswap");
+  }
+  return frames;
 }
 
 export function parseVanillaSiteswap(source) {
@@ -134,10 +182,35 @@ export function asBeats(input) {
 }
 
 export function readSiteswap(input) {
-  if (typeof input === "string" && input.trim().startsWith("(")) {
-    return { timing: "sync", pairs: parseSyncSiteswap(input) };
+  if (typeof input === "string") {
+    const frames = parseHybridSiteswap(input);
+    const hasAsync = frames.some((frame) => frame.kind === "async");
+    const hasSync = frames.some((frame) => frame.kind === "sync");
+    const hasSuppressedSyncBeat = frames.some(
+      (frame) => frame.kind === "sync" && frame.duration === 1,
+    );
+    if ((hasAsync && hasSync) || hasSuppressedSyncBeat) {
+      return { timing: "hybrid", frames };
+    }
+    if (hasSync) {
+      return {
+        timing: "sync",
+        pairs: frames.map(({ left, right }) => ({ left, right })),
+      };
+    }
+    return { timing: "async", beats: frames.map((frame) => frame.throws) };
   }
   return { timing: "async", beats: asBeats(input) };
+}
+
+function framesOf(pattern) {
+  if (pattern.timing === "hybrid") {
+    return pattern.frames;
+  }
+  if (pattern.timing === "sync") {
+    return pattern.pairs.map((pair) => ({ kind: "sync", duration: 2, ...pair }));
+  }
+  return pattern.beats.map((throws) => ({ kind: "async", duration: 1, throws }));
 }
 
 function throwHeightOf(token) {
@@ -161,43 +234,37 @@ function highestIn(heights) {
 
 export function siteswapBallCount(input) {
   const pattern = readSiteswap(input);
-  if (pattern.timing === "sync") {
-    const sum = pattern.pairs.reduce(
-      (total, pair) => total + sumHeights(pair.left) + sumHeights(pair.right),
-      0,
-    );
-    return sum / (2 * pattern.pairs.length);
-  }
-  const beats = pattern.beats;
-  const sum = beats.reduce((total, beat) => total + sumHeights(beat), 0);
-  return sum / beats.length;
+  const frames = framesOf(pattern);
+  const sum = frames.reduce((total, frame) => {
+    if (frame.kind === "sync") {
+      return total + sumHeights(frame.left) + sumHeights(frame.right);
+    }
+    return total + sumHeights(frame.throws);
+  }, 0);
+  return sum / frames.reduce((total, frame) => total + frame.duration, 0);
 }
 
 export function siteswapHighest(input) {
   const pattern = readSiteswap(input);
-  if (pattern.timing === "sync") {
-    return pattern.pairs.reduce(
-      (highest, pair) => Math.max(highest, highestIn(pair.left), highestIn(pair.right)),
-      0,
-    );
-  }
-  return pattern.beats.reduce((highest, beat) => Math.max(highest, highestIn(beat)), 0);
+  return framesOf(pattern).reduce((highest, frame) => {
+    if (frame.kind === "sync") {
+      return Math.max(highest, highestIn(frame.left), highestIn(frame.right));
+    }
+    return Math.max(highest, highestIn(frame.throws));
+  }, 0);
 }
 
 export function siteswapPeriod(input) {
   const pattern = readSiteswap(input);
-  if (pattern.timing === "sync") {
-    return pattern.pairs.length * 2;
-  }
-  return pattern.beats.length;
+  return framesOf(pattern).reduce((total, frame) => total + frame.duration, 0);
 }
 
 export function siteswapIsValid(input) {
-  const average = siteswapBallCount(input);
-  if (!Number.isInteger(average) || average < 1) {
-    return false;
-  }
   try {
+    const average = siteswapBallCount(input);
+    if (!Number.isInteger(average) || average < 1) {
+      return false;
+    }
     scheduleEvents(input, true, siteswapPeriod(input) * 4);
     return true;
   } catch {
@@ -265,24 +332,47 @@ function rejectIdleLanding(available, beat) {
   }
 }
 
-function applyTimeBeat(pattern, landing, available, intro, throwHand, beat, holdTwos, record) {
-  if (pattern.timing === "sync") {
-    if (beat % 2 !== 0) {
-      rejectIdleLanding(available, beat);
-      return [];
+function frameAtBeat(pattern, beat) {
+  const frames = framesOf(pattern);
+  const period = frames.reduce((total, frame) => total + frame.duration, 0);
+  const localBeat = ((beat % period) + period) % period;
+  let offset = 0;
+  for (const frame of frames) {
+    if (localBeat === offset) {
+      return frame;
     }
-    const pairCount = pattern.pairs.length;
-    const pair = pattern.pairs[(((beat / 2) % pairCount) + pairCount) % pairCount];
+    if (localBeat < offset + frame.duration) {
+      return null;
+    }
+    offset += frame.duration;
+  }
+  return null;
+}
+
+function applyTimeBeat(pattern, landing, available, intro, throwHand, beat, holdTwos, record) {
+  const frame = frameAtBeat(pattern, beat);
+  if (frame === null) {
+    rejectIdleLanding(available, beat);
+    return [];
+  }
+  if (frame.kind === "sync") {
     const events = [
-      ...tossFromHand(pair.left, landing, available, intro, 0, beat, holdTwos, record),
-      ...tossFromHand(pair.right, landing, available, intro, 1, beat, holdTwos, record),
+      ...tossFromHand(frame.left, landing, available, intro, 0, beat, holdTwos, record),
+      ...tossFromHand(frame.right, landing, available, intro, 1, beat, holdTwos, record),
     ];
     rejectIdleLanding(available, beat);
     return events;
   }
-  const beats = pattern.beats;
-  const heights = beats[((beat % beats.length) + beats.length) % beats.length];
-  const events = tossFromHand(heights, landing, available, intro, throwHand, beat, holdTwos, record);
+  const events = tossFromHand(
+    frame.throws,
+    landing,
+    available,
+    intro,
+    throwHand,
+    beat,
+    holdTwos,
+    record,
+  );
   rejectIdleLanding(available, beat);
   return events;
 }
@@ -357,5 +447,13 @@ export function scheduleEvents(input, holdTwos = true, untilBeat = 64) {
       events.push({ ...toss, beat: absolute });
     }
   }
-  return { beats: pattern.beats ?? pattern.pairs, ballCount, highest, events, cycleLength };
+  return {
+    beats: pattern.beats ?? pattern.pairs ?? pattern.frames,
+    ballCount,
+    highest,
+    events,
+    cycleLength,
+    period,
+    timing: pattern.timing,
+  };
 }

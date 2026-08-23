@@ -1,5 +1,5 @@
 import { MIXED_SIGN, occupancyState } from "./holding.js";
-import { scheduleEvents, siteswapBallCount, siteswapHighest, siteswapPeriod } from "./siteswap.js";
+import { scheduleEvents, siteswapHighest, siteswapPeriod } from "./siteswap.js";
 
 export function dwellBeats(dwellRatio) {
   return 2 * dwellRatio;
@@ -39,6 +39,26 @@ export function handIndex(beat) {
   return ((Math.floor(beat) % 2) + 2) % 2 === 0 ? 1 : 0;
 }
 
+export function playbackWindowBeats(input, holdTwos = true) {
+  if (input == null || input === "") {
+    return 48;
+  }
+  try {
+    return scheduleEvents(input, holdTwos, 1).cycleLength;
+  } catch {
+    return 48;
+  }
+}
+
+export function playbackTimeBeat(elapsedBeats, { reverse = false, windowBeats = 48 } = {}) {
+  const span = windowBeats > 0 ? windowBeats : 48;
+  const forward = ((elapsedBeats % span) + span) % span;
+  if (!reverse) {
+    return forward;
+  }
+  return (span - forward) % span;
+}
+
 export function eventPhase(event, timeBeat, dwellRatio, holdTwos) {
   const nextThrow = event.beat + event.height;
   if (timeBeat < event.beat || timeBeat >= nextThrow) {
@@ -53,7 +73,14 @@ export function eventPhase(event, timeBeat, dwellRatio, holdTwos) {
 
 export function occupancyAtTime(input, timeBeat, dwellRatio, holdTwos) {
   const highest = maxThrow(input);
-  const { events, ballCount } = scheduleEvents(input, holdTwos, Math.ceil(timeBeat) + highest + 2);
+  const schedule = scheduleEvents(input, holdTwos, Math.ceil(timeBeat) + highest + 2);
+  const heldFlags = holdingFlagsAtTime(schedule, timeBeat, dwellRatio, holdTwos);
+  const held = heldFlags.filter(Boolean).length;
+  return { held, airborne: schedule.ballCount - held, ballCount: schedule.ballCount, heldFlags };
+}
+
+export function holdingFlagsAtTime(schedule, timeBeat, dwellRatio, holdTwos = true) {
+  const { events, ballCount } = schedule;
   const phaseByBall = new Map();
   for (const event of events) {
     const phase = eventPhase(event, timeBeat, dwellRatio, holdTwos);
@@ -61,20 +88,7 @@ export function occupancyAtTime(input, timeBeat, dwellRatio, holdTwos) {
       phaseByBall.set(event.ball, phase);
     }
   }
-  let held = 0;
-  let airborne = 0;
-  for (let ball = 0; ball < ballCount; ball += 1) {
-    if (phaseByBall.get(ball) === "air") {
-      airborne += 1;
-    } else {
-      held += 1;
-    }
-  }
-  return { held, airborne, ballCount };
-}
-
-function flagsFromCounts(held, ballCount) {
-  return Array.from({ length: ballCount }, (_, index) => index < held);
+  return Array.from({ length: ballCount }, (_, ball) => phaseByBall.get(ball) !== "air");
 }
 
 export function sampleOccupancy({
@@ -87,7 +101,6 @@ export function sampleOccupancy({
 }) {
   const input = source ?? throws;
   const period = siteswapPeriod(input);
-  const ballCount = siteswapBallCount(input);
   const start = period * 4;
   const end = start + durationBeats;
   const samples = [];
@@ -97,7 +110,7 @@ export function sampleOccupancy({
       timeBeat,
       held: occupancy.held,
       airborne: occupancy.airborne,
-      state: occupancyState(flagsFromCounts(occupancy.held, ballCount)),
+      state: occupancyState(occupancy.heldFlags),
     });
   }
   return samples;

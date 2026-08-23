@@ -1,0 +1,9 @@
+name,protocol_kind,siteswap,object_count,hand_count,siteswap_period_beats,observation_period_beats,phase_fraction,object_mass_kg,gravity_m_s2,beat_seconds,dwell_ratio,position_noise_m,velocity_noise_m_s,catch_radius_m,trials,seed
+cascade_r025,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.25,0.008,0.040,0.035,20000,20260821
+cascade_r035,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.35,0.008,0.040,0.035,20000,20260821
+cascade_r045,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.45,0.008,0.040,0.035,20000,20260821
+cascade_r050,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.50,0.008,0.040,0.035,20000,20260821
+cascade_r060,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.60,0.008,0.040,0.035,20000,20260821
+cascade_r070,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.70,0.008,0.040,0.035,20000,20260821
+cascade_r080,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.80,0.008,0.040,0.035,20000,20260821
+cascade_r090,steady_periodic,3,3,2,1,3,0.5,0.12,9.81,0.40,0.90,0.008,0.040,0.035,20000,20260821
