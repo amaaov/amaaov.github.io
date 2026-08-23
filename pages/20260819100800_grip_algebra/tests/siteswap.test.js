@@ -25,6 +25,10 @@ import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
 const THREE_UP_HOLD =
   "([26x],2)(2,6x)(6x,0)(0,2)(2,2)(2,[22])(2,[26x])(6x,2)(0,6x)(2,0)(2,2)([22],2)";
 
+const HOLD_FLASH_THREE = "[25]550022[22]2";
+const HOLD_FLASH_FOUR = "[27][27]7700022[22][22]";
+const HOLD_FLASH_FIVE = "[229][29][29]99000022[22][22][222][22]";
+
 test("vanilla parser reads digits and 55500", () => {
   assert.deepEqual(parseVanillaSiteswap("3"), [3]);
   assert.deepEqual(parseVanillaSiteswap("20"), [2, 0]);
@@ -135,6 +139,9 @@ test("ball count is the throw average, including multiplex", () => {
   assert.equal(siteswapBallCount("[55]5000[22]2"), 3);
   assert.equal(siteswapBallCount("([44],4)(0,0)([22],2)"), 3);
   assert.equal(siteswapBallCount(THREE_UP_HOLD), 3);
+  assert.equal(siteswapBallCount(HOLD_FLASH_THREE), 3);
+  assert.equal(siteswapBallCount(HOLD_FLASH_FOUR), 4);
+  assert.equal(siteswapBallCount(HOLD_FLASH_FIVE), 5);
 });
 
 test("collision rule accepts 02, 3, 55500, [22]2, 55500522, [55]5000[22]2 and rejects 76, 55500[22]2, and 555002[22]", () => {
@@ -149,6 +156,10 @@ test("collision rule accepts 02, 3, 55500, [22]2, 55500522, [55]5000[22]2 and re
   assert.equal(siteswapIsValid("[55]5000[22]2"), true);
   assert.equal(siteswapIsValid("([44],4)(0,0)([22],2)"), true);
   assert.equal(siteswapIsValid(THREE_UP_HOLD), true);
+  assert.equal(siteswapIsValid(HOLD_FLASH_THREE), true);
+  assert.equal(siteswapIsValid(HOLD_FLASH_FOUR), true);
+  assert.equal(siteswapIsValid(HOLD_FLASH_FIVE), true);
+  assert.equal(siteswapIsValid("[25]550022[22]2[22]2"), true);
   assert.equal(siteswapIsValid("55500[22]2"), false);
   assert.equal(siteswapIsValid("555002[22]"), false);
   assert.equal(siteswapIsValid([7, 6]), false);
@@ -300,6 +311,33 @@ test("55500522 flashes then holds two", () => {
   assert.ok(states.has(MIXED_SIGN));
   assert.ok(samples.some((sample) => sample.held === 0));
   assert.ok(samples.some((sample) => sample.held === 2));
+});
+
+test("async hold-flash-hold cycles walk hold, Amphoteron, and classic flash", () => {
+  const family = [
+    { source: HOLD_FLASH_THREE, objects: 3, height: 5 },
+    { source: HOLD_FLASH_FOUR, objects: 4, height: 7 },
+    { source: HOLD_FLASH_FIVE, objects: 5, height: 9 },
+  ];
+  for (const { source, objects, height } of family) {
+    const period = siteswapPeriod(source);
+    const samples = sampleOccupancy({
+      source,
+      dwellRatio: 0.75,
+      holdTwos: true,
+      durationBeats: period * 3,
+    });
+    const states = new Set(samples.map((sample) => sample.state));
+    assert.deepEqual(states, new Set([HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN]), source);
+    assert.ok(samples.some((sample) => sample.state === HOLD_SIGN && sample.held === objects), source);
+    assert.ok(samples.some((sample) => sample.state === RELEASE_SIGN && sample.held === 0), source);
+    const { events } = scheduleEvents(source, true, period);
+    const leaving = events.filter(
+      (event) => event.beat >= 0 && event.beat < period && event.height > 0 && !event.hold,
+    );
+    assert.equal(leaving.length, objects, source);
+    assert.ok(leaving.every((event) => event.height === height), source);
+  }
 });
 
 test("[55]5000[22]2 visits all-held and all-airborne occupancy", () => {
