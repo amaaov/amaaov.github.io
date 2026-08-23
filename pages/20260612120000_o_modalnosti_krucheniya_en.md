@@ -1,7 +1,7 @@
 # On the Modality of Spinning
 
 **Published:** 1 January 2025, Helsinki
-**Modified:** 4 August 2026
+**Modified:** 23 August 2026
 **Author:** Boris Fontanov
 **Language:** English
 **HTML:** [20260612120000_o_modalnosti_krucheniya_en.html](20260612120000_o_modalnosti_krucheniya_en.html)
@@ -13,7 +13,7 @@ Limitations and Transformations of Siteswap when Applied to Flexible Props
 
 Abstract
 
-This article examines the limits of siteswap, a rhythmic juggling notation, when applied to flexible and torque-based props. It shows that the absence of dwell time and spatial specificity makes the notation precise for rigid objects but insufficient for poi and mixed ensembles.
+This article examines the limits of siteswap, a rhythmic juggling notation, when applied to flexible and torque-based props. The digit string says when an object next enters an interaction. Dwell, path, and torque stay outside that string; with poi and in mixed ensembles they constitute the pattern.
 
 i
 
@@ -39,7 +39,7 @@ When this system is transferred to props with continuous dynamics, such as poi, 
 
 Observation 2.1
 
-In classical juggling, dwell time is treated as an inertial element that does not affect basic rhythm: an object may remain in the hand for one-third or half a beat without invalidating the pattern.
+In classical juggling, the legality of the string does not change according to whether an object sits in the hand for a third or a half of a beat. Shannon’s theorem introduces dwell time as a quantity of uniform juggling without multiplex.
 
 With poi, the situation differs: holding and transferring the prop are not discrete events but a continuous bodily action involving impulse transfer, sustaining rotation, and plane control. The emphasis shifts from the moment of release to the phase of sustaining movement, which traditional notation omits entirely.
 
@@ -53,9 +53,9 @@ This causes siteswap to lose descriptive precision, remaining merely a scheme of
 
 Example 3.1
 
-Pattern 3, which in juggling denotes an even alternation of throws between hands, may correspond in poi spinning to many distinct forms: from a wall-plane spiral to an asymmetric weave or a pendulum with active correction.
+Pattern 3 in juggling is an even alternation of throws between hands. With poi the same rhythm reads as a pendulum or backward no-beat. Varpanen writes a weave as a separate hand-and-tether layer: `RRB` for three, `BRRBB` for five.
 
-All these realisations preserve the same rhythmic structure yet differ in hold character, torque distribution, spatial dynamics, and bodily interaction.
+Pendulum and backward no-beat diverge in hold character, torque, plane, and the work of the body.
 
 This becomes even clearer with complex patterns such as 5223. In siteswap this is an alternation of high, holding, and medium throws. In poi the same sequence may be interpreted as movement where «2» is an active rotation phase before a plane change and «5» is an intensified acceleration.
 
@@ -102,3 +102,17 @@ In its current form, siteswap continues to perform an important communicative an
 Siteswap is thus less a language of description than a tool of ordering. It tells the performer when the next act of interaction with an object should occur, but leaves open the question of how that act is realised. This makes it valuable as a rhythmic grid, yet limited as a model of movement, especially in disciplines where the boundary between throw and spin is blurred.
 
 6
+
+§ 7
+
+## Postscript, August 2026
+
+Siteswap assumes the middle of a pattern; a complete hold of three objects on two hands needs multiplex writing. [Holding Topology](20260819100800_grip_algebra_en.html) counts who is retained now. At the grain “poi as a unit at the handle,” spinning stays κ, a thrown head enters α, a run with some heads airborne is ακ. Varpanen’s [toss-and-spin state graphs](https://arxiv.org/abs/1405.2628) write the path of hands and tethers beside the siteswap. [Poi as a Sport-Juggling Prop](20260802120000_poi_as_sport_juggling_prop.html) takes repeated throw and dwell for comparison and reads cascade as rhythm.
+
+## Sources
+
+1. Claude E. Shannon. “Scientific Aspects of Juggling.” In *Claude Elwood Shannon: Collected Papers*, IEEE Press, 1993. Exposition: [Ortiz-Zuazaga](https://ccom.uprrp.edu/~humberto/shannons-juggling-theorem.html)
+2. Harri Varpanen. “Toss and Spin Juggling State Graphs.” arXiv:1405.2628 / Bridges 2014. [https://arxiv.org/abs/1405.2628](https://arxiv.org/abs/1405.2628)
+3. Daniel Simu. “dNote, a siteswap extension.” [https://danielsimu.nl/research/posts/dnote/](https://danielsimu.nl/research/posts/dnote/)
+4. Boris Fontanov. “Holding Topology.” 2026. [20260819100800_grip_algebra_en.html](20260819100800_grip_algebra_en.html)
+5. Boris Fontanov. “Poi as a Sport-Juggling Prop.” 2026. [20260802120000_poi_as_sport_juggling_prop.html](20260802120000_poi_as_sport_juggling_prop.html)

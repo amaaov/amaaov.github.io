@@ -1,7 +1,7 @@
 # Poi Juggling Skill Quest — Cumulative BN Charter
 
 **Published:** 2 August 2026, Helsinki  
-**Modified:** 10 August 2026
+**Modified:** 23 August 2026
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802094500_poi_juggling_skill_quest.html](20260802094500_poi_juggling_skill_quest.html)  
@@ -402,6 +402,7 @@ Living practice and published programmes this charter reads against. Linked work
 8. [Ben Beever — Guide to Juggling Patterns](https://www.jugglingedge.com/pdf/BenBeeversGuidetoJugglingPatterns.pdf)
 9. [Daniel Simu — Existing Juggling Notation Systems](https://danielsimu.nl/research/posts/existing_juggling_notations/)
 10. [Erik Åberg — Division Dialogues](https://www.researchcatalogue.net/view/4392556/4392557)
+11. [Boris Fontanov — Holding Topology](20260819100800_grip_algebra_en.html)
 
 **
 

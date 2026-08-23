@@ -1,7 +1,7 @@
 # Poi as a Sport-Juggling Prop
 
 **Published:** 2 August 2026, Helsinki  
-**Modified:** 16 August 2026
+**Modified:** 23 August 2026
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802120000_poi_as_sport_juggling_prop.html](20260802120000_poi_as_sport_juggling_prop.html)  
@@ -40,11 +40,13 @@ In ordinary siteswap reading, a 2 is often a hold: the object waits until its ne
 
 Living practice already treats that fact as convention. In [Bow’s public set titled for a hundred three-poi siteswaps](https://www.youtube.com/watch?v=gM54QfBKSGs), the accompanying catalogue frames every pattern in backward no-beat technique, treats the digit 2 as always spinning, and treats the digit 1 as passed with spin. The siteswap strings change from beginner cascade to high throws, while the modality and those digit semantics stay fixed across the set: a layered descriptor spoken aloud by performance.
 
+Occupancy of the poi as a unit, both parked, some flying, or all flying, is the retention layer recorded in [Holding Topology](20260819100800_grip_algebra_en.html). Spin on a scheduled 2 belongs to modality. Public record lists already split no-beat from [synchronous spun 2s](https://juggle.fandom.com/wiki/Poi).
+
 Plane freedom compounds the problem. Practice usually names the two base orientations wheelplane and wallplane; relative to the body they read naturally as side and front or back planes. Movement may be organised in wheelplane, wallplane, horizontal, diagonal, overhead, or mixed planes, and those names are always read in the relation of body and prop. A separate sport question arises when the body turns while the poi orbits stay nearly fixed in space: the body-relative name changes (side becomes front) even though the prop’s angular momentum was not redirected. Flexible props also permit corrections rigid props refuse, including late catches absorbed through tether curvature, temporary plane breaks, and additional orbits that restore timing. Those capabilities are valuable in practice, but in sport an undeclared recovery can look like a successful pattern when the judge sees the clean-up after control was already lost.
 
 ## A layered descriptor
 
-A complete geometric notation for poi is imaginable and unsuitable as the ordinary language of a sport programme. Extensions such as [Beever’s Generalised Siteswap](https://www.jugglingedge.com/pdf/BenBeeversGuidetoJugglingPatterns.pdf), surveys of layered systems by [Daniel Simu](https://danielsimu.nl/research/posts/existing_juggling_notations/), and [Rauli Katajavuori’s graphic notation](https://www.juggle.org/graphic-juggling-notation-by-rauli-katajavuori/) already show that layered description is possible and that expressive power raises reading cost. Sport poi should use a limited descriptor: object count, siteswap or rhythmic pattern, movement modality, rotation and extra spin, phase or synchrony, plane orientation in space, body orientation, body-relative plane class, entry and exit, throw count.
+A complete geometric notation for poi is imaginable and unsuitable as the ordinary language of a sport programme. [QFT on DrexFactor](https://www.drexfactor.com/weirdscience/2011/05/18/beginners_guide_poi_qft_notation) writes head and hand clock positions. Extensions such as [Beever’s Generalised Siteswap](https://www.jugglingedge.com/pdf/BenBeeversGuidetoJugglingPatterns.pdf), surveys of layered systems by [Daniel Simu](https://danielsimu.nl/research/posts/existing_juggling_notations/), and [Rauli Katajavuori’s graphic notation](https://www.juggle.org/graphic-juggling-notation-by-rauli-katajavuori/) already show that layered description is possible and that expressive power raises reading cost. Sport poi should use a limited descriptor: object count, siteswap or rhythmic pattern, movement modality, rotation and extra spin, phase or synchrony, plane orientation in space, body orientation, body-relative plane class, entry and exit, throw count.
 
 **objects**: 3 poi
 
@@ -152,6 +154,9 @@ This essay continues [On the Modality of Spinning](20260612120000_o_modalnosti_k
 13. [Jay Gilligan — Manipulation Research Laboratory #3](https://circusgeeks.co.uk/2011/05/16/manipulation-research-laboratory-3/)
 14. [Erik Åberg — Division Dialogues](https://www.researchcatalogue.net/view/4392556/4392557)
 15. [Jay Gilligan — The evolution of juggling (TEDxHelsinki transcript)](https://singjupost.com/the-evolution-of-juggling-jay-gilligan-at-tedxhelsinki-transcript/)
+16. [Boris Fontanov — Holding Topology](20260819100800_grip_algebra_en.html)
+17. [DrexFactor — A Beginners’ Guide to Poi (QFT) Notation](https://www.drexfactor.com/weirdscience/2011/05/18/beginners_guide_poi_qft_notation)
+18. [Juggle Wiki — Poi](https://juggle.fandom.com/wiki/Poi) (record classes including spun 2s)
 
 
 ## Editorial notes
@@ -166,3 +171,4 @@ Editorial source mirrors the published HTML. Key evidence hedges after source re
 - Layered notation linked to Beever / Simu / Katajavuori; WJF to `/skills/`; IJA Numbers rules linked; Cain + Chris Kelly used for institutional recognition without a numbers track.
 - Orbit-preserving body turns: crossing throws / behind-the-back throws as expected technique (updated 2 Aug 2026).
 - Wallplane backward no-beat cascade is advanced (usually needs body throws); crossed hands → spiral ≠ cascade. Odd wallplane sport = extra spin; no-beat odd wallplane not required. Even wallplane = one-hand pairs; declare dwell; siteswap hardness via hand/body position.
+- Occupancy vs spun-2 (23 Aug 2026): Holding Topology as retention layer; QFT named as the geometric notation already in use; Juggle Wiki spun-2s as the public record class.

@@ -1,7 +1,7 @@
 # Квест навыков: жонглирование пои — накопительный BN-устав
 
 **Published:** 2 August 2026, Helsinki  
-**Modified:** 10 August 2026
+**Modified:** 23 August 2026
 **Author:** Boris Fontanov  
 **Language:** Russian  
 **HTML:** [20260802094500_poi_juggling_skill_quest_ru.html](20260802094500_poi_juggling_skill_quest_ru.html)  
@@ -403,6 +403,7 @@ Entry открывает журнал квеста. безбитовый кас�
 8. [Ben Beever — Guide to Juggling Patterns](https://www.jugglingedge.com/pdf/BenBeeversGuidetoJugglingPatterns.pdf)
 9. [Daniel Simu — Existing Juggling Notation Systems](https://danielsimu.nl/research/posts/existing_juggling_notations/)
 10. [Erik Åberg — Division Dialogues](https://www.researchcatalogue.net/view/4392556/4392557)
+11. [Борис Фонтанов — Топология удержания](20260819100800_grip_algebra.html)
 
 **
 
