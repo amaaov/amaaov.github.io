@@ -29,9 +29,9 @@ test("independent-snapshot observation reports percentage-point concentration", 
     retentionProbability: 0.5,
   });
 
-  assertClose(observation.amphoteron, 0.96875);
-  assertClose(observation.previousAmphoteron, 0.9375);
-  assertClose(observation.amphoteronPercentagePointChange, 3.125);
+  assertClose(observation.polymorphy, 0.96875);
+  assertClose(observation.previousPolymorphy, 0.9375);
+  assertClose(observation.polymorphyPercentagePointChange, 3.125);
   assertClose(observation.homogeneous, 0.03125);
   assertClose(observation.previousHomogeneous, 0.0625);
 });
@@ -49,7 +49,7 @@ test("phase observation detects equal-share plateau with a bout split", () => {
   assert.equal(observation.nextAlphaBoutCount, 2);
   assert.deepEqual(observation.sharePercentagePointChanges, {
     alpha: 0,
-    amphoteron: 0,
+    polymorphy: 0,
     kappa: 0,
   });
 });

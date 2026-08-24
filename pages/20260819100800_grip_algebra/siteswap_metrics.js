@@ -1,9 +1,9 @@
 import { flightBeats } from "./schedule.js";
 
 const ALPHA = "alpha";
-const AMPHOTERON = "amphoteron";
+const POLYMORPHY = "polymorphy";
 const KAPPA = "kappa";
-const MACROSTATES = [ALPHA, AMPHOTERON, KAPPA];
+const MACROSTATES = [ALPHA, POLYMORPHY, KAPPA];
 const TOLERANCE = 1e-10;
 
 function validateInputs(schedule, dwellRatio, beatSeconds) {
@@ -89,7 +89,7 @@ function macrostateFor(heldCount, objectCount) {
   if (heldCount === objectCount) {
     return KAPPA;
   }
-  return AMPHOTERON;
+  return POLYMORPHY;
 }
 
 function periodicSegments(schedule, dwellRatio) {
@@ -209,7 +209,7 @@ export function retentionMetrics({ schedule, dwellRatio, beatSeconds, holdTwos =
   });
   const pAlpha = occupancySharesByHeldCount[0];
   const pKappa = occupancySharesByHeldCount[schedule.ballCount];
-  const pAmphoteron = cleanShare(1 - pAlpha - pKappa);
+  const pPolymorphy = cleanShare(1 - pAlpha - pKappa);
   const meanHeld = occupancySharesByHeldCount.reduce((total, share, heldCount) => {
     return total + share * heldCount;
   }, 0);
@@ -232,11 +232,11 @@ export function retentionMetrics({ schedule, dwellRatio, beatSeconds, holdTwos =
     periodSeconds: schedule.cycleLength * beatSeconds,
     occupancySharesByHeldCount,
     pAlpha,
-    pAmphoteron,
+    pPolymorphy,
     pKappa,
     meanNormalizedRetention: meanHeld / schedule.ballCount,
     airbornePairExposure,
-    macrostateEntropyBits: entropyBits([pAlpha, pAmphoteron, pKappa]),
+    macrostateEntropyBits: entropyBits([pAlpha, pPolymorphy, pKappa]),
     macrostateBouts,
     identityTurnover: identityTurnoverMetrics(segments),
   };

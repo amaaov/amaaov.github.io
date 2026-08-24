@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "../holding.js";
 import { courtSoundPlan, soundSettingsFromForm } from "../court_sound.js";
 import {
   DEFAULT_SYNTH,
@@ -256,8 +256,8 @@ test("tape readout uses milliseconds or seconds, and speed sticks at zero", () =
 
 test("release wave still accepts a chosen oscillator", () => {
   const plan = courtSoundPlan({
-    state: RELEASE_SIGN,
-    waves: { [HOLD_SIGN]: "sine", [RELEASE_SIGN]: "pulse", [MIXED_SIGN]: "triangle" },
+    state: AIRBORNE_SIGN,
+    waves: { [HOLD_SIGN]: "sine", [AIRBORNE_SIGN]: "pulse", [MIXED_SIGN]: "triangle" },
     synth: DEFAULT_SYNTH,
     stateAgeSeconds: 1,
   });

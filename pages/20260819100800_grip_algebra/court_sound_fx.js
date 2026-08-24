@@ -1,6 +1,6 @@
-import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "./holding.js";
+import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "./holding.js";
 
-export const SOUND_SIGNS = [HOLD_SIGN, RELEASE_SIGN, MIXED_SIGN];
+export const SOUND_SIGNS = [HOLD_SIGN, AIRBORNE_SIGN, MIXED_SIGN];
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -81,7 +81,7 @@ export function voiceSignFromControlName(name) {
     return HOLD_SIGN;
   }
   if (key === "soundWaveRelease" || key.startsWith("soundRelease")) {
-    return RELEASE_SIGN;
+    return AIRBORNE_SIGN;
   }
   if (key === "soundWaveMixed" || key.startsWith("soundMixed")) {
     return MIXED_SIGN;
@@ -165,7 +165,7 @@ export function soundingSign(state, solos = {}, audition = null) {
 export function solosFromForm(form) {
   return {
     [HOLD_SIGN]: form.elements.namedItem("soundHoldSolo")?.checked === true,
-    [RELEASE_SIGN]: form.elements.namedItem("soundReleaseSolo")?.checked === true,
+    [AIRBORNE_SIGN]: form.elements.namedItem("soundReleaseSolo")?.checked === true,
     [MIXED_SIGN]: form.elements.namedItem("soundMixedSolo")?.checked === true,
   };
 }

@@ -20,7 +20,7 @@ import {
   throwFlight,
 } from "../schedule.js";
 import { courtPicture, trajectoryPositions } from "../toss.js";
-import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "../holding.js";
 
 const THREE_UP_HOLD =
   "([26x],2)(2,6x)(6x,0)(0,2)(2,2)(2,[22])(2,[26x])(6x,2)(0,6x)(2,0)(2,2)([22],2)";
@@ -216,7 +216,7 @@ test("cascade occupancy still runs at zero dwell and at full dwell", () => {
     holdTwos: true,
     durationBeats: 8,
   });
-  assert.ok(none.some((sample) => sample.state === RELEASE_SIGN));
+  assert.ok(none.some((sample) => sample.state === AIRBORNE_SIGN));
   assert.ok(none.every((sample) => sample.held + sample.airborne === 3));
   const full = sampleOccupancy({
     throws: [3],
@@ -237,7 +237,7 @@ test("periodic 55500 visits AK and A", () => {
   });
   const states = new Set(samples.map((sample) => sample.state));
   assert.ok(states.has(MIXED_SIGN));
-  assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(AIRBORNE_SIGN));
 });
 
 test("[22]2 schedules three props and a same-hand multiplex hold", () => {
@@ -278,7 +278,7 @@ test("5550022[22]2[25]22 flashes then holds all three", () => {
   });
   const states = new Set(samples.map((sample) => sample.state));
   assert.ok(states.has(HOLD_SIGN));
-  assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(AIRBORNE_SIGN));
   assert.ok(states.has(MIXED_SIGN));
   assert.ok(samples.some((sample) => sample.held === 0));
   assert.ok(samples.some((sample) => sample.held === 3));
@@ -293,7 +293,7 @@ test("555001[22]2[23] flashes then holds all three", () => {
   });
   const states = new Set(samples.map((sample) => sample.state));
   assert.ok(states.has(HOLD_SIGN));
-  assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(AIRBORNE_SIGN));
   assert.ok(states.has(MIXED_SIGN));
   assert.ok(samples.some((sample) => sample.held === 0));
   assert.ok(samples.some((sample) => sample.held === 3));
@@ -307,13 +307,13 @@ test("55500522 flashes then holds two", () => {
     durationBeats: 40,
   });
   const states = new Set(samples.map((sample) => sample.state));
-  assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(AIRBORNE_SIGN));
   assert.ok(states.has(MIXED_SIGN));
   assert.ok(samples.some((sample) => sample.held === 0));
   assert.ok(samples.some((sample) => sample.held === 2));
 });
 
-test("async hold-flash-hold cycles walk hold, Amphoteron, and classic flash", () => {
+test("async hold-flash-hold cycles walk hold, Polymorphy, and classic flash", () => {
   const family = [
     { source: HOLD_FLASH_THREE, objects: 3, height: 5 },
     { source: HOLD_FLASH_FOUR, objects: 4, height: 7 },
@@ -328,9 +328,9 @@ test("async hold-flash-hold cycles walk hold, Amphoteron, and classic flash", ()
       durationBeats: period * 3,
     });
     const states = new Set(samples.map((sample) => sample.state));
-    assert.deepEqual(states, new Set([HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN]), source);
+    assert.deepEqual(states, new Set([HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN]), source);
     assert.ok(samples.some((sample) => sample.state === HOLD_SIGN && sample.held === objects), source);
-    assert.ok(samples.some((sample) => sample.state === RELEASE_SIGN && sample.held === 0), source);
+    assert.ok(samples.some((sample) => sample.state === AIRBORNE_SIGN && sample.held === 0), source);
     const { events } = scheduleEvents(source, true, period);
     const leaving = events.filter(
       (event) => event.beat >= 0 && event.beat < period && event.height > 0 && !event.hold,
@@ -349,12 +349,12 @@ test("[55]5000[22]2 visits all-held and all-airborne occupancy", () => {
   });
   const states = new Set(samples.map((sample) => sample.state));
   assert.ok(states.has(HOLD_SIGN));
-  assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(AIRBORNE_SIGN));
   assert.ok(samples.some((sample) => sample.held === 3));
   assert.ok(samples.some((sample) => sample.held === 0));
 });
 
-test("one-by-one flash-hold loops walk hold, Amphoteron, and flash", () => {
+test("one-by-one flash-hold loops walk hold, Polymorphy, and flash", () => {
   const loops = [
     { source: "(2,2)(4x,2)(0,4x)(0,2)", objects: 2 },
     { source: THREE_UP_HOLD, objects: 3 },
@@ -373,9 +373,9 @@ test("one-by-one flash-hold loops walk hold, Amphoteron, and flash", () => {
       durationBeats: siteswapPeriod(source) * 3,
     });
     const states = new Set(samples.map((sample) => sample.state));
-    assert.deepEqual(states, new Set([HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN]), source);
+    assert.deepEqual(states, new Set([HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN]), source);
     assert.ok(samples.some((sample) => sample.state === HOLD_SIGN && sample.held === objects), source);
-    assert.ok(samples.some((sample) => sample.state === RELEASE_SIGN && sample.held === 0), source);
+    assert.ok(samples.some((sample) => sample.state === AIRBORNE_SIGN && sample.held === 0), source);
     const period = siteswapPeriod(source);
     const { events } = scheduleEvents(source, true, period);
     const releases = events.filter(
@@ -407,7 +407,7 @@ test("synchronous hold-flash cycle visits only hold and flash", () => {
     durationBeats: 24,
   });
   const states = new Set(samples.map((sample) => sample.state));
-  assert.deepEqual(states, new Set([HOLD_SIGN, RELEASE_SIGN]));
+  assert.deepEqual(states, new Set([HOLD_SIGN, AIRBORNE_SIGN]));
   assert.equal(samples[0].state, HOLD_SIGN);
   assert.ok(samples.some((sample) => sample.held === 3));
   assert.ok(samples.some((sample) => sample.held === 0));
@@ -422,7 +422,7 @@ test("synchronous ([44],4)(0,0)([22],2) dumps all three, rests empty, then holds
   });
   const states = new Set(samples.map((sample) => sample.state));
   assert.ok(states.has(HOLD_SIGN));
-  assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(AIRBORNE_SIGN));
   assert.ok(samples.some((sample) => sample.held === 3));
   assert.ok(samples.some((sample) => sample.held === 0));
   const { events, ballCount } = scheduleEvents("([44],4)(0,0)([22],2)", true, 12);
@@ -448,7 +448,7 @@ test("synchronous 3-up-hold cycle visits three in the air and three held", () =>
   });
   const states = new Set(samples.map((sample) => sample.state));
   assert.ok(states.has(HOLD_SIGN));
-  assert.ok(states.has(RELEASE_SIGN));
+  assert.ok(states.has(AIRBORNE_SIGN));
   assert.ok(states.has(MIXED_SIGN));
   assert.ok(samples.some((sample) => sample.held === 3));
   assert.ok(samples.some((sample) => sample.held === 0));

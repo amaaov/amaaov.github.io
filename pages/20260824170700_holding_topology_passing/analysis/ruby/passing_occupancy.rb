@@ -33,7 +33,7 @@ module PassingAnalysis
         object_count: schedule.ball_count,
         occupancy_shares: shares,
         p_alpha: shares.first,
-        p_amphoteron: shares[1...-1].sum(0.to_r),
+        p_polymorphy: shares[1...-1].sum(0.to_r),
         p_kappa: shares.last
       }
     end

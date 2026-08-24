@@ -1,6 +1,6 @@
 export const EMPTY_SIGN = "∅";
 export const HOLD_SIGN = "κ";
-export const RELEASE_SIGN = "α";
+export const AIRBORNE_SIGN = "α";
 export const MIXED_SIGN = "ακ";
 
 function signFromPredicates(akrateia, kratos) {
@@ -8,7 +8,7 @@ function signFromPredicates(akrateia, kratos) {
     return MIXED_SIGN;
   }
   if (akrateia) {
-    return RELEASE_SIGN;
+    return AIRBORNE_SIGN;
   }
   if (kratos) {
     return HOLD_SIGN;
@@ -26,7 +26,7 @@ export function occupancyState(heldFlags) {
 }
 
 export function signHasAkrateia(sign) {
-  return sign === RELEASE_SIGN || sign === MIXED_SIGN;
+  return sign === AIRBORNE_SIGN || sign === MIXED_SIGN;
 }
 
 export function signHasKratos(sign) {

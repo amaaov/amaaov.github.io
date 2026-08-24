@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "../holding.js";
 import { courtSoundPlan } from "../court_sound.js";
 import { createCourtSoundEngine } from "../court_sound_engine.js";
 
@@ -258,7 +258,7 @@ test("solo keeps master makeup and tape wet while voices are gated", async () =>
   const engine = createCourtSoundEngine({ AudioContextConstructor: CaptureContext });
   await engine.setEnabled(true);
   const plan = courtSoundPlan({
-    state: RELEASE_SIGN,
+    state: AIRBORNE_SIGN,
     solos: { [HOLD_SIGN]: true },
     effects: { scatter: 0.35, delay: 0.55, feedback: 0.62, tape: 0.8 },
     synths: { [HOLD_SIGN]: { sustain: 1, release: 0.05 } },

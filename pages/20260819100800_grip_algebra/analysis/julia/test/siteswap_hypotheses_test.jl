@@ -61,14 +61,14 @@ end
 
     @test hybrid.occupancy_shares == [1 // 4, 5 // 8, 1 // 8, 0]
     @test hybrid.p_alpha == 1 // 4
-    @test hybrid.p_amphoteron == 3 // 4
+    @test hybrid.p_polymorphy == 3 // 4
     @test hybrid.alpha_entry_count == 4
     @test hybrid.alpha_bout_lengths_seconds == fill(1 // 5, 4)
     @test hybrid.max_action_packet == 2
     @test hybrid.max_release_packet == 1
 
     @test all(sum(row.occupancy_shares) == 1 for row in rows)
-    @test all(row.p_alpha + row.p_amphoteron + row.p_kappa == 1 for row in rows)
+    @test all(row.p_alpha + row.p_polymorphy + row.p_kappa == 1 for row in rows)
     @test all(row.result_class == "model consequence" for row in rows)
     @test all(row.empirical_status == "untested empirical hypothesis" for row in rows)
 end

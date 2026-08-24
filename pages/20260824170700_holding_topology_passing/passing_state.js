@@ -5,7 +5,7 @@ export const COURT_BEATS_PER_MINUTE = 150;
 
 const SIGN_LABELS = {
   alpha: "α",
-  amphoteron: "ακ",
+  polymorphy: "ακ",
   kappa: "κ",
   empty: "—",
 };

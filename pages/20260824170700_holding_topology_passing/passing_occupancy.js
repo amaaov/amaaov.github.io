@@ -1,4 +1,4 @@
-const MACROSTATES = ["alpha", "amphoteron", "kappa"];
+const MACROSTATES = ["alpha", "polymorphy", "kappa"];
 
 function ticksPerBeat(dwellRatio) {
   for (let denominator = 1; denominator <= 64; denominator += 1) {
@@ -102,7 +102,7 @@ export function occupancyFromHeldIntervals(heldIntervals, period) {
     objectCount,
     occupancyShares,
     pAlpha: occupancyTicks[0] / period,
-    pAmphoteron: occupancyTicks.slice(1, -1).reduce((sum, ticks) => sum + ticks, 0) / period,
+    pPolymorphy: occupancyTicks.slice(1, -1).reduce((sum, ticks) => sum + ticks, 0) / period,
     pKappa: occupancyTicks[objectCount] / period,
   };
 }
@@ -123,9 +123,9 @@ export function macrostateName(heldCount, objectCount) {
 }
 
 export function akrateiaPresent(sign) {
-  return sign === "alpha" || sign === "amphoteron";
+  return sign === "alpha" || sign === "polymorphy";
 }
 
 export function kratosPresent(sign) {
-  return sign === "kappa" || sign === "amphoteron";
+  return sign === "kappa" || sign === "polymorphy";
 }

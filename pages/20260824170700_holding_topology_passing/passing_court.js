@@ -146,7 +146,7 @@ export function mountPassingCourt(root) {
     writeText(groupQ, `q ${picture.held} / ${picture.ballCount}`);
     writeText(
       groupShares,
-      `Pα ${shareText(picture.occupancy.pAlpha)}  Pακ ${shareText(picture.occupancy.pAmphoteron)}  Pκ ${shareText(picture.occupancy.pKappa)}  r ${dwellRatio}  ${beatsPerMinute} bpm`,
+      `Pα ${shareText(picture.occupancy.pAlpha)}  Pακ ${shareText(picture.occupancy.pPolymorphy)}  Pκ ${shareText(picture.occupancy.pKappa)}  r ${dwellRatio}  ${beatsPerMinute} bpm`,
     );
     alphaLamp?.classList.toggle("is-on", group.akrateia);
     kappaLamp?.classList.toggle("is-on", group.kratos);

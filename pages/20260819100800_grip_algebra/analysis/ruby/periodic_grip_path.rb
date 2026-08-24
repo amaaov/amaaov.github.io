@@ -1,6 +1,6 @@
 module GripAnalysis
   class PeriodicGripPath
-    MACROSTATES = %i[alpha amphoteron kappa].freeze
+    MACROSTATES = %i[alpha polymorphy kappa].freeze
 
     attr_reader :object_count, :period
 
@@ -138,7 +138,7 @@ module GripAnalysis
           elsif held_count == object_count
             :kappa
           else
-            :amphoteron
+            :polymorphy
           end
           segment.merge(macrostate: macrostate)
         end

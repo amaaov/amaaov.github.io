@@ -23,12 +23,12 @@ module GripAnalysis
         positive_part(phase_offset - retention_duty)
     end
 
-    def p_amphoteron
+    def p_polymorphy
       1 - p_alpha - p_kappa
     end
 
     def macrostate_shares
-      [p_alpha, p_amphoteron, p_kappa]
+      [p_alpha, p_polymorphy, p_kappa]
     end
 
     def alpha_bout_fractions
@@ -92,7 +92,7 @@ module GripAnalysis
       retention_probabilities.reduce(1.to_r, :*)
     end
 
-    def p_amphoteron
+    def p_polymorphy
       1 - p_alpha - p_kappa
     end
 

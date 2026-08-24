@@ -27,16 +27,16 @@ export function twoObjectPhaseLaw({ retentionDuty, phaseOffset }) {
     positivePart(1 - retentionDuty - phaseOffset)
       + positivePart(phaseOffset - retentionDuty),
   );
-  const pAmphoteron = clean(1 - pAlpha - pKappa);
+  const pPolymorphy = clean(1 - pAlpha - pKappa);
   const alphaBoutFractions = [
     phaseOffset - retentionDuty,
     1 - retentionDuty - phaseOffset,
   ].filter((value) => value > 1e-12).map(clean).sort((left, right) => left - right);
   return {
     pAlpha,
-    pAmphoteron,
+    pPolymorphy,
     pKappa,
-    macrostateShares: [pAlpha, pAmphoteron, pKappa],
+    macrostateShares: [pAlpha, pPolymorphy, pKappa],
     alphaBoutFractions,
     alphaBoutCount: alphaBoutFractions.length,
   };
@@ -51,7 +51,7 @@ export function bernoulliTemporalLaw({ objectCount, retentionProbability }) {
   const pKappa = clean(retentionProbability ** objectCount);
   return {
     pAlpha,
-    pAmphoteron: clean(1 - pAlpha - pKappa),
+    pPolymorphy: clean(1 - pAlpha - pKappa),
     pKappa,
   };
 }

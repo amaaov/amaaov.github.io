@@ -1342,7 +1342,7 @@ body {
   stroke: var(--air);
 }
 
-.formal-law-line--amphoteron {
+.formal-law-line--polymorphy {
   stroke: var(--line);
 }
 
@@ -1371,7 +1371,7 @@ body {
   fill: var(--air);
 }
 
-.formal-law-dot--amphoteron {
+.formal-law-dot--polymorphy {
   fill: var(--line);
 }
 
@@ -1432,7 +1432,7 @@ body {
   color: var(--air);
 }
 
-.formal-law-swatch--amphoteron {
+.formal-law-swatch--polymorphy {
   color: var(--line);
 }
 

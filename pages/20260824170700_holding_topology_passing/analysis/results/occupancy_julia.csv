@@ -1,4 +1,4 @@
-scenario,notation,grammar,hand_period,cycle_length_beats,notation_period_beats,object_count,hand_count,beat_seconds,dwell_ratio,p_alpha,p_amphoteron,p_kappa,occupancy_shares,mean_q,pass_count,self_count,body_occupancy_shares
+scenario,notation,grammar,hand_period,cycle_length_beats,notation_period_beats,object_count,hand_count,beat_seconds,dwell_ratio,p_alpha,p_polymorphy,p_kappa,occupancy_shares,mean_q,pass_count,self_count,body_occupancy_shares
 partitioned_double_cascade,<3|3>,jl,2,6,1,6,4,2/5,1/4,1/2,1/2,0/1,1/2 0/1 1/2 0/1 0/1 0/1 0/1,1/1,0,12,1/2 1/2 0/1 0/1 0/1 0/1 0/1 | 1/2 1/2 0/1 0/1 0/1 0/1 0/1
 ultimate_six,<3p|3p>,jl,2,6,1,6,4,2/5,1/4,1/2,1/2,0/1,1/2 0/1 1/2 0/1 0/1 0/1 0/1,1/1,12,0,1/2 1/2 0/1 0/1 0/1 0/1 0/1 | 1/2 1/2 0/1 0/1 0/1 0/1 0/1
 two_count_six,<3p 3|3p 3>,jl,2,12,2,6,4,2/5,1/4,1/2,1/2,0/1,1/2 0/1 1/2 0/1 0/1 0/1 0/1,1/1,12,12,1/2 1/2 0/1 0/1 0/1 0/1 0/1 | 1/2 1/2 0/1 0/1 0/1 0/1 0/1

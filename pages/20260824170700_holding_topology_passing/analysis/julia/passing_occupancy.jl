@@ -41,7 +41,7 @@ function occupancy_shares(schedule::PassingSchedule; dwell_ratio=DWELL_RATIO)
         object_count=schedule.ball_count,
         occupancy_shares=shares,
         p_alpha=first(shares),
-        p_amphoteron=sum(shares[2:end-1]; init=0 // 1),
+        p_polymorphy=sum(shares[2:end-1]; init=0 // 1),
         p_kappa=last(shares),
     )
 end

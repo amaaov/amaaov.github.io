@@ -15,13 +15,13 @@ function signsVisited(source, dwellRatio = 0.25, holdTwos = true) {
   return signs;
 }
 
-test("four-club PPS with zips visits akrateia, amphoteron, and kratos", () => {
+test("four-club PPS with zips visits akrateia, polymorphy, and kratos", () => {
   const signs = signsVisited("<2p 2p 2|2p 2p 2>");
   assert.equal(signs.has("alpha"), true);
-  assert.equal(signs.has("amphoteron"), true);
+  assert.equal(signs.has("polymorphy"), true);
   assert.equal(signs.has("kappa"), true);
   const occupancy = passingOccupancy(schedulePassingEvents("<2p 2p 2|2p 2p 2>", true, 1), 0.25);
-  assert.ok(occupancy.pAlpha > 0 && occupancy.pAmphoteron > 0 && occupancy.pKappa > 0);
+  assert.ok(occupancy.pAlpha > 0 && occupancy.pPolymorphy > 0 && occupancy.pKappa > 0);
 });
 
 test("four-club hold stays in kratos; six-club 2-count never does", () => {
@@ -30,14 +30,14 @@ test("four-club hold stays in kratos; six-club 2-count never does", () => {
   const twoCount = signsVisited("<3p 3|3p 3>");
   assert.equal(twoCount.has("kappa"), false);
   assert.equal(twoCount.has("alpha"), true);
-  assert.equal(twoCount.has("amphoteron"), true);
+  assert.equal(twoCount.has("polymorphy"), true);
 });
 
 test("reading 2 as a throw takes the four-club hold out of kratos", () => {
   const occupancy = passingOccupancy(schedulePassingEvents("<2|2>", false, 1), 0.25);
   assert.equal(occupancy.pKappa, 0);
   assert.ok(occupancy.pAlpha > 0);
-  assert.ok(occupancy.pAmphoteron > 0);
+  assert.ok(occupancy.pPolymorphy > 0);
 });
 
 test("body retention partitions every object and names a local sign", () => {
@@ -48,7 +48,7 @@ test("body retention partitions every object and names a local sign", () => {
   assert.equal(localSum, picture.ballCount);
   assert.equal(heldSum, picture.held);
   assert.equal(picture.bodyRetention.length, 2);
-  assert.equal(signLabel("amphoteron"), "ακ");
+  assert.equal(signLabel("polymorphy"), "ακ");
   assert.equal(akrateiaPresent(picture.groupSign), picture.held < picture.ballCount);
   assert.equal(kratosPresent(picture.groupSign), picture.held > 0);
 });

@@ -1,4 +1,4 @@
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "./holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "./holding.js";
 import { DEFAULT_MASTER, appendMasterDrawer, masterFromForm } from "./court_sound_master.js";
 import {
   appendDrawerFlags,
@@ -20,7 +20,7 @@ export const SOUND_WAVES = ["sine", "triangle", "pulse", "noise"];
 
 export const SYNTH_PREFIXES = {
   [HOLD_SIGN]: "Hold",
-  [RELEASE_SIGN]: "Release",
+  [AIRBORNE_SIGN]: "Release",
   [MIXED_SIGN]: "Mixed",
 };
 
@@ -90,8 +90,8 @@ const LABELS = {
     pulse: "pulse",
     noise: "noise",
     [HOLD_SIGN]: "κ",
-    [RELEASE_SIGN]: "α",
-    [MIXED_SIGN]: "Amphoteron",
+    [AIRBORNE_SIGN]: "α",
+    [MIXED_SIGN]: "Polymorphy",
     master: "master",
     solo: "solo",
     cosmology: "cosmology",
@@ -121,8 +121,8 @@ const LABELS = {
     pulse: "импульс",
     noise: "шум",
     [HOLD_SIGN]: "κ",
-    [RELEASE_SIGN]: "α",
-    [MIXED_SIGN]: "Амфотерон",
+    [AIRBORNE_SIGN]: "α",
+    [MIXED_SIGN]: "Полиморфия",
     master: "мастер",
     solo: "соло",
     cosmology: "космология",
@@ -249,7 +249,7 @@ export function voiceFromForm(form, prefix) {
 export function synthsFromForm(form) {
   return {
     [HOLD_SIGN]: voiceFromForm(form, SYNTH_PREFIXES[HOLD_SIGN]),
-    [RELEASE_SIGN]: voiceFromForm(form, SYNTH_PREFIXES[RELEASE_SIGN]),
+    [AIRBORNE_SIGN]: voiceFromForm(form, SYNTH_PREFIXES[AIRBORNE_SIGN]),
     [MIXED_SIGN]: voiceFromForm(form, SYNTH_PREFIXES[MIXED_SIGN]),
   };
 }
@@ -289,12 +289,12 @@ function appendVoiceDrawer(rack, sign, locale) {
   });
   const waveName = {
     [HOLD_SIGN]: "soundWaveHold",
-    [RELEASE_SIGN]: "soundWaveRelease",
+    [AIRBORNE_SIGN]: "soundWaveRelease",
     [MIXED_SIGN]: "soundWaveMixed",
   }[sign];
   const waveValue = {
     [HOLD_SIGN]: "sine",
-    [RELEASE_SIGN]: "triangle",
+    [AIRBORNE_SIGN]: "triangle",
     [MIXED_SIGN]: "pulse",
   }[sign];
   appendSoundSelect(body, {
@@ -344,7 +344,7 @@ export function mountSoundSynthControls(panel, locale = "en") {
   rack.className = `${rack.className} sound-rack`.trim();
   const language = locale.startsWith("ru") ? "ru" : "en";
   appendVoiceDrawer(rack, HOLD_SIGN, language);
-  appendVoiceDrawer(rack, RELEASE_SIGN, language);
+  appendVoiceDrawer(rack, AIRBORNE_SIGN, language);
   appendVoiceDrawer(rack, MIXED_SIGN, language);
   appendMasterDrawer(rack, language);
   refreshSoundMarks(panel);

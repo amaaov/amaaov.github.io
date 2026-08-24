@@ -27,8 +27,8 @@ module GripAnalysis
       @temporal_law.p_kappa
     end
 
-    def p_amphoteron
-      @temporal_law.p_amphoteron
+    def p_polymorphy
+      @temporal_law.p_polymorphy
     end
 
     def expected_held_count
@@ -40,7 +40,7 @@ module GripAnalysis
     end
 
     def macrostate_entropy_bits
-      entropy_bits([p_alpha, p_amphoteron, p_kappa])
+      entropy_bits([p_alpha, p_polymorphy, p_kappa])
     end
 
     def conditional_information_loss_bits

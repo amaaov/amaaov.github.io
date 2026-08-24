@@ -30,7 +30,7 @@ function metric_row(fixture)
         fixture.name, fixture.notation, fixture.grammar, string(schedule.hand_period),
         string(schedule.cycle_length), string(schedule.period), string(schedule.ball_count),
         string(schedule.hand_count), format_rational(BEAT_SECONDS), format_rational(DWELL_RATIO),
-        format_rational(occupancy.p_alpha), format_rational(occupancy.p_amphoteron),
+        format_rational(occupancy.p_alpha), format_rational(occupancy.p_polymorphy),
         format_rational(occupancy.p_kappa), share_text(occupancy.occupancy_shares),
         format_rational(mean_q), string(pass_count), string(self_count),
         join(share_text.(bodies), " | "),
@@ -43,7 +43,7 @@ function write_occupancy_csv(path)
         println(io, join([
             "scenario", "notation", "grammar", "hand_period", "cycle_length_beats",
             "notation_period_beats", "object_count", "hand_count", "beat_seconds", "dwell_ratio",
-            "p_alpha", "p_amphoteron", "p_kappa", "occupancy_shares", "mean_q", "pass_count",
+            "p_alpha", "p_polymorphy", "p_kappa", "occupancy_shares", "mean_q", "pass_count",
             "self_count", "body_occupancy_shares",
         ], ","))
         for fixture in FIXTURES

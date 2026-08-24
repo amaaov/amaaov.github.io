@@ -56,7 +56,7 @@ class SiteswapComparisonTest < Minitest::Test
     assert_equal [Rational(1, 4), Rational(5, 8), Rational(1, 8), 0],
       hybrid.fetch(:occupancy_shares)
     assert_equal Rational(1, 4), hybrid.fetch(:p_alpha)
-    assert_equal Rational(3, 4), hybrid.fetch(:p_amphoteron)
+    assert_equal Rational(3, 4), hybrid.fetch(:p_polymorphy)
     assert_equal 4, hybrid.fetch(:alpha_entry_count)
     assert_equal [Rational(1, 5)] * 4, hybrid.fetch(:alpha_bout_lengths_seconds)
     assert_equal 2, hybrid.fetch(:max_action_packet)
@@ -76,7 +76,7 @@ class SiteswapComparisonTest < Minitest::Test
     @rows.each do |row|
       assert_equal 1, row.fetch(:occupancy_shares).sum
       assert_equal 1,
-        row.fetch(:p_alpha) + row.fetch(:p_amphoteron) + row.fetch(:p_kappa)
+        row.fetch(:p_alpha) + row.fetch(:p_polymorphy) + row.fetch(:p_kappa)
       assert_operator row.fetch(:airborne_pair_exposure), :>=, 0
     end
   end

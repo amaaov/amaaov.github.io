@@ -54,11 +54,11 @@ export function bernoulliObjectObservation({
     retentionProbability,
   });
   return {
-    amphoteron: current.pAmphoteron,
-    previousAmphoteron: previous.pAmphoteron,
-    amphoteronPercentagePointChange: percentagePointChange(
-      current.pAmphoteron,
-      previous.pAmphoteron,
+    polymorphy: current.pPolymorphy,
+    previousPolymorphy: previous.pPolymorphy,
+    polymorphyPercentagePointChange: percentagePointChange(
+      current.pPolymorphy,
+      previous.pPolymorphy,
     ),
     homogeneous: current.pAlpha + current.pKappa,
     previousHomogeneous: previous.pAlpha + previous.pKappa,
@@ -80,7 +80,7 @@ export function phaseStepObservation({
   });
   const changes = {
     alpha: percentagePointChange(next.pAlpha, current.pAlpha),
-    amphoteron: percentagePointChange(next.pAmphoteron, current.pAmphoteron),
+    polymorphy: percentagePointChange(next.pPolymorphy, current.pPolymorphy),
     kappa: percentagePointChange(next.pKappa, current.pKappa),
   };
   return {

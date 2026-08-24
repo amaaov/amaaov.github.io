@@ -31,7 +31,7 @@ export const HYPOTHESIS_SPECS = [
   {
     id: "height-dispersion",
     horizontal: "throwHeightVariance",
-    vertical: "pAmphoteron",
+    vertical: "pPolymorphy",
   },
   {
     id: "switching-density",
@@ -45,7 +45,7 @@ export const HYPOTHESIS_SPECS = [
   },
   {
     id: "microstate-turnover",
-    horizontal: "pAmphoteron",
+    horizontal: "pPolymorphy",
     vertical: "microstateChangeRateHz",
   },
 ];
@@ -79,7 +79,7 @@ export function analyzeSiteswap({ source, dwellRatio, beatSeconds, holdTwos = tr
     };
   }
   const alphaBouts = retention.macrostateBouts.alpha;
-  const amphoteronBouts = retention.macrostateBouts.amphoteron;
+  const polymorphyBouts = retention.macrostateBouts.polymorphy;
   const kappaBouts = retention.macrostateBouts.kappa;
   return {
     ...base,
@@ -91,8 +91,8 @@ export function analyzeSiteswap({ source, dwellRatio, beatSeconds, holdTwos = tr
     alphaEntryRateHz: alphaBouts.entryCount / retention.periodSeconds,
     alphaMeanBoutSeconds: alphaBouts.meanLengthSeconds,
     alphaMaximumBoutSeconds: alphaBouts.maximumLengthSeconds,
-    amphoteronEntryRateHz: amphoteronBouts.entryCount / retention.periodSeconds,
-    amphoteronMeanBoutSeconds: amphoteronBouts.meanLengthSeconds,
+    polymorphyEntryRateHz: polymorphyBouts.entryCount / retention.periodSeconds,
+    polymorphyMeanBoutSeconds: polymorphyBouts.meanLengthSeconds,
     kappaEntryRateHz: kappaBouts.entryCount / retention.periodSeconds,
     kappaMeanBoutSeconds: kappaBouts.meanLengthSeconds,
   };

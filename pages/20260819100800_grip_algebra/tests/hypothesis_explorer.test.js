@@ -27,7 +27,7 @@ test("tempo rescales entry rates and bout seconds while preserving beat-time sha
   });
 
   assert.equal(slower.pAlpha, faster.pAlpha);
-  assert.equal(slower.pAmphoteron, faster.pAmphoteron);
+  assert.equal(slower.pPolymorphy, faster.pPolymorphy);
   assertClose(faster.alphaEntryRateHz, 2 * slower.alphaEntryRateHz);
   assertClose(faster.alphaMeanBoutSeconds, slower.alphaMeanBoutSeconds / 2);
 });
@@ -43,7 +43,7 @@ test("live comparison joins schedule structure to Grip observables", () => {
   assert.equal(rows.length, 4);
   assert.deepEqual(rows.map((row) => row.timing), ["async", "async", "sync", "hybrid"]);
   assert.ok(rows.every((row) => row.physicalMetricsFeasible));
-  assert.ok(rows.every((row) => row.pAlpha + row.pAmphoteron + row.pKappa > 0.999999));
+  assert.ok(rows.every((row) => row.pAlpha + row.pPolymorphy + row.pKappa > 0.999999));
   assert.ok(rows.every((row) => Number.isFinite(row.airbornePairExposure)));
   assert.equal(rows[2].maximumReleasePacket, 3);
 });
@@ -86,7 +86,7 @@ test("comparison integrates the complete routing cycle when it exceeds the probe
 
   assert.equal(row.routingCycleBeats, 90);
   assertClose(row.pAlpha, 0.5);
-  assertClose(row.pAmphoteron, 0.5);
+  assertClose(row.pPolymorphy, 0.5);
   assertClose(row.pKappa, 0);
 });
 

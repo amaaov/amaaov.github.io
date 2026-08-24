@@ -34,11 +34,11 @@ The tridiagonal recurrence and an independent binomial closed form agree for eve
 
 For retention indicators that are mutually independent across objects at one stationary sample, with shared retention probability `p`, the exact snapshot probabilities are
 
-`P_alpha = (1-p)^n`, `P_kappa = p^n`, and `P_Amphoteron = 1 - p^n - (1-p)^n`.
+`P_alpha = (1-p)^n`, `P_kappa = p^n`, and `P_polymorphy = 1 - p^n - (1-p)^n`.
 
-At `p = 1/2`, Amphoteron share is `3/4` for three objects, `15/16` for five, and `511/512` for ten. The sweep is symmetric around one half: replacing `p` by `1-p` exchanges alpha and kappa while preserving Amphoteron. At ten objects and `p = 1/2`, the microstate entropy is 10 bits but the three-sign macrostate entropy is only 0.02235 bits, leaving 9.97765 bits of conditional microstate information inside the coarse sign.
+At `p = 1/2`, Polymorphy share is `3/4` for three objects, `15/16` for five, and `511/512` for ten. The sweep is symmetric around one half: replacing `p` by `1-p` exchanges alpha and kappa while preserving Polymorphy. At ten objects and `p = 1/2`, the microstate entropy is 10 bits but the three-sign macrostate entropy is only 0.02235 bits, leaving 9.97765 bits of conditional microstate information inside the coarse sign.
 
-For `n >= 2`, the Amphoteron probability has its unique maximum at `p = 1/2`, where it equals the uniform combinatorial fraction `1 - 2^(1-n)`. Cross-object independence is what turns the state count into a snapshot probability. Stationarity makes this the expected time share; identifying it with a realized long-run share additionally requires ergodicity or another justified convergence result. It supplies no temporal entry or bout law. The phase sweep demonstrates why the limitation matters: equal marginal retention can produce sharply different joint macrostates and path fragmentation.
+For `n >= 2`, the Polymorphy probability has its unique maximum at `p = 1/2`, where it equals the uniform combinatorial fraction `1 - 2^(1-n)`. Cross-object independence is what turns the state count into a snapshot probability. Stationarity makes this the expected time share; identifying it with a realized long-run share additionally requires ergodicity or another justified convergence result. It supplies no temporal entry or bout law. The phase sweep demonstrates why the limitation matters: equal marginal retention can produce sharply different joint macrostates and path fragmentation.
 
 ## Phase and flash timing
 
@@ -52,7 +52,7 @@ The phase counterexample keeps each of two objects airborne for 3/5 of its cycle
 
 The extended phase sweep now reconstructs all three macrostates and the identity-bearing path. At normalized offsets `2/5` and `1/2`, both paths have
 
-`(P_alpha, P_Amphoteron, P_kappa) = (1/5, 4/5, 0)`
+`(P_alpha, P_polymorphy, P_kappa) = (1/5, 4/5, 0)`
 
 and equal-marginal retention correlation `-2/3`. Their temporal structures still differ. Offset `2/5` has one 0.40 s alpha bout and one direct singleton swap; offset `1/2` has two 0.20 s alpha bouts and no direct singleton swap. At offset `9/20`, the two alpha bouts are unequal, with maximum 0.30 s and population variance `1/100 s^2`. Macrostate shares, entry count, bout tail, and identity turnover therefore form distinct measurements.
 
@@ -62,9 +62,9 @@ The general law explains the breakpoint. For two circular retention intervals wi
 
 and
 
-`P_alpha = [1-d-phi]_+ + [phi-d]_+`, with `P_Amphoteron = 1-P_alpha-P_kappa`.
+`P_alpha = [1-d-phi]_+ + [phi-d]_+`, with `P_polymorphy = 1-P_alpha-P_kappa`.
 
-For `d <= 1/2`, separation up to `phi = d` converts kappa into Amphoteron; beyond that point the three shares plateau while alpha can split into two bouts. For `d >= 1/2`, the dual breakpoint is `phi = 1-d`: alpha disappears and the remaining kappa and Amphoteron shares plateau. Exact enumeration agrees with this law across both duty regimes.
+For `d <= 1/2`, separation up to `phi = d` converts kappa into Polymorphy; beyond that point the three shares plateau while alpha can split into two bouts. For `d >= 1/2`, the dual breakpoint is `phi = 1-d`: alpha disappears and the remaining kappa and Polymorphy shares plateau. Exact enumeration agrees with this law across both duty regimes.
 
 ## Mechanics
 

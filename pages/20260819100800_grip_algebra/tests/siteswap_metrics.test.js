@@ -24,7 +24,7 @@ test("compiled schedules expose identity-bearing holding flags", () => {
   }
 });
 
-test("low-dwell cascade metrics separate alpha and Amphoteron bouts", () => {
+test("low-dwell cascade metrics separate alpha and Polymorphy bouts", () => {
   const schedule = scheduleEvents("3", true, 24);
   const metrics = retentionMetrics({ schedule, dwellRatio: 0.25, beatSeconds: 0.4, holdTwos: true });
 
@@ -32,7 +32,7 @@ test("low-dwell cascade metrics separate alpha and Amphoteron bouts", () => {
   assert.equal(metrics.holdTwos, true);
   assert.deepEqual(metrics.occupancySharesByHeldCount, [0.5, 0.5, 0, 0]);
   assert.equal(metrics.pAlpha, 0.5);
-  assert.equal(metrics.pAmphoteron, 0.5);
+  assert.equal(metrics.pPolymorphy, 0.5);
   assert.equal(metrics.pKappa, 0);
   assertClose(metrics.meanNormalizedRetention, 1 / 6);
   assert.equal(metrics.airbornePairExposure, 2);
@@ -45,7 +45,7 @@ test("low-dwell cascade metrics separate alpha and Amphoteron bouts", () => {
     meanLengthSeconds: 0.2,
     maximumLengthSeconds: 0.2,
   });
-  assert.deepEqual(metrics.macrostateBouts.amphoteron, metrics.macrostateBouts.alpha);
+  assert.deepEqual(metrics.macrostateBouts.polymorphy, metrics.macrostateBouts.alpha);
   assert.deepEqual(metrics.macrostateBouts.kappa, {
     entryCount: 0,
     boutCount: 0,
@@ -62,7 +62,7 @@ test("constant retention has one periodic bout but no entry event", () => {
 
   assert.deepEqual(metrics.occupancySharesByHeldCount, [0, 1]);
   assert.equal(metrics.pAlpha, 0);
-  assert.equal(metrics.pAmphoteron, 0);
+  assert.equal(metrics.pPolymorphy, 0);
   assert.equal(metrics.pKappa, 1);
   assert.equal(metrics.meanNormalizedRetention, 1);
   assert.equal(metrics.airbornePairExposure, 0);
@@ -112,8 +112,8 @@ test("simultaneous capture-release packets expose identity exchange at fixed occ
   const metrics = retentionMetrics({ schedule, dwellRatio: 0.5, beatSeconds: 0.4, holdTwos: true });
 
   assert.deepEqual(metrics.occupancySharesByHeldCount, [0, 1, 0, 0]);
-  assert.equal(metrics.pAmphoteron, 1);
-  assert.equal(metrics.macrostateBouts.amphoteron.entryCount, 0);
+  assert.equal(metrics.pPolymorphy, 1);
+  assert.equal(metrics.macrostateBouts.polymorphy.entryCount, 0);
   assert.equal(metrics.identityTurnover.packetCount, 6);
   assert.equal(metrics.identityTurnover.totalObjectStateChanges, 12);
   assert.equal(metrics.identityTurnover.meanObjectStateChangesPerPacket, 2);

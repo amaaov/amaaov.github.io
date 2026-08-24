@@ -53,7 +53,7 @@ module GripAnalysis
         release_concentration: release_concentration(release_packets, protocol.throws.length),
         occupancy_shares: occupancy,
         p_alpha: occupancy.first,
-        p_amphoteron: occupancy[1...-1].sum(0.to_r),
+        p_polymorphy: occupancy[1...-1].sum(0.to_r),
         p_kappa: occupancy.last,
         mean_normalized_retention: normalized_retention(occupancy, protocol.object_count),
         airborne_pair_exposure: path.airborne_pair_exposure,

@@ -34,7 +34,7 @@ export function createPhaseLawCard(documentNode, copy) {
   controls.append(duty.element, phase.element);
   const metrics = createMetricGrid(documentNode, [
     { key: "alpha", label: copy.alphaShare },
-    { key: "amphoteron", label: copy.amphoteronShare },
+    { key: "polymorphy", label: copy.polymorphyShare },
     { key: "kappa", label: copy.kappaShare },
     { key: "bouts", label: copy.alphaBouts },
   ]);
@@ -44,7 +44,7 @@ export function createPhaseLawCard(documentNode, copy) {
     copy,
     series: [
       { key: "alpha", label: copy.alphaShare },
-      { key: "amphoteron", label: copy.amphoteronShare },
+      { key: "polymorphy", label: copy.polymorphyShare },
       { key: "kappa", label: copy.kappaShare },
     ],
   });
@@ -69,7 +69,7 @@ export function createPhaseLawCard(documentNode, copy) {
       duty: format(retentionDuty),
       phase: format(phaseOffset),
       alpha: format(current.pAlpha),
-      amphoteron: format(current.pAmphoteron),
+      polymorphy: format(current.pPolymorphy),
       kappa: format(current.pKappa),
       bouts: integer(current.alphaBoutCount),
     };
@@ -78,7 +78,7 @@ export function createPhaseLawCard(documentNode, copy) {
     observation.update(copy.phaseObservation({
       nextPhase: format(step.nextPhaseOffset),
       alphaChange: signed(step.sharePercentagePointChanges.alpha),
-      amphoteronChange: signed(step.sharePercentagePointChanges.amphoteron),
+      polymorphyChange: signed(step.sharePercentagePointChanges.polymorphy),
       kappaChange: signed(step.sharePercentagePointChanges.kappa),
       sharePlateau: step.sharePlateau,
       boutCountChanged: step.boutCountChanged,
@@ -90,13 +90,13 @@ export function createPhaseLawCard(documentNode, copy) {
       descriptionText: copy.phaseDescription(values),
       lines: [
         { key: "alpha", points: makeCurve("pAlpha") },
-        { key: "amphoteron", points: makeCurve("pAmphoteron") },
+        { key: "polymorphy", points: makeCurve("pPolymorphy") },
         { key: "kappa", points: makeCurve("pKappa") },
       ],
       currentX: phaseOffset,
       currentValues: [
         { key: "alpha", value: current.pAlpha },
-        { key: "amphoteron", value: current.pAmphoteron },
+        { key: "polymorphy", value: current.pPolymorphy },
         { key: "kappa", value: current.pKappa },
       ],
       minimumX: 0,

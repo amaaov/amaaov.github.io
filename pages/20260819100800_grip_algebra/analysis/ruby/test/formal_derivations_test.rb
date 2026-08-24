@@ -16,7 +16,7 @@ class FormalDerivationsTest < Minitest::Test
       period = row.fetch(:period_seconds)
 
       assert_equal row.fetch(:p_alpha), law.p_alpha
-      assert_equal row.fetch(:p_amphoteron), law.p_amphoteron
+      assert_equal row.fetch(:p_polymorphy), law.p_polymorphy
       assert_equal row.fetch(:p_kappa), law.p_kappa
       assert_equal row.fetch(:alpha_entry_count), law.alpha_bout_count
       assert_equal row.fetch(:alpha_mean_bout_seconds), law.alpha_mean_bout_fraction * period
@@ -42,7 +42,7 @@ class FormalDerivationsTest < Minitest::Test
       )
 
       assert_equal path.macrostate_share(:alpha), law.p_alpha
-      assert_equal path.macrostate_share(:amphoteron), law.p_amphoteron
+      assert_equal path.macrostate_share(:polymorphy), law.p_polymorphy
       assert_equal path.macrostate_share(:kappa), law.p_kappa
       assert_equal path.macrostate_bout_lengths(:alpha).sort,
         law.alpha_bout_fractions.sort
@@ -75,10 +75,10 @@ class FormalDerivationsTest < Minitest::Test
     ])
 
     assert_equal Rational(3, 32), law.p_alpha
-    assert_equal Rational(13, 16), law.p_amphoteron
+    assert_equal Rational(13, 16), law.p_polymorphy
     assert_equal Rational(3, 32), law.p_kappa
     assert_equal Rational(3, 2), law.expected_held_count
-    assert_equal 1, law.p_alpha + law.p_amphoteron + law.p_kappa
+    assert_equal 1, law.p_alpha + law.p_polymorphy + law.p_kappa
   end
 
   def test_one_bit_expectations_satisfy_the_first_passage_recurrence

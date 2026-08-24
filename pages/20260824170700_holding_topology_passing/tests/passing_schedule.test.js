@@ -68,7 +68,7 @@ test("group occupancy of six-object unit-hand patterns is half empty and half tw
     const occupancy = passingOccupancy(schedulePassingEvents(notation, true, 1), 0.25);
     assert.equal(occupancy.objectCount, 6);
     assert.equal(occupancy.pAlpha, 0.5);
-    assert.equal(occupancy.pAmphoteron, 0.5);
+    assert.equal(occupancy.pPolymorphy, 0.5);
     assert.equal(occupancy.pKappa, 0);
     assert.deepEqual(occupancy.occupancyShares, [0.5, 0, 0.5, 0, 0, 0, 0]);
   });
@@ -81,7 +81,7 @@ test("seven-club occupancy matches the two-throw packet law", () => {
   );
   assert.equal(occupancy.objectCount, 7);
   assert.equal(occupancy.pAlpha, 0.5);
-  assert.equal(occupancy.pAmphoteron, 0.5);
+  assert.equal(occupancy.pPolymorphy, 0.5);
   assert.equal(occupancy.pKappa, 0);
   assert.deepEqual(occupancy.occupancyShares, [0.5, 0, 0.5, 0, 0, 0, 0, 0]);
 });

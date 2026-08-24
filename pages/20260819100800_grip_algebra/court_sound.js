@@ -1,4 +1,4 @@
-import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "./holding.js";
+import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "./holding.js";
 import {
   DEFAULT_SYNTH,
   DEFAULT_VOICE,
@@ -36,7 +36,7 @@ export const SOUND_WAVES = ["sine", "triangle", "pulse", "noise"];
 
 export const DEFAULT_STATE_WAVES = {
   [HOLD_SIGN]: "sine",
-  [RELEASE_SIGN]: "triangle",
+  [AIRBORNE_SIGN]: "triangle",
   [MIXED_SIGN]: "pulse",
 };
 
@@ -52,7 +52,7 @@ export const DEFAULT_SOUND_EFFECTS = {
 
 const STATE_TONES = {
   [HOLD_SIGN]: [46, 69],
-  [RELEASE_SIGN]: [52, 86.667],
+  [AIRBORNE_SIGN]: [52, 86.667],
   [MIXED_SIGN]: [41, 61.5],
 };
 
@@ -101,7 +101,7 @@ export function soundSettingsFromForm(form) {
     enabled: form.elements.namedItem("courtSound")?.checked === true,
     waves: {
       [HOLD_SIGN]: wave("soundWaveHold", DEFAULT_STATE_WAVES[HOLD_SIGN]),
-      [RELEASE_SIGN]: wave("soundWaveRelease", DEFAULT_STATE_WAVES[RELEASE_SIGN]),
+      [AIRBORNE_SIGN]: wave("soundWaveRelease", DEFAULT_STATE_WAVES[AIRBORNE_SIGN]),
       [MIXED_SIGN]: wave("soundWaveMixed", DEFAULT_STATE_WAVES[MIXED_SIGN]),
     },
     effects: {
@@ -166,7 +166,7 @@ export function courtSoundPlan({
       0,
       1,
     ))
-      + (toneSign === RELEASE_SIGN ? 40 : 0)
+      + (toneSign === AIRBORNE_SIGN ? 40 : 0)
       + pointerX * 30,
     24,
     6000,

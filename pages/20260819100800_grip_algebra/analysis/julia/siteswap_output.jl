@@ -5,7 +5,7 @@ const SITESWAP_RESULT_COLUMNS = [
     :empty_packet_count, :throw_action_count, :hold_action_count,
     :release_packet_count, :capture_packet_count, :max_action_packet,
     :max_release_packet, :max_capture_packet, :release_concentration,
-    :occupancy_shares, :p_alpha, :p_amphoteron, :p_kappa,
+    :occupancy_shares, :p_alpha, :p_polymorphy, :p_kappa,
     :mean_normalized_retention, :airborne_pair_exposure, :alpha_entry_count,
     :alpha_entry_rate_hz, :alpha_bout_count, :alpha_bout_lengths_seconds,
     :alpha_mean_bout_seconds, :alpha_maximum_bout_seconds, :model_assumption,
@@ -14,7 +14,7 @@ const SITESWAP_RESULT_COLUMNS = [
 const SITESWAP_RATIONAL_COLUMNS = Set([
     :notation_period_beats, :protocol_cycle_beats, :beat_seconds, :dwell_ratio,
     :period_seconds, :release_concentration, :occupancy_shares, :p_alpha,
-    :p_amphoteron, :p_kappa, :mean_normalized_retention,
+    :p_polymorphy, :p_kappa, :mean_normalized_retention,
     :airborne_pair_exposure, :alpha_entry_rate_hz, :alpha_bout_lengths_seconds,
     :alpha_mean_bout_seconds, :alpha_maximum_bout_seconds,
 ])

@@ -34,7 +34,7 @@ export function createBernoulliLawCard(documentNode, copy) {
   controls.append(objects.element, probability.element);
   const metrics = createMetricGrid(documentNode, [
     { key: "alpha", label: copy.alphaShare },
-    { key: "amphoteron", label: copy.amphoteronShare },
+    { key: "polymorphy", label: copy.polymorphyShare },
     { key: "kappa", label: copy.kappaShare },
   ]);
   const observation = createObservation(documentNode);
@@ -43,7 +43,7 @@ export function createBernoulliLawCard(documentNode, copy) {
     copy,
     series: [
       { key: "alpha", label: copy.alphaShare },
-      { key: "amphoteron", label: copy.amphoteronShare },
+      { key: "polymorphy", label: copy.polymorphyShare },
       { key: "kappa", label: copy.kappaShare },
     ],
   });
@@ -70,14 +70,14 @@ export function createBernoulliLawCard(documentNode, copy) {
       objects: integer(objectCount),
       probability: format(retentionProbability),
       alpha: format(current.pAlpha),
-      amphoteron: format(current.pAmphoteron),
+      polymorphy: format(current.pPolymorphy),
       kappa: format(current.pKappa),
     };
     metrics.update(values);
-    const amphoteronChange = concentration.amphoteronPercentagePointChange;
+    const polymorphyChange = concentration.polymorphyPercentagePointChange;
     observation.update(copy.bernoulliObservation({
       objects: integer(objectCount),
-      amphoteronChange: `${amphoteronChange >= 0 ? "+" : ""}${format(amphoteronChange)}`,
+      polymorphyChange: `${polymorphyChange >= 0 ? "+" : ""}${format(polymorphyChange)}`,
       previousHomogeneous: format(concentration.previousHomogeneous * 100),
       homogeneous: format(concentration.homogeneous * 100),
     }));
@@ -86,13 +86,13 @@ export function createBernoulliLawCard(documentNode, copy) {
       descriptionText: copy.bernoulliDescription(values),
       lines: [
         { key: "alpha", points: makeCurve("pAlpha") },
-        { key: "amphoteron", points: makeCurve("pAmphoteron") },
+        { key: "polymorphy", points: makeCurve("pPolymorphy") },
         { key: "kappa", points: makeCurve("pKappa") },
       ],
       currentX: retentionProbability,
       currentValues: [
         { key: "alpha", value: current.pAlpha },
-        { key: "amphoteron", value: current.pAmphoteron },
+        { key: "polymorphy", value: current.pPolymorphy },
         { key: "kappa", value: current.pKappa },
       ],
       minimumX: 0,

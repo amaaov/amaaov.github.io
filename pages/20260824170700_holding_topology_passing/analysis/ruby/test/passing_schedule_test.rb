@@ -48,7 +48,7 @@ class PassingScheduleTest < Minitest::Test
       )
       assert_equal 6, occupancy.fetch(:object_count)
       assert_equal Rational(1, 2), occupancy.fetch(:p_alpha)
-      assert_equal Rational(1, 2), occupancy.fetch(:p_amphoteron)
+      assert_equal Rational(1, 2), occupancy.fetch(:p_polymorphy)
       assert_equal 0, occupancy.fetch(:p_kappa)
       assert_equal [Rational(1, 2), 0, Rational(1, 2), 0, 0, 0, 0], occupancy.fetch(:occupancy_shares)
     end
@@ -61,7 +61,7 @@ class PassingScheduleTest < Minitest::Test
     )
     assert_equal 7, occupancy.fetch(:object_count)
     assert_equal Rational(1, 2), occupancy.fetch(:p_alpha)
-    assert_equal Rational(1, 2), occupancy.fetch(:p_amphoteron)
+    assert_equal Rational(1, 2), occupancy.fetch(:p_polymorphy)
     assert_equal 0, occupancy.fetch(:p_kappa)
     assert_equal [Rational(1, 2), 0, Rational(1, 2), 0, 0, 0, 0, 0], occupancy.fetch(:occupancy_shares)
   end

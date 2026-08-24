@@ -153,7 +153,7 @@ module GripAnalysis
           retention_probability: retention_probability,
           process_assumption: "stationary mutually independent Bernoulli retention",
           p_alpha: model.p_alpha,
-          p_amphoteron: model.p_amphoteron,
+          p_polymorphy: model.p_polymorphy,
           p_kappa: model.p_kappa,
           expected_held_count: model.expected_held_count,
           microstate_entropy_bits: model.microstate_entropy_bits,

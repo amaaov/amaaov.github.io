@@ -45,7 +45,7 @@ test("Bernoulli temporal law recovers the combinatorial midpoint", () => {
   const law = bernoulliTemporalLaw({ objectCount: 5, retentionProbability: 0.5 });
 
   assert.equal(law.pAlpha, 1 / 32);
-  assert.equal(law.pAmphoteron, 15 / 16);
+  assert.equal(law.pPolymorphy, 15 / 16);
   assert.equal(law.pKappa, 1 / 32);
 });
 

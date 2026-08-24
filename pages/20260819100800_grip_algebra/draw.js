@@ -1,5 +1,5 @@
 import { courtGroundFill, paintCourtSky } from "./court_cosmology.js";
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "./holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "./holding.js";
 
 const GRIP_FILL = "#c24a1c";
 const AIR_FILL = "#1b6d8f";
@@ -10,7 +10,7 @@ export function occupancyTapeFill(state) {
   if (state === HOLD_SIGN) {
     return GRIP_FILL;
   }
-  if (state === RELEASE_SIGN) {
+  if (state === AIRBORNE_SIGN) {
     return AIR_FILL;
   }
   if (state === MIXED_SIGN) {

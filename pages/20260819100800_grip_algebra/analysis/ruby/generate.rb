@@ -27,12 +27,12 @@ module GripAnalysis
     ].freeze
     PHASE_SWEEP_HEADERS = %i[
       object_count phase_offset_fraction individual_retention_duty individual_airborne_duty
-      period_beats beat_seconds period_seconds p_alpha p_amphoteron p_kappa retention_covariance
+      period_beats beat_seconds period_seconds p_alpha p_polymorphy p_kappa retention_covariance
       retention_correlation alpha_entry_count alpha_entry_rate_hz alpha_bout_count
       alpha_mean_bout_seconds alpha_maximum_bout_seconds alpha_bout_variance_seconds_squared
-      amphoteron_entry_count amphoteron_entry_rate_hz amphoteron_bout_count
-      amphoteron_mean_bout_seconds amphoteron_maximum_bout_seconds
-      amphoteron_bout_variance_seconds_squared kappa_entry_count kappa_entry_rate_hz kappa_bout_count
+      polymorphy_entry_count polymorphy_entry_rate_hz polymorphy_bout_count
+      polymorphy_mean_bout_seconds polymorphy_maximum_bout_seconds
+      polymorphy_bout_variance_seconds_squared kappa_entry_count kappa_entry_rate_hz kappa_bout_count
       kappa_mean_bout_seconds kappa_maximum_bout_seconds kappa_bout_variance_seconds_squared
       membership_change_packet_count membership_turnover_total mean_membership_turnover_per_packet
       maximum_membership_turnover_per_packet direct_singleton_swap_count result_class
@@ -44,7 +44,7 @@ module GripAnalysis
       central_start_held_count central_boundary_distance central_first_passage_steps result_class
     ].freeze
     INDEPENDENT_RETENTION_NULL_HEADERS = %i[
-      object_count retention_probability process_assumption p_alpha p_amphoteron p_kappa
+      object_count retention_probability process_assumption p_alpha p_polymorphy p_kappa
       expected_held_count microstate_entropy_bits macrostate_entropy_bits
       conditional_information_loss_bits result_class
     ].freeze
@@ -54,7 +54,7 @@ module GripAnalysis
       scheduled_packet_count active_packet_count empty_packet_count throw_action_count
       hold_action_count release_packet_count capture_packet_count max_action_packet
       max_release_packet max_capture_packet release_concentration occupancy_shares
-      p_alpha p_amphoteron p_kappa mean_normalized_retention airborne_pair_exposure
+      p_alpha p_polymorphy p_kappa mean_normalized_retention airborne_pair_exposure
       alpha_entry_count alpha_entry_rate_hz alpha_bout_count alpha_bout_lengths_seconds
       alpha_mean_bout_seconds alpha_maximum_bout_seconds model_assumption
       comparison_hypothesis empirical_status result_class

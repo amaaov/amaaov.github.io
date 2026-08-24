@@ -57,10 +57,10 @@ class PeriodicRetentionTest < Minitest::Test
     )
 
     assert_equal Rational(1, 5), path.macrostate_share(:alpha)
-    assert_equal Rational(4, 5), path.macrostate_share(:amphoteron)
+    assert_equal Rational(4, 5), path.macrostate_share(:polymorphy)
     assert_equal 0, path.macrostate_share(:kappa)
     assert_equal [Rational(2, 5)], path.macrostate_bout_lengths(:alpha)
-    assert_equal [Rational(8, 5)], path.macrostate_bout_lengths(:amphoteron)
+    assert_equal [Rational(8, 5)], path.macrostate_bout_lengths(:polymorphy)
     assert_equal 3, path.membership_change_packet_count
     assert_equal 4, path.membership_turnover_total
     assert_equal Rational(4, 3), path.mean_membership_turnover_per_packet
@@ -76,12 +76,12 @@ class PeriodicRetentionTest < Minitest::Test
 
     assert_equal 21, rows.length
     rows.each do |row|
-      assert_equal 1, row.fetch(:p_alpha) + row.fetch(:p_amphoteron) + row.fetch(:p_kappa)
+      assert_equal 1, row.fetch(:p_alpha) + row.fetch(:p_polymorphy) + row.fetch(:p_kappa)
     end
     assert_equal Rational(1, 5), touching.fetch(:p_alpha)
     assert_equal touching.fetch(:p_alpha), separated.fetch(:p_alpha)
-    assert_equal Rational(4, 5), touching.fetch(:p_amphoteron)
-    assert_equal touching.fetch(:p_amphoteron), separated.fetch(:p_amphoteron)
+    assert_equal Rational(4, 5), touching.fetch(:p_polymorphy)
+    assert_equal touching.fetch(:p_polymorphy), separated.fetch(:p_polymorphy)
     assert_equal 1, touching.fetch(:alpha_entry_count)
     assert_equal 2, separated.fetch(:alpha_entry_count)
     assert_equal Rational(2, 5), touching.fetch(:alpha_maximum_bout_seconds)

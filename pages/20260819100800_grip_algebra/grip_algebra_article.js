@@ -4,7 +4,7 @@ import { cascadeHoldingFlags, playbackTimeBeat, playbackWindowBeats } from "./sc
 import { courtPicture, trajectoryPositions } from "./toss.js";
 import { renderLatexElements } from "./formula.js";
 import { initializeFormalLawWorkbench } from "./formal_law_ui.js";
-import { RELEASE_SIGN, signHasAkrateia, signHasKratos } from "./holding.js";
+import { AIRBORNE_SIGN, signHasAkrateia, signHasKratos } from "./holding.js";
 import { initializeSiteswapInterface } from "./siteswap_ui.js";
 import { courtSoundPlan, occupancyChangeHand, soundDocumentOpen, soundSettingsFromForm } from "./court_sound.js";
 import { occupancyGateOpen, soloedSigns, soundEnvelopeClock, soundEnvelopePhase } from "./court_sound_fx.js";
@@ -44,11 +44,11 @@ const STILL_OBJECT = [{ x: 0.68, y: 0.82, held: true, hand: 1 }];
 const ATLAS = [
   { canvasId: "atlas-00", kind: "empty" },
   { canvasId: "atlas-01", source: "02", dwellRatio: 0.7 },
-  { canvasId: "atlas-10", source: "55500", dwellRatio: 0.75, lockState: RELEASE_SIGN },
+  { canvasId: "atlas-10", source: "55500", dwellRatio: 0.75, lockState: AIRBORNE_SIGN },
   { canvasId: "atlas-11", source: "3", dwellRatio: 0.7 },
   { canvasId: "layer-object", kind: "still", layer: "object" },
   { canvasId: "layer-body", source: "02", dwellRatio: 0.7, layer: "body" },
-  { canvasId: "layer-world", source: "55500", dwellRatio: 0.75, lockState: RELEASE_SIGN, layer: "world" },
+  { canvasId: "layer-world", source: "55500", dwellRatio: 0.75, lockState: AIRBORNE_SIGN, layer: "world" },
 ];
 
 function setLamps(state) {

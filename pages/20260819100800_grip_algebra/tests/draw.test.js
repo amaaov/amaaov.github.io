@@ -11,7 +11,7 @@ import {
   occupancyTapeFill,
   recentStatePath,
 } from "../draw.js";
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "../holding.js";
 
 function mockCanvas(width = 200, height = 80) {
   const calls = [];
@@ -82,7 +82,7 @@ test("court drawing keeps a square field inside a wide canvas", () => {
 
 test("occupancy tape maps snapshot codes onto grip, air, mix, and empty fills", () => {
   const grip = occupancyTapeFill(HOLD_SIGN);
-  const air = occupancyTapeFill(RELEASE_SIGN);
+  const air = occupancyTapeFill(AIRBORNE_SIGN);
   const mixed = occupancyTapeFill(MIXED_SIGN);
   const empty = occupancyTapeFill("∅");
   assert.equal(grip, "#c24a1c");
@@ -95,7 +95,7 @@ test("occupancy tape maps snapshot codes onto grip, air, mix, and empty fills", 
 
 test("occupancy tape paints one cell per snapshot and marks the present", () => {
   const canvas = mockCanvas(120, 20);
-  drawOccupancyTape(canvas, [HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN]);
+  drawOccupancyTape(canvas, [HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN]);
   const fills = canvas.calls.filter((call) => call[0] === "fillRect");
   const cells = fills.filter((call) => call[1][3] === 20);
   assert.equal(cells.length, 3);
@@ -292,23 +292,23 @@ test("court hand wake strokes a clay shadow instead of stacked black ellipses", 
 });
 
 test("compressed occupancy path keeps a run of the same snapshot as one step", () => {
-  assert.deepEqual(compressStates([MIXED_SIGN, MIXED_SIGN, RELEASE_SIGN, MIXED_SIGN]), [MIXED_SIGN, RELEASE_SIGN, MIXED_SIGN]);
+  assert.deepEqual(compressStates([MIXED_SIGN, MIXED_SIGN, AIRBORNE_SIGN, MIXED_SIGN]), [MIXED_SIGN, AIRBORNE_SIGN, MIXED_SIGN]);
 });
 
 test("visible occupancy path keeps only recent transitions at a stable length", () => {
   const states = Array.from(
     { length: 20 },
-    (_, index) => index % 2 === 0 ? RELEASE_SIGN : MIXED_SIGN,
+    (_, index) => index % 2 === 0 ? AIRBORNE_SIGN : MIXED_SIGN,
   );
   assert.deepEqual(recentStatePath(states, 4), [
     "…",
-    RELEASE_SIGN,
+    AIRBORNE_SIGN,
     MIXED_SIGN,
-    RELEASE_SIGN,
+    AIRBORNE_SIGN,
     MIXED_SIGN,
   ]);
-  assert.deepEqual(recentStatePath([RELEASE_SIGN, RELEASE_SIGN, MIXED_SIGN], 4), [
-    RELEASE_SIGN,
+  assert.deepEqual(recentStatePath([AIRBORNE_SIGN, AIRBORNE_SIGN, MIXED_SIGN], 4), [
+    AIRBORNE_SIGN,
     MIXED_SIGN,
   ]);
 });

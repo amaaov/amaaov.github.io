@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "../holding.js";
 import { courtSoundPlan, soundSettingsFromForm } from "../court_sound.js";
 import {
   delayPathOpen,
@@ -157,23 +157,23 @@ test("solo opens the gate only on that occupancy and keeps a release tail", () =
     stateAgeSeconds: 1,
     synths: {
       [HOLD_SIGN]: holdVoice,
-      [RELEASE_SIGN]: { pitch: 12, ...holdVoice },
+      [AIRBORNE_SIGN]: { pitch: 12, ...holdVoice },
     },
   });
-  const foreign = planFor(RELEASE_SIGN, {
+  const foreign = planFor(AIRBORNE_SIGN, {
     solos: { [HOLD_SIGN]: true },
     stateAgeSeconds: 2,
     synths: {
       [HOLD_SIGN]: holdVoice,
-      [RELEASE_SIGN]: { pitch: 12, ...holdVoice },
+      [AIRBORNE_SIGN]: { pitch: 12, ...holdVoice },
     },
   });
-  const tail = planFor(RELEASE_SIGN, {
+  const tail = planFor(AIRBORNE_SIGN, {
     solos: { [HOLD_SIGN]: true },
     stateAgeSeconds: 0.1,
     synths: {
       [HOLD_SIGN]: holdVoice,
-      [RELEASE_SIGN]: { pitch: 12, ...holdVoice },
+      [AIRBORNE_SIGN]: { pitch: 12, ...holdVoice },
     },
   });
   const mixed = planFor(HOLD_SIGN, {
@@ -183,15 +183,15 @@ test("solo opens the gate only on that occupancy and keeps a release tail", () =
     },
   });
   assert.equal(occupancyGateOpen(HOLD_SIGN, { [HOLD_SIGN]: true }), true);
-  assert.equal(occupancyGateOpen(RELEASE_SIGN, { [HOLD_SIGN]: true }), false);
+  assert.equal(occupancyGateOpen(AIRBORNE_SIGN, { [HOLD_SIGN]: true }), false);
   assert.equal(occupancyGateOpen(EMPTY_SIGN, { [HOLD_SIGN]: true }), false);
-  assert.equal(occupancyGateOpen(RELEASE_SIGN, {}), true);
+  assert.equal(occupancyGateOpen(AIRBORNE_SIGN, {}), true);
   assert.equal(soundEnvelopePhase(HOLD_SIGN, { [HOLD_SIGN]: true }), `${HOLD_SIGN}:${HOLD_SIGN}`);
-  assert.equal(soundEnvelopePhase(RELEASE_SIGN, { [HOLD_SIGN]: true }), `${HOLD_SIGN}:release`);
-  assert.equal(soundEnvelopePhase(RELEASE_SIGN, {}), `-:${RELEASE_SIGN}`);
-  assert.equal(soundingSign(RELEASE_SIGN, { [HOLD_SIGN]: true }), HOLD_SIGN);
+  assert.equal(soundEnvelopePhase(AIRBORNE_SIGN, { [HOLD_SIGN]: true }), `${HOLD_SIGN}:release`);
+  assert.equal(soundEnvelopePhase(AIRBORNE_SIGN, {}), `-:${AIRBORNE_SIGN}`);
+  assert.equal(soundingSign(AIRBORNE_SIGN, { [HOLD_SIGN]: true }), HOLD_SIGN);
   assert.equal(soundingSign(EMPTY_SIGN, { [HOLD_SIGN]: true }), HOLD_SIGN);
-  assert.equal(soundingSign(RELEASE_SIGN, {}), RELEASE_SIGN);
+  assert.equal(soundingSign(AIRBORNE_SIGN, {}), AIRBORNE_SIGN);
   assert.equal(open.silent, false);
   assert.ok(open.voices[0].gain > mixed.voices[0].gain);
   assert.equal(foreign.silent, true);
@@ -280,7 +280,7 @@ test("form reads solo boxes and tape fields", () => {
   };
   const settings = soundSettingsFromForm(form);
   assert.equal(settings.solos[HOLD_SIGN], true);
-  assert.equal(settings.solos[RELEASE_SIGN], false);
+  assert.equal(settings.solos[AIRBORNE_SIGN], false);
   assert.equal(settings.effects.tape, 8.4);
   assert.equal(settings.effects.tapeDry, 0.25);
   assert.equal(settings.effects.delayDry, 0.15);

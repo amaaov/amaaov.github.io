@@ -46,7 +46,7 @@ class ResultsTest < Minitest::Test
 
     assert_equal Rational(1, 2), half_offset.fetch(:phase_offset_fraction)
     assert_equal Rational(1, 5), half_offset.fetch(:p_alpha)
-    assert_equal Rational(4, 5), half_offset.fetch(:p_amphoteron)
+    assert_equal Rational(4, 5), half_offset.fetch(:p_polymorphy)
     assert_equal 0, half_offset.fetch(:p_kappa)
     assert_equal 2, half_offset.fetch(:alpha_bout_count)
 
@@ -69,7 +69,7 @@ class ResultsTest < Minitest::Test
     assert_equal 15, rows.length
     assert_equal "stationary mutually independent Bernoulli retention", half.fetch(:process_assumption)
     assert_equal Rational(1, 32), half.fetch(:p_alpha)
-    assert_equal Rational(15, 16), half.fetch(:p_amphoteron)
+    assert_equal Rational(15, 16), half.fetch(:p_polymorphy)
     assert_equal Rational(1, 32), half.fetch(:p_kappa)
     assert_equal Rational(5, 2), half.fetch(:expected_held_count)
     assert_equal "model consequence", half.fetch(:result_class)

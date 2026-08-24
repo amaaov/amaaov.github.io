@@ -11,7 +11,7 @@
 
     bernoulli = bernoulli_temporal_law([1 // 4, 1 // 2, 3 // 4])
     @test bernoulli.p_alpha == 3 // 32
-    @test bernoulli.p_amphoteron == 13 // 16
+    @test bernoulli.p_polymorphy == 13 // 16
     @test bernoulli.p_kappa == 3 // 32
     @test bernoulli.expected_held_count == 3 // 2
 

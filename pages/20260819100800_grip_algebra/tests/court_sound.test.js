@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "../holding.js";
 import {
   occupancyChangeHand,
   courtSoundPlan,
@@ -15,7 +15,7 @@ import { courtPicture } from "../toss.js";
 function planFor(state, extras = {}) {
   return courtSoundPlan({
     state,
-    waves: { [HOLD_SIGN]: "sine", [RELEASE_SIGN]: "triangle", [MIXED_SIGN]: "pulse" },
+    waves: { [HOLD_SIGN]: "sine", [AIRBORNE_SIGN]: "triangle", [MIXED_SIGN]: "pulse" },
     effects: { scatter: 0.4, delay: 0.55, feedback: 0.62 },
     eventHand: null,
     pointer: { x: 0.5, y: 0.5 },
@@ -51,7 +51,7 @@ test("empty occupancy is silent; live signs keep low paired tones", () => {
   assert.equal(empty.silent, true);
   assert.equal(empty.voices.length, 0);
 
-  for (const state of [HOLD_SIGN, RELEASE_SIGN, MIXED_SIGN]) {
+  for (const state of [HOLD_SIGN, AIRBORNE_SIGN, MIXED_SIGN]) {
     const plan = planFor(state);
     assert.equal(plan.silent, false);
     assert.equal(plan.voices.length, 2);
@@ -98,8 +98,8 @@ test("a state-change hand pulls the field toward that side", () => {
 });
 
 test("chosen waves reach the sounding voices", () => {
-  const plan = planFor(RELEASE_SIGN, {
-    waves: { [HOLD_SIGN]: "sine", [RELEASE_SIGN]: "noise", [MIXED_SIGN]: "pulse" },
+  const plan = planFor(AIRBORNE_SIGN, {
+    waves: { [HOLD_SIGN]: "sine", [AIRBORNE_SIGN]: "noise", [MIXED_SIGN]: "pulse" },
   });
   assert.ok(plan.voices.every((voice) => voice.wave === "noise"));
   assert.ok(SOUND_WAVES.includes("noise"));

@@ -18,7 +18,7 @@ class PassingOccupancyCasesTest < Minitest::Test
     occupancy = shares("<2|2>")
     assert_equal 4, occupancy.fetch(:object_count)
     assert_equal 0, occupancy.fetch(:p_alpha)
-    assert_equal 0, occupancy.fetch(:p_amphoteron)
+    assert_equal 0, occupancy.fetch(:p_polymorphy)
     assert_equal 1, occupancy.fetch(:p_kappa)
   end
 
@@ -50,7 +50,7 @@ class PassingOccupancyCasesTest < Minitest::Test
       occupancy = shares(notation)
       assert_equal 9, occupancy.fetch(:object_count)
       assert_equal Rational(1, 2), occupancy.fetch(:p_alpha)
-      assert_equal Rational(1, 2), occupancy.fetch(:p_amphoteron)
+      assert_equal Rational(1, 2), occupancy.fetch(:p_polymorphy)
       assert_equal 0, occupancy.fetch(:p_kappa)
       assert_equal Rational(1, 2), occupancy.fetch(:occupancy_shares)[3]
     end
@@ -69,7 +69,7 @@ class PassingOccupancyCasesTest < Minitest::Test
     assert_equal 4, schedule.hand_period
     assert_equal 7, occupancy.fetch(:object_count)
     assert_equal 0, occupancy.fetch(:p_alpha)
-    assert_equal 1, occupancy.fetch(:p_amphoteron)
+    assert_equal 1, occupancy.fetch(:p_polymorphy)
     assert_equal 0, occupancy.fetch(:p_kappa)
     assert_equal Rational(1, 1), occupancy.fetch(:occupancy_shares)[1]
     assert_equal 0, occupancy.fetch(:occupancy_shares)[2]

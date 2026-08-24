@@ -1,4 +1,4 @@
-object_count,retention_probability,retention_probability_exact,process_assumption,p_alpha,p_alpha_exact,p_amphoteron,p_amphoteron_exact,p_kappa,p_kappa_exact,expected_held_count,expected_held_count_exact,microstate_entropy_bits,macrostate_entropy_bits,conditional_information_loss_bits,result_class
+object_count,retention_probability,retention_probability_exact,process_assumption,p_alpha,p_alpha_exact,p_polymorphy,p_polymorphy_exact,p_kappa,p_kappa_exact,expected_held_count,expected_held_count_exact,microstate_entropy_bits,macrostate_entropy_bits,conditional_information_loss_bits,result_class
 3,0.1,1/10,stationary mutually independent Bernoulli retention,0.729,729/1000,0.27,27/100,0.001,1/1000,0.3,3/10,1.40698678077,0.852418095304,0.554568685464,model consequence
 3,0.25,1/4,stationary mutually independent Bernoulli retention,0.421875,27/64,0.5625,9/16,0.015625,1/64,0.75,3/4,2.43383437338,1.08594902171,1.34788535166,model consequence
 3,0.5,1/2,stationary mutually independent Bernoulli retention,0.125,1/8,0.75,3/4,0.125,1/8,1.5,3/2,3,1.06127812446,1.93872187554,model consequence

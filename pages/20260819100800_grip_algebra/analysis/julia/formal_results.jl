@@ -31,7 +31,7 @@ function formal_phase_rows()
         law = two_object_phase_law(2 // 5, phase)
         metrics = (
             p_alpha=law.p_alpha,
-            p_amphoteron=law.p_amphoteron,
+            p_polymorphy=law.p_polymorphy,
             p_kappa=law.p_kappa,
             alpha_entry_count=law.alpha_bout_count,
             alpha_mean_bout_fraction=law.alpha_mean_bout_fraction,
@@ -60,7 +60,7 @@ function formal_bernoulli_rows()
         formal_metric_rows(
             "bernoulli_temporal", case_id,
             (
-                p_alpha=law.p_alpha, p_amphoteron=law.p_amphoteron,
+                p_alpha=law.p_alpha, p_polymorphy=law.p_polymorphy,
                 p_kappa=law.p_kappa, expected_held_count=law.expected_held_count,
             ),
             "mutually independent Bernoulli retention indicators at one stationary sample",

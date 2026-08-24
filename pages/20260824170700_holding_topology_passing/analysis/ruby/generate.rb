@@ -11,7 +11,7 @@ module PassingAnalysis
 
     COLUMNS = %w[
       scenario notation grammar hand_period cycle_length_beats notation_period_beats object_count
-      hand_count beat_seconds dwell_ratio p_alpha p_amphoteron p_kappa occupancy_shares mean_q
+      hand_count beat_seconds dwell_ratio p_alpha p_polymorphy p_kappa occupancy_shares mean_q
       pass_count self_count body_occupancy_shares
     ].freeze
 
@@ -34,7 +34,7 @@ module PassingAnalysis
           beat_seconds: format_rational(BEAT_SECONDS),
           dwell_ratio: format_rational(DWELL_RATIO),
           p_alpha: format_rational(occupancy.fetch(:p_alpha)),
-          p_amphoteron: format_rational(occupancy.fetch(:p_amphoteron)),
+          p_polymorphy: format_rational(occupancy.fetch(:p_polymorphy)),
           p_kappa: format_rational(occupancy.fetch(:p_kappa)),
           occupancy_shares: format_shares(shares),
           mean_q: format_rational(mean_q),

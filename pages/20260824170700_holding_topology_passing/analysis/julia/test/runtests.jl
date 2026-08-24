@@ -43,7 +43,7 @@ end
         occupancy = occupancy_shares(schedule_passing(notation); dwell_ratio=DWELL_RATIO)
         @test occupancy.object_count == 6
         @test occupancy.p_alpha == 1 // 2
-        @test occupancy.p_amphoteron == 1 // 2
+        @test occupancy.p_polymorphy == 1 // 2
         @test occupancy.p_kappa == 0
         @test occupancy.occupancy_shares == Rational{Int}[1//2, 0, 1//2, 0, 0, 0, 0]
     end
@@ -53,7 +53,7 @@ end
     occupancy = occupancy_shares(schedule_passing("<R|L><4xp|3><3|4xp>"); dwell_ratio=DWELL_RATIO)
     @test occupancy.object_count == 7
     @test occupancy.p_alpha == 1 // 2
-    @test occupancy.p_amphoteron == 1 // 2
+    @test occupancy.p_polymorphy == 1 // 2
     @test occupancy.p_kappa == 0
     @test occupancy.occupancy_shares == Rational{Int}[1//2, 0, 1//2, 0, 0, 0, 0, 0]
 end
@@ -93,7 +93,7 @@ end
     @test schedule.hand_period == 4
     @test occupancy.object_count == 7
     @test occupancy.p_alpha == 0
-    @test occupancy.p_amphoteron == 1
+    @test occupancy.p_polymorphy == 1
     @test occupancy.p_kappa == 0
     @test occupancy.occupancy_shares[2] == 1
     @test occupancy.occupancy_shares[3] == 0

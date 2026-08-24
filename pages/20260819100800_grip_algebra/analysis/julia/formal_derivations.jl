@@ -14,7 +14,7 @@ function two_object_phase_law(retention_duty, phase_offset)
     ))
     p_kappa = positive_part(duty - phase) + positive_part(duty + phase - 1)
     p_alpha = positive_part(1 - duty - phase) + positive_part(phase - duty)
-    p_amphoteron = 1 - p_alpha - p_kappa
+    p_polymorphy = 1 - p_alpha - p_kappa
     alpha_bout_fractions = filter(>(0), [
         phase - duty, 1 - duty - phase,
     ])
@@ -24,8 +24,8 @@ function two_object_phase_law(retention_duty, phase_offset)
         sum((value - alpha_mean)^2 for value in alpha_bout_fractions) /
         length(alpha_bout_fractions)
     return (
-        p_alpha, p_amphoteron, p_kappa,
-        macrostate_shares=[p_alpha, p_amphoteron, p_kappa],
+        p_alpha, p_polymorphy, p_kappa,
+        macrostate_shares=[p_alpha, p_polymorphy, p_kappa],
         alpha_bout_fractions,
         alpha_bout_count=length(alpha_bout_fractions),
         alpha_mean_bout_fraction=alpha_mean,
@@ -44,7 +44,7 @@ function bernoulli_temporal_law(retention_probabilities)
     p_alpha = prod(1 - probability for probability in probabilities)
     p_kappa = prod(probabilities)
     return (
-        p_alpha, p_amphoteron=1 - p_alpha - p_kappa, p_kappa,
+        p_alpha, p_polymorphy=1 - p_alpha - p_kappa, p_kappa,
         expected_held_count=sum(probabilities),
     )
 end

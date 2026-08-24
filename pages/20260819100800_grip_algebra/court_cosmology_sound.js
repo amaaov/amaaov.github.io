@@ -1,4 +1,4 @@
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "./holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "./holding.js";
 import { MASTER_SLIDERS } from "./court_sound_master.js";
 import { SYNTH_PREFIXES, VOICE_SLIDERS } from "./court_sound_synth.js";
 import { tapeSpeedRate } from "./court_sound_fx.js";
@@ -24,7 +24,7 @@ function voiceSliders(sign) {
 
 const VOICE_GROUPS = [
   { sign: HOLD_SIGN, index: 0 },
-  { sign: RELEASE_SIGN, index: 1 },
+  { sign: AIRBORNE_SIGN, index: 1 },
   { sign: MIXED_SIGN, index: 2 },
 ];
 

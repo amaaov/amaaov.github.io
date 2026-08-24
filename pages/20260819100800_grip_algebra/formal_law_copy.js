@@ -18,7 +18,7 @@ export const FORMAL_LAW_COPY = {
     hands: "hands 2j",
     heldPerPerson: "held per person q/j",
     alphaShare: "P(α)",
-    amphoteronShare: "P(Amphoteron)",
+    polymorphyShare: "P(ακ)",
     kappaShare: "P(κ)",
     alphaBouts: "α bouts per period",
     expectedEvents: "expected events E_q",
@@ -28,7 +28,7 @@ export const FORMAL_LAW_COPY = {
     phaseObservation: ({
       nextPhase,
       alphaChange,
-      amphoteronChange,
+      polymorphyChange,
       kappaChange,
       sharePlateau,
       boutCountChanged,
@@ -41,15 +41,15 @@ export const FORMAL_LAW_COPY = {
       if (sharePlateau) {
         return `A phase move to ${nextPhase} leaves all three shares and the ${bouts}-bout alpha path unchanged. This interval is a share plateau.`;
       }
-      return `A phase move to ${nextPhase} changes P(α), P(Amphoteron), and P(κ) by ${alphaChange}, ${amphoteronChange}, and ${kappaChange} percentage points.`;
+      return `A phase move to ${nextPhase} changes P(α), P(ακ), and P(κ) by ${alphaChange}, ${polymorphyChange}, and ${kappaChange} percentage points.`;
     },
     bernoulliObservation: ({
       objects,
-      amphoteronChange,
+      polymorphyChange,
       previousHomogeneous,
       homogeneous,
     }) =>
-      `Adding object ${objects} changes P(Amphoteron) by ${amphoteronChange} percentage points; the total homogeneous share moves from ${previousHomogeneous}% to ${homogeneous}%.`,
+      `Adding object ${objects} changes P(ακ) by ${polymorphyChange} percentage points; the total homogeneous share moves from ${previousHomogeneous}% to ${homogeneous}%.`,
     passageOccupancy: ({ jugglers, hands, multiplexHold, passing }) => {
       if (multiplexHold) {
         return "Two sites on one person share the held count as a multiplex.";
@@ -78,10 +78,10 @@ export const FORMAL_LAW_COPY = {
         : ` The central expectation first exceeds one thousand at n=${firstThousandObjects}.`;
       return `${lead}At central q=${held}, adding object ${objects} moves the expectation from ${previousExpectation} to ${expectation} events (${percentageIncrease}%).${crossing}`;
     },
-    phaseDescription: ({ duty, phase, alpha, amphoteron, kappa, bouts }) =>
-      `At duty ${duty} and phase ${phase}, the shares are ${alpha}, ${amphoteron}, and ${kappa}; alpha has ${bouts} bouts per period.`,
-    bernoulliDescription: ({ objects, probability, alpha, amphoteron, kappa }) =>
-      `For ${objects} objects at retention probability ${probability}, the independent-snapshot shares are ${alpha}, ${amphoteron}, and ${kappa}.`,
+    phaseDescription: ({ duty, phase, alpha, polymorphy, kappa, bouts }) =>
+      `At duty ${duty} and phase ${phase}, the shares are ${alpha}, ${polymorphy}, and ${kappa}; alpha has ${bouts} bouts per period.`,
+    bernoulliDescription: ({ objects, probability, alpha, polymorphy, kappa }) =>
+      `For ${objects} objects at retention probability ${probability}, the independent-snapshot shares are ${alpha}, ${polymorphy}, and ${kappa}.`,
     passageDescription: ({ objects, held, expectation }) =>
       `For ${objects} objects starting with ${held} held, the expected first passage to zero or ${objects} held is ${expectation} one-bit events.`,
   },
@@ -104,7 +104,7 @@ export const FORMAL_LAW_COPY = {
     hands: "руки 2j",
     heldPerPerson: "удержание на человека q/j",
     alphaShare: "P(α)",
-    amphoteronShare: "P(Амфотерон)",
+    polymorphyShare: "P(ακ)",
     kappaShare: "P(κ)",
     alphaBouts: "эпизоды α за период",
     expectedEvents: "ожидаемые события E_q",
@@ -114,7 +114,7 @@ export const FORMAL_LAW_COPY = {
     phaseObservation: ({
       nextPhase,
       alphaChange,
-      amphoteronChange,
+      polymorphyChange,
       kappaChange,
       sharePlateau,
       boutCountChanged,
@@ -127,15 +127,15 @@ export const FORMAL_LAW_COPY = {
       if (sharePlateau) {
         return `Сдвиг фазы до ${nextPhase} не меняет три доли и путь альфа с числом эпизодов ${bouts}. Этот интервал лежит на плато долей.`;
       }
-      return `Сдвиг фазы до ${nextPhase} меняет P(α), P(Амфотерон) и P(κ) на ${alphaChange}, ${amphoteronChange} и ${kappaChange} процентного пункта.`;
+      return `Сдвиг фазы до ${nextPhase} меняет P(α), P(ακ) и P(κ) на ${alphaChange}, ${polymorphyChange} и ${kappaChange} процентного пункта.`;
     },
     bernoulliObservation: ({
       objects,
-      amphoteronChange,
+      polymorphyChange,
       previousHomogeneous,
       homogeneous,
     }) =>
-      `Добавление предмета ${objects} меняет P(Амфотерон) на ${amphoteronChange} процентного пункта; суммарная доля однородных состояний переходит с ${previousHomogeneous}% к ${homogeneous}%.`,
+      `Добавление предмета ${objects} меняет P(ακ) на ${polymorphyChange} процентного пункта; суммарная доля однородных состояний переходит с ${previousHomogeneous}% к ${homogeneous}%.`,
     passageOccupancy: ({ jugglers, hands, multiplexHold, passing }) => {
       if (multiplexHold) {
         return "Два места на одном человеке делят удержание как мультиплекс.";
@@ -164,10 +164,10 @@ export const FORMAL_LAW_COPY = {
         : ` Центральное ожидание впервые превышает тысячу при n=${firstThousandObjects}.`;
       return `${lead}При центральном q=${held} добавление предмета ${objects} меняет ожидание с ${previousExpectation} до ${expectation} событий (${percentageIncrease}%).${crossing}`;
     },
-    phaseDescription: ({ duty, phase, alpha, amphoteron, kappa, bouts }) =>
-      `При доле удержания ${duty} и фазе ${phase} доли равны ${alpha}, ${amphoteron} и ${kappa}; число эпизодов альфа за период равно ${bouts}.`,
-    bernoulliDescription: ({ objects, probability, alpha, amphoteron, kappa }) =>
-      `Для ${objects} предметов при вероятности удержания ${probability} доли независимого кадра равны ${alpha}, ${amphoteron} и ${kappa}.`,
+    phaseDescription: ({ duty, phase, alpha, polymorphy, kappa, bouts }) =>
+      `При доле удержания ${duty} и фазе ${phase} доли равны ${alpha}, ${polymorphy} и ${kappa}; число эпизодов альфа за период равно ${bouts}.`,
+    bernoulliDescription: ({ objects, probability, alpha, polymorphy, kappa }) =>
+      `Для ${objects} предметов при вероятности удержания ${probability} доли независимого кадра равны ${alpha}, ${polymorphy} и ${kappa}.`,
     passageDescription: ({ objects, held, expectation }) =>
       `Для ${objects} предметов при начальном q=${held} математическое ожидание числа событий до первого достижения 0 или ${objects} равно ${expectation}.`,
   },

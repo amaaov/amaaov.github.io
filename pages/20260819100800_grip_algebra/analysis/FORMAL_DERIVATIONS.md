@@ -8,7 +8,7 @@ Write \([x]_+=\max(x,0)\). Fractions are exact unless a section explicitly intro
 
 Normalize one period to length one. Each of two labelled objects is retained on one contiguous circular interval of length \(d\), where \(0<d<1\). Put the first interval at phase zero and the second at the shortest circular offset \(\phi\in[0,1/2]\). Event endpoints have zero duration and do not affect the shares.
 
-The overlap of the two retained intervals is kappa, the uncovered part of the circle is alpha, and the symmetric difference is Amphoteron. Direct interval geometry gives
+The overlap of the two retained intervals is kappa, the uncovered part of the circle is alpha, and the symmetric difference is Polymorphy. Direct interval geometry gives
 
 \[
 P_\kappa=[d-\phi]_+ + [d+\phi-1]_+,

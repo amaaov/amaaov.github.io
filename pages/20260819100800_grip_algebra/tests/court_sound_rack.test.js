@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { HOLD_SIGN, MIXED_SIGN, RELEASE_SIGN } from "../holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "../holding.js";
 import { courtSoundPlan, soundSettingsFromForm } from "../court_sound.js";
 import { DEFAULT_SYNTH, mountSoundSynthControls } from "../court_sound_synth.js";
 import { appendSoundField, lfoPeriodSeconds, lfoWave, refreshTapeFace, soundIcon } from "../court_sound_marks.js";
@@ -67,16 +67,16 @@ test("each occupancy sign keeps its own pitch", () => {
     state: HOLD_SIGN,
     synths: {
       [HOLD_SIGN]: { pitch: 0 },
-      [RELEASE_SIGN]: { pitch: 12 },
+      [AIRBORNE_SIGN]: { pitch: 12 },
       [MIXED_SIGN]: { pitch: -12 },
     },
     stateAgeSeconds: 2,
   });
   const release = courtSoundPlan({
-    state: RELEASE_SIGN,
+    state: AIRBORNE_SIGN,
     synths: {
       [HOLD_SIGN]: { pitch: 0 },
-      [RELEASE_SIGN]: { pitch: 12 },
+      [AIRBORNE_SIGN]: { pitch: 12 },
       [MIXED_SIGN]: { pitch: -12 },
     },
     stateAgeSeconds: 2,
@@ -101,7 +101,7 @@ test("form prefixes write three voices and keep the old shared names", () => {
   };
   const settings = soundSettingsFromForm(form);
   assert.equal(settings.synths[HOLD_SIGN].pitch, 3);
-  assert.equal(settings.synths[RELEASE_SIGN].pitch, 12);
+  assert.equal(settings.synths[AIRBORNE_SIGN].pitch, 12);
   assert.equal(settings.synth.lfoTo, "width");
   assert.equal(settings.synth.lfoShape, "square");
 });

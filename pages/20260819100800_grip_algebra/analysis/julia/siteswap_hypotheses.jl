@@ -138,7 +138,7 @@ function siteswap_hypothesis_row(protocol::SiteswapProtocol)
         max_release_packet=maximum_packet_size(release_packets),
         max_capture_packet=maximum_packet_size(capture_packets), release_concentration,
         occupancy_shares=occupancy, p_alpha=first(occupancy),
-        p_amphoteron=sum(occupancy[2:end-1]; init=0 // 1), p_kappa=last(occupancy),
+        p_polymorphy=sum(occupancy[2:end-1]; init=0 // 1), p_kappa=last(occupancy),
         mean_normalized_retention=mean_retention, airborne_pair_exposure=airborne_pairs,
         alpha_entry_count, alpha_entry_rate_hz=alpha_entry_count / period,
         alpha_bout_count=length(bouts), alpha_bout_lengths_seconds=bouts,
