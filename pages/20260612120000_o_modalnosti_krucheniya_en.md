@@ -1,7 +1,7 @@
 # On the Modality of Spinning
 
 **Published:** 1 January 2025, Helsinki
-**Modified:** 23 August 2026
+**Modified:** 24 August 2026
 **Author:** Boris Fontanov
 **Language:** English
 **HTML:** [20260612120000_o_modalnosti_krucheniya_en.html](20260612120000_o_modalnosti_krucheniya_en.html)
@@ -39,7 +39,7 @@ When this system is transferred to props with continuous dynamics, such as poi, 
 
 Observation 2.1
 
-In classical juggling, the legality of the string does not change according to whether an object sits in the hand for a third or a half of a beat. Shannon’s theorem introduces dwell time as a quantity of uniform juggling without multiplex.
+In classical juggling, the legality of the string does not change according to whether an object sits in the hand for a third or a half of a beat. Shannon’s juggling theorem introduces dwell time as a quantity of uniform juggling without multiplex.
 
 With poi, the situation differs: holding and transferring the prop are not discrete events but a continuous bodily action involving impulse transfer, sustaining rotation, and plane control. The emphasis shifts from the moment of release to the phase of sustaining movement, which traditional notation omits entirely.
 

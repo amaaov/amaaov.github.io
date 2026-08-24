@@ -12,6 +12,7 @@ include("siteswap_output.jl")
 include("siteswap_crosscheck.jl")
 include("mechanics.jl")
 include("formal_derivations.jl")
+include("combinatorics.jl")
 include("formal_results.jl")
 include("formal_crosscheck.jl")
 include("reliability.jl")
@@ -52,6 +53,11 @@ export Scenario,
        siteswap_hypothesis_rows,
        tempo_dwell_sweep,
        two_object_phase_law,
+       fubini_number,
+       companion_release_count,
+       interior_state_count,
+       mixed_cycle_rank,
+       mixed_cycle_rank_enumerated,
        validate_siteswap_protocol,
        viability_diagnostics,
        viability_summaries,

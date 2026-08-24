@@ -48,6 +48,21 @@ module GripAnalysis
       graph_cycle?(mixed_states)
     end
 
+    def mixed_edge_count
+      allowed = mixed_states.to_h { |state| [state, true] }
+      mixed_states.sum do |state|
+        neighbors(state, allowed).count { |neighbor| neighbor > state }
+      end
+    end
+
+    def mixed_cycle_rank
+      unless object_count >= 3 && mixed_connected?
+        raise ArgumentError, "cycle rank here requires a connected mixed graph"
+      end
+
+      mixed_edge_count - mixed_states.length + 1
+    end
+
     def boundary_distance(state)
       held = state.digits(2).count(1)
       [held, object_count - held].min

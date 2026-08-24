@@ -61,6 +61,7 @@ end
 
 include("hypothesis_batteries_test.jl")
 include("formal_derivations_test.jl")
+include("combinatorics_test.jl")
 include("siteswap_hypotheses_test.jl")
 
 @testset "discretized recovery ordering" begin

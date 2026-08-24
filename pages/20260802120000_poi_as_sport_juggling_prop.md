@@ -1,7 +1,7 @@
 # Poi as a Sport-Juggling Prop
 
 **Published:** 2 August 2026, Helsinki  
-**Modified:** 23 August 2026
+**Modified:** 24 August 2026
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802120000_poi_as_sport_juggling_prop.html](20260802120000_poi_as_sport_juggling_prop.html)  
@@ -70,7 +70,7 @@ The descriptor records the parameters needed to distinguish graded tasks, leavin
 
 ## A poi-specific difficulty order
 
-Copying club or ring progression produces false assumptions. In ordinary curricula a one-up 180 may arrive before a one-up 360 because it asks for less body rotation. With poi, a 180 changes the performer’s orientation relative to the rotating prop: a normally thrown backward-spinning poi becomes forward relative to the body after the turn, whereas a 360 restores the original orientation and may preserve the backward modality without further intervention. A natural one-up 180 is therefore often a backward-to-forward transition; a backward-to-backward 180 needs a flat throw, overspin, reversal, or post-catch correction. In poi, one-up 360 can be technically simpler than one-up 180.
+Copying club or ring progression produces false assumptions. In ordinary curricula a one-up 180 may arrive before a one-up 360 because it asks for less body rotation. With poi, a 180 changes the performer’s orientation relative to the rotating prop: a normally thrown backward-spinning poi becomes forward relative to the body after the turn, whereas a 360 restores the original orientation and may preserve the backward modality without further intervention. A natural one-up 180 is therefore often a backward-to-forward transition; a backward-to-backward 180 needs a flat throw, overspin, reversal, or post-catch correction. In poi, one-up 360 can be technically simpler than one-up 180. A sport-poi programme can introduce 360 before 180, because the even turn returns the body-relative direction class.
 
 The same asymmetry appears in the cascade family. A programme preference proposed here places pendulum 3 beside the foundation, then backward no-beat 3, wallplane synchronous 3, backward 3 with additional spin and synchronous relation, wallplane halfshower, forward 3, then synchronous forward 3. Pendulum-first remains provisional; the sharper living signal is that forward no-beat arrives after backward no-beat. The difference arises from the path of hands, elbows, and shoulders on the throw, from rotation and release phase, and from hand position at the catch.
 
@@ -117,7 +117,7 @@ A first stable sport-poi programme can begin from a short list of working assump
 3. Backward no-beat 3 is the foundational qualifying cascade; pendulum 3 and wallplane synchronous 3 are proposed basic companions.
 4. Backward 3 with an additional spin remains rhythmically 3 and is graded separately.
 5. Forward 3 arrives after backward no-beat; synchronous forward arrives later.
-6. One-up 360 is introduced before one-up 180; for odd-half-turn pirouettes it is stated in advance whether direction inversion is accepted or must be corrected.
+6. One-up 360 is introduced before one-up 180 as a programme preference; for odd-half-turn pirouettes it is stated in advance whether direction inversion is accepted or must be corrected.
 7. Plane orientation in space and body-relative class (wheelplane, wallplane) are recorded separately; orbit preservation through a body turn and prop-mediated plane breaks are different skills; orbit-preserving body turns ordinarily require crossing throws and behind-the-back throws as expected technique.
 8. Siteswap is the rhythmic layer.
 9. Every requirement has a reference execution and examples of typical faults; the equipment in use is stated explicitly.
