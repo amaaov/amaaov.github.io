@@ -42,7 +42,7 @@ test("three-object system is in κ, α, or ακ", () => {
   assert.equal(occupancyState([true, true, false]), MIXED_SIGN);
 });
 
-test("composition is the join of akrateia and kratos lamps", () => {
+test("composition is the join of unheld and held lamps", () => {
   assert.equal(composeStates(HOLD_SIGN, HOLD_SIGN), HOLD_SIGN);
   assert.equal(composeStates(AIRBORNE_SIGN, AIRBORNE_SIGN), AIRBORNE_SIGN);
   assert.equal(composeStates(HOLD_SIGN, AIRBORNE_SIGN), MIXED_SIGN);

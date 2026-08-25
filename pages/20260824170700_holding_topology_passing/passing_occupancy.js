@@ -122,10 +122,10 @@ export function macrostateName(heldCount, objectCount) {
   return MACROSTATES[1];
 }
 
-export function akrateiaPresent(sign) {
+export function unheldPresent(sign) {
   return sign === "alpha" || sign === "polymorphy";
 }
 
-export function kratosPresent(sign) {
+export function heldPresent(sign) {
   return sign === "kappa" || sign === "polymorphy";
 }

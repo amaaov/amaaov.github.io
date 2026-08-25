@@ -14,7 +14,7 @@ class PassingOccupancyCasesTest < Minitest::Test
     PassingAnalysis::Occupancy.shares(schedule, dwell_ratio: DWELL)
   end
 
-  def test_four_club_hold_stays_in_kratos
+  def test_four_club_hold_stays_in_kappa
     occupancy = shares("<2|2>")
     assert_equal 4, occupancy.fetch(:object_count)
     assert_equal 0, occupancy.fetch(:p_alpha)

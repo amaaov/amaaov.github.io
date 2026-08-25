@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { latexToMathMl, splitLeadingMathPunctuation } from "../formula.js";
 
-test("renders the freeze pair as existence of akrateia and hold", () => {
+test("renders the freeze pair as existence of unheld and held occupancy", () => {
   const math = latexToMathMl("S(t)=(\\exists i\\,\\neg b_i(t),\\exists i\\,b_i(t))");
   assert.match(math, /<math/);
   assert.match(math, /∃/);

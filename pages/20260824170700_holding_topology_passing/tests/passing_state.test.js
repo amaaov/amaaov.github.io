@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { passingOccupancy, akrateiaPresent, kratosPresent } from "../passing_occupancy.js";
+import { passingOccupancy, heldPresent, unheldPresent } from "../passing_occupancy.js";
 import { schedulePassingEvents } from "../passing_schedule.js";
 import { bodyRetention, signLabel, advanceCourtClock, stepCourtClock, toggleCourtPause } from "../passing_state.js";
 import { passingCourtPicture } from "../passing_toss.js";
@@ -15,7 +15,7 @@ function signsVisited(source, dwellRatio = 0.25, holdTwos = true) {
   return signs;
 }
 
-test("four-club PPS with zips visits akrateia, polymorphy, and kratos", () => {
+test("four-club PPS with zips visits alpha, polymorphy, and kappa", () => {
   const signs = signsVisited("<2p 2p 2|2p 2p 2>");
   assert.equal(signs.has("alpha"), true);
   assert.equal(signs.has("polymorphy"), true);
@@ -24,7 +24,7 @@ test("four-club PPS with zips visits akrateia, polymorphy, and kratos", () => {
   assert.ok(occupancy.pAlpha > 0 && occupancy.pPolymorphy > 0 && occupancy.pKappa > 0);
 });
 
-test("four-club hold stays in kratos; six-club 2-count never does", () => {
+test("four-club hold stays in kappa; six-club 2-count never does", () => {
   const hold = signsVisited("<2|2>");
   assert.deepEqual([...hold], ["kappa"]);
   const twoCount = signsVisited("<3p 3|3p 3>");
@@ -33,7 +33,7 @@ test("four-club hold stays in kratos; six-club 2-count never does", () => {
   assert.equal(twoCount.has("polymorphy"), true);
 });
 
-test("reading 2 as a throw takes the four-club hold out of kratos", () => {
+test("reading 2 as a throw takes the four-club hold out of kappa", () => {
   const occupancy = passingOccupancy(schedulePassingEvents("<2|2>", false, 1), 0.25);
   assert.equal(occupancy.pKappa, 0);
   assert.ok(occupancy.pAlpha > 0);
@@ -49,11 +49,11 @@ test("body retention partitions every object and names a local sign", () => {
   assert.equal(heldSum, picture.held);
   assert.equal(picture.bodyRetention.length, 2);
   assert.equal(signLabel("polymorphy"), "ακ");
-  assert.equal(akrateiaPresent(picture.groupSign), picture.held < picture.ballCount);
-  assert.equal(kratosPresent(picture.groupSign), picture.held > 0);
+  assert.equal(unheldPresent(picture.groupSign), picture.held < picture.ballCount);
+  assert.equal(heldPresent(picture.groupSign), picture.held > 0);
 });
 
-test("a dwell change moves the four-club PPS kratos share", () => {
+test("a dwell change moves the four-club PPS kappa share", () => {
   const schedule = schedulePassingEvents("<2p 2p 2|2p 2p 2>", true, 1);
   const tight = passingOccupancy(schedule, 0.15);
   const loose = passingOccupancy(schedule, 1 / 3);

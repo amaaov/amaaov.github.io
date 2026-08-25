@@ -3,14 +3,14 @@ export const HOLD_SIGN = "κ";
 export const AIRBORNE_SIGN = "α";
 export const MIXED_SIGN = "ακ";
 
-function signFromPredicates(akrateia, kratos) {
-  if (akrateia && kratos) {
+function signFromPredicates(unheld, held) {
+  if (unheld && held) {
     return MIXED_SIGN;
   }
-  if (akrateia) {
+  if (unheld) {
     return AIRBORNE_SIGN;
   }
-  if (kratos) {
+  if (held) {
     return HOLD_SIGN;
   }
   return EMPTY_SIGN;
@@ -25,11 +25,11 @@ export function occupancyState(heldFlags) {
   return signFromPredicates(held < objectCount, held > 0);
 }
 
-export function signHasAkrateia(sign) {
+export function signHasUnheld(sign) {
   return sign === AIRBORNE_SIGN || sign === MIXED_SIGN;
 }
 
-export function signHasKratos(sign) {
+export function signHasHeld(sign) {
   return sign === HOLD_SIGN || sign === MIXED_SIGN;
 }
 
@@ -45,8 +45,8 @@ export function heldCount(heldFlags) {
 
 export function composeStates(left, right) {
   return signFromPredicates(
-    signHasAkrateia(left) || signHasAkrateia(right),
-    signHasKratos(left) || signHasKratos(right),
+    signHasUnheld(left) || signHasUnheld(right),
+    signHasHeld(left) || signHasHeld(right),
   );
 }
 

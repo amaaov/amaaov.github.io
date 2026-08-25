@@ -4,7 +4,8 @@ import { cascadeHoldingFlags, playbackTimeBeat, playbackWindowBeats } from "./sc
 import { courtPicture, trajectoryPositions } from "./toss.js";
 import { renderLatexElements } from "./formula.js";
 import { initializeFormalLawWorkbench } from "./formal_law_ui.js";
-import { AIRBORNE_SIGN, signHasAkrateia, signHasKratos } from "./holding.js";
+import { AIRBORNE_SIGN, signHasHeld, signHasUnheld } from "./holding.js";
+import { relationPresence, relationsInPattern } from "./object_relation.js";
 import { initializeSiteswapInterface } from "./siteswap_ui.js";
 import { courtSoundPlan, occupancyChangeHand, soundDocumentOpen, soundSettingsFromForm } from "./court_sound.js";
 import { occupancyGateOpen, soloedSigns, soundEnvelopeClock, soundEnvelopePhase } from "./court_sound_fx.js";
@@ -51,10 +52,15 @@ const ATLAS = [
   { canvasId: "layer-world", source: "55500", dwellRatio: 0.75, lockState: AIRBORNE_SIGN, layer: "world" },
 ];
 
-function setLamps(state) {
-  document.getElementById("lamp-no-grip").classList.toggle("is-on", signHasAkrateia(state));
-  document.getElementById("lamp-grip").classList.toggle("is-on", signHasKratos(state));
+function setLamps(pictured) {
+  const state = pictured.state;
+  document.getElementById("lamp-no-grip").classList.toggle("is-on", signHasUnheld(state));
+  document.getElementById("lamp-grip").classList.toggle("is-on", signHasHeld(state));
   document.getElementById("state-code").textContent = state;
+  const presence = relationPresence(relationsInPattern(pictured.heldFlags ?? []));
+  document.getElementById("lamp-tained")?.classList.toggle("is-on", presence.tained);
+  document.getElementById("lamp-leased")?.classList.toggle("is-on", presence.leased);
+  document.getElementById("lamp-drop")?.classList.toggle("is-on", presence.dropped);
 }
 
 function markHexagon(flags) {
@@ -307,7 +313,7 @@ function boot() {
       gravityScale: weather?.gravity ?? 1,
       wind: weather ? { x: weather.windX, y: weather.windY } : { x: 0, y: 0 },
     });
-    setLamps(pictured.state);
+    setLamps(pictured);
     controls.updateState(pictured);
     const patternStatus = document.getElementById("pattern-status");
     if (patternStatus && patternStatus.dataset.status !== "error") {

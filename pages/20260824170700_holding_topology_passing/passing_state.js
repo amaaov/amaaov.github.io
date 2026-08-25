@@ -1,4 +1,4 @@
-import { akrateiaPresent, kratosPresent, macrostateName } from "./passing_occupancy.js";
+import { macrostateName } from "./passing_occupancy.js";
 
 export const COURT_DWELL_RATIO = 0.25;
 export const COURT_BEATS_PER_MINUTE = 150;
@@ -90,7 +90,5 @@ export function groupRetention(held, objectCount) {
     objectCount,
     airborne: objectCount - held,
     sign,
-    akrateia: akrateiaPresent(sign),
-    kratos: kratosPresent(sign),
   };
 }

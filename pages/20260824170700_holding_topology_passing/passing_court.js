@@ -3,6 +3,11 @@ import { drawPassingCourt } from "./passing_draw.js";
 import { defaultCamera, fitCameraDistance, orbitCamera } from "./passing_space.js";
 import { arrangementForSource, PASSING_PATTERNS, patternById } from "./passing_patterns.js";
 import { PASSING_PROPS, normalizeProp } from "./passing_prop.js";
+import { heldPresent, unheldPresent } from "./passing_occupancy.js";
+import {
+  relationPresence,
+  relationsInPattern,
+} from "../20260819100800_grip_algebra/object_relation.js";
 import {
   COURT_BEATS_PER_MINUTE,
   COURT_DWELL_RATIO,
@@ -36,6 +41,9 @@ export function mountPassingCourt(root) {
   const groupShares = root.querySelector("[data-passing-group-shares]");
   const alphaLamp = root.querySelector("[data-lamp-alpha]");
   const kappaLamp = root.querySelector("[data-lamp-kappa]");
+  const tainedLamp = root.querySelector("[data-lamp-tained]");
+  const leasedLamp = root.querySelector("[data-lamp-leased]");
+  const dropLamp = root.querySelector("[data-lamp-drop]");
   const bodyList = root.querySelector("[data-passing-bodies]");
   if (canvas === null) {
     throw new Error("passing court canvas is missing");
@@ -148,8 +156,12 @@ export function mountPassingCourt(root) {
       groupShares,
       `Pα ${shareText(picture.occupancy.pAlpha)}  Pακ ${shareText(picture.occupancy.pPolymorphy)}  Pκ ${shareText(picture.occupancy.pKappa)}  r ${dwellRatio}  ${beatsPerMinute} bpm`,
     );
-    alphaLamp?.classList.toggle("is-on", group.akrateia);
-    kappaLamp?.classList.toggle("is-on", group.kratos);
+    alphaLamp?.classList.toggle("is-on", unheldPresent(group.sign));
+    kappaLamp?.classList.toggle("is-on", heldPresent(group.sign));
+    const presence = relationPresence(relationsInPattern(picture.heldFlags ?? []));
+    tainedLamp?.classList.toggle("is-on", presence.tained);
+    leasedLamp?.classList.toggle("is-on", presence.leased);
+    dropLamp?.classList.toggle("is-on", presence.dropped);
     renderBodies(picture.bodyRetention);
     writeText(dwellReadout, String(dwellRatio));
     writeText(tempoReadout, String(beatsPerMinute));

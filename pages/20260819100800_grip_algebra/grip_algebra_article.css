@@ -7,6 +7,7 @@
   --muted: #5c5348;
   --grip: #c24a1c;
   --air: #1b6d8f;
+  --drop: #6e3b55;
   --focus: #245c3a;
   --clipboard-width: min(42rem, calc(100vw - 2rem));
 }
@@ -212,6 +213,7 @@ body {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
     "lamps"
+    "relations"
     "state"
     "court"
     "tape"
@@ -225,6 +227,7 @@ body {
   grid-template-columns: minmax(0, 1fr) minmax(11rem, 13rem);
   grid-template-areas:
     "lamps lamps"
+    "relations relations"
     "state state"
     "court hexagon"
     "tape hexagon"
@@ -232,7 +235,8 @@ body {
   gap: 0 0.65rem;
 }
 
-.simulator-stage .lamp-row { grid-area: lamps; }
+.simulator-stage .lamp-row-occupancy { grid-area: lamps; }
+.simulator-stage .lamp-row-relation { grid-area: relations; }
 .simulator-stage .accessible-state { grid-area: state; }
 .simulator-stage .court-frame { grid-area: court; }
 .simulator-stage #occupancy-tape { grid-area: tape; }
@@ -1115,6 +1119,21 @@ body {
 #lamp-no-grip .lamp-dot.is-on,
 #lamp-no-grip.is-on .lamp-dot {
   background: var(--air);
+}
+
+#lamp-tained .lamp-dot.is-on,
+#lamp-tained.is-on .lamp-dot {
+  background: var(--grip);
+}
+
+#lamp-leased .lamp-dot.is-on,
+#lamp-leased.is-on .lamp-dot {
+  background: var(--air);
+}
+
+#lamp-drop .lamp-dot.is-on,
+#lamp-drop.is-on .lamp-dot {
+  background: var(--drop);
 }
 
 #state-code {
