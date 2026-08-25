@@ -1,6 +1,6 @@
 import { EMPTY_SIGN, occupancyState } from "./holding.js";
-import { scheduleEvents, siteswapBallCount, siteswapIsValid } from "./siteswap.js";
-import { eventPhase, maxThrow, throwFlight } from "./schedule.js";
+import { schedulePlayable, siteswapCanPlay } from "./siteswap_episode.js";
+import { eventPhase, throwFlight } from "./schedule.js";
 
 const COURT_PEAK_LIFT = 0.56;
 const MULTIPLEX_SPREAD = 0.038;
@@ -143,10 +143,6 @@ function emptyHandPose(hands, hand, timeBeat, events, dwellRatio, holdTwos) {
   return dwellPoint(throwPose(hands, hand), catchPose(hands, hand), progress);
 }
 
-function flagsFromCounts(held, ballCount) {
-  return Array.from({ length: ballCount }, (_, index) => index < held);
-}
-
 function spreadHeldInHand(positions) {
   const groups = [[], []];
   for (const position of positions) {
@@ -178,12 +174,15 @@ export function emptyCourtPicture(hands = DEFAULT_HANDS) {
     airborne: 0,
     ballCount: 0,
     heldFlags: [],
+    valid: true,
+    cyclic: true,
+    break: null,
   };
 }
 
 export function courtPicture(options) {
   const input = options.source ?? options.throws;
-  if (input == null || !siteswapIsValid(input)) {
+  if (input == null || !siteswapCanPlay(input)) {
     return emptyCourtPicture(options.hands);
   }
   return trajectoryPositions(options);
@@ -203,14 +202,15 @@ export function trajectoryPositions({
   ],
 }) {
   const input = source ?? throws;
-  const ballCount = siteswapBallCount(input);
-  const highest = maxThrow(input);
-  const { events } = scheduleEvents(input, holdTwos, Math.ceil(timeBeat) + highest + 2);
-  const positions = Array.from({ length: ballCount }, (_, index) => ({
-    x: hands[index % 2].x,
-    y: hands[index % 2].y,
-    held: true,
-    hand: index % 2,
+  const schedule = schedulePlayable(input, holdTwos, Math.ceil(timeBeat) + 16);
+  const ballCount = schedule.ballCount;
+  const { events } = schedule;
+  const positions = Array.from({ length: ballCount }, () => ({
+    x: hands[0].x,
+    y: hands[0].y,
+    held: false,
+    hand: 0,
+    hidden: true,
   }));
   const handNow = hands.map((hand) => ({ x: hand.x, y: hand.y }));
   const occupied = [false, false];
@@ -218,24 +218,47 @@ export function trajectoryPositions({
     return Math.max(longest, throwFlight(event.height, dwellRatio, holdTwos));
   }, 0.3);
   const gravity = gravityForFlight(maxFlight) / Math.max(0.35, gravityScale);
+  const floorY = Math.max(hands[0].y, hands[1].y) + 0.12;
 
   for (const event of events) {
+    const flight = throwFlight(event.height, dwellRatio, holdTwos);
+    const throwTime = event.beat;
+    const from = event.failedCatch ? catchPose(hands, event.fromHand) : throwPose(hands, event.fromHand);
+    const to = catchPose(hands, event.toHand);
+    const dumpAt = event.height > 0 ? throwTime + event.height : throwTime;
+    if (event.dump && timeBeat >= dumpAt) {
+      positions[event.ball] = { ...positions[event.ball], hidden: true };
+      continue;
+    }
+    if (event.drop) {
+      if (timeBeat < throwTime) {
+        continue;
+      }
+      const floor = { x: (from.x + to.x) / 2, y: floorY };
+      const fall = Math.max(flight, 0.35);
+      if (timeBeat < throwTime + fall) {
+        const progress = (timeBeat - throwTime) / fall;
+        const point = ballisticPoint(from, floor, progress, gravity, fall, wind);
+        positions[event.ball] = { x: point.x, y: point.y, held: false, hand: event.fromHand, abandoned: true };
+      } else {
+        positions[event.ball] = { x: floor.x, y: floor.y, held: false, hand: event.fromHand, abandoned: true };
+      }
+      continue;
+    }
     const phase = eventPhase(event, timeBeat, dwellRatio, holdTwos);
     if (!phase) {
       continue;
     }
-    const flight = throwFlight(event.height, dwellRatio, holdTwos);
-    const throwTime = event.beat;
     const catchTime = catchTimeOf(event, dwellRatio, holdTwos);
     const nextThrow = throwTime + event.height;
-    const from = throwPose(hands, event.fromHand);
-    const to = catchPose(hands, event.toHand);
     if (phase === "air") {
       const progress = (timeBeat - throwTime) / Math.max(flight, 1e-6);
       const point = ballisticPoint(from, to, progress, gravity, flight, wind);
       positions[event.ball] = { x: point.x, y: point.y, held: false, hand: event.fromHand };
     } else if (event.hold) {
-      const point = holdCarryPose(hands, event.toHand, timeBeat, events);
+      const point = event.parked
+        ? holdIdlePose(hands, event.toHand, timeBeat)
+        : holdCarryPose(hands, event.toHand, timeBeat, events);
       positions[event.ball] = { x: point.x, y: point.y, held: true, hand: event.toHand };
       handNow[event.toHand] = point;
       occupied[event.toHand] = true;
@@ -253,7 +276,7 @@ export function trajectoryPositions({
     }
   }
 
-  spreadHeldInHand(positions);
+  spreadHeldInHand(positions.filter((position) => !position.hidden && position.held));
 
   for (let hand = 0; hand < 2; hand += 1) {
     if (!occupied[hand]) {
@@ -261,15 +284,21 @@ export function trajectoryPositions({
     }
   }
 
-  const heldFlags = positions.map((position) => position.held);
+  const visible = positions.filter((position) => !position.hidden);
+  const live = visible.filter((position) => !position.abandoned);
+  const heldFlags = live.map((position) => position.held);
   const held = heldFlags.filter(Boolean).length;
+  const leased = live.filter((position) => !position.held).length;
   return {
-    positions,
+    positions: visible,
     hands: handNow,
-    state: occupancyState(flagsFromCounts(held, ballCount)),
+    state: occupancyState(heldFlags),
     held,
-    airborne: ballCount - held,
-    ballCount,
+    airborne: leased,
+    ballCount: live.length,
     heldFlags,
+    valid: schedule.cyclic === true && schedule.break == null,
+    cyclic: schedule.cyclic === true,
+    break: schedule.break,
   };
 }

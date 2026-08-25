@@ -285,13 +285,18 @@ function boot() {
       : pattern.dwellRatio;
     const beatSeconds = weather ? pattern.beatSeconds * weather.tempoBend : pattern.beatSeconds;
     const baseTimeBeat = elapsed / beatSeconds;
+    const windowBeats = playbackWindowBeats(cosmology.source, pattern.holdTwos);
     const timeBeat = playbackTimeBeat(
       baseTimeBeat + interactionOffset(courtPointer, courtScrollProgress),
       {
         reverse: pattern.reverse,
-        windowBeats: playbackWindowBeats(cosmology.source, pattern.holdTwos),
+        windowBeats,
+        loop: pattern.loop,
       },
     );
+    if (!pattern.loop && controls.isPlaying() && baseTimeBeat >= windowBeats) {
+      controls.setPlaying(false);
+    }
     const pictured = courtPicture({
       source: cosmology.source,
       dwellRatio,
@@ -303,7 +308,11 @@ function boot() {
     });
     controls.updateState(pictured);
     const patternStatus = document.getElementById("pattern-status");
-    if (patternStatus && patternStatus.dataset.status !== "error") {
+    if (
+      patternStatus &&
+      patternStatus.dataset.status !== "error" &&
+      patternStatus.dataset.status !== "invalid"
+    ) {
       patternStatus.textContent = cosmology.active && cosmology.source !== pattern.source
         ? cosmology.source
         : "";

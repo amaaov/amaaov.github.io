@@ -1,5 +1,6 @@
 import { MIXED_SIGN, occupancyState } from "./holding.js";
 import { scheduleEvents, siteswapHighest, siteswapPeriod } from "./siteswap.js";
+import { schedulePlayable } from "./siteswap_episode.js";
 
 export function dwellBeats(dwellRatio) {
   return 2 * dwellRatio;
@@ -44,14 +45,21 @@ export function playbackWindowBeats(input, holdTwos = true) {
     return 48;
   }
   try {
-    return scheduleEvents(input, holdTwos, 1).cycleLength;
+    return schedulePlayable(input, holdTwos, 1).horizonBeats;
   } catch {
     return 48;
   }
 }
 
-export function playbackTimeBeat(elapsedBeats, { reverse = false, windowBeats = 48 } = {}) {
+export function playbackTimeBeat(elapsedBeats, { reverse = false, windowBeats = 48, loop = true } = {}) {
   const span = windowBeats > 0 ? windowBeats : 48;
+  if (!loop) {
+    const clamped = Math.min(Math.max(elapsedBeats, 0), span);
+    if (!reverse) {
+      return clamped;
+    }
+    return (span - clamped) % span;
+  }
   const forward = ((elapsedBeats % span) + span) % span;
   if (!reverse) {
     return forward;

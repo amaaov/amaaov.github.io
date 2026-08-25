@@ -613,12 +613,12 @@ test("cascade 3 held count matches occupancy lamps", () => {
   }
 });
 
-test("an illegal siteswap paints empty hands and no objects", () => {
+test("an unreadable siteswap paints empty hands and no objects", () => {
   const hands = [
     { x: 0.32, y: 0.84 },
     { x: 0.68, y: 0.84 },
   ];
-  for (const source of ["", "76", "([22],2)([44],4)"]) {
+  for (const source of ["", "("]) {
     const pictured = courtPicture({
       source,
       dwellRatio: 0.75,
@@ -644,6 +644,7 @@ test("a legal siteswap still paints its objects through courtPicture", () => {
   });
   assert.equal(pictured.positions.length, 3);
   assert.notEqual(pictured.state, EMPTY_SIGN);
+  assert.equal(pictured.valid, true);
 });
 
 test("siteswap 3 flight is a Gunswap ballistic: mid-air sits above the chord", () => {

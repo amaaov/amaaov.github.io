@@ -7,6 +7,7 @@ import {
   scatterLayout,
 } from "./hypothesis_explorer.js";
 import { siteswapIsValid } from "./siteswap.js";
+import { schedulePlayable, siteswapCanPlay } from "./siteswap_episode.js";
 import { retuneCosmologyBase } from "./court_cosmology_sound.js";
 import { writeSoundDisplays } from "./court_sound_synth.js";
 
@@ -38,6 +39,14 @@ const COPY = {
     matches: (count) => `Matches (${count})`,
     play: "Play",
     pause: "Pause",
+    loop: "Loop",
+    invalid: "Invalid.",
+    unreadable: "This string cannot be thrown.",
+    breakReason: {
+      uncaught: "A landing had no catch.",
+      "no-prop": "Nothing to throw.",
+      collision: "Two landings share a beat.",
+    },
     state: (state, held, airborne) => `${state}: ${held} tained, ${airborne} leased.`,
     displayedCorrelation: "Descriptive correlation in the displayed set",
     constantAxis: "The displayed set has no variation on one axis.",
@@ -80,6 +89,14 @@ const COPY = {
     matches: (count) => `Варианты (${count})`,
     play: "Пуск",
     pause: "Пауза",
+    loop: "Цикл",
+    invalid: "Некорректный.",
+    unreadable: "Эту запись нельзя бросить.",
+    breakReason: {
+      uncaught: "Приземление без захвата.",
+      "no-prop": "Нечего бросать.",
+      collision: "Два приземления на одну долю.",
+    },
     state: (state, held, airborne) => `${state}: удерживается ${held}, в лизе ${airborne}.`,
     displayedCorrelation: "Описательная корреляция в показанном наборе",
     constantAxis: "В показанном наборе одна из осей постоянна.",
@@ -185,6 +202,7 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
   const generatorDrawer = form.querySelector(".generator-drawer");
   const accessibleState = document.getElementById("accessible-state");
   const playButton = document.getElementById("play-pattern");
+  const loopButton = document.getElementById("loop-pattern");
   const curatedSources = [...form.querySelectorAll("[data-pattern-source]")].map(
     (button) => button.dataset.patternSource,
   );
@@ -194,6 +212,7 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
     (hypothesis) => hypothesis.id === hypothesisSelect?.value,
   ) ?? HYPOTHESIS_SPECS[0];
   let playing = callbacks.initialPlaying ?? false;
+  let looping = true;
   let pendingAnalysis = 0;
 
   function currentRequest() {
@@ -202,6 +221,7 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
       holdTwos: holdTwosInput.checked,
       reverse: reverseInput?.checked === true,
       cosmology: cosmologyInput?.checked === true,
+      loop: looping,
       dwellRatio: Number(dwellInput.value),
       beatSeconds: beatSecondsFromBeatsPerMinute(Number(tempoInput.value)),
     };
@@ -276,7 +296,9 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
 
   function renderPlot() {
     pendingAnalysis = 0;
-    const sources = suggestions.length > 0 ? suggestions : curatedSources;
+    const sources = (suggestions.length > 0 ? suggestions : curatedSources).filter((source) =>
+      siteswapIsValid(source),
+    );
     const request = {
       dwellRatio: Number(dwellInput.value),
       beatSeconds: beatSecondsFromBeatsPerMinute(Number(tempoInput.value)),
@@ -403,12 +425,31 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
     }
     const changed = candidate !== activeSource;
     activeSource = candidate;
-    setStatus(patternStatus, "");
+    writePatternStatus(candidate);
     schedulePlot();
     if (changed) {
       callbacks.onPatternChange?.();
     }
     return siteswapIsValid(candidate);
+  }
+
+  function writePatternStatus(source) {
+    if (source === "") {
+      setStatus(patternStatus, "");
+      return;
+    }
+    if (!siteswapCanPlay(source)) {
+      setStatus(patternStatus, copy.unreadable, "error");
+      return;
+    }
+    if (siteswapIsValid(source)) {
+      setStatus(patternStatus, "");
+      return;
+    }
+    const episode = schedulePlayable(source, holdTwosInput.checked);
+    const reason = episode.break ? copy.breakReason[episode.break.kind] ?? "" : "";
+    const message = reason ? `${copy.invalid} ${reason}` : copy.invalid;
+    setStatus(patternStatus, message, "invalid");
   }
 
   function renderSuggestions(search, seed, notice = "") {
@@ -478,6 +519,10 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
   function updatePlayback() {
     playButton.textContent = playing ? copy.pause : copy.play;
     playButton.setAttribute("aria-pressed", String(playing));
+    if (loopButton) {
+      loopButton.textContent = copy.loop;
+      loopButton.setAttribute("aria-pressed", String(looping));
+    }
     callbacks.onPlaybackChange?.(playing);
   }
 
@@ -537,6 +582,7 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
     });
   }
   holdTwosInput.addEventListener("change", () => {
+    writePatternStatus(activeSource);
     schedulePlot();
     callbacks.onParametersChange?.();
   });
@@ -567,6 +613,10 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
   });
   playButton.addEventListener("click", () => {
     playing = !playing;
+    updatePlayback();
+  });
+  loopButton?.addEventListener("click", () => {
+    looping = !looping;
     updatePlayback();
   });
   document.getElementById("step-pattern").addEventListener("click", () => {
@@ -610,6 +660,7 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
   return {
     currentRequest,
     isPlaying: () => playing,
+    isLooping: () => looping,
     setPlaying(nextPlaying) {
       playing = Boolean(nextPlaying);
       updatePlayback();

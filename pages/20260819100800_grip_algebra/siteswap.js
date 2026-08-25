@@ -15,6 +15,29 @@ function parseThrowHeight(character) {
   throw new Error(`unsupported siteswap character: ${character}`);
 }
 
+function parseDomainMarks(text, index) {
+  let add = 0;
+  let remove = 0;
+  while (index < text.length) {
+    index = skipSpace(text, index);
+    if (index >= text.length) {
+      break;
+    }
+    if (text[index] === "+") {
+      add += 1;
+      index += 1;
+      continue;
+    }
+    if (text[index] === "-") {
+      remove += 1;
+      index += 1;
+      continue;
+    }
+    break;
+  }
+  return { add, remove, index };
+}
+
 function parseThrowToken(text, index) {
   index = skipSpace(text, index);
   if (index >= text.length) {
@@ -29,10 +52,55 @@ function parseThrowToken(text, index) {
     crossingExplicit = true;
     index += 1;
   }
-  return { height, crossing, crossingExplicit, index };
+  const marks = parseDomainMarks(text, index);
+  return {
+    height,
+    crossing,
+    crossingExplicit,
+    addAfter: marks.add,
+    removeAfter: marks.remove,
+    index: marks.index,
+  };
+}
+
+function throwValue(parsed, keepCrossing) {
+  const hasMarks = parsed.addAfter > 0 || parsed.removeAfter > 0;
+  if (!keepCrossing && !parsed.crossingExplicit && !hasMarks) {
+    return parsed.height;
+  }
+  const token = { height: parsed.height, crossing: parsed.crossing };
+  if (parsed.addAfter > 0) {
+    token.addAfter = parsed.addAfter;
+  }
+  if (parsed.removeAfter > 0) {
+    token.removeAfter = parsed.removeAfter;
+  }
+  return token;
+}
+
+function bumpTokenMarks(token, add, remove) {
+  if (add === 0 && remove === 0) {
+    return token;
+  }
+  const next = typeof token === "number"
+    ? { height: token, crossing: token % 2 === 1 }
+    : { ...token };
+  if (add > 0) {
+    next.addAfter = (next.addAfter ?? 0) + add;
+  }
+  if (remove > 0) {
+    next.removeAfter = (next.removeAfter ?? 0) + remove;
+  }
+  return next;
 }
 
 function parseHandThrows(text, index, keepCrossing) {
+  index = skipSpace(text, index);
+  if (index >= text.length) {
+    throw new Error("unexpected end of siteswap");
+  }
+  const leading = parseDomainMarks(text, index);
+  index = leading.index;
   index = skipSpace(text, index);
   if (index >= text.length) {
     throw new Error("unexpected end of siteswap");
@@ -50,23 +118,32 @@ function parseHandThrows(text, index, keepCrossing) {
         break;
       }
       const token = parseThrowToken(text, cursor);
-      group.push(
-        keepCrossing || token.crossingExplicit
-          ? { height: token.height, crossing: token.crossing }
-          : token.height,
-      );
+      group.push(throwValue(token, keepCrossing));
       cursor = token.index;
     }
     if (group.length === 0) {
       throw new Error("empty multiplex");
     }
-    return { heights: group, index: close + 1 };
+    const trailing = parseDomainMarks(text, close + 1);
+    group[group.length - 1] = bumpTokenMarks(
+      group[group.length - 1],
+      trailing.add,
+      trailing.remove,
+    );
+    return {
+      heights: group,
+      index: trailing.index,
+      addBefore: leading.add,
+      removeBefore: leading.remove,
+    };
   }
-  const token = parseThrowToken(text, index);
-  const heights = keepCrossing || token.crossingExplicit
-    ? [{ height: token.height, crossing: token.crossing }]
-    : [token.height];
-  return { heights, index: token.index };
+  const parsed = parseThrowToken(text, index);
+  return {
+    heights: [throwValue(parsed, keepCrossing)],
+    index: parsed.index,
+    addBefore: leading.add,
+    removeBefore: leading.remove,
+  };
 }
 
 export function parseSiteswap(source) {
@@ -124,25 +201,70 @@ function parseSyncPair(text, index) {
   if (text[index] !== ")") {
     throw new Error("unclosed sync pair");
   }
+  const pair = { left: left.heights, right: right.heights };
+  if (left.addBefore > 0) {
+    pair.leftAddBefore = left.addBefore;
+  }
+  if (left.removeBefore > 0) {
+    pair.leftRemoveBefore = left.removeBefore;
+  }
+  if (right.addBefore > 0) {
+    pair.rightAddBefore = right.addBefore;
+  }
+  if (right.removeBefore > 0) {
+    pair.rightRemoveBefore = right.removeBefore;
+  }
   return {
-    pair: { left: left.heights, right: right.heights },
+    pair,
     index: index + 1,
   };
+}
+
+function attachPendingDomain(frame, pending) {
+  if (pending.add > 0) {
+    frame.addBefore = (frame.addBefore ?? 0) + pending.add;
+    pending.add = 0;
+  }
+  if (pending.remove > 0) {
+    frame.removeBefore = (frame.removeBefore ?? 0) + pending.remove;
+    pending.remove = 0;
+  }
 }
 
 export function parseHybridSiteswap(source) {
   const frames = [];
   const text = String(source).trim();
+  const pending = { add: 0, remove: 0 };
   let index = 0;
   while (index < text.length) {
     index = skipSpace(text, index);
     if (index >= text.length) {
       break;
     }
+    if (text[index] === "+" || text[index] === "-") {
+      const mark = text[index];
+      index += 1;
+      if (frames.length === 0) {
+        if (mark === "+") {
+          pending.add += 1;
+        } else {
+          pending.remove += 1;
+        }
+      } else if (mark === "+") {
+        const last = frames[frames.length - 1];
+        last.addAfter = (last.addAfter ?? 0) + 1;
+      } else {
+        const last = frames[frames.length - 1];
+        last.removeAfter = (last.removeAfter ?? 0) + 1;
+      }
+      continue;
+    }
     if (text[index] === "(") {
       const parsed = parseSyncPair(text, index);
       const shortBeat = text[parsed.index] === "!";
-      frames.push({ kind: "sync", duration: shortBeat ? 1 : 2, ...parsed.pair });
+      const frame = { kind: "sync", duration: shortBeat ? 1 : 2, ...parsed.pair };
+      attachPendingDomain(frame, pending);
+      frames.push(frame);
       index = parsed.index;
       if (shortBeat) {
         index += 1;
@@ -150,7 +272,15 @@ export function parseHybridSiteswap(source) {
       continue;
     }
     const parsed = parseHandThrows(text, index, false);
-    frames.push({ kind: "async", duration: 1, throws: parsed.heights });
+    const frame = { kind: "async", duration: 1, throws: parsed.heights };
+    attachPendingDomain(frame, pending);
+    if (parsed.addBefore > 0) {
+      frame.addBefore = (frame.addBefore ?? 0) + parsed.addBefore;
+    }
+    if (parsed.removeBefore > 0) {
+      frame.removeBefore = (frame.removeBefore ?? 0) + parsed.removeBefore;
+    }
+    frames.push(frame);
     index = parsed.index;
   }
   if (frames.length === 0) {
@@ -189,7 +319,8 @@ export function readSiteswap(input) {
     const hasSuppressedSyncBeat = frames.some(
       (frame) => frame.kind === "sync" && frame.duration === 1,
     );
-    if ((hasAsync && hasSync) || hasSuppressedSyncBeat) {
+    const hasDomain = frames.some((frame) => frameHasDomain(frame));
+    if ((hasAsync && hasSync) || hasSuppressedSyncBeat || hasDomain) {
       return { timing: "hybrid", frames };
     }
     if (hasSync) {
@@ -203,7 +334,31 @@ export function readSiteswap(input) {
   return { timing: "async", beats: asBeats(input) };
 }
 
-function framesOf(pattern) {
+function tokenHasDomain(token) {
+  return typeof token === "object" && Boolean(token.addAfter || token.removeAfter);
+}
+
+function heightsHaveDomain(heights = []) {
+  return heights.some((token) => tokenHasDomain(token));
+}
+
+export function frameHasDomain(frame) {
+  return Boolean(
+    frame.addBefore ||
+      frame.addAfter ||
+      frame.removeBefore ||
+      frame.removeAfter ||
+      frame.leftAddBefore ||
+      frame.leftRemoveBefore ||
+      frame.rightAddBefore ||
+      frame.rightRemoveBefore ||
+      heightsHaveDomain(frame.throws) ||
+      heightsHaveDomain(frame.left) ||
+      heightsHaveDomain(frame.right),
+  );
+}
+
+export function framesOf(pattern) {
   if (pattern.timing === "hybrid") {
     return pattern.frames;
   }
@@ -213,7 +368,7 @@ function framesOf(pattern) {
   return pattern.beats.map((throws) => ({ kind: "async", duration: 1, throws }));
 }
 
-function throwHeightOf(token) {
+export function throwHeightOf(token) {
   return typeof token === "number" ? token : token.height;
 }
 
@@ -261,6 +416,10 @@ export function siteswapPeriod(input) {
 
 export function siteswapIsValid(input) {
   try {
+    const pattern = readSiteswap(input);
+    if (framesOf(pattern).some((frame) => frameHasDomain(frame))) {
+      return false;
+    }
     const average = siteswapBallCount(input);
     if (!Number.isInteger(average) || average < 1) {
       return false;
@@ -280,7 +439,7 @@ function landingKey(landing) {
   return JSON.stringify(landing);
 }
 
-function advanceHands(landing) {
+export function advanceHands(landing) {
   const available = [[], []];
   for (let hand = 0; hand < 2; hand += 1) {
     available[hand] = landing[hand].shift();
@@ -289,17 +448,47 @@ function advanceHands(landing) {
   return available;
 }
 
-function tossFromHand(heights, landing, available, intro, throwHand, beat, holdTwos, record) {
+export function ensureLandingDepth(landing, height) {
+  const needed = Math.max(height, 1);
+  for (const hand of landing) {
+    while (hand.length < needed) {
+      hand.push([]);
+    }
+  }
+}
+
+export function tossFromHand(
+  heights,
+  landing,
+  available,
+  intro,
+  throwHand,
+  beat,
+  holdTwos,
+  record,
+  supplyBall = null,
+) {
   const events = [];
   for (const token of heights) {
     const height = throwHeightOf(token);
+    const addAfter = typeof token === "object" ? (token.addAfter ?? 0) : 0;
+    const removeAfter = typeof token === "object" ? (token.removeAfter ?? 0) : 0;
     if (height === 0) {
       if (available[throwHand].length > 0) {
         throw new Error(`prop landing on 0 toss at beat ${beat}`);
       }
+      if (record) {
+        applyRemoveMarks(landing, events, removeAfter);
+        for (let index = 0; index < addAfter; index += 1) {
+          events.push(parkAddedObject(landing, throwHand, beat, supplyOrThrow(supplyBall, intro, beat)));
+        }
+      }
       continue;
     }
     let ball = available[throwHand].shift();
+    if (ball === undefined && typeof supplyBall === "function") {
+      ball = supplyBall();
+    }
     if (ball === undefined) {
       ball = intro.shift();
     }
@@ -309,24 +498,84 @@ function tossFromHand(heights, landing, available, intro, throwHand, beat, holdT
     const crossing = throwCrosses(token);
     const catchHand = crossing ? 1 - throwHand : throwHand;
     const hold = Boolean(holdTwos) && height === 2 && !crossing;
+    const event = {
+      beat,
+      height,
+      ball,
+      fromHand: throwHand,
+      toHand: catchHand,
+      hold,
+      juggler: 0,
+      targetJuggler: 0,
+    };
     if (record) {
-      events.push({
-        beat,
-        height,
-        ball,
-        fromHand: throwHand,
-        toHand: catchHand,
-        hold,
-        juggler: 0,
-        targetJuggler: 0,
-      });
+      events.push(event);
     }
+    ensureLandingDepth(landing, height);
     landing[catchHand][height - 1].push(ball);
+    if (record) {
+      applyRemoveMarks(landing, [event], removeAfter);
+      for (let index = 0; index < addAfter; index += 1) {
+        events.push(parkAddedObject(landing, throwHand, beat, supplyOrThrow(supplyBall, intro, beat)));
+      }
+    }
   }
   return events;
 }
 
-function rejectIdleLanding(available, beat) {
+function supplyOrThrow(supplyBall, intro, beat) {
+  if (typeof supplyBall === "function") {
+    return supplyBall();
+  }
+  const ball = intro.shift();
+  if (ball === undefined) {
+    throw new Error(`no prop available at beat ${beat}`);
+  }
+  return ball;
+}
+
+export function parkAddedObject(landing, hand, beat, ball) {
+  ensureLandingDepth(landing, 1);
+  landing[hand][0].push(ball);
+  return {
+    beat,
+    height: 1,
+    ball,
+    fromHand: hand,
+    toHand: hand,
+    hold: true,
+    parked: true,
+    juggler: 0,
+    targetJuggler: 0,
+  };
+}
+
+export function applyRemoveMarks(landing, events, count) {
+  for (let index = 0; index < count; index += 1) {
+    const event = [...events].reverse().find((item) => !item.dump && !item.drop && !item.parked);
+    if (!event) {
+      throw new Error("no object to remove");
+    }
+    const height = throwHeightOf(event);
+    pullLanding(landing, event.toHand, height, event.ball);
+    if (event.hold) {
+      event.dump = true;
+    } else {
+      event.drop = true;
+    }
+  }
+}
+
+function pullLanding(landing, hand, height, ball) {
+  ensureLandingDepth(landing, height);
+  const slot = landing[hand][height - 1];
+  const found = slot.lastIndexOf(ball);
+  if (found >= 0) {
+    slot.splice(found, 1);
+  }
+}
+
+export function rejectIdleLanding(available, beat) {
   if (available[0].length > 0 || available[1].length > 0) {
     throw new Error(`prop landing with no toss at beat ${beat}`);
   }

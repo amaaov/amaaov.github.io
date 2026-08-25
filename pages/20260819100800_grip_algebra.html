@@ -10,7 +10,7 @@
   <meta name="description" content="Двоичное отношение удержания даёт три системных знака и точные пороги числа предметов для полиморфии, циркуляции и запаса рядом с сайтсвопом.">
   <meta name="author" content="Борис Фонтанов">
   <meta property="article:published_time" content="2026-08-19T10:08:00+03:00">
-  <meta property="article:modified_time" content="2026-08-25T10:14:00+03:00">
+  <meta property="article:modified_time" content="2026-08-25T12:21:00+03:00">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
   <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
   <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Red+Hat+Mono:wght@500;700&amp;family=Red+Hat+Text:wght@400;600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260819100800_grip_algebra/grip_algebra_article.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Топология удержания","description":"Двоичное отношение удержания даёт три системных знака и точные пороги числа предметов для полиморфии, циркуляции и запаса рядом с сайтсвопом.","author":{"@type":"Person","name":"Борис Фонтанов","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-08-25T10:14:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra.html","inLanguage":"ru"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Топология удержания","description":"Двоичное отношение удержания даёт три системных знака и точные пороги числа предметов для полиморфии, циркуляции и запаса рядом с сайтсвопом.","author":{"@type":"Person","name":"Борис Фонтанов","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-08-25T12:21:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra.html","inLanguage":"ru"}</script>
 </head>
 <body>
   <a class="skip-link" href="#article-body">К статье</a>
@@ -160,9 +160,11 @@
           <div class="simulator-toolbar">
             <div class="pattern-entry">
               <input id="pattern-source" name="source" value="3" inputmode="text" autocomplete="off" spellcheck="false" dir="ltr">
+              <output id="pattern-status" class="control-status" aria-live="polite"></output>
             </div>
             <div class="playback-controls" aria-label="Воспроизведение">
               <button id="play-pattern" type="button" aria-pressed="false">Пуск</button>
+              <button id="loop-pattern" type="button" aria-pressed="true">Цикл</button>
               <button id="step-pattern" type="button" aria-label="Шаг ¼ доли">Шаг</button>
               <button id="restart-pattern" type="button">Сначала</button>
               <button id="toggle-inspector" type="button" aria-expanded="false" aria-controls="simulator-inspector">Настройки</button>
@@ -170,7 +172,6 @@
           </div>
           <aside id="simulator-inspector" class="simulator-inspector" aria-label="Настройки времени и рисунка">
             <div class="simulator-splitter" role="separator" aria-orientation="vertical" aria-valuemin="196" aria-valuemax="360" aria-valuenow="280" tabindex="0"></div>
-            <output id="pattern-status" class="control-status" aria-live="polite"></output>
             <div class="timing-controls">
               <label>выдержка <output id="dwell-readout">0.75</output>
                 <input type="range" name="dwell" min="0" max="1" step="0.01" value="0.75">
@@ -216,7 +217,7 @@
             </details>
             </details>
             <details id="examples-drawer" class="pattern-drawer" data-remember="open">
-              <summary>Примеры (17)</summary>
+              <summary>Примеры (19)</summary>
               <div class="pattern-choice-list">
                 <button type="button" data-pattern-source="02"><code>02</code><span>один удерживаемый предмет</span></button>
                 <button type="button" data-pattern-source="2[22]"><code>2[22]</code><span>мультиплексное удержание трёх</span></button>
@@ -224,6 +225,8 @@
                 <button type="button" data-pattern-source="441"><code>441</code><span>асинхронный цикл трёх предметов</span></button>
                 <button type="button" data-pattern-source="531"><code>531</code><span>цикл с разными высотами</span></button>
                 <button type="button" data-pattern-source="55500"><code>55500</code><span>периодический флеш</span></button>
+                <button type="button" data-pattern-source="76"><code>76</code><span>приземления без захвата</span></button>
+                <button type="button" data-pattern-source="55500+552-"><code>55500+552-</code><span>флеш, добавление, сброс</span></button>
                 <button type="button" data-pattern-source="[25]550022[22]2"><code>[25]550022[22]2</code><span>удержание, классический флеш, удержание</span></button>
                 <button type="button" data-pattern-source="[27][27]7700022[22][22]"><code>[27][27]7700022[22][22]</code><span>удержание–флеш–удержание четырёх</span></button>
                 <button type="button" data-pattern-source="[229][29][29]99000022[22][22][222][22]"><code>[229][29][29]…[222][22]</code><span>удержание–флеш–удержание пяти</span></button>

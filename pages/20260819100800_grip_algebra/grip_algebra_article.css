@@ -261,9 +261,20 @@ body {
   min-width: 0;
 }
 
-.simulator-inspector #pattern-status:not(:empty) {
-  display: block;
-  margin-bottom: 0.65rem;
+.pattern-entry #pattern-status:empty {
+  display: none;
+  min-height: 0;
+}
+
+.pattern-entry #pattern-status:not(:empty) {
+  flex: 1 1 100%;
+  margin: 0;
+}
+
+.control-status[data-status="error"],
+.control-status[data-status="invalid"] {
+  color: #7e2412;
+  font-weight: 600;
 }
 
 .pattern-entry,
@@ -334,7 +345,8 @@ body {
   padding: 0.25rem 0.3rem;
 }
 
-.simulator-toolbar #play-pattern[aria-pressed="true"] {
+.simulator-toolbar #play-pattern[aria-pressed="true"],
+.simulator-toolbar #loop-pattern[aria-pressed="true"] {
   background: rgba(194, 74, 28, 0.16);
 }
 

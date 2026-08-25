@@ -25,6 +25,7 @@ export function appendCourtTrails(trails, pictured, frameLimit = 80) {
       x: position.x,
       y: position.y,
       held: position.held,
+      abandoned: position.abandoned === true,
     })),
     hands: (pictured.hands ?? []).map((hand) => ({
       x: hand.x,
@@ -57,7 +58,17 @@ function drawTaperedWake(context, points, rgbForPoint, width) {
 }
 
 function objectWakeRgb(point) {
+  if (point.abandoned) {
+    return "74, 67, 60";
+  }
   return point.held ? "194, 74, 28" : "27, 109, 143";
+}
+
+function objectFill(position) {
+  if (position.abandoned) {
+    return EMPTY_FILL;
+  }
+  return position.held ? GRIP_FILL : AIR_FILL;
 }
 
 function handWakeRgb() {
@@ -81,6 +92,7 @@ function mapCourtPoint(position, rect) {
     x: rect.left + position.x * rect.width,
     y: rect.top + position.y * rect.height,
     held: position.held,
+    abandoned: position.abandoned === true,
   };
 }
 
@@ -126,7 +138,7 @@ function drawLayerForces(context, positions, hands, layer, rect, scale, ballRadi
     context.lineWidth = Math.max(1.6, 2.2 * scale);
     for (const position of positions) {
       const point = mapCourtPoint(position, rect);
-      context.strokeStyle = position.held ? GRIP_FILL : AIR_FILL;
+      context.strokeStyle = objectFill(position);
       context.beginPath();
       context.arc(
         point.x,
@@ -171,7 +183,7 @@ function drawLayerForces(context, positions, hands, layer, rect, scale, ballRadi
     const arrowWidth = Math.max(1.6, 2.1 * scale);
     const drop = Math.max(11, 15 * scale);
     for (const position of positions) {
-      if (position.held) {
+      if (position.held || position.abandoned) {
         continue;
       }
       const point = mapCourtPoint(position, rect);
@@ -247,7 +259,7 @@ export function drawTossCourt(canvas, positions, hands, trails = [], layer = nul
     context.save();
     context.globalAlpha = focusAlpha(layer, "object", position.held);
     const point = mapCourtPoint(position, rect);
-    context.fillStyle = position.held ? GRIP_FILL : AIR_FILL;
+    context.fillStyle = objectFill(position);
     context.beginPath();
     context.arc(point.x, point.y, ballRadius, 0, Math.PI * 2);
     context.fill();
