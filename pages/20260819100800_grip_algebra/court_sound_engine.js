@@ -128,9 +128,12 @@ export function createCourtSoundEngine({
     delayTone.connect(delay);
     delay.connect(feedback);
     feedback.connect(delay);
+    const delayReturn = context.createGain();
+    delayReturn.gain.value = 1;
     const tapeDry = context.createGain();
     tapeDry.gain.value = 1;
-    delay.connect(tapeDry);
+    delay.connect(delayReturn);
+    delayReturn.connect(tapeDry);
     lowpass.connect(scatter);
     scatter.connect(scatterFeedback);
     scatterFeedback.connect(scatter);
@@ -198,6 +201,7 @@ export function createCourtSoundEngine({
       wet,
       delay,
       delayTone,
+      delayReturn,
       feedback,
       scatter,
       scatterFeedback,
@@ -294,6 +298,9 @@ export function createCourtSoundEngine({
       }
       writeAudioParam(graph.dry.gain, plan.dry ?? (plan.silent ? 0 : 1 - plan.wet), now, 0);
       writeAudioParam(graph.wet.gain, plan.wet, now, 0);
+      if (graph.delayReturn) {
+        writeAudioParam(graph.delayReturn.gain, plan.delayReturn ?? 1, now, 0);
+      }
       writeAudioParam(graph.delay.delayTime, plan.delayTime, now, 0);
       writeAudioParam(graph.feedback.gain, plan.feedback, now, 0);
       if (graph.delayTone) {

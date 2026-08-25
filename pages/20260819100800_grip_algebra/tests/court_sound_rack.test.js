@@ -209,7 +209,7 @@ test("rack mounts three synth drawers, master, icons, and LFO lamps", () => {
       "soundHoldCosmology", "soundReleaseCosmology", "soundMixedCosmology",
       "soundMasterCosmology",
       "soundTape", "soundTapeDry", "soundSpeed", "soundTapeHold",
-      "soundDelayDry",
+      "soundDelayDry", "soundDelayReturn",
     ]) {
       assert.ok(names.includes(name), name);
     }
@@ -229,6 +229,8 @@ test("rack mounts three synth drawers, master, icons, and LFO lamps", () => {
     assert.ok(created.some((node) => String(node.className).includes("sound-icon")));
     assert.equal(created.filter((node) => String(node.className).includes("sound-mark")).length, 0);
     assert.ok(created.some((node) => String(node.className).includes("sound-drawer-flags")));
+    assert.equal(created.find((node) => node.name === "soundHoldCosmology")?.value, "0");
+    assert.equal(created.find((node) => node.name === "soundMasterCosmology")?.value, "0");
   } finally {
     globalThis.document = previousDocument;
   }
@@ -287,13 +289,14 @@ test("delay dry and tape dry draw their own icons", () => {
     },
   };
   try {
-    for (const kind of ["delay", "delayDry", "tape", "tapeDry"]) {
+    for (const kind of ["delay", "delayDry", "delayReturn", "tape", "tapeDry"]) {
       const icon = soundIcon(globalThis.document, kind);
       paths[kind] = icon.children[0]?.d;
     }
     assert.ok(paths.delay);
     assert.ok(paths.tape);
     assert.notEqual(paths.delayDry, paths.delay);
+    assert.notEqual(paths.delayReturn, paths.delay);
     assert.notEqual(paths.tapeDry, paths.tape);
     assert.notEqual(paths.delayDry, paths.tapeDry);
   } finally {

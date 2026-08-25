@@ -53,7 +53,7 @@ export function cosmologyVoiceOffsets(weather, voiceIndex = 0) {
 
 export function cosmologyAmountFromForm(form, name) {
   const value = Number(form?.elements?.namedItem(name)?.value);
-  return Number.isFinite(value) ? clamp(value, 0, 1) : 1;
+  return Number.isFinite(value) ? clamp(value, 0, 1) : 0;
 }
 
 export function scaleCosmologyOffsets(offsets, amount) {
@@ -61,6 +61,9 @@ export function scaleCosmologyOffsets(offsets, amount) {
     return null;
   }
   const depth = clamp(amount, 0, 1);
+  if (depth === 0) {
+    return null;
+  }
   if (depth === 1) {
     return offsets;
   }

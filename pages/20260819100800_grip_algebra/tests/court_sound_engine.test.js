@@ -273,7 +273,7 @@ test("solo keeps master makeup and tape wet while voices are gated", async () =>
   assert.ok(context.gains.some((node) => Math.abs(node.gain.value - plan.wet) < 1e-6));
 });
 
-test("tape dry writes a separate bus gain and the loop can hold thirty seconds", async () => {
+test("tape return writes a separate bus gain and the loop can hold thirty seconds", async () => {
   let context;
   function CaptureContext() {
     FakeAudioContext.call(this);
@@ -285,15 +285,18 @@ test("tape dry writes a separate bus gain and the loop can hold thirty seconds",
   await engine.setEnabled(true);
   const plan = courtSoundPlan({
     state: HOLD_SIGN,
-    effects: { scatter: 0, delay: 0.4, feedback: 0.5, delayDry: 0.4, tape: 30, tapeDry: 0.22 },
+    effects: { scatter: 0, delay: 0.4, feedback: 0.5, delayDry: 0.4, delayReturn: 0.7, tape: 30, tapeDry: 0.22 },
     stateAgeSeconds: 2,
   });
   engine.apply(plan);
   assert.equal(plan.tapeLoopSeconds, 30);
   assert.equal(plan.dry, 0.4);
-  assert.equal(plan.tapeDry, 0.22);
+  assert.equal(plan.delayReturn, 0.7);
+  assert.equal(plan.tapeWet, 0.22);
+  assert.equal(plan.tapeDry, 1);
   assert.ok(context.gains.some((node) => Math.abs(node.gain.value - 0.22) < 1e-6));
   assert.ok(context.gains.some((node) => Math.abs(node.gain.value - 0.4) < 1e-6));
+  assert.ok(context.gains.some((node) => Math.abs(node.gain.value - 0.7) < 1e-6));
 });
 
 test("zero glide writes pitch at once; a raised glide still slews", async () => {

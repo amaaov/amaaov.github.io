@@ -8,8 +8,6 @@ import {
   fillTapeLoop,
   fillTapeOutput,
   scatterSliceSeconds,
-  auditionSignFromForm,
-  rememberSoundAudition,
   occupancyGateOpen,
   soundEnvelopeClock,
   soundEnvelopePhase,
@@ -104,17 +102,56 @@ test("tape loop is a length in seconds up to thirty", () => {
 
 test("delay dry and tape dry reach the sounding plan", () => {
   const dry = planFor(HOLD_SIGN, {
-    effects: { scatter: 0, delay: 0.55, feedback: 0.62, delayDry: 0.2, tape: 0.4, tapeDry: 0.3 },
+    effects: {
+      scatter: 0,
+      delay: 0.55,
+      feedback: 0.62,
+      delayDry: 0.2,
+      delayReturn: 0.8,
+      tape: 0.4,
+      tapeDry: 0.3,
+    },
   });
   const wetter = planFor(HOLD_SIGN, {
-    effects: { scatter: 0, delay: 0.55, feedback: 0.62, delayDry: 1, tape: 0.4, tapeDry: 1 },
+    effects: {
+      scatter: 0,
+      delay: 0.55,
+      feedback: 0.62,
+      delayDry: 1,
+      delayReturn: 1,
+      tape: 0.4,
+      tapeDry: 1,
+    },
   });
   assert.equal(dry.dry, 0.2);
-  assert.equal(dry.tapeDry, 0.3);
+  assert.equal(dry.delayReturn, 0.8);
+  assert.equal(dry.tapeWet, 0.3);
+  assert.equal(dry.tapeDry, 1);
   assert.ok(wetter.dry > dry.dry);
-  assert.ok(wetter.tapeDry > dry.tapeDry);
+  assert.ok(wetter.tapeWet > dry.tapeWet);
   assert.ok(dry.wet > 0);
-  assert.ok(dry.tapeWet > 0);
+});
+
+test("closed delay and tape returns keep ingesting while the mix stays dry", () => {
+  const muted = planFor(HOLD_SIGN, {
+    effects: {
+      scatter: 0,
+      delay: 0.55,
+      feedback: 0.62,
+      delayDry: 1,
+      delayReturn: 0,
+      tape: 8,
+      tapeDry: 0,
+    },
+  });
+  assert.equal(muted.dry, 1);
+  assert.equal(muted.delayReturn, 0);
+  assert.ok(muted.wet > 0);
+  assert.ok(muted.delayTime > 0);
+  assert.ok(muted.feedback > 0);
+  assert.equal(muted.tapeRecording, true);
+  assert.equal(muted.tapeWet, 0);
+  assert.equal(muted.tapeDry, 1);
 });
 
 test("tape reverse and speed reach the sounding plan", () => {
@@ -220,32 +257,25 @@ test("solo opens the gate only on that occupancy and keeps a release tail", () =
   assert.ok(8 - armedClosed.changedAt >= 1000);
 });
 
-test("editing a voice auditions that synth while occupancy stays mixed", () => {
+test("tuning a voice keeps occupancy sounding until solo is armed", () => {
   assert.equal(voiceSignFromControlName("soundHoldPitch"), HOLD_SIGN);
   assert.equal(voiceSignFromControlName("soundWaveMixed"), MIXED_SIGN);
   assert.equal(voiceSignFromControlName("soundDelay"), null);
   assert.equal(voiceSignFromControlName("soundHoldSolo"), null);
-  const leftover = { dataset: { soundAudition: HOLD_SIGN } };
-  rememberSoundAudition(leftover, "soundHoldSolo");
-  assert.equal(auditionSignFromForm(leftover), null);
-  const form = { dataset: {} };
-  rememberSoundAudition(form, "soundHoldCutoff");
-  assert.equal(auditionSignFromForm(form), HOLD_SIGN);
-  assert.equal(soundingSign(MIXED_SIGN, {}, HOLD_SIGN), HOLD_SIGN);
-  assert.equal(soundingSign(MIXED_SIGN, {}, null), MIXED_SIGN);
-  const holdPitch = planFor(MIXED_SIGN, {
-    audition: HOLD_SIGN,
-    synths: {
-      [HOLD_SIGN]: { pitch: 12 },
-      [MIXED_SIGN]: { pitch: 0 },
-    },
-  });
   const mixedPitch = planFor(MIXED_SIGN, {
     synths: {
       [HOLD_SIGN]: { pitch: 12 },
       [MIXED_SIGN]: { pitch: 0 },
     },
   });
+  const holdPitch = planFor(HOLD_SIGN, {
+    synths: {
+      [HOLD_SIGN]: { pitch: 12 },
+      [MIXED_SIGN]: { pitch: 0 },
+    },
+  });
+  assert.equal(soundingSign(MIXED_SIGN, {}), MIXED_SIGN);
+  assert.equal(soundingSign(MIXED_SIGN, { [HOLD_SIGN]: true }), HOLD_SIGN);
   assert.ok(holdPitch.voices[0].frequency > mixedPitch.voices[0].frequency * 1.9);
 });
 
@@ -269,6 +299,7 @@ test("form reads solo boxes and tape fields", () => {
     soundTapeHold: { checked: true },
     soundDelay: { value: "0" },
     soundDelayDry: { value: "0.15" },
+    soundDelayReturn: { value: "0.4" },
     soundFeedback: { value: "0.5" },
   };
   const form = {
@@ -284,6 +315,7 @@ test("form reads solo boxes and tape fields", () => {
   assert.equal(settings.effects.tape, 8.4);
   assert.equal(settings.effects.tapeDry, 0.25);
   assert.equal(settings.effects.delayDry, 0.15);
+  assert.equal(settings.effects.delayReturn, 0.4);
   assert.equal(settings.effects.speed, -1.25);
   assert.equal(settings.effects.delay, 0);
   assert.equal(settings.effects.held, true);

@@ -1,4 +1,4 @@
-import { EMPTY_SIGN, HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "./holding.js";
+import { HOLD_SIGN, MIXED_SIGN, AIRBORNE_SIGN } from "./holding.js";
 
 export const SOUND_SIGNS = [HOLD_SIGN, AIRBORNE_SIGN, MIXED_SIGN];
 
@@ -89,25 +89,6 @@ export function voiceSignFromControlName(name) {
   return null;
 }
 
-export function rememberSoundAudition(form, name) {
-  if (/Solo$/.test(String(name ?? ""))) {
-    if (form?.dataset) {
-      delete form.dataset.soundAudition;
-    }
-    return null;
-  }
-  const sign = voiceSignFromControlName(name);
-  if (sign && form?.dataset) {
-    form.dataset.soundAudition = sign;
-  }
-  return sign;
-}
-
-export function auditionSignFromForm(form) {
-  const sign = form?.dataset?.soundAudition;
-  return SOUND_SIGNS.includes(sign) ? sign : null;
-}
-
 export function soloedSigns(solos = {}) {
   return SOUND_SIGNS.filter((sign) => solos[sign]);
 }
@@ -148,16 +129,10 @@ export function soundEnvelopeClock(previousPhase, nextPhase, elapsed, {
   };
 }
 
-export function soundingSign(state, solos = {}, audition = null) {
+export function soundingSign(state, solos = {}) {
   const selected = soloedSigns(solos);
   if (selected.length > 0) {
     return selected.includes(state) ? state : selected[0];
-  }
-  if (state === EMPTY_SIGN) {
-    return state;
-  }
-  if (SOUND_SIGNS.includes(audition)) {
-    return audition;
   }
   return state;
 }
@@ -176,12 +151,12 @@ export function tapePlan(effects = {}, { silent = false, keepPlayback = false } 
   const seconds = tapeLoopSeconds(effects.tape);
   const held = Boolean(effects.held);
   const recording = seconds > 0 && !held && !silent;
-  const wet = seconds > 0 && (!silent || held || keepPlayback) ? 1 : 0;
+  const live = seconds > 0 && (!silent || held || keepPlayback);
   return {
     tapeSpeed: tapeSpeedRate(effects.speed ?? 1),
     tapeLoopSeconds: seconds,
-    tapeWet: wet,
-    tapeDry: clamp(effects.tapeDry ?? 1, 0, 1),
+    tapeWet: live ? clamp(effects.tapeDry ?? 1, 0, 1) : 0,
+    tapeDry: 1,
     tapeRecording: recording,
     tapeHeld: held,
   };

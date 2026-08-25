@@ -285,7 +285,7 @@ function appendVoiceDrawer(rack, sign, locale) {
     max: 1,
     step: 0.01,
     digits: 2,
-    value: 1,
+    value: 0,
   });
   const waveName = {
     [HOLD_SIGN]: "soundWaveHold",

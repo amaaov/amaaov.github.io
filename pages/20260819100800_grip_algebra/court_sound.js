@@ -15,7 +15,6 @@ import { lfoHertz, lfoWave } from "./court_sound_marks.js";
 import {
   delayPathOpen,
   scatterPlan,
-  auditionSignFromForm,
   occupancyGateOpen,
   soloedSigns,
   solosFromForm,
@@ -44,6 +43,7 @@ export const DEFAULT_SOUND_EFFECTS = {
   scatter: 0.35,
   delay: 0.55,
   delayDry: 1,
+  delayReturn: 1,
   feedback: 0.62,
   tape: 8,
   tapeDry: 1,
@@ -108,6 +108,7 @@ export function soundSettingsFromForm(form) {
       scatter: amount("soundScatter", DEFAULT_SOUND_EFFECTS.scatter),
       delay: amount("soundDelay", DEFAULT_SOUND_EFFECTS.delay),
       delayDry: amount("soundDelayDry", DEFAULT_SOUND_EFFECTS.delayDry),
+      delayReturn: amount("soundDelayReturn", DEFAULT_SOUND_EFFECTS.delayReturn),
       feedback: amount("soundFeedback", DEFAULT_SOUND_EFFECTS.feedback),
       tape: amount("soundTape", DEFAULT_SOUND_EFFECTS.tape, 0, TAPE_LOOP_MAXIMUM_SECONDS),
       tapeDry: amount("soundTapeDry", DEFAULT_SOUND_EFFECTS.tapeDry),
@@ -122,7 +123,6 @@ export function soundSettingsFromForm(form) {
     solos: solosFromForm(form),
     synth: synthFromForm(form),
     synths: synthsFromForm(form),
-    audition: auditionSignFromForm(form),
   };
 }
 
@@ -133,7 +133,6 @@ export function courtSoundPlan({
   synth: synthInput = DEFAULT_SYNTH,
   synths = null,
   solos = {},
-  audition = null,
   eventHand = null,
   pointer = { x: 0.5, y: 0.5 },
   scrollProgress = 0.5,
@@ -141,7 +140,7 @@ export function courtSoundPlan({
   stateAgeSeconds = 8,
 }) {
   const board = { ...DEFAULT_MASTER, ...synthInput };
-  const voiceSign = soundingSign(state, solos, audition);
+  const voiceSign = soundingSign(state, solos);
   const gateOpen = occupancyGateOpen(state, solos);
   const soloMode = soloedSigns(solos).length > 0;
   const toneSign = STATE_TONES[voiceSign] ? voiceSign : state;
@@ -195,7 +194,9 @@ export function courtSoundPlan({
   let delayTime = 0;
   let feedback = 0;
   let wet = 0;
-  if (delayPathOpen(effects.delay ?? 0, effects.feedback ?? 0)) {
+  let delayReturn = 0;
+  const delayOpen = delayPathOpen(effects.delay ?? 0, effects.feedback ?? 0);
+  if (delayOpen) {
     delayTime = clamp(
       (0.36 + effects.delay * 0.28 + pointerY * 0.2 + lfo(timeSeconds, 0.07, 0.035, 0.4))
         / timeScale,
@@ -208,6 +209,7 @@ export function courtSoundPlan({
       0.84,
     );
     wet = clamp(0.42 + effects.delay * 0.18 + scroll * 0.12, 0.28, 0.72);
+    delayReturn = clamp(effects.delayReturn ?? DEFAULT_SOUND_EFFECTS.delayReturn, 0, 1);
   }
   const field = {
     delayTime,
@@ -216,6 +218,7 @@ export function courtSoundPlan({
     scatterGain: scatter.gain,
     scatterFeedback: scatter.feedback,
     dry: silent ? 0 : clamp(effects.delayDry ?? DEFAULT_SOUND_EFFECTS.delayDry, 0, 1),
+    delayReturn,
     delayToneFrequency: 420,
     ...tape,
     lowpassFrequency,

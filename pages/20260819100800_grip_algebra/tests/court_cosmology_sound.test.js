@@ -66,7 +66,14 @@ test("random cosmology writes every occupancy slider and the master", () => {
   const holdCutoff = rangeControl("soundHoldCutoff", 0.32);
   const releaseCutoff = rangeControl("soundReleaseCutoff", 0.32);
   const feedback = rangeControl("soundFeedback", 0.62);
-  const form = formFromControls([holdCutoff, releaseCutoff, feedback]);
+  const form = formFromControls([
+    holdCutoff,
+    releaseCutoff,
+    feedback,
+    rangeControl("soundHoldCosmology", 1),
+    rangeControl("soundReleaseCosmology", 1),
+    rangeControl("soundMasterCosmology", 1),
+  ]);
 
   applyCosmologySoundControls(form, weather);
   assert.notEqual(holdCutoff.value, "0.32");
@@ -96,7 +103,7 @@ test("random cosmology writes every occupancy slider and the master", () => {
 test("cosmology amount scales weather offsets from none to full", () => {
   const offsets = { cutoff: 0.2, pitch: 4 };
   assert.deepEqual(scaleCosmologyOffsets(null, 1), null);
-  assert.deepEqual(scaleCosmologyOffsets(offsets, 0), { cutoff: 0, pitch: 0 });
+  assert.deepEqual(scaleCosmologyOffsets(offsets, 0), null);
   assert.deepEqual(scaleCosmologyOffsets(offsets, 0.5), { cutoff: 0.1, pitch: 2 });
   assert.deepEqual(scaleCosmologyOffsets(offsets, 1), offsets);
 });
@@ -112,18 +119,21 @@ test("a closed cosmology amount leaves that drawer at the authored value", () =>
     feedback,
     rangeControl("soundHoldCosmology", 0),
     rangeControl("soundReleaseCosmology", 1),
-    rangeControl("soundMasterCosmology", 1),
+    rangeControl("soundMasterCosmology", 0),
   ]);
   applyCosmologySoundControls(form, weather);
   assert.equal(holdCutoff.value, "0.32");
   assert.notEqual(releaseCutoff.value, "0.32");
-  assert.notEqual(feedback.value, "0.62");
+  assert.equal(feedback.value, "0.62");
 });
 
 test("turning weather off restores the authored slider values", () => {
   const weather = cosmologyWeather({ at: MIDNIGHT_DECEMBER, elapsedSeconds: 90 });
   const cutoff = rangeControl("soundHoldCutoff", 0.32);
-  const form = formFromControls([cutoff]);
+  const form = formFromControls([
+    cutoff,
+    rangeControl("soundHoldCosmology", 1),
+  ]);
   applyCosmologySoundControls(form, weather);
   assert.notEqual(cutoff.value, "0.32");
   applyCosmologySoundControls(form, null);
@@ -140,6 +150,17 @@ test("a dragged slider becomes the new centre while the sky is writing", () => {
   cutoff.value = "0.8";
   retuneCosmologyBase(cutoff);
   assert.equal(Number(cutoff.dataset.skyBase).toFixed(2), "0.62");
+});
+
+test("cosmology amount defaults to closed and is stored by name", () => {
+  const weather = cosmologyWeather({ at: MIDNIGHT_DECEMBER, elapsedSeconds: 90 });
+  const cutoff = rangeControl("soundHoldCutoff", 0.32);
+  const cosmology = rangeControl("soundHoldCosmology", 0);
+  const form = formFromControls([cutoff, cosmology]);
+  applyCosmologySoundControls(form, weather);
+  assert.equal(cutoff.value, "0.32");
+  cosmology.value = "0.4";
+  assert.equal(collectNamedControlValues(form).soundHoldCosmology, "0.4");
 });
 
 test("stored settings keep the authored sky base, not the live weather value", () => {

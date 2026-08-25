@@ -212,8 +212,6 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "lamps"
-    "relations"
     "state"
     "court"
     "tape"
@@ -226,8 +224,6 @@ body {
 .simulator-stage:has(#hexagon-panel:not([hidden])) {
   grid-template-columns: minmax(0, 1fr) minmax(11rem, 13rem);
   grid-template-areas:
-    "lamps lamps"
-    "relations relations"
     "state state"
     "court hexagon"
     "tape hexagon"
@@ -235,8 +231,6 @@ body {
   gap: 0 0.65rem;
 }
 
-.simulator-stage .lamp-row-occupancy { grid-area: lamps; }
-.simulator-stage .lamp-row-relation { grid-area: relations; }
 .simulator-stage .accessible-state { grid-area: state; }
 .simulator-stage .court-frame { grid-area: court; }
 .simulator-stage #occupancy-tape { grid-area: tape; }
@@ -566,9 +560,10 @@ body {
 .sound-solo {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.45rem;
   cursor: pointer;
-  padding: 0.32rem 0.7rem;
+  box-sizing: border-box;
+  padding: 0.55rem 1rem;
   border: 1px solid rgba(36, 92, 58, 0.35);
   border-radius: 0.2rem;
   font-size: 0.78rem;
@@ -576,6 +571,7 @@ body {
   letter-spacing: 0.02em;
   line-height: 1.2;
   text-transform: lowercase;
+  flex-shrink: 0;
 }
 
 .sound-solo input {
@@ -588,6 +584,10 @@ body {
 
 .sound-solo .sound-icon {
   width: 0.95rem;
+}
+
+.sound-solo > span {
+  padding: 0.12rem 0.2rem;
 }
 
 .sound-solo:has(input:checked) {

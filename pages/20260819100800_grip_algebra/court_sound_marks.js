@@ -70,6 +70,7 @@ const ICON_PATHS = {
   scatter: "M4 12l6-8 6 4 8-6",
   delay: "M4 8h6m4 0h6m4 0h4",
   delayDry: "M4 8h24",
+  delayReturn: "M6 4h12a8 8 0 1 1-8 8M20 8h8",
   feedback: "M6 4h12a8 8 0 1 1-8 8",
   tape: "M8 8a4 4 0 1 0 0.1 0m8 0a4 4 0 1 0 0.1 0M8 8h8",
   tapeDry: "M16 8a5 5 0 1 0 0.1 0",

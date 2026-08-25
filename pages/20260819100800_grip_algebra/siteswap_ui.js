@@ -7,7 +7,6 @@ import {
   scatterLayout,
 } from "./hypothesis_explorer.js";
 import { siteswapIsValid } from "./siteswap.js";
-import { rememberSoundAudition } from "./court_sound_fx.js";
 import { retuneCosmologyBase } from "./court_cosmology_sound.js";
 import { writeSoundDisplays } from "./court_sound_synth.js";
 
@@ -560,7 +559,6 @@ export function initializeSiteswapInterface(form, callbacks = {}) {
   });
   soundPanel?.addEventListener("input", (event) => {
     retuneCosmologyBase(event.target);
-    rememberSoundAudition(form, event.target?.name);
     updateControlReadouts();
     callbacks.onSoundChange?.();
   });
