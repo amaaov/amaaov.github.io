@@ -26,6 +26,10 @@ tmp/*/**
 *.beam
 erl_crash.dump
 
+# pray
+.pray/cache/
+.pray/vendor/
+
 # URL submission configs (local only; copy from *.example)
 .submit_urls/
 scripts/submit_urls.yml
