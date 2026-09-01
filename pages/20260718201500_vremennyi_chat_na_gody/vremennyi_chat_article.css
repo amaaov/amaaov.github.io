@@ -63,6 +63,8 @@ a {
 .site-nav a {
   color: inherit;
   text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0.03em;
 }
 
 .site-nav a[aria-current="page"] {

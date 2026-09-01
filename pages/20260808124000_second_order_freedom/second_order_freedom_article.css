@@ -61,3 +61,9 @@ h1 { max-width: 14ch; margin: 0; font: 500 clamp(3.3rem,8vw,7rem)/.91 var(--sans
   .series-nav ol { grid-template-columns: 1fr; }
 }
 @media print { body { background: #fff; } .site-top, .series-nav { display: none; } .copy-desk { width: 100%; margin: 0; } .original-slip, .first-impression, .decision-slip { box-shadow: none; transform: none; page-break-inside: avoid; } }
+
+.language-nav,
+.language-nav a {
+  text-transform: none;
+  letter-spacing: 0.03em;
+}

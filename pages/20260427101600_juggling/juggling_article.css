@@ -38,6 +38,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html[lang="zgh"] body {
+  font-family: "Noto Sans Tifinagh", ui-serif, Georgia, serif;
+}
+
+html[lang="zgh"] .language-nav {
+  text-transform: none;
+}
+
 body::before {
   content: none;
 }
@@ -446,4 +454,16 @@ a:focus-visible {
     box-shadow: none;
     border: 0;
   }
+}
+
+.language-nav,
+.language-nav a,
+.language-link {
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-variant: normal;
+}
+.language-nav a[lang="zgh"],
+.language-link[lang="zgh"] {
+  font-family: "Noto Sans Tifinagh", sans-serif;
 }

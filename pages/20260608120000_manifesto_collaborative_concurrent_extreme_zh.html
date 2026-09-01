@@ -960,7 +960,19 @@
       white-space: nowrap;
       border: 0;
     }
-  </style>
+  
+.language-nav,
+.language-nav a,
+.language-link {
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-variant: normal;
+}
+.language-nav a[lang="zgh"],
+.language-link[lang="zgh"] {
+  font-family: "Noto Sans Tifinagh", sans-serif;
+}
+</style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -984,13 +996,13 @@
   <div class="site-top">
     <a class="home-link" href="https://amaaov.github.io/">amaaov</a>
     <nav class="language-nav" aria-label="文章語言">
-      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme.html">EN</a>
-      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ru.html">RU</a>
-      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_fi.html">FI</a>
-      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_zh.html" aria-current="page">ZH</a>
-      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ja.html">JA</a>
-      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ar.html">AR</a>
-      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_hi.html">HI</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme.html" lang="en">English</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ru.html" lang="ru">Русский</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_fi.html" lang="fi">Suomi</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_zh.html" aria-current="page" lang="zh-Hant">繁體中文</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ja.html" lang="ja">日本語</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_ar.html" lang="ar" dir="rtl">العربية</a>
+      <a class="language-link" href="20260608120000_manifesto_collaborative_concurrent_extreme_hi.html" lang="hi">हिन्दी</a>
     </nav>
   </div>
   <div class="stage">

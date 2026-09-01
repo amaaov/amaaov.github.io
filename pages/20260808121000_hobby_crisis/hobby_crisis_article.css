@@ -268,3 +268,15 @@ h1 {
   .hero-art { max-width: 18rem; }
   .rehearsal-ledger { margin: 0; box-shadow: none; }
 }
+
+.language-nav,
+.language-nav a,
+.language-link {
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-variant: normal;
+}
+.language-nav a[lang="zgh"],
+.language-link[lang="zgh"] {
+  font-family: "Noto Sans Tifinagh", sans-serif;
+}

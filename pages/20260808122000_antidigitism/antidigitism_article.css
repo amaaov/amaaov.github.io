@@ -95,3 +95,12 @@ h1 { max-width: 12ch; margin: 0; font: 700 clamp(4rem, 10vw, 8.5rem)/.79 var(--d
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 @media print { .site-top, .route-map, .route-index, .series-nav { display: none; } .route-head { display: block; min-height: auto; color: #000; background: #fff; } .route-layout { display: block; padding: 1rem; } }
+
+.language-nav,
+.language-nav a {
+  text-transform: none;
+  letter-spacing: 0.03em;
+}
+.language-nav a[lang="zgh"] {
+  font-family: "Noto Sans Tifinagh", sans-serif;
+}

@@ -298,3 +298,15 @@ body {
     border-color: #000;
   }
 }
+
+.language-nav,
+.language-nav a,
+.language-link {
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-variant: normal;
+}
+.language-nav a[lang="zgh"],
+.language-link[lang="zgh"] {
+  font-family: "Noto Sans Tifinagh", sans-serif;
+}

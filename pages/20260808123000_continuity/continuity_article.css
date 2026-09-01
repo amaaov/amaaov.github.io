@@ -71,3 +71,9 @@ h1 { margin: 0; font-size: clamp(4rem, 10vw, 8rem); font-weight: 400; line-heigh
 }
 @media (prefers-reduced-motion: reduce) { .clock-ribbons i { transform: none !important; will-change: auto; } }
 @media print { .site-top, .clock-ribbons, .series-nav { display: none; } .continuity-field { width: 100%; box-shadow: none; } }
+
+.language-nav,
+.language-nav a {
+  text-transform: none;
+  letter-spacing: 0.03em;
+}
