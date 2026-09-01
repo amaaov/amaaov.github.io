@@ -5,10 +5,18 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Fri, 21 Aug 2026 16:23:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Sep 2026 15:27:11 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Existence</title>
+      <description>An hour has happened without owing a next; a deposit can exist without remaining parent of what grows from it.</description>
+      <link>https://amaaov.github.io/pages/20260827165000_existence_en.html</link>
+      <guid>https://amaaov.github.io/pages/20260827165000_existence_en.html</guid>
+      <pubDate>Thu, 27 Aug 2026 13:50:00 +0000</pubDate>
+      <category>essay</category>
+    </item>
     <item>
       <title>Holding Topology</title>
       <description>Binary object relations produce system-level polymorphy, circulation, and buffering in physical retention. Boris Fontanov.</description>
