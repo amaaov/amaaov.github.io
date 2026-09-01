@@ -3,7 +3,7 @@
 **Published:** 16 августа 2026, Хельсинки  
 **Modified:** 17 августа 2026, 02:20  
 **Author:** amaaov  
-**Language:** Russian  
+**Language:** Русский  
 **HTML:** [20260816205000_duty_before_answer.html](20260816205000_duty_before_answer.html)
 
 ---

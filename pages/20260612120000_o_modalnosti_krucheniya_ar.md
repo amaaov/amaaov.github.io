@@ -3,7 +3,7 @@
 **Published:** 1 January 2025, Helsinki
 **Modified:** 4 August 2026
 **Author:** بوريس فونتانوف
-**Language:** Arabic
+**Language:** العربية
 **HTML:** [20260612120000_o_modalnosti_krucheniya_ar.html](20260612120000_o_modalnosti_krucheniya_ar.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

@@ -3,7 +3,7 @@
 **Published:** 7 June 2026, Helsinki
 **Modified:** 4 July 2026
 **Author:** amaaov
-**Language:** Arabic
+**Language:** العربية
 **HTML:** [20260607120000_lyudi_bez_prikola_ar.html](20260607120000_lyudi_bez_prikola_ar.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

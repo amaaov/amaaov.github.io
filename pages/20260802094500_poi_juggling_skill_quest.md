@@ -5,7 +5,7 @@
 **Author:** Boris Fontanov  
 **Language:** English  
 **HTML:** [20260802094500_poi_juggling_skill_quest.html](20260802094500_poi_juggling_skill_quest.html)  
-**Mirrors:** [RU](20260802094500_poi_juggling_skill_quest_ru.html)  
+**Mirrors:** [Русский](20260802094500_poi_juggling_skill_quest_ru.html)  
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Boris Fontanov
 
 ---

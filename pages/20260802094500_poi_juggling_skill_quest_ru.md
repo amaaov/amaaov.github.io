@@ -3,10 +3,10 @@
 **Published:** 2 August 2026, Helsinki  
 **Modified:** 23 August 2026
 **Author:** Boris Fontanov  
-**Language:** Russian  
+**Language:** Русский  
 **HTML:** [20260802094500_poi_juggling_skill_quest_ru.html](20260802094500_poi_juggling_skill_quest_ru.html)  
 **Continues:** [Пои как реквизит спортивного жонглирования](20260802120000_poi_as_sport_juggling_prop_ru.html)  
-**EN:** [20260802094500_poi_juggling_skill_quest.html](20260802094500_poi_juggling_skill_quest.html)  
+**English:** [20260802094500_poi_juggling_skill_quest.html](20260802094500_poi_juggling_skill_quest.html)  
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Boris Fontanov
 
 ---

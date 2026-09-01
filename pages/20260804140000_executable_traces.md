@@ -3,8 +3,8 @@
 **Published:** 4 August 2026, Helsinki  
 **Modified:** 16 August 2026, 22:35  
 **Author:** amaaov  
-**Language:** English · [Russian](20260804140000_executable_traces_ru.md)  
-**HTML:** [EN](20260804140000_executable_traces.html) · [RU](20260804140000_executable_traces_ru.html)  
+**Language:** English · [Русский](20260804140000_executable_traces_ru.md)  
+**HTML:** [English](20260804140000_executable_traces.html) · [Русский](20260804140000_executable_traces_ru.html)  
 **Spine:** A work begins to look autonomous once media have detached a reconstructible organization from the place where it was made; later systems can assemble a sufficient effect from that organization without returning there.
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 

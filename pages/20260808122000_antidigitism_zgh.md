@@ -3,8 +3,10 @@
 **Published:** 8 August 2026, Helsinki  
 **Modified:** 1 September 2026, 14:47  
 **Author:** amaaov  
-**Language:** Standard Moroccan Tamazight (Tifinagh)  
+**Language:** ⵜⴰⵎⴰⵣⵉⵖⵜ  
 **HTML:** [20260808122000_antidigitism_zgh.html](20260808122000_antidigitism_zgh.html)  
+**English:** [20260808122000_antidigitism_en.html](20260808122000_antidigitism_en.html)
+**Русский:** [20260808122000_antidigitism.html](20260808122000_antidigitism.html)
 **Series:** hobbies ruined · 2 of 4
 
 ---

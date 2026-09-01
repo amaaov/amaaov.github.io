@@ -3,7 +3,7 @@
 **Published:** 8 June 2026, Helsinki
 **Modified:** 10 August 2026
 **Author:** amaaov
-**Language:** Russian
+**Language:** Русский
 **HTML:** [20260608120000_manifesto_collaborative_concurrent_extreme_ru.html](20260608120000_manifesto_collaborative_concurrent_extreme_ru.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

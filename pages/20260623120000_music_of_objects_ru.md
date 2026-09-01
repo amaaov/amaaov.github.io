@@ -3,9 +3,10 @@
 **Published:** 23 июня 2026, Хельсинки  
 **Modified:** 10 августа 2026
 **Author:** amaaov  
-**Language:** Russian  
+**Language:** Русский  
 **HTML:** [20260623120000_music_of_objects_ru.html](20260623120000_music_of_objects_ru.html)
-**EN:** [20260623120000_music_of_objects_en.html](20260623120000_music_of_objects_en.html)
+**English:** [20260623120000_music_of_objects_en.html](20260623120000_music_of_objects_en.html)
+**ⵜⴰⵎⴰⵣⵉⵖⵜ:** [20260623120000_music_of_objects_zgh.html](20260623120000_music_of_objects_zgh.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---

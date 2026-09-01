@@ -3,8 +3,8 @@
 **Published:** 3 July 2026, Helsinki
 **Modified:** 10 August 2026
 **Author:** amaaov
-**Language:** English · [Russian](20260703120000_inferentia_probabilisticum_ru.md)
-**HTML:** [EN](20260703120000_inferentia_probabilisticum_en.html) · [RU](20260703120000_inferentia_probabilisticum_ru.html)
+**Language:** English · [Русский](20260703120000_inferentia_probabilisticum_ru.md) · [ⵜⴰⵎⴰⵣⵉⵖⵜ](20260703120000_inferentia_probabilisticum_zgh.md)
+**HTML:** [English](20260703120000_inferentia_probabilisticum_en.html) · [Русский](20260703120000_inferentia_probabilisticum_ru.html) · [ⵜⴰⵎⴰⵣⵉⵖⵜ](20260703120000_inferentia_probabilisticum_zgh.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---

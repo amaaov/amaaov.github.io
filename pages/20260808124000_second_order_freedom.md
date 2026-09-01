@@ -3,7 +3,7 @@
 **Published:** 8 августа 2026, Хельсинки  
 **Modified:** 16 августа 2026, 23:50  
 **Author:** amaaov  
-**Language:** Russian  
+**Language:** Русский  
 **HTML:** [20260808124000_second_order_freedom.html](20260808124000_second_order_freedom.html)  
 **Series:** hobbies ruined · 4 of 4
 

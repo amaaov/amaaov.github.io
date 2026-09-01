@@ -6,7 +6,7 @@
 **Language:** English  
 **HTML:** [20260804130000_free_wheel_unicycle_skill_quest.html](20260804130000_free_wheel_unicycle_skill_quest.html)  
 **Continues:** [How to Learn Free-Wheel Unicycle](20260804120000_how_to_learn_free_wheel_unicycle.html)  
-**RU:** [20260804130000_free_wheel_unicycle_skill_quest_ru.html](20260804130000_free_wheel_unicycle_skill_quest_ru.html)  
+**Русский:** [20260804130000_free_wheel_unicycle_skill_quest_ru.html](20260804130000_free_wheel_unicycle_skill_quest_ru.html)  
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ---

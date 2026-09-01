@@ -3,10 +3,10 @@
 **Published:** 23 ⵢⵓⵏⵢⵓ 2026, ⵀⵉⵍⵙⵉⵏⴽⵉ
 **Modified:** 1 ⵛⵓⵜⴰⵏⴱⵉⵔ 2026
 **Author:** amaaov
-**Language:** Standard Moroccan Tamazight (Tifinagh)
+**Language:** ⵜⴰⵎⴰⵣⵉⵖⵜ
 **HTML:** [20260623120000_music_of_objects_zgh.html](20260623120000_music_of_objects_zgh.html)
-**EN:** [20260623120000_music_of_objects_en.html](20260623120000_music_of_objects_en.html)
-**RU:** [20260623120000_music_of_objects_ru.html](20260623120000_music_of_objects_ru.html)
+**English:** [20260623120000_music_of_objects_en.html](20260623120000_music_of_objects_en.html)
+**Русский:** [20260623120000_music_of_objects_ru.html](20260623120000_music_of_objects_ru.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---

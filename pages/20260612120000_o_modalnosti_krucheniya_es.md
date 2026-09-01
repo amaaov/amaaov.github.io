@@ -3,7 +3,7 @@
 **Published:** 1 January 2025, Helsinki
 **Modified:** 4 August 2026
 **Author:** Boris Fontanov
-**Language:** Spanish
+**Language:** Español
 **HTML:** [20260612120000_o_modalnosti_krucheniya_es.html](20260612120000_o_modalnosti_krucheniya_es.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

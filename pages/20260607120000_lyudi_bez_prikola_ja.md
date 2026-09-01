@@ -3,7 +3,7 @@
 **Published:** 7 June 2026, Helsinki
 **Modified:** 4 July 2026
 **Author:** amaaov
-**Language:** Japanese
+**Language:** 日本語
 **HTML:** [20260607120000_lyudi_bez_prikola_ja.html](20260607120000_lyudi_bez_prikola_ja.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

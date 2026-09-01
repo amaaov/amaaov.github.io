@@ -3,7 +3,7 @@
 **Published:** 7 June 2026, Helsinki
 **Modified:** 4 July 2026
 **Author:** amaaov
-**Language:** Hindi
+**Language:** हिन्दी
 **HTML:** [20260607120000_lyudi_bez_prikola_hi.html](20260607120000_lyudi_bez_prikola_hi.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

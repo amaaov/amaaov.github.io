@@ -6,7 +6,7 @@
 **Language:** English  
 **HTML:** [20260804120000_how_to_learn_free_wheel_unicycle.html](20260804120000_how_to_learn_free_wheel_unicycle.html)  
 **Quest:** [20260804130000_free_wheel_unicycle_skill_quest.html](20260804130000_free_wheel_unicycle_skill_quest.html)  
-**RU:** [20260804120000_how_to_learn_free_wheel_unicycle_ru.html](20260804120000_how_to_learn_free_wheel_unicycle_ru.html)  
+**Русский:** [20260804120000_how_to_learn_free_wheel_unicycle_ru.html](20260804120000_how_to_learn_free_wheel_unicycle_ru.html)  
 **Source spine:** [gist](https://gist.github.com/amaaov/8a0f25cb8f5d2e49f91b4611e39d04d0) · [megathread](https://unicyclist.com/t/freewheel-unicycling-megathread/267800) · practice notes on posture and brakes
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 

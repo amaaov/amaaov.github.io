@@ -310,3 +310,16 @@ body {
 .language-link[lang="zgh"] {
   font-family: "Noto Sans Tifinagh", sans-serif;
 }
+
+html[lang="zgh"] {
+  --serif: "Noto Sans Tifinagh", "Literata", serif;
+  --glossary-tip-font: "Noto Sans Tifinagh", "Literata", serif;
+}
+
+html[lang="zgh"] .article-subtitle,
+html[lang="zgh"] .bridge-label,
+html[lang="zgh"] .term-row dt,
+html[lang="zgh"] .related-label {
+  text-transform: none;
+  letter-spacing: 0.04em;
+}

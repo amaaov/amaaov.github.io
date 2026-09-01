@@ -3,7 +3,7 @@
 **Published:** 8 June 2026, Helsinki
 **Modified:** 4 July 2026
 **Author:** amaaov
-**Language:** Arabic
+**Language:** العربية
 **HTML:** [20260608120000_manifesto_collaborative_concurrent_extreme_ar.html](20260608120000_manifesto_collaborative_concurrent_extreme_ar.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

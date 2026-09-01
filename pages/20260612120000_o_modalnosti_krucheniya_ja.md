@@ -3,7 +3,7 @@
 **Published:** 1 January 2025, Helsinki
 **Modified:** 4 August 2026
 **Author:** ボリス・フォンタノフ
-**Language:** Japanese
+**Language:** 日本語
 **HTML:** [20260612120000_o_modalnosti_krucheniya_ja.html](20260612120000_o_modalnosti_krucheniya_ja.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 

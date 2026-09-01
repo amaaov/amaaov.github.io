@@ -3,7 +3,7 @@
 **Published:** 4 августа 2026, Хельсинки  
 **Modified:** 16 августа 2026, 22:35  
 **Author:** amaaov  
-**Language:** Russian  
+**Language:** Русский  
 **HTML:** [20260804140000_executable_traces_ru.html](20260804140000_executable_traces_ru.html)  
 **Spine:** Работа начинает выглядеть автономной, когда медиа отделили реконструируемую организацию от места, где её сделали; позднейшие системы могут собрать достаточный эффект из этой организации, не возвращаясь туда.
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov

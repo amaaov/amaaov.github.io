@@ -3,7 +3,7 @@
 **Published:** 1 January 2025, Helsinki
 **Modified:** 4 August 2026
 **Author:** बोरिस फ़ोंटानोव
-**Language:** Hindi
+**Language:** हिन्दी
 **HTML:** [20260612120000_o_modalnosti_krucheniya_hi.html](20260612120000_o_modalnosti_krucheniya_hi.html)
 **Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
