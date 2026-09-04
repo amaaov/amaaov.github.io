@@ -51,11 +51,57 @@ body {
 .site-top {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
   max-width: var(--clipboard-width);
   margin: 0 auto;
   padding: 1rem 0 0.4rem;
+}
+
+.article-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.formula-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  border: 1px solid color-mix(in srgb, var(--drop) 62%, transparent);
+  border-radius: 999px;
+  padding: 0.2rem 0.48rem 0.2rem 0.34rem;
+  background: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: var(--drop);
+  font: 600 0.76rem/1 "Red Hat Text", sans-serif;
+  cursor: pointer;
+}
+
+.formula-mode-toggle[hidden] {
+  display: none;
+}
+
+.formula-mode-toggle[aria-pressed="true"] {
+  border-color: var(--drop);
+  background: var(--drop);
+  color: var(--paper);
+}
+
+.ruby-gem {
+  width: 1.1rem;
+  height: 1rem;
+  overflow: visible;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.ruby-gem path:last-child {
+  fill: none;
+  opacity: 0.72;
 }
 
 .home-link,
@@ -150,6 +196,23 @@ body {
   min-inline-size: 100%;
   margin-inline: auto;
   white-space: nowrap;
+}
+
+.ruby-formula {
+  width: max-content;
+  min-width: 100%;
+  margin: 0.75rem 0 0;
+  border-top: 1px dashed color-mix(in srgb, var(--drop) 48%, transparent);
+  padding: 0.65rem 0.5rem 0.05rem;
+  background: color-mix(in srgb, var(--drop) 6%, transparent);
+  color: var(--ink);
+  font: 500 0.82rem/1.5 "Red Hat Mono", monospace;
+  text-align: left;
+  white-space: pre;
+}
+
+.ruby-formula code {
+  font: inherit;
 }
 
 .inline-math {

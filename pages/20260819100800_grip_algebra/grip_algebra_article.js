@@ -3,6 +3,7 @@ import { applyCosmologySoundControls } from "./court_cosmology_sound.js";
 import { cascadeHoldingFlags, playbackTimeBeat, playbackWindowBeats } from "./schedule.js";
 import { courtPicture, trajectoryPositions } from "./toss.js";
 import { renderLatexElements } from "./formula.js";
+import { initializeRubyFormulas } from "./ruby_formulas.js";
 import { initializeFormalLawWorkbench } from "./formal_law_ui.js";
 import { AIRBORNE_SIGN } from "./holding.js";
 import { initializeSiteswapInterface } from "./siteswap_ui.js";
@@ -119,6 +120,7 @@ function paintAtlasCard(card, elapsed, beatSeconds) {
 
 function boot() {
   renderLatexElements(document);
+  initializeRubyFormulas(document);
   const form = document.getElementById("court-controls");
   const rememberRoot = form?.closest(".court-block") ?? form;
   mountSoundSynthControls(form?.querySelector(".sound-controls"), document.documentElement.lang);
