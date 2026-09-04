@@ -10,7 +10,7 @@
   <meta name="description" content="A binary retention relation yields three system signs and exact object-count thresholds for polymorphy, circulation, and buffering beside siteswap.">
   <meta name="author" content="Boris Fontanov">
   <meta property="article:published_time" content="2026-08-19T10:08:00+03:00">
-  <meta property="article:modified_time" content="2026-08-31T22:10:00+03:00">
+  <meta property="article:modified_time" content="2026-09-04T17:35:00+03:00">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
   <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
   <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Red+Hat+Mono:wght@500;700&amp;family=Red+Hat+Text:wght@400;600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260819100800_grip_algebra/grip_algebra_article.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Holding Topology","description":"A binary retention relation yields three system signs and exact object-count thresholds for polymorphy, circulation, and buffering beside siteswap.","author":{"@type":"Person","name":"Boris Fontanov","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-08-31T22:10:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html","inLanguage":"en"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Holding Topology","description":"A binary retention relation yields three system signs and exact object-count thresholds for polymorphy, circulation, and buffering beside siteswap.","author":{"@type":"Person","name":"Boris Fontanov","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-09-04T17:35:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html","inLanguage":"en"}</script>
 </head>
 <body>
   <a class="skip-link" href="#article-body">Skip to article</a>
@@ -164,7 +164,7 @@
               <input id="pattern-source" name="source" value="3" inputmode="text" autocomplete="off" spellcheck="false" dir="ltr">
               <output id="pattern-status" class="control-status" aria-live="polite"></output>
             </div>
-            <div class="playback-controls" aria-label="Playback">
+            <div class="playback-controls" role="group" aria-label="Playback">
               <button id="play-pattern" type="button" aria-pressed="false">Play</button>
               <button id="loop-pattern" type="button" aria-pressed="true">Loop</button>
               <button id="step-pattern" type="button" aria-label="Step ¼ beat">Step</button>
@@ -175,12 +175,16 @@
           <aside id="simulator-inspector" class="simulator-inspector" aria-label="Timing and pattern controls">
             <div class="simulator-splitter" role="separator" aria-orientation="vertical" aria-valuemin="196" aria-valuemax="360" aria-valuenow="280" tabindex="0"></div>
             <div class="timing-controls">
-              <label>dwell <output id="dwell-readout">0.75</output>
-                <input type="range" name="dwell" min="0" max="1" step="0.01" value="0.75">
-              </label>
-              <label>BPM <output id="tempo-readout">150</output>
-                <input type="range" name="tempo" min="60" max="360" step="5" value="150">
-              </label>
+              <div class="range-control">
+                <label for="dwell-control">dwell</label>
+                <output id="dwell-readout" for="dwell-control">0.75</output>
+                <input id="dwell-control" type="range" name="dwell" min="0" max="1" step="0.01" value="0.75">
+              </div>
+              <div class="range-control">
+                <label for="tempo-control">BPM</label>
+                <output id="tempo-readout" for="tempo-control">150</output>
+                <input id="tempo-control" type="range" name="tempo" min="60" max="360" step="5" value="150">
+              </div>
               <label class="check-control"><input type="checkbox" name="holdTwos" checked> read non-crossing 2 as hold</label>
               <label class="check-control"><input type="checkbox" name="patternReverse"> reverse pattern</label>
               <label class="check-control"><input type="checkbox" name="patternCosmology"> random cosmology</label>
@@ -340,7 +344,7 @@
       <p>For the tested value <span class="inline-math" data-latex="d=2/5"></span>, this becomes</p>
       <div class="formula" data-latex="(P_\alpha,P_{\alpha\kappa},P_\kappa)=\begin{cases}(3/5-\phi,\ 2\phi,\ 2/5-\phi),&amp;0\le\phi\le2/5,\\(1/5,\ 4/5,\ 0),&amp;2/5\le\phi\le1/2.\end{cases}" data-display="block"></div>
       <p>The second branch is a share plateau. At <span class="inline-math" data-latex="\phi=2/5"></span>, <span class="inline-math" data-latex="\alpha"></span> occupies one positive-duration bout per cycle; for <span class="inline-math" data-latex="\phi&gt;2/5"></span>, it occupies two. Equal per-object retention shares and equal macrostate shares can therefore coexist with different fragmentation.</p>
-      <section id="formal-law-lab" class="example-band formal-law-workbench" data-language="en"></section>
+      <section id="formal-law-lab" class="example-band formal-law-workbench" data-language="en" aria-label="Exact-law workbench"></section>
       <p>Beek and Turvey reported <span class="inline-math" data-latex="3/4"></span>, <span class="inline-math" data-latex="2/3"></span>, and <span class="inline-math" data-latex="5/8"></span> as prominent dwell ratios for three-ball cascade juggling and about <span class="inline-math" data-latex="3/4"></span> for five and seven balls (<a href="https://doi.org/10.1037/0096-1523.18.4.934">Beek and Turvey, 1992</a>). In this ideal cascade, <span class="inline-math" data-latex="r=5/8"></span> means one ball is held for <span class="inline-math" data-latex="3/4"></span> of the time and two for <span class="inline-math" data-latex="1/4"></span>; at <span class="inline-math" data-latex="r=2/3"></span> the shares are <span class="inline-math" data-latex="2/3"></span> and <span class="inline-math" data-latex="1/3"></span>; at <span class="inline-math" data-latex="r=3/4"></span> they are equal. All three modes remain in <span class="inline-math" data-latex="\alpha\kappa"></span>. In the experiments, the three-ball dwell ratio decreased as juggling frequency increased and did not vary systematically with ball mass; five- and seven-ball ratios remained near <span class="inline-math" data-latex="3/4"></span> across frequencies, while three-scarf ratios often exceeded <span class="inline-math" data-latex="3/4"></span> and varied inversely with frequency. A 2024 robot-planning paper cites human preference near <span class="inline-math" data-latex="r\approx0.7"></span> while choosing <span class="inline-math" data-latex="r=0.5"></span> for its simulated hardware constraints (<a href="https://arxiv.org/abs/2410.19591">Gomez Andreu, Ploeger, and Peters, 2024</a>).</p>
       <p>The ratio can be measured on every hand cycle. If <span class="inline-math" data-latex="c_{h,j}"></span> is a catch by hand <span class="inline-math" data-latex="h"></span>, <span class="inline-math" data-latex="u_{h,j}"></span> its following release, and <span class="inline-math" data-latex="c_{h,j+1}"></span> the next catch by that hand, then</p>
       <div class="formula" data-latex="r_{h,j}=\frac{u_{h,j}-c_{h,j}}{c_{h,j+1}-c_{h,j}}." data-display="block"></div>

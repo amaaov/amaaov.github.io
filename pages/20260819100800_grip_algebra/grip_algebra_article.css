@@ -157,10 +157,6 @@ body {
   white-space: nowrap;
 }
 
-.inline-math math {
-  display: inline;
-}
-
 .court-block {
   --simulator-inset: 0.7rem;
   margin-block: 1.4rem 1.8rem;
@@ -298,6 +294,7 @@ body {
 
 .pattern-entry label,
 .timing-controls label,
+.range-control,
 .generator-grid label {
   display: inline-flex;
   gap: 0.3rem;

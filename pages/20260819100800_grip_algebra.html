@@ -10,7 +10,7 @@
   <meta name="description" content="Двоичное отношение удержания даёт три системных знака и точные пороги числа предметов для полиморфии, циркуляции и запаса рядом с сайтсвопом.">
   <meta name="author" content="Борис Фонтанов">
   <meta property="article:published_time" content="2026-08-19T10:08:00+03:00">
-  <meta property="article:modified_time" content="2026-08-31T22:10:00+03:00">
+  <meta property="article:modified_time" content="2026-09-04T17:35:00+03:00">
   <link rel="canonical" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
   <link rel="alternate" hreflang="en" href="https://amaaov.github.io/pages/20260819100800_grip_algebra_en.html">
   <link rel="alternate" hreflang="ru" href="https://amaaov.github.io/pages/20260819100800_grip_algebra.html">
@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Red+Hat+Mono:wght@500;700&amp;family=Red+Hat+Text:wght@400;600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared/glossary_hints.css">
   <link rel="stylesheet" href="20260819100800_grip_algebra/grip_algebra_article.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Топология удержания","description":"Двоичное отношение удержания даёт три системных знака и точные пороги числа предметов для полиморфии, циркуляции и запаса рядом с сайтсвопом.","author":{"@type":"Person","name":"Борис Фонтанов","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-08-31T22:10:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra.html","inLanguage":"ru"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Топология удержания","description":"Двоичное отношение удержания даёт три системных знака и точные пороги числа предметов для полиморфии, циркуляции и запаса рядом с сайтсвопом.","author":{"@type":"Person","name":"Борис Фонтанов","url":"https://amaaov.github.io"},"datePublished":"2026-08-19T10:08:00+03:00","dateModified":"2026-09-04T17:35:00+03:00","url":"https://amaaov.github.io/pages/20260819100800_grip_algebra.html","inLanguage":"ru"}</script>
 </head>
 <body>
   <a class="skip-link" href="#article-body">К статье</a>
@@ -164,7 +164,7 @@
               <input id="pattern-source" name="source" value="3" inputmode="text" autocomplete="off" spellcheck="false" dir="ltr">
               <output id="pattern-status" class="control-status" aria-live="polite"></output>
             </div>
-            <div class="playback-controls" aria-label="Воспроизведение">
+            <div class="playback-controls" role="group" aria-label="Воспроизведение">
               <button id="play-pattern" type="button" aria-pressed="false">Пуск</button>
               <button id="loop-pattern" type="button" aria-pressed="true">Цикл</button>
               <button id="step-pattern" type="button" aria-label="Шаг ¼ доли">Шаг</button>
@@ -175,12 +175,16 @@
           <aside id="simulator-inspector" class="simulator-inspector" aria-label="Настройки времени и рисунка">
             <div class="simulator-splitter" role="separator" aria-orientation="vertical" aria-valuemin="196" aria-valuemax="360" aria-valuenow="280" tabindex="0"></div>
             <div class="timing-controls">
-              <label>выдержка <output id="dwell-readout">0.75</output>
-                <input type="range" name="dwell" min="0" max="1" step="0.01" value="0.75">
-              </label>
-              <label>BPM <output id="tempo-readout">150</output>
-                <input type="range" name="tempo" min="60" max="360" step="5" value="150">
-              </label>
+              <div class="range-control">
+                <label for="dwell-control">выдержка</label>
+                <output id="dwell-readout" for="dwell-control">0.75</output>
+                <input id="dwell-control" type="range" name="dwell" min="0" max="1" step="0.01" value="0.75">
+              </div>
+              <div class="range-control">
+                <label for="tempo-control">BPM</label>
+                <output id="tempo-readout" for="tempo-control">150</output>
+                <input id="tempo-control" type="range" name="tempo" min="60" max="360" step="5" value="150">
+              </div>
               <label class="check-control"><input type="checkbox" name="holdTwos" checked> считать неперекрёстную 2 удержанием</label>
               <label class="check-control"><input type="checkbox" name="patternReverse"> реверс паттерна</label>
               <label class="check-control"><input type="checkbox" name="patternCosmology"> случайная космология</label>
@@ -340,7 +344,7 @@
       <p>Для проверенного значения <span class="inline-math" data-latex="d=2/5"></span> получаем</p>
       <div class="formula" data-latex="(P_\alpha,P_{\alpha\kappa},P_\kappa)=\begin{cases}(3/5-\phi,\ 2\phi,\ 2/5-\phi),&amp;0\le\phi\le2/5,\\(1/5,\ 4/5,\ 0),&amp;2/5\le\phi\le1/2.\end{cases}" data-display="block"></div>
       <p>Вторая ветвь образует плато долей. При <span class="inline-math" data-latex="\phi=2/5"></span> состояние <span class="inline-math" data-latex="\alpha"></span> занимает один эпизод положительной длительности за цикл, а при <span class="inline-math" data-latex="\phi&gt;2/5"></span> — два. Поэтому одинаковые доли удержания каждого предмета и одинаковые доли макросостояний могут сочетаться с разной фрагментацией пути.</p>
-      <section id="formal-law-lab" class="example-band formal-law-workbench" data-language="ru"></section>
+      <section id="formal-law-lab" class="example-band formal-law-workbench" data-language="ru" aria-label="Лаборатория точных законов"></section>
       <p>Бек и Тёрви отмечали <span class="inline-math" data-latex="3/4"></span>, <span class="inline-math" data-latex="2/3"></span> и <span class="inline-math" data-latex="5/8"></span> как заметные доли выдержки в трёхмячевом каскаде и около <span class="inline-math" data-latex="3/4"></span> для пяти и семи мячей (<a href="https://doi.org/10.1037/0096-1523.18.4.934">Beek and Turvey, 1992</a>). В идеальном каскаде при <span class="inline-math" data-latex="r=5/8"></span> один мяч удерживается <span class="inline-math" data-latex="3/4"></span> времени, а два — <span class="inline-math" data-latex="1/4"></span>; при <span class="inline-math" data-latex="r=2/3"></span> эти доли равны <span class="inline-math" data-latex="2/3"></span> и <span class="inline-math" data-latex="1/3"></span>; при <span class="inline-math" data-latex="r=3/4"></span> они совпадают. Все три режима остаются в <span class="inline-math" data-latex="\alpha\kappa"></span>. В экспериментах доля выдержки для трёх мячей уменьшалась с ростом частоты жонглирования и не показывала систематической связи с массой мячей; для пяти и семи мячей она оставалась около <span class="inline-math" data-latex="3/4"></span> при разных частотах, тогда как для трёх платков часто превышала <span class="inline-math" data-latex="3/4"></span> и уменьшалась с ростом частоты. Статья 2024 года о планировании движений робота ссылается на человеческое предпочтение около <span class="inline-math" data-latex="r\approx0.7"></span>, а для ограничений своей симуляции выбирает <span class="inline-math" data-latex="r=0.5"></span> (<a href="https://arxiv.org/abs/2410.19591">Gomez Andreu, Ploeger, and Peters, 2024</a>).</p>
       <p>Долю можно измерять в каждом цикле руки. Если <span class="inline-math" data-latex="c_{h,j}"></span> — захват рукой <span class="inline-math" data-latex="h"></span>, <span class="inline-math" data-latex="u_{h,j}"></span> — следующее освобождение, а <span class="inline-math" data-latex="c_{h,j+1}"></span> — следующий захват этой рукой, то</p>
       <div class="formula" data-latex="r_{h,j}=\frac{u_{h,j}-c_{h,j}}{c_{h,j+1}-c_{h,j}}." data-display="block"></div>
