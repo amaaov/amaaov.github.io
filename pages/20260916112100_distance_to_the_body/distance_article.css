@@ -1,0 +1,175 @@
+:root {
+  color-scheme: light;
+  --paper: #f6f4ec;
+  --surround: #dce4df;
+  --ink: #203731;
+  --soft-ink: #4d625b;
+  --line: #9eb5a8;
+  --signal: #a44d35;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--surround);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+a { color: #7b3828; text-decoration-thickness: .07em; text-underline-offset: .17em; }
+a:hover { color: #542519; }
+a:focus-visible { outline: 3px solid var(--signal); outline-offset: 4px; }
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -5rem;
+  z-index: 10;
+  padding: .7rem 1rem;
+  background: var(--paper);
+}
+.skip-link:focus { top: 1rem; }
+
+.site-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  max-width: 80rem;
+  margin: auto;
+  padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: .9rem;
+  letter-spacing: .05em;
+}
+.site-head a { color: var(--ink); }
+.brand { font-weight: 700; text-decoration: none; }
+
+main {
+  max-width: 80rem;
+  min-height: 100vh;
+  margin: auto;
+  background: var(--paper);
+  box-shadow: 0 0 4rem #45615720;
+}
+
+.opening {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 32rem;
+  overflow: hidden;
+  padding: clamp(2rem, 6vw, 5rem) clamp(1.4rem, 8vw, 8rem);
+  border-bottom: 1px solid var(--line);
+}
+.opening-copy { position: relative; z-index: 1; max-width: 49rem; }
+.eyebrow, .byline, .margin-mark, .article-foot {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: .78rem;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.eyebrow { margin: 0 0 2.5rem; color: var(--soft-ink); }
+h1 {
+  max-width: 9ch;
+  margin: 0;
+  font-size: clamp(3.7rem, 9vw, 8.2rem);
+  font-weight: 400;
+  letter-spacing: -.055em;
+  line-height: .92;
+}
+.standfirst {
+  max-width: 35rem;
+  margin: 2.2rem 0 0;
+  font-size: clamp(1.15rem, 2vw, 1.42rem);
+  line-height: 1.48;
+}
+.byline { margin: 2rem 0 0; color: var(--soft-ink); }
+
+.proximity-art {
+  position: absolute;
+  right: -13rem;
+  top: -19rem;
+  width: 54rem;
+  aspect-ratio: 1;
+  border: 1px solid #b2755e;
+  border-radius: 50%;
+  opacity: .75;
+}
+.proximity-art span {
+  position: absolute;
+  inset: 11%;
+  border: 1px solid #b2755e;
+  border-radius: 50%;
+}
+.proximity-art span:nth-child(2) { inset: 23%; }
+.proximity-art span:nth-child(3) { inset: 35%; }
+.proximity-art span:nth-child(4) { inset: 47%; background: var(--signal); border: 0; }
+
+.reading {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 42rem);
+  gap: clamp(1rem, 5vw, 5rem);
+  justify-content: center;
+  padding: clamp(2.3rem, 6vw, 5rem) 1.4rem 5rem;
+}
+.margin-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11rem;
+  padding: .2rem 1rem 0 0;
+  border-right: 1px solid var(--line);
+  color: var(--soft-ink);
+  font-size: .65rem;
+}
+.margin-mark span { writing-mode: vertical-rl; }
+article {
+  font-size: clamp(1.08rem, 1.45vw, 1.22rem);
+  line-height: 1.77;
+  text-align: justify;
+  hyphens: auto;
+  text-wrap: pretty;
+}
+article p { margin: 0 0 1.55em; }
+article p:first-child::first-letter {
+  float: left;
+  padding: .05em .09em 0 0;
+  color: var(--signal);
+  font-size: 4.3em;
+  line-height: .78;
+}
+
+.article-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  padding: 2rem clamp(1.4rem, 8vw, 8rem) 3rem;
+  border-top: 1px solid var(--line);
+  color: var(--soft-ink);
+  letter-spacing: .03em;
+  line-height: 1.5;
+  text-transform: none;
+}
+.article-foot p { margin: 0; }
+.article-foot nav { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; }
+
+@media (max-width: 700px) {
+  .opening { min-height: 31rem; align-items: center; }
+  .proximity-art { right: -26rem; top: -8rem; opacity: .4; }
+  .reading { display: block; padding-inline: clamp(1.4rem, 5vw, 2.5rem); }
+  .margin-mark { display: none; }
+  article { max-width: 39rem; margin: auto; text-align: left; }
+}
+
+@media (prefers-contrast: more) {
+  :root { --soft-ink: #314840; --line: #58746a; --signal: #87351f; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
