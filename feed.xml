@@ -5,10 +5,39 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Tue, 01 Sep 2026 15:27:11 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 08:21:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>The Distance to the Body</title>
+      <description>From a shared radio to the phone, sensor, and implant: an essay on bodily proximity and the cost of leaving a device behind.</description>
+      <link>https://amaaov.github.io/pages/20260916112100_distance_to_the_body.html</link>
+      <guid>https://amaaov.github.io/pages/20260916112100_distance_to_the_body.html</guid>
+      <pubDate>Wed, 16 Sep 2026 08:21:00 +0000</pubDate>
+      <category>essay</category>
+      <category>digital life</category>
+    </item>
+    <item>
+      <title>Garbage Collection Is a Professional Skill</title>
+      <description>An essay on the obligation after software publication, including factual documentation through use, proportionate rebuilding, deprecation, and archival.</description>
+      <link>https://amaaov.github.io/pages/20260908125418_garbage_collection_is_a_professional_skill.html</link>
+      <guid>https://amaaov.github.io/pages/20260908125418_garbage_collection_is_a_professional_skill.html</guid>
+      <pubDate>Tue, 08 Sep 2026 09:54:18 +0000</pubDate>
+      <category>essay</category>
+      <category>software maintenance</category>
+      <category>open source</category>
+      <category>generative AI</category>
+    </item>
+    <item>
+      <title>The Defaults I Can Handle</title>
+      <description>Generic forms, learned handling, and how real use turns remaking, documentation, and defaults into practical knowledge.</description>
+      <link>https://amaaov.github.io/pages/20260905092535_generic_technology.html</link>
+      <guid>https://amaaov.github.io/pages/20260905092535_generic_technology.html</guid>
+      <pubDate>Mon, 07 Sep 2026 09:14:17 +0000</pubDate>
+      <category>essay</category>
+      <category>technology</category>
+    </item>
     <item>
       <title>Existence</title>
       <description>An hour has happened without owing a next; a deposit can exist without remaining parent of what grows from it.</description>
