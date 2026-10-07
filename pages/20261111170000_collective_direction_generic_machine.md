@@ -2,11 +2,11 @@
 
 *One year after collective awareness*
 
-**Planned publication:** 11 November 2026, Helsinki  
+**Published:** 7 October 2026, Helsinki  
 **Author:** amaaov  
 **Language:** English  
-**HTML:** [Collective Direction and the Generic Machine](20261111170000_collective_direction_generic_machine.html)  
-**Status:** Draft
+**HTML:** [20261111170000_collective_direction_generic_machine.html](20261111170000_collective_direction_generic_machine.html)  
+**Licence:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — credit Andrei Makarov / amaaov
 
 ---
 
