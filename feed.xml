@@ -5,10 +5,21 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Wed, 16 Sep 2026 08:21:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 16:54:00 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Collective Direction and the Generic Machine</title>
+      <description>One year after collective awareness: generative production moves attention from local inscription and empty tickets toward diffs, collaboration, ownership, and responsibility.</description>
+      <link>https://amaaov.github.io/pages/20261111170000_collective_direction_generic_machine.html</link>
+      <guid>https://amaaov.github.io/pages/20261111170000_collective_direction_generic_machine.html</guid>
+      <pubDate>Wed, 07 Oct 2026 16:54:00 +0000</pubDate>
+      <category>essay</category>
+      <category>generative AI</category>
+      <category>software</category>
+      <category>programming</category>
+    </item>
     <item>
       <title>The Distance to the Body</title>
       <description>From a shared radio to the phone, sensor, and implant: an essay on bodily proximity and the cost of leaving a device behind.</description>
