@@ -1,0 +1,536 @@
+/* Collective Direction - a routing ledger where many implementation traces
+   converge on one human-held direction. Unique to this essay. */
+
+:root {
+  color-scheme: light;
+  --field: #d8dde0;
+  --paper: #f5f1e7;
+  --paper-deep: #e9e2d3;
+  --ink: #171c21;
+  --ink-soft: #565f64;
+  --grid: rgba(28, 55, 72, 0.105);
+  --line: #a8afb0;
+  --cobalt: #16548e;
+  --rust: #a54c31;
+  --signal: #c91e38;
+  --focus: #005fcc;
+  --body-size: clamp(1.04rem, 0.98rem + 0.3vw, 1.2rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--field);
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.28), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.22)),
+    var(--field);
+  font-family: "IBM Plex Serif", "Iowan Old Style", Georgia, serif;
+}
+
+a {
+  color: var(--cobalt);
+  text-decoration-thickness: 0.075em;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: #0b345a;
+  text-decoration-thickness: 0.12em;
+}
+
+a:focus-visible {
+  border-radius: 2px;
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+::selection {
+  color: var(--ink);
+  background: #f0afba;
+}
+
+.skip-link {
+  position: fixed;
+  top: -5rem;
+  left: 1rem;
+  z-index: 20;
+  padding: 0.65rem 0.9rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  font: 600 0.78rem/1.2 "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.site-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  max-width: 94rem;
+  margin: 0 auto;
+  padding: 1rem clamp(1rem, 4vw, 4rem);
+  font: 500 0.78rem/1.5 "IBM Plex Sans", "Segoe UI", sans-serif;
+  letter-spacing: 0.035em;
+}
+
+.site-top nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.4rem;
+}
+
+.site-top a {
+  color: var(--ink);
+}
+
+.site-top .brand {
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-top [aria-current="page"] {
+  color: var(--signal);
+  text-decoration: none;
+}
+
+.machine-sheet {
+  position: relative;
+  max-width: 94rem;
+  margin: 0 auto 4rem;
+  overflow: hidden;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 1.5rem 1.5rem;
+  border: 1px solid #98a0a2;
+  box-shadow: 0 1.5rem 4rem rgba(24, 35, 42, 0.2);
+}
+
+.machine-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.42rem;
+  background: var(--signal);
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(22rem, 0.88fr);
+  gap: clamp(2rem, 6vw, 7rem);
+  align-items: center;
+  min-height: 43rem;
+  padding: clamp(3.5rem, 8vw, 8rem) clamp(1.6rem, 6vw, 6rem) clamp(3rem, 7vw, 6rem);
+  background: rgba(245, 241, 231, 0.82);
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow,
+.byline,
+.section-index,
+.rail-note,
+.article-footer {
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.eyebrow {
+  margin: 0 0 2.3rem;
+  color: var(--rust);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: clamp(3rem, 6.7vw, 7rem);
+  font-weight: 650;
+  letter-spacing: -0.075em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+.deck {
+  max-width: 31rem;
+  margin: 2.2rem 0 0;
+  color: var(--ink-soft);
+  font-size: clamp(1.12rem, 1rem + 0.55vw, 1.48rem);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.byline {
+  margin: 2.2rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  line-height: 1.7;
+}
+
+.draft-mark {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.08rem 0.35rem;
+  color: var(--signal);
+  border: 1px solid currentColor;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.routing-map {
+  width: 100%;
+  height: auto;
+  max-height: 34rem;
+  color: var(--ink-soft);
+  filter: drop-shadow(0 0.45rem 0 rgba(22, 84, 142, 0.08));
+}
+
+.routing-map path,
+.routing-map line,
+.routing-map circle {
+  vector-effect: non-scaling-stroke;
+}
+
+.routing-map .route {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.routing-map .route--blue {
+  color: var(--cobalt);
+}
+
+.routing-map .route--rust {
+  color: var(--rust);
+}
+
+.routing-map .direction {
+  stroke: var(--signal);
+  stroke-width: 8;
+}
+
+.routing-map circle {
+  fill: var(--paper);
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.routing-map .decision {
+  fill: var(--signal);
+  stroke: var(--paper);
+  stroke-width: 4;
+}
+
+.reading-grid {
+  display: grid;
+  grid-template-columns: minmax(7rem, 12rem) minmax(0, 43rem) minmax(2rem, 1fr);
+  gap: clamp(1.5rem, 4vw, 5rem);
+  justify-content: center;
+  padding: clamp(3rem, 7vw, 6rem) clamp(1.4rem, 5vw, 5rem) 6rem;
+  background: rgba(245, 241, 231, 0.72);
+}
+
+.direction-rail {
+  position: relative;
+  grid-column: 1;
+  min-height: 100%;
+  border-right: 1px solid var(--line);
+}
+
+.direction-rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 3px;
+  height: 34%;
+  background: var(--signal);
+}
+
+.rail-note {
+  position: sticky;
+  top: 1.5rem;
+  max-width: 12ch;
+  margin: 0;
+  padding-right: 1.5rem;
+  color: var(--ink-soft);
+  font-size: 0.66rem;
+  line-height: 1.65;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rail-note::after {
+  content: "";
+  display: block;
+  width: 0.62rem;
+  height: 0.62rem;
+  margin-top: 1.2rem;
+  background: var(--signal);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.35rem var(--paper), 0 0 0 0.42rem var(--signal);
+}
+
+.article-body {
+  grid-column: 2;
+  min-width: 0;
+  font-size: var(--body-size);
+  line-height: 1.72;
+}
+
+.article-body > p,
+.article-body section > p {
+  margin: 0 0 1.45em;
+  text-align: justify;
+  text-wrap: pretty;
+  hyphens: auto;
+  orphans: 3;
+  widows: 3;
+}
+
+.article-body > p:first-child::first-letter {
+  float: left;
+  margin: 0.08em 0.1em 0 0;
+  color: var(--signal);
+  font: 650 4.25em/0.76 "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.article-section {
+  position: relative;
+  margin-top: 4.5rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--line);
+}
+
+.article-section::before {
+  content: "";
+  position: absolute;
+  top: -0.34rem;
+  left: 0;
+  width: 0.68rem;
+  height: 0.68rem;
+  background: var(--paper);
+  border: 2px solid var(--cobalt);
+  border-radius: 50%;
+}
+
+.section-index {
+  display: block;
+  margin-bottom: 0.7rem;
+  color: var(--rust);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+h2 {
+  max-width: 20ch;
+  margin: 0 0 1.6rem;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: clamp(1.65rem, 1.25rem + 1.5vw, 2.55rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.article-section--boundary {
+  margin-inline: clamp(-2rem, -4vw, -1rem);
+  padding-inline: clamp(1rem, 4vw, 2rem);
+  padding-bottom: 0.25rem;
+  background:
+    linear-gradient(90deg, rgba(201, 30, 56, 0.08), transparent 24%),
+    rgba(233, 226, 211, 0.45);
+  border-top-color: rgba(165, 76, 49, 0.6);
+}
+
+.article-section--boundary::before {
+  left: clamp(1rem, 4vw, 2rem);
+  border-color: var(--signal);
+}
+
+.article-section--boundary .section-index {
+  color: var(--signal);
+}
+
+.article-footer {
+  grid-column: 2;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  line-height: 1.7;
+}
+
+.article-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.4rem;
+}
+
+@media (max-width: 66rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr);
+    gap: 2rem;
+  }
+
+  .reading-grid {
+    grid-template-columns: 6rem minmax(0, 43rem);
+  }
+}
+
+@media (max-width: 48rem) {
+  .site-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 4rem;
+  }
+
+  h1 {
+    font-size: clamp(2.65rem, 13vw, 4.7rem);
+  }
+
+  .routing-map {
+    max-height: 18rem;
+  }
+
+  .reading-grid {
+    display: block;
+    padding-inline: clamp(1.3rem, 5vw, 2.3rem);
+  }
+
+  .direction-rail {
+    margin-bottom: 3rem;
+    padding-bottom: 1rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .direction-rail::before {
+    top: auto;
+    right: auto;
+    bottom: -2px;
+    left: 0;
+    width: 34%;
+    height: 3px;
+  }
+
+  .rail-note {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: none;
+    padding: 0;
+  }
+
+  .rail-note::after {
+    flex: none;
+    order: -1;
+    margin: 0 0 0 0.4rem;
+  }
+
+  .article-body > p,
+  .article-body section > p {
+    hyphens: none;
+    text-align: left;
+  }
+
+  .article-section {
+    margin-top: 3.5rem;
+  }
+
+  .article-section--boundary {
+    margin-inline: -0.7rem;
+    padding-inline: 0.7rem;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --field: #fff;
+    --paper: #fff;
+    --paper-deep: #fff;
+    --ink: #000;
+    --ink-soft: #222;
+    --grid: rgba(0, 0, 0, 0.14);
+    --line: #555;
+    --cobalt: #003f7a;
+    --rust: #752a12;
+    --signal: #a4001d;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .site-top,
+  .direction-rail {
+    display: none;
+  }
+
+  .machine-sheet {
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 1.5cm 1.4cm 1cm;
+  }
+
+  .reading-grid {
+    display: block;
+    padding: 1cm 1.4cm;
+  }
+
+  .article-body {
+    max-width: none;
+    font-size: 10.5pt;
+  }
+
+  .article-section h2,
+  .article-section .section-index {
+    break-after: avoid-page;
+  }
+}
