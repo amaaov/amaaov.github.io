@@ -1,0 +1,39 @@
+{
+  "name": "amaaov essays",
+  "version": "1.0.0",
+  "description": "Personal site of Andrei Makarov (amaaov): essays, juggling, music, and observed practice. Read-only public surface; no payments and no agent registration.",
+  "supportedInterfaces": [
+    {
+      "url": "https://amaaov.github.io/",
+      "protocol": "https",
+      "transport": "http"
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "skills": [
+    {
+      "id": "list-essays",
+      "name": "List essays",
+      "description": "Read llms.txt and pages.html for the published article list."
+    },
+    {
+      "id": "read-markdown-mirror",
+      "name": "Read Markdown mirror",
+      "description": "Fetch the .md sibling beside an HTML essay when available."
+    },
+    {
+      "id": "list-demos",
+      "name": "List demos",
+      "description": "Open demos.html for interactive demos."
+    }
+  ],
+  "documentationUrl": "https://amaaov.github.io/llms.txt",
+  "provider": {
+    "organization": "amaaov",
+    "url": "https://amaaov.github.io/"
+  }
+}

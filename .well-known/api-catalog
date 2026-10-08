@@ -1,0 +1,33 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://amaaov.github.io/",
+      "service-desc": [
+        {
+          "href": "https://amaaov.github.io/openapi.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://amaaov.github.io/llms.txt",
+          "type": "text/plain"
+        },
+        {
+          "href": "https://amaaov.github.io/auth.md",
+          "type": "text/markdown"
+        },
+        {
+          "href": "https://amaaov.github.io/pages.html",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://amaaov.github.io/",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}

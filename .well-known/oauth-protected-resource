@@ -1,0 +1,13 @@
+{
+  "resource": "https://amaaov.github.io",
+  "authorization_servers": [
+    "https://amaaov.github.io"
+  ],
+  "scopes_supported": [
+    "site:read"
+  ],
+  "bearer_methods_supported": [
+    "header"
+  ],
+  "resource_documentation": "https://amaaov.github.io/auth.md"
+}

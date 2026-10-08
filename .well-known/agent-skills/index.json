@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "browse-essays",
+      "type": "skill-md",
+      "description": "Browse amaaov.github.io essays, Markdown mirrors, demos index, and llms.txt.",
+      "url": "https://amaaov.github.io/.well-known/agent-skills/browse-essays/SKILL.md",
+      "digest": "sha256:ce97ea0d5ec99c8e3964c14ad3b69de75e9bb9f4aeadeb1d74319e21ccfd7cb1"
+    }
+  ]
+}

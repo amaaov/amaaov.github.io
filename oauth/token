@@ -1,0 +1,4 @@
+{
+  "error": "unsupported_grant_type",
+  "error_description": "amaaov.github.io does not mint OAuth tokens. See https://amaaov.github.io/auth.md"
+}

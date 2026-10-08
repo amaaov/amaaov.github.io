@@ -1,0 +1,38 @@
+{
+  "serverInfo": {
+    "name": "amaaov-site",
+    "version": "1.0.0",
+    "description": "Discovery card for the amaaov.github.io public HTTP surface. Public pages are read through ordinary GET; this card does not claim a live MCP session transport."
+  },
+  "endpoint": "https://amaaov.github.io/",
+  "transport": {
+    "type": "streamable-http",
+    "endpoint": "https://amaaov.github.io/"
+  },
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    },
+    "resources": {
+      "subscribe": false,
+      "listChanged": false
+    },
+    "prompts": {
+      "listChanged": false
+    }
+  },
+  "tools": [
+    {
+      "name": "get_llms_txt",
+      "description": "Fetch https://amaaov.github.io/llms.txt for the site index."
+    },
+    {
+      "name": "get_pages_index",
+      "description": "Open the articles index at /pages.html."
+    },
+    {
+      "name": "get_demos_index",
+      "description": "Open the demos index at /demos.html."
+    }
+  ]
+}

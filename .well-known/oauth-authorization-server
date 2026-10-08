@@ -1,0 +1,39 @@
+{
+  "issuer": "https://amaaov.github.io",
+  "authorization_endpoint": "https://amaaov.github.io/oauth/authorize",
+  "token_endpoint": "https://amaaov.github.io/oauth/token",
+  "jwks_uri": "https://amaaov.github.io/oauth/jwks.json",
+  "grant_types_supported": [
+    "authorization_code"
+  ],
+  "response_types_supported": [
+    "code"
+  ],
+  "scopes_supported": [
+    "site:read"
+  ],
+  "token_endpoint_auth_methods_supported": [
+    "none"
+  ],
+  "service_documentation": "https://amaaov.github.io/auth.md",
+  "agent_auth": {
+    "skill": "https://amaaov.github.io/auth.md",
+    "register_uri": "https://amaaov.github.io/auth.md",
+    "identity_types_supported": [
+      "anonymous"
+    ],
+    "anonymous": {
+      "credential_types_supported": [
+        "none"
+      ],
+      "claim_uri": "https://amaaov.github.io/auth.md"
+    },
+    "methods": [
+      {
+        "type": "anonymous_read",
+        "uri": "https://amaaov.github.io/auth.md",
+        "description": "Agents read public URLs without credentials. This hostname does not mint OAuth tokens."
+      }
+    ]
+  }
+}

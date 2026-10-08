@@ -1,0 +1,54 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "amaaov",
+    "identifier": "did:web:amaaov.github.io"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:amaaov.github.io:agent:essays",
+      "displayName": "amaaov essays agent card",
+      "type": "application/a2a-agent-card+json",
+      "url": "https://amaaov.github.io/.well-known/agent-card.json",
+      "representativeQueries": [
+        "list amaaov essays",
+        "what is amaaov.github.io",
+        "find juggling essays by amaaov",
+        "amaaov article index"
+      ]
+    },
+    {
+      "identifier": "urn:air:amaaov.github.io:server:site-mcp",
+      "displayName": "amaaov MCP server card",
+      "type": "application/mcp-server-card+json",
+      "url": "https://amaaov.github.io/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "fetch amaaov llms.txt",
+        "open amaaov pages index",
+        "discover amaaov MCP tools"
+      ]
+    },
+    {
+      "identifier": "urn:air:amaaov.github.io:skills:browse-essays",
+      "displayName": "Browse essays skill",
+      "type": "application/agent-skills-index+json",
+      "url": "https://amaaov.github.io/.well-known/agent-skills/index.json",
+      "representativeQueries": [
+        "skill for browsing amaaov",
+        "how should an agent read amaaov essays",
+        "amaaov agent skills index"
+      ]
+    },
+    {
+      "identifier": "urn:air:amaaov.github.io:api:site",
+      "displayName": "Site API catalog",
+      "type": "application/linkset+json",
+      "url": "https://amaaov.github.io/.well-known/api-catalog",
+      "representativeQueries": [
+        "amaaov OpenAPI",
+        "discover amaaov HTTP APIs",
+        "amaaov service description"
+      ]
+    }
+  ]
+}

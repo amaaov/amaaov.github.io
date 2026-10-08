@@ -1,0 +1,4 @@
+{
+  "error": "unauthorized_client",
+  "error_description": "amaaov.github.io does not issue OAuth authorizations. See https://amaaov.github.io/auth.md"
+}

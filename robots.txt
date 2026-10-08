@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
 
 Sitemap: https://amaaov.github.io/sitemap.xml
+Agentmap: https://amaaov.github.io/.well-known/ai-catalog.json
 # LLM index: https://amaaov.github.io/llms.txt

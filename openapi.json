@@ -1,0 +1,92 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "amaaov public site",
+    "version": "1.0.0",
+    "description": "Public read-only HTTP surface for amaaov.github.io essays, demos, and discovery files. No account registration and no token minting."
+  },
+  "servers": [
+    {
+      "url": "https://amaaov.github.io"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Homepage",
+        "operationId": "getHome",
+        "responses": {
+          "200": {
+            "description": "HTML homepage with contacts and internet evidence"
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "summary": "LLM index of pages",
+        "operationId": "getLlmsTxt",
+        "responses": {
+          "200": {
+            "description": "Plain-text site index"
+          }
+        }
+      }
+    },
+    "/sitemap.xml": {
+      "get": {
+        "summary": "Sitemap",
+        "operationId": "getSitemap",
+        "responses": {
+          "200": {
+            "description": "XML sitemap"
+          }
+        }
+      }
+    },
+    "/feed.xml": {
+      "get": {
+        "summary": "RSS feed",
+        "operationId": "getFeed",
+        "responses": {
+          "200": {
+            "description": "Feed of published pages"
+          }
+        }
+      }
+    },
+    "/pages.html": {
+      "get": {
+        "summary": "Articles index",
+        "operationId": "getPagesIndex",
+        "responses": {
+          "200": {
+            "description": "HTML index of essays and programmes"
+          }
+        }
+      }
+    },
+    "/demos.html": {
+      "get": {
+        "summary": "Demos index",
+        "operationId": "getDemosIndex",
+        "responses": {
+          "200": {
+            "description": "HTML index of interactive demos"
+          }
+        }
+      }
+    },
+    "/.well-known/api-catalog": {
+      "get": {
+        "summary": "RFC 9727 API catalog",
+        "operationId": "getApiCatalog",
+        "responses": {
+          "200": {
+            "description": "Linkset document"
+          }
+        }
+      }
+    }
+  }
+}
