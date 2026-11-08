@@ -5,10 +5,20 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Thu, 08 Oct 2026 04:49:08 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2026 12:45:40 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>Спонтанность и афезис</title>
+      <description>Программирование как обработанный ввод, асимметричная петля влияния и право оставить следующий ход другому.</description>
+      <link>https://amaaov.github.io/pages/20261107131500_sua_sponte_non_programming.html</link>
+      <guid>https://amaaov.github.io/pages/20261107131500_sua_sponte_non_programming.html</guid>
+      <pubDate>Sat, 07 Nov 2026 11:15:00 +0000</pubDate>
+      <category>essay</category>
+      <category>programming</category>
+      <category>digital life</category>
+    </item>
     <item>
       <title>Collective Direction and the Generic Machine</title>
       <description>One year after collective awareness: generative production turns diffs into situations for collective learning, direction, ownership, and responsibility.</description>
