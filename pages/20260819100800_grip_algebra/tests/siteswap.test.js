@@ -685,3 +685,45 @@ test("periodic 55500 keeps staggered high throws", () => {
   assert.ok(peakTimes.every((time) => time !== null));
   assert.ok(Math.max(...peakTimes) - Math.min(...peakTimes) > 1);
 });
+
+test("solo Lab rejects passing and bounce letters", () => {
+  assert.equal(siteswapIsValid("<3|3>"), false);
+  assert.equal(siteswapIsValid("3B"), false);
+  assert.equal(siteswapIsValid("5F"), false);
+  assert.throws(() => parseSiteswap("3B"), /bounce/);
+  assert.throws(() => parseHybridSiteswap("<3|3>"), /passing/);
+});
+
+test("trailing star mirrors sync pairs", () => {
+  const pairs = parseSyncSiteswap("(4x,2x)(2,4x)*");
+  assert.equal(pairs.length, 4);
+  assert.deepEqual(pairs[0].left, [{ height: 4, crossing: true }]);
+  assert.deepEqual(pairs[0].right, [{ height: 2, crossing: true }]);
+  assert.deepEqual(pairs[2].left, [{ height: 2, crossing: true }]);
+  assert.deepEqual(pairs[2].right, [{ height: 4, crossing: true }]);
+  assert.equal(siteswapIsValid("(4x,2x)(2,4x)*"), true);
+  assert.equal(siteswapPeriod("(4x,2x)(2,4x)*"), 8);
+});
+
+test("trailing star doubles async period", () => {
+  assert.deepEqual(parseSiteswap("531*"), [[5], [3], [1], [5], [3], [1]]);
+  assert.equal(siteswapPeriod("531*"), 6);
+  assert.equal(siteswapIsValid("531*"), true);
+});
+
+test("leading R or L sets schedule start hand", () => {
+  const native = scheduleEvents("3", true, 4).events.filter(
+    (event) => event.beat >= 0 && event.beat < 1 && event.height === 3,
+  );
+  const right = scheduleEvents("R3", true, 4).events.filter(
+    (event) => event.beat >= 0 && event.beat < 1 && event.height === 3,
+  );
+  const left = scheduleEvents("L3", true, 4).events.filter(
+    (event) => event.beat >= 0 && event.beat < 1 && event.height === 3,
+  );
+  assert.equal(native[0].fromHand, 0);
+  assert.equal(right[0].fromHand, 1);
+  assert.equal(left[0].fromHand, 0);
+  assert.equal(siteswapIsValid("R3"), true);
+  assert.equal(siteswapIsValid("L3"), true);
+});

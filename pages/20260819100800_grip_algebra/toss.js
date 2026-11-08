@@ -1,4 +1,5 @@
 import { EMPTY_SIGN, occupancyState } from "./holding.js";
+import { sampleHandStyle } from "./hand_style.js";
 import { schedulePlayable, siteswapCanPlay } from "./siteswap_episode.js";
 import { eventPhase, throwFlight } from "./schedule.js";
 
@@ -20,16 +21,34 @@ function ballisticPoint(from, to, progress, gravity, flight, wind = { x: 0, y: 0
   };
 }
 
-function catchPose(hands, hand) {
+function catchPose(hands, hand, styleOffset = null) {
   const rest = hands[hand];
   const outward = hand === 0 ? -0.045 : 0.045;
-  return { x: rest.x + outward, y: rest.y - 0.045 };
+  const base = { x: rest.x + outward, y: rest.y - 0.045 };
+  if (!styleOffset) {
+    return base;
+  }
+  return { x: rest.x + styleOffset.x, y: rest.y + styleOffset.y };
 }
 
-function throwPose(hands, hand) {
+function throwPose(hands, hand, styleOffset = null) {
   const rest = hands[hand];
   const inward = hand === 0 ? 0.05 : -0.05;
-  return { x: rest.x + inward, y: rest.y + 0.02 };
+  const base = { x: rest.x + inward, y: rest.y + 0.02 };
+  if (!styleOffset) {
+    return base;
+  }
+  return { x: rest.x + styleOffset.x, y: rest.y + styleOffset.y };
+}
+
+function styleOffsetsForBeat(handStyle, timeBeat) {
+  if (!handStyle) {
+    return [null, null];
+  }
+  return [
+    sampleHandStyle(handStyle, 0, timeBeat, 0.5),
+    sampleHandStyle(handStyle, 1, timeBeat, 0.5),
+  ];
 }
 
 function holdIdlePose(hands, hand, timeBeat) {
@@ -196,6 +215,7 @@ export function trajectoryPositions({
   timeBeat,
   gravityScale = 1,
   wind = { x: 0, y: 0 },
+  handStyle = null,
   hands = [
     { x: 0.32, y: 0.82 },
     { x: 0.68, y: 0.82 },
@@ -214,6 +234,7 @@ export function trajectoryPositions({
   }));
   const handNow = hands.map((hand) => ({ x: hand.x, y: hand.y }));
   const occupied = [false, false];
+  const styleAt = styleOffsetsForBeat(handStyle, timeBeat);
   const maxFlight = events.reduce((longest, event) => {
     return Math.max(longest, throwFlight(event.height, dwellRatio, holdTwos));
   }, 0.3);
@@ -223,8 +244,10 @@ export function trajectoryPositions({
   for (const event of events) {
     const flight = throwFlight(event.height, dwellRatio, holdTwos);
     const throwTime = event.beat;
-    const from = event.failedCatch ? catchPose(hands, event.fromHand) : throwPose(hands, event.fromHand);
-    const to = catchPose(hands, event.toHand);
+    const from = event.failedCatch
+      ? catchPose(hands, event.fromHand, styleAt[event.fromHand])
+      : throwPose(hands, event.fromHand, styleAt[event.fromHand]);
+    const to = catchPose(hands, event.toHand, styleAt[event.toHand]);
     const dumpAt = event.height > 0 ? throwTime + event.height : throwTime;
     if (event.dump && timeBeat >= dumpAt) {
       positions[event.ball] = { ...positions[event.ball], hidden: true };

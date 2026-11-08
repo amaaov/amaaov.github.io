@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   completeSiteswapMask,
+  constructFamilySiteswap,
+  createFamilyMask,
   createGenerationMask,
+  generateSiteswap,
   seededRandom,
   siteswapFeatures,
 } from "../siteswap_generator.js";
@@ -153,4 +156,76 @@ test("structural features separate release concentration from throw count", () =
   assert.equal(hybrid.maximumTossPacket, 2);
   assert.equal(hybrid.maximumReleasePacket, 1);
   assert.equal(hybrid.maximumEmptyPacketRun, 0);
+});
+
+test("family masks are structural wildcards, not finished patterns", () => {
+  assert.equal(createFamilyMask({ family: "shower", periodBeats: 2 }), "??");
+  assert.equal(createFamilyMask({ family: "box", periodBeats: 4 }), "(?,?x)(?x,?)");
+  assert.match(createFamilyMask({ family: "columns", periodBeats: 4, random: seededRandom(1) }), /0/);
+  assert.equal(createFamilyMask({ family: "fountain", periodBeats: 2 }), "(?,?)");
+});
+
+test("generateSiteswap respects object count, timing, and family structure", () => {
+  const shower = generateSiteswap({
+    objectCount: 3,
+    family: "shower",
+    throwBias: 0.7,
+    random: seededRandom(0x51e51e),
+  });
+  assert.equal(siteswapBallCount(shower), 3);
+  assert.ok(siteswapIsValid(shower));
+  assert.ok(siteswapFeatures(shower).throwHeightVariance > 0);
+
+  const box = generateSiteswap({
+    objectCount: 3,
+    family: "box",
+    random: seededRandom(0x80c5),
+  });
+  assert.ok(siteswapIsValid(box));
+  assert.ok(box.includes("x"), `box should cross: ${box}`);
+  assert.equal(readSiteswap(box).timing, "sync");
+
+  const asyncPattern = generateSiteswap({
+    objectCount: 5,
+    periodBeats: 4,
+    timing: "async",
+    maximumThrow: 9,
+    minimumThrow: 1,
+    random: seededRandom(99),
+  });
+  assert.equal(siteswapBallCount(asyncPattern), 5);
+  assert.ok(siteswapIsValid(asyncPattern));
+});
+
+test("generateSiteswap seeds diverge without a pattern shelf", () => {
+  const seen = new Set();
+  for (let seed = 1; seed <= 20; seed += 1) {
+    seen.add(
+      generateSiteswap({
+        objectCount: 3,
+        periodBeats: 3 + (seed % 4),
+        timing: seed % 2 === 0 ? "async" : "sync",
+        maximumThrow: 8,
+        random: seededRandom(seed * 97),
+      }),
+    );
+  }
+  assert.ok(seen.size >= 8, `expected generated variety, got ${seen.size}: ${[...seen]}`);
+});
+
+test("constructFamilySiteswap covers named families across object counts", () => {
+  const families = ["shower", "box", "columns", "fountain", "multiplex"];
+  for (const family of families) {
+    for (const objectCount of [3, 4, 5, 6, 7]) {
+      const pattern = constructFamilySiteswap(
+        family,
+        objectCount,
+        0.6,
+        seededRandom(family.length * 1000 + objectCount * 17),
+      );
+      assert.ok(pattern, `missing ${family} for ${objectCount}`);
+      assert.equal(siteswapBallCount(pattern), objectCount, `${family} ${pattern}`);
+      assert.ok(siteswapIsValid(pattern), `${family} invalid ${pattern}`);
+    }
+  }
 });

@@ -5,6 +5,25 @@ function skipSpace(text, index) {
   return index;
 }
 
+/** Solo Lab core rejects passing brackets and bounce letter suffixes. */
+export function soloLabRejectReason(source) {
+  const text = String(source);
+  if (/[<>|]/.test(text)) {
+    return "passing notation is not supported";
+  }
+  if (/\d[xX]?[BFH]/.test(text) || /\[[^\]]*[BFH]/.test(text)) {
+    return "bounce letters are not supported";
+  }
+  return null;
+}
+
+function assertSoloLab(source) {
+  const reason = soloLabRejectReason(source);
+  if (reason) {
+    throw new Error(reason);
+  }
+}
+
 function parseThrowHeight(character) {
   if (character >= "0" && character <= "9") {
     return Number(character);
@@ -13,6 +32,76 @@ function parseThrowHeight(character) {
     return 10 + character.charCodeAt(0) - 97;
   }
   throw new Error(`unsupported siteswap character: ${character}`);
+}
+
+function parseOptionalHandForce(text, index) {
+  index = skipSpace(text, index);
+  if (index >= text.length) {
+    return { hand: null, index };
+  }
+  const mark = text[index];
+  // Uppercase only — lowercase a–z remain height digits (l = 21).
+  if (mark === "R") {
+    return { hand: 1, index: index + 1 };
+  }
+  if (mark === "L") {
+    return { hand: 0, index: index + 1 };
+  }
+  return { hand: null, index };
+}
+
+function stripLeadingHand(text) {
+  const trimmed = String(text).trim();
+  const force = parseOptionalHandForce(trimmed, 0);
+  if (force.hand === null) {
+    return { startHand: null, body: trimmed };
+  }
+  const rest = trimmed.slice(force.index).trim();
+  if (rest.length === 0 || /^[BFH]/.test(rest)) {
+    return { startHand: null, body: trimmed };
+  }
+  return { startHand: force.hand, body: rest };
+}
+
+function stripTrailingMirror(text) {
+  const trimmed = String(text).trim();
+  if (trimmed.endsWith("*")) {
+    return { mirrored: true, body: trimmed.slice(0, -1).trim() };
+  }
+  return { mirrored: false, body: trimmed };
+}
+
+function mirrorHeights(heights) {
+  return heights.map((token) => {
+    if (typeof token === "number") {
+      return token;
+    }
+    return { ...token };
+  });
+}
+
+function mirrorFrame(frame) {
+  if (frame.kind === "sync") {
+    return {
+      ...frame,
+      left: mirrorHeights(frame.right),
+      right: mirrorHeights(frame.left),
+      leftAddBefore: frame.rightAddBefore,
+      leftRemoveBefore: frame.rightRemoveBefore,
+      rightAddBefore: frame.leftAddBefore,
+      rightRemoveBefore: frame.leftRemoveBefore,
+      forcedHand: frame.forcedHand === 0 || frame.forcedHand === 1
+        ? 1 - frame.forcedHand
+        : frame.forcedHand,
+    };
+  }
+  return {
+    ...frame,
+    throws: mirrorHeights(frame.throws),
+    forcedHand: frame.forcedHand === 0 || frame.forcedHand === 1
+      ? 1 - frame.forcedHand
+      : frame.forcedHand,
+  };
 }
 
 function parseDomainMarks(text, index) {
@@ -51,6 +140,9 @@ function parseThrowToken(text, index) {
     crossing = !crossing;
     crossingExplicit = true;
     index += 1;
+  }
+  if (text[index] === "B" || text[index] === "F" || text[index] === "H") {
+    throw new Error("bounce letters are not supported");
   }
   const marks = parseDomainMarks(text, index);
   return {
@@ -147,14 +239,19 @@ function parseHandThrows(text, index, keepCrossing) {
 }
 
 export function parseSiteswap(source) {
+  assertSoloLab(source);
+  const { mirrored, body: mirroredBody } = stripTrailingMirror(source);
+  const { body } = stripLeadingHand(mirroredBody);
   const beats = [];
-  const text = String(source).trim();
+  const text = body;
   let index = 0;
   while (index < text.length) {
     index = skipSpace(text, index);
     if (index >= text.length) {
       break;
     }
+    const force = parseOptionalHandForce(text, index);
+    index = force.index;
     const parsed = parseHandThrows(text, index, false);
     beats.push(parsed.heights);
     index = parsed.index;
@@ -162,12 +259,15 @@ export function parseSiteswap(source) {
   if (beats.length === 0) {
     throw new Error("empty siteswap");
   }
-  return beats;
+  return mirrored ? beats.concat(beats.map((beat) => mirrorHeights(beat))) : beats;
 }
 
 export function parseSyncSiteswap(source) {
+  assertSoloLab(source);
+  const { mirrored, body: mirroredBody } = stripTrailingMirror(source);
+  const { body } = stripLeadingHand(mirroredBody);
   const pairs = [];
-  const text = String(source).trim();
+  const text = body;
   let index = 0;
   while (index < text.length) {
     index = skipSpace(text, index);
@@ -184,7 +284,15 @@ export function parseSyncSiteswap(source) {
   if (pairs.length === 0) {
     throw new Error("empty siteswap");
   }
-  return pairs;
+  if (!mirrored) {
+    return pairs;
+  }
+  return pairs.concat(
+    pairs.map((pair) => ({
+      left: mirrorHeights(pair.right),
+      right: mirrorHeights(pair.left),
+    })),
+  );
 }
 
 function parseSyncPair(text, index) {
@@ -232,8 +340,11 @@ function attachPendingDomain(frame, pending) {
 }
 
 export function parseHybridSiteswap(source) {
+  assertSoloLab(source);
+  const { mirrored, body: mirroredBody } = stripTrailingMirror(source);
+  const { startHand, body } = stripLeadingHand(mirroredBody);
   const frames = [];
-  const text = String(source).trim();
+  const text = body;
   const pending = { add: 0, remove: 0 };
   let index = 0;
   while (index < text.length) {
@@ -271,8 +382,13 @@ export function parseHybridSiteswap(source) {
       }
       continue;
     }
+    const force = parseOptionalHandForce(text, index);
+    index = force.index;
     const parsed = parseHandThrows(text, index, false);
     const frame = { kind: "async", duration: 1, throws: parsed.heights };
+    if (force.hand === 0 || force.hand === 1) {
+      frame.forcedHand = force.hand;
+    }
     attachPendingDomain(frame, pending);
     if (parsed.addBefore > 0) {
       frame.addBefore = (frame.addBefore ?? 0) + parsed.addBefore;
@@ -286,7 +402,11 @@ export function parseHybridSiteswap(source) {
   if (frames.length === 0) {
     throw new Error("empty siteswap");
   }
-  return frames;
+  const expanded = mirrored ? frames.concat(frames.map((frame) => mirrorFrame(frame))) : frames;
+  if (startHand === 0 || startHand === 1) {
+    expanded.startHand = startHand;
+  }
+  return expanded;
 }
 
 export function parseVanillaSiteswap(source) {
@@ -314,22 +434,38 @@ export function asBeats(input) {
 export function readSiteswap(input) {
   if (typeof input === "string") {
     const frames = parseHybridSiteswap(input);
+    const startHand = frames.startHand;
     const hasAsync = frames.some((frame) => frame.kind === "async");
     const hasSync = frames.some((frame) => frame.kind === "sync");
+    const hasForcedHand = frames.some(
+      (frame) => frame.forcedHand === 0 || frame.forcedHand === 1,
+    );
     const hasSuppressedSyncBeat = frames.some(
       (frame) => frame.kind === "sync" && frame.duration === 1,
     );
     const hasDomain = frames.some((frame) => frameHasDomain(frame));
-    if ((hasAsync && hasSync) || hasSuppressedSyncBeat || hasDomain) {
-      return { timing: "hybrid", frames };
+    if ((hasAsync && hasSync) || hasSuppressedSyncBeat || hasDomain || hasForcedHand) {
+      const pattern = { timing: "hybrid", frames: [...frames] };
+      if (startHand === 0 || startHand === 1) {
+        pattern.startHand = startHand;
+      }
+      return pattern;
     }
     if (hasSync) {
-      return {
+      const pattern = {
         timing: "sync",
         pairs: frames.map(({ left, right }) => ({ left, right })),
       };
+      if (startHand === 0 || startHand === 1) {
+        pattern.startHand = startHand;
+      }
+      return pattern;
     }
-    return { timing: "async", beats: frames.map((frame) => frame.throws) };
+    const pattern = { timing: "async", beats: frames.map((frame) => frame.throws) };
+    if (startHand === 0 || startHand === 1) {
+      pattern.startHand = startHand;
+    }
+    return pattern;
   }
   return { timing: "async", beats: asBeats(input) };
 }
@@ -612,12 +748,14 @@ function applyTimeBeat(pattern, landing, available, intro, throwHand, beat, hold
     rejectIdleLanding(available, beat);
     return events;
   }
+  const hand =
+    frame.forcedHand === 0 || frame.forcedHand === 1 ? frame.forcedHand : throwHand;
   const events = tossFromHand(
     frame.throws,
     landing,
     available,
     intro,
-    throwHand,
+    hand,
     beat,
     holdTwos,
     record,
@@ -684,6 +822,9 @@ export function scheduleEvents(input, holdTwos = true, untilBeat = 64) {
     throw new Error("pattern did not repeat");
   }
 
+  // scheduleEvents' init dance lands the first recorded toss on hand 0 (left).
+  // Leading R asks for right (1); swap when that differs from the native start.
+  const swapHands = pattern.startHand === 1;
   const events = [];
   const earliest = -Math.max(highest, 8);
   const copies = Math.ceil(untilBeat / cycleLength) + 4;
@@ -693,7 +834,16 @@ export function scheduleEvents(input, holdTwos = true, untilBeat = 64) {
       if (absolute < earliest || absolute > untilBeat) {
         continue;
       }
-      events.push({ ...toss, beat: absolute });
+      if (swapHands) {
+        events.push({
+          ...toss,
+          beat: absolute,
+          fromHand: 1 - toss.fromHand,
+          toHand: 1 - toss.toHand,
+        });
+      } else {
+        events.push({ ...toss, beat: absolute });
+      }
     }
   }
   return {
@@ -704,5 +854,6 @@ export function scheduleEvents(input, holdTwos = true, untilBeat = 64) {
     cycleLength,
     period,
     timing: pattern.timing,
+    startHand: pattern.startHand === 0 || pattern.startHand === 1 ? pattern.startHand : 1,
   };
 }
