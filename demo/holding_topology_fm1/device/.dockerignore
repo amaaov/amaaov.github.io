@@ -1,0 +1,13 @@
+# Keep the build context small — source is bind-mounted at run time.
+base/
+app/build/
+app/dsp/build/
+out/
+**/*.fwsc
+**/*.bin
+**/*.elf
+**/*.dis
+**/.DS_Store
+.git
+**/__pycache__
+**/*.pyc

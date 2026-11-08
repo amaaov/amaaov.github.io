@@ -1,0 +1,8 @@
+{
+  "name": "holding-topology-fm1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test js/*.test.js && make -C firmware test"
+  }
+}

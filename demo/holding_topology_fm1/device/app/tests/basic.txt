@@ -1,0 +1,22 @@
+# HT-1 host simulator smoke (after ./build.sh --host)
+wait 600
+shot boot.png
+tap PLAY
+wait 80
+expect armed 1
+shot seeded.png
+tap OCT+
+wait 30
+expect octave 1
+expect dirty 1
+tap SAVE
+wait 30
+expect dirty 0
+key 7 down
+wait 40
+shot key.png
+key 7 up
+wait 40
+wav note.wav
+wait 200
+wavstop

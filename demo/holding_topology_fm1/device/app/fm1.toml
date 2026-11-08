@@ -1,0 +1,43 @@
+# Holding Topology HT-1 — fm1-base app settings (base/tools/build.py)
+name = "HT"
+id_prefix = "FM-1_91"
+usb_manufacturer = "amaaov"
+usb_product = "HT-1 Holding Topology"
+words = "words.tsv"
+ble = true
+ble_central = false
+include = ["ht", "dsp"]
+o2 = [
+  "dsp/ht_voice.c",
+  "dsp/ht_engines.c",
+  "dsp/ht_waveguide.c",
+  "dsp/ht_tape.c",
+  "dsp/ht_analog_bus.c",
+  "dsp/ht_sidechain.c",
+  "dsp/ht_court_chain.c",
+  "dsp/ht_eq_bus.c",
+  "dsp/ht_grain_delay.c",
+  "ht/ht_controls.c",
+  "ht/ht_gen.c",
+  "ht/ht_mix.c",
+  "ht/ht_court.c",
+  "ht/ht_fx.c",
+  "ht/ht_keys.c",
+  "ht/ht_siteswap.c",
+  "ht/ht_hand_style.c",
+  "ht/ht_mod_matrix.c",
+  "ht/ht_tuning.c",
+  "ht/ht_action_loop.c",
+]
+
+tagline = "Juggling court generators on the FM-1"
+repo = "https://github.com/amaaov/amaaov.github.io"
+licence = "MIT"
+credits = "App and court generators by amaaov. Built on fm1-base and felucca-bsp (MPL-2.0), from Felucca by Leo Kuroshita (Hügelton Instruments)."
+
+author = "amaaov"
+description = "Holding Topology HT-1 runs seed-driven court generators on the M-VAVE FM-1: PLAY rolls a unique seed, knobs bias tempo feedback and wildness, keys follow a seeded role map, and the LCD shows a juggling court. Device DSP covers waveguide pipes/strings, tape loop, scatter delay, and analog character; the browser demo keeps the full Web Audio engine set."
+tags = ["synth", "generative", "sequencer"]
+install = "https://amaaov.github.io/demo/holding_topology_fm1/"
+site = "https://amaaov.github.io/demo/holding_topology_fm1/"
+screenshot = "docs/img/screen-court.png"

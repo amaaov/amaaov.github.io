@@ -1,0 +1,10 @@
+base/
+app/build/
+app/dsp/build/
+out/
+*.fwsc
+*.bin
+*.elf
+*.dis
+.DS_Store
+

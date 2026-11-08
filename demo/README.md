@@ -23,3 +23,4 @@ Covers:
 - `chord_progressions`
 - `running_entropy`
 - `scenes/kompone/kompone`
+- `holding_topology_fm1`
