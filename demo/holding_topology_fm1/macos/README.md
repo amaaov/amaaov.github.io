@@ -46,4 +46,5 @@ Rebuild. Grain/tape/waveguide buffers are enlarged under `HT_STAGE_NATIVE` for h
 ## Notes
 
 - “32kbit” is treated as **32-bit float**, not 32 kbit/s.
-- Browser `stage.html` remains a separate JS demo; this app does not load it.
+- Browser `stage.html` remains a separate JS demo (WebAudio); this app does not load it.
+- Browser record: Cmd/Ctrl+R in `stage.html` uses `js/stage_recorder.js` (WebM download until stop).

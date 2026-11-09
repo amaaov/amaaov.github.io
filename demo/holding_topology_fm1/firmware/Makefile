@@ -2,7 +2,8 @@ CC ?= cc
 CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -O2
 INCLUDES = -Iinclude
 SRC = src/ht_controls.c src/ht_gen.c src/ht_mix.c src/ht_court.c src/ht_fx.c src/ht_keys.c \
-	src/ht_siteswap.c src/ht_hand_style.c src/ht_mod_matrix.c src/ht_tuning.c src/ht_action_loop.c
+	src/ht_siteswap.c src/ht_hand_style.c src/ht_mod_matrix.c src/ht_tuning.c src/ht_action_loop.c \
+	src/ht_engine_assign.c
 SMOKE = test/ht_smoke.c
 SITESWAP_TEST = test/ht_siteswap_test.c
 MOD_TEST = test/ht_mod_matrix_test.c

@@ -257,11 +257,17 @@ float ht_string_feedback_cap(uint8_t engine, float sharp) {
 }
 
 float ht_physical_output_gain(uint8_t engine) {
+  if (engine == HT_ENGINE_VARGAN) {
+    return 0.72f;
+  }
+  if (engine == HT_ENGINE_SAXOPHONE || engine == HT_ENGINE_PIPE) {
+    return 0.55f;
+  }
   if (ht_engine_is_wind(engine)) {
-    return 0.42f;
+    return 0.48f;
   }
   if (ht_engine_is_string(engine)) {
-    return 0.48f;
+    return 0.55f;
   }
   return 1.0f;
 }

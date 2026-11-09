@@ -3,6 +3,7 @@
 
 #include "ht_controls.h"
 #include "ht_court.h"
+#include "ht_engine_assign.h"
 #include "ht_fx.h"
 #include "ht_gen.h"
 #include "ht_keys.h"
@@ -169,7 +170,7 @@ int main(void) {
   expect_near("analog mix", analog.mix, 0.45f, 0.0001f);
   expect_true("pipe fb cap", ht_pipe_feedback_cap(HT_ENGINE_PIPE, 0.4f) < 0.6f);
   expect_true("string fb cap", ht_string_feedback_cap(HT_ENGINE_GUITAR, 0.4f) < 0.9f);
-  expect_near("wind out gain", ht_physical_output_gain(HT_ENGINE_SAXOPHONE), 0.42f, 0.0001f);
+  expect_near("wind out gain", ht_physical_output_gain(HT_ENGINE_SAXOPHONE), 0.55f, 0.0001f);
 
   HtKeyRole keys[HT_KEY_MIDI_COUNT];
   ht_key_map_build(0xaced42u, keys);
@@ -180,6 +181,26 @@ int main(void) {
   ht_key_map_build(0xaced42u, keys_b);
   expect_eq_u8("key map deterministic kind", keys[5].kind, keys_b[5].kind);
   expect_eq_u8("key map deterministic voices", keys[5].voice_count, keys_b[5].voice_count);
+
+  {
+    HtEngineAssign assign;
+    uint32_t seed = 0x71B3Eu ^ 10u; /* ht_timbre_from_seed(seed ^ 0x71B3E) == 10 amazon */
+    uint8_t i;
+    uint8_t has_nature = 0;
+    ht_engine_assign_voices(&assign, seed, HT_PATCH_LOOPING, 0.7f, HT_ENGINE_ASSIGN_SLOTS);
+    expect_eq_u8("assign count", assign.count, HT_ENGINE_ASSIGN_SLOTS);
+    expect_eq_u8("assign amazon", assign.timbre_profile, HT_TIMBRE_AMAZON_CANOPY);
+    for (i = 0; i < assign.count; i += 1) {
+      expect_true("assign engine id", assign.engines[i] < HT_ENGINE_COUNT);
+      if (assign.engines[i] == HT_ENGINE_BIRD || assign.engines[i] == HT_ENGINE_DOLPHIN ||
+          assign.engines[i] == HT_ENGINE_BUBBLE || assign.engines[i] == HT_ENGINE_FOREST) {
+        has_nature = 1;
+      }
+    }
+    expect_true("amazon nature voice", has_nature);
+    expect_true("assign pick in set",
+                ht_engine_assign_pick(&assign, 3u) == assign.engines[3u % assign.count]);
+  }
 
   if (failures) {
     fprintf(stderr, "%d failure(s)\n", failures);

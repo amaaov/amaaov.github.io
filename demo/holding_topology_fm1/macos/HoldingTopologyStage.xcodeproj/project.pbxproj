@@ -10,6 +10,7 @@
 		00448CB0AA917756B75A25C5 /* ht_tuning.c in Sources */ = {isa = PBXBuildFile; fileRef = 535ED4D5C7D631E70CAEEA43 /* ht_tuning.c */; };
 		1A8D1A743630BF587F74462D /* ht_voice.c in Sources */ = {isa = PBXBuildFile; fileRef = 079303A4BD6DE7F68A6EE031 /* ht_voice.c */; };
 		295FED1D0880BAF1F362541E /* ht_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = 0267311D580FC2B29BB87632 /* ht_gen.c */; };
+		2CED0FD5469735FEAAA23E77 /* ht_engine_assign.c in Sources */ = {isa = PBXBuildFile; fileRef = B8EE80AD06B098ECCCFA17A3 /* ht_engine_assign.c */; };
 		2D1879172FC5C8E4BAC23023 /* ht_analog_bus.c in Sources */ = {isa = PBXBuildFile; fileRef = A0382F51D4FAC28756D8F666 /* ht_analog_bus.c */; };
 		2E2D6FCD1541B8DDF5579B7A /* ht_siteswap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2AC646C508B243EF803156A1 /* ht_siteswap.c */; };
 		3BAB1A9F965DD800D0CE3054 /* ht_eq_bus.c in Sources */ = {isa = PBXBuildFile; fileRef = 1509DE5B723937C90FC06791 /* ht_eq_bus.c */; };
@@ -61,6 +62,7 @@
 		981EABB99BF463E33B47FDFD /* ht_sidechain.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_sidechain.c; sourceTree = "<group>"; };
 		A0382F51D4FAC28756D8F666 /* ht_analog_bus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_analog_bus.c; sourceTree = "<group>"; };
 		B16617F644231DF1C51ABD96 /* ht_mix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_mix.c; sourceTree = "<group>"; };
+		B8EE80AD06B098ECCCFA17A3 /* ht_engine_assign.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_engine_assign.c; sourceTree = "<group>"; };
 		BC5A6EC5C59A98F67AFD47A4 /* ht_controls.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_controls.c; sourceTree = "<group>"; };
 		C2E7B542A8014C9C0EC5D3B3 /* ht_stage_engine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_stage_engine.c; sourceTree = "<group>"; };
 		C2F3A2277FB94D881162D1CE /* StageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageController.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				2F911364E649DB244D4D6715 /* ht_action_loop.c */,
 				BC5A6EC5C59A98F67AFD47A4 /* ht_controls.c */,
 				42A75FA057AF9E6B6561E6CE /* ht_court.c */,
+				B8EE80AD06B098ECCCFA17A3 /* ht_engine_assign.c */,
 				47B48569DA52782E20FD2C65 /* ht_fx.c */,
 				0267311D580FC2B29BB87632 /* ht_gen.c */,
 				38A86CAD55E01E4D1C53968D /* ht_hand_style.c */,
@@ -246,6 +249,7 @@
 				6EA696DFAAEA5D150DABB12D /* ht_controls.c in Sources */,
 				5FF6775AA63436158EB2458D /* ht_court.c in Sources */,
 				E2666DC70610C485D3AC28EF /* ht_court_chain.c in Sources */,
+				2CED0FD5469735FEAAA23E77 /* ht_engine_assign.c in Sources */,
 				8AD11391F96CA71AD17DEBA7 /* ht_engines.c in Sources */,
 				3BAB1A9F965DD800D0CE3054 /* ht_eq_bus.c in Sources */,
 				99B70ECFB40431BEE5DACAA4 /* ht_fx.c in Sources */,

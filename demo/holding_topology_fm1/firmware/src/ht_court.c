@@ -261,10 +261,16 @@ void ht_court_push_trail(const HtCourtFrame *frame) {
   if (!frame) {
     return;
   }
-  /* Denser smear (~every 0.04 beat) closer to JS motion trails. */
+  /* Denser smear on native stage; device keeps 0.04 beat spacing. */
+#ifdef HT_STAGE_NATIVE
+  if (frame->time_beat - court_trail_last_beat < 0.02f && court_trail_count > 0u) {
+    return;
+  }
+#else
   if (frame->time_beat - court_trail_last_beat < 0.04f && court_trail_count > 0u) {
     return;
   }
+#endif
   court_trail_last_beat = frame->time_beat;
   capture_snap(frame, &snap);
   court_trails[court_trail_write] = snap;

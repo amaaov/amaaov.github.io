@@ -111,7 +111,9 @@ float ht_wg_process(HtWaveguide *wg) {
         buzz = ht_sinf(wg->buzz_phase * 6.2831853f);
         buzz = ht_softsat(buzz + breath_noise * 0.35f, 0.55f);
       } else if (wg->engine == HT_ENGINE_VARGAN) {
-        exc = breath_noise * (wg->active ? 0.55f * wg->level : 0.0f);
+        /* Lamella impulse train; oral cavity comes from post formant below. */
+        float pulse = wg->buzz_phase < 0.08f ? 1.0f : 0.0f;
+        exc = (pulse * 1.15f + breath_noise * 0.18f) * (wg->active ? wg->level : 0.0f);
       } else {
         buzz = breath_noise * wg->breath;
       }
@@ -119,7 +121,7 @@ float ht_wg_process(HtWaveguide *wg) {
         exc = (buzz + breath_noise * wg->breath) * (wg->active ? 1.0f : 0.0f);
       }
     }
-    damp = 0.35f;
+    damp = wg->engine == HT_ENGINE_VARGAN ? 0.22f : 0.35f;
   } else {
     if (wg->bowed && wg->active) {
       exc = ht_noise_f(&wg->noise) * 0.18f * wg->level;
@@ -129,10 +131,12 @@ float ht_wg_process(HtWaveguide *wg) {
 
   out = ht_onepole(tap + exc, &wg->lp_z, damp);
   out = ht_softsat(out, 0.25f);
-  if (wg->engine == HT_ENGINE_SAXOPHONE || wg->engine == HT_ENGINE_DIDGERIDOO) {
+  if (wg->engine == HT_ENGINE_SAXOPHONE || wg->engine == HT_ENGINE_DIDGERIDOO ||
+      wg->engine == HT_ENGINE_VARGAN) {
     float formant = out - wg->formant_z;
     wg->formant_z = out;
-    out = out * 0.7f + formant * 0.45f;
+    out = out * (wg->engine == HT_ENGINE_VARGAN ? 0.45f : 0.7f) +
+          formant * (wg->engine == HT_ENGINE_VARGAN ? 0.85f : 0.45f);
   }
 
   wg->delay[wg->write] = out * (wg->active ? wg->feedback : 0.0f);

@@ -203,11 +203,26 @@ function pickVoiceEngine(random, profile, patchType, trackIndex, wildness, force
   if (forceVowel) {
     return "vowel";
   }
+  const bias = trackEngineBias(profile, patchType, trackIndex);
+  const prefersBias =
+    profile === "amazon_canopy" ||
+    profile === "jamaica_dub" ||
+    profile === "wind_court" ||
+    profile === "string_court" ||
+    profile === "karplus_hall" ||
+    profile === "choir_cave";
+  // Nature / court profiles keep bias engines audible (birds, vargan, strings).
+  if (prefersBias) {
+    if (random() < 0.58 + wildness * 0.22) {
+      return pick(random, bias);
+    }
+    return pick(random, ENGINES);
+  }
   // Most rolls draw from the full engine table so every engine can appear.
   if (random() < 0.62 + wildness * 0.28) {
     return pick(random, ENGINES);
   }
-  return pick(random, trackEngineBias(profile, patchType, trackIndex));
+  return pick(random, bias);
 }
 
 function ensureEngineSpread(voices, random, minDistinct = 3) {
@@ -551,6 +566,24 @@ export function createRndPatch(seed = uniqueSeed(), bias = {}) {
   });
   if (!forceVowel) {
     ensureEngineSpread(voices, random, 4);
+  }
+  if (
+    !forceVowel &&
+    profile === "amazon_canopy" &&
+    !voices.some(
+      (voice) =>
+        voice.active &&
+        (voice.engine === "bird" ||
+          voice.engine === "dolphin" ||
+          voice.engine === "bubble" ||
+          voice.engine === "forest"),
+    )
+  ) {
+    const slot = voices.find((voice) => voice.trackIndex === 1) ?? voices.find((voice) => voice.active);
+    if (slot) {
+      slot.engine = "bird";
+      slot.active = true;
+    }
   }
   // Guarantee at least one real noise oscillator except on pure vowel patches
   if (!forceVowel && !voices.some((voice) => voice.engine === "noise" && voice.active)) {

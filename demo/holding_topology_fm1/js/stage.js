@@ -1,4 +1,5 @@
 import { createInstrument } from "./instrument.js";
+import { createStageRecorder } from "./stage_recorder.js";
 import { mountStageFace } from "./stage_face.js";
 
 const SAMPLE_RATE = 96000;
@@ -40,13 +41,23 @@ const instrument = createInstrument({
   sampleRate: SAMPLE_RATE,
 });
 
-let recorderNode = null;
-let recording = false;
-let frameTimer = 0;
-
 function pick(list) {
   return list[(Math.random() * list.length) | 0];
 }
+
+function postNative(name, payload) {
+  const bridge = window.webkit?.messageHandlers?.[name];
+  if (bridge) {
+    bridge.postMessage(payload);
+  }
+}
+
+const recorder = createStageRecorder({
+  getAudioContext: () => instrument.getAudioContext(),
+  getOutputBus: () => instrument.getOutputBus(),
+  getCourtCanvas: () => instrument.getCourtCanvas(),
+  postNative,
+});
 
 function chaosEvent() {
   instrument.ensureAudio().then(() => {
@@ -70,97 +81,6 @@ function chaosEvent() {
   });
 }
 
-function postNative(name, payload) {
-  const bridge = window.webkit?.messageHandlers?.[name];
-  if (bridge) {
-    bridge.postMessage(payload);
-  }
-}
-
-function startAudioCapture() {
-  const audio = instrument.getAudioContext();
-  const bus = instrument.getOutputBus();
-  if (!audio || !bus || recorderNode) {
-    return;
-  }
-  const channels = 2;
-  const frameCount = 4096;
-  recorderNode = audio.createScriptProcessor(frameCount, channels, channels);
-  recorderNode.onaudioprocess = (event) => {
-    const input = event.inputBuffer;
-    const output = event.outputBuffer;
-    for (let channel = 0; channel < channels; channel += 1) {
-      output.getChannelData(channel).set(input.getChannelData(channel));
-    }
-    if (!recording) {
-      return;
-    }
-    const left = input.getChannelData(0);
-    const right = input.getChannelData(1);
-    const interleaved = new Float32Array(left.length * 2);
-    for (let index = 0; index < left.length; index += 1) {
-      interleaved[index * 2] = left[index];
-      interleaved[index * 2 + 1] = right[index];
-    }
-    postNative("htAudio", {
-      sampleRate: audio.sampleRate,
-      channels,
-      samples: Array.from(interleaved),
-    });
-  };
-  /* Insert capture in the hear path so live audio stays single. */
-  bus.disconnect();
-  bus.connect(recorderNode);
-  recorderNode.connect(audio.destination);
-}
-
-function stopAudioCapture() {
-  const audio = instrument.getAudioContext();
-  const bus = instrument.getOutputBus();
-  if (recorderNode && bus && audio) {
-    try {
-      bus.disconnect();
-    } catch {
-      /* already disconnected */
-    }
-    try {
-      recorderNode.disconnect();
-    } catch {
-      /* already disconnected */
-    }
-    bus.connect(audio.destination);
-  }
-  recorderNode = null;
-}
-
-function grabCourtFrame() {
-  const canvas = instrument.getCourtCanvas();
-  if (!canvas) {
-    return null;
-  }
-  return canvas.toDataURL("image/png");
-}
-
-function startFramePump() {
-  stopFramePump();
-  frameTimer = window.setInterval(() => {
-    if (!recording) {
-      return;
-    }
-    const png = grabCourtFrame();
-    if (png) {
-      postNative("htFrame", { png, at: performance.now() });
-    }
-  }, 1000 / 30);
-}
-
-function stopFramePump() {
-  if (frameTimer) {
-    window.clearInterval(frameTimer);
-    frameTimer = 0;
-  }
-}
-
 window.htStage = {
   async boot() {
     await instrument.ensureAudio();
@@ -172,18 +92,12 @@ window.htStage = {
   },
   chaos: chaosEvent,
   startRecording() {
-    recording = true;
-    startAudioCapture();
-    startFramePump();
-    postNative("htRecord", { state: "on", sampleRate: instrument.getAudioContext()?.sampleRate ?? 0 });
+    return recorder.start();
   },
   stopRecording() {
-    recording = false;
-    stopFramePump();
-    stopAudioCapture();
-    postNative("htRecord", { state: "off" });
+    return recorder.stop();
   },
-  isRecording: () => recording,
+  isRecording: () => recorder.isRecording(),
   sampleRate: () => instrument.getAudioContext()?.sampleRate ?? 0,
 };
 
@@ -208,11 +122,9 @@ window.addEventListener("keydown", (event) => {
   }
   if (event.code === "KeyR" && (event.metaKey || event.ctrlKey)) {
     event.preventDefault();
-    if (recording) {
-      window.htStage.stopRecording();
-    } else {
-      window.htStage.startRecording();
-    }
+    instrument.ensureAudio().then(() => {
+      recorder.toggle();
+    });
     return;
   }
   if (event.code === "Space") {

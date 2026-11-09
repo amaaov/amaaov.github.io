@@ -43,6 +43,7 @@ targets:
           - ht_mod_matrix.c
           - ht_tuning.c
           - ht_action_loop.c
+          - ht_engine_assign.c
     settings:
       base:
         INFOPLIST_FILE: HoldingTopologyStage/Info.plist

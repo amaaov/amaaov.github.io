@@ -338,11 +338,11 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
     case HT_ENGINE_VOWEL:
       carrier = 2.0f * slot->phase - 1.0f;
       vowel_freqs(slot->vowel_index, freqs);
-      wave = resonator(carrier, &slot->formant_z[0], freqs[0], 0.9f) * 1.1f +
-             resonator(carrier, &slot->formant_z[1], freqs[1], 1.1f) * 0.75f +
-             resonator(carrier, &slot->formant_z[2], freqs[2], 1.3f) * 0.4f +
-             carrier * 0.18f;
-      bright = 0.5f;
+      wave = resonator(carrier, &slot->formant_z[0], freqs[0], 0.95f) * 1.35f +
+             resonator(carrier, &slot->formant_z[1], freqs[1], 1.15f) * 0.95f +
+             resonator(carrier, &slot->formant_z[2], freqs[2], 1.35f) * 0.55f +
+             carrier * 0.22f;
+      bright = 0.58f;
       break;
 
     case HT_ENGINE_RING_MOD:
@@ -404,8 +404,8 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
       break;
 
     case HT_ENGINE_BIRD:
-      wave = sample_bird(slot, hz, lfo);
-      bright = 0.55f;
+      wave = sample_bird(slot, hz, lfo) * 1.35f;
+      bright = 0.62f;
       break;
 
     case HT_ENGINE_FOREST:

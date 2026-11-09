@@ -9,6 +9,7 @@
 #include "ht_action_loop.h"
 #include "ht_controls.h"
 #include "ht_court.h"
+#include "ht_engine_assign.h"
 #include "ht_fx.h"
 #include "ht_gen.h"
 #include "ht_mix.h"
@@ -34,6 +35,8 @@ struct HtStageEngine {
   HtCourtFrame court;
   HtActionLooper action_loop;
   HtOccupancySign last_occ;
+  HtEngineAssign engine_assign;
+  uint32_t note_serial;
   char siteswap[HT_SITESWAP_MAX_STRING];
   const char *hand_style;
   uint32_t seed;
@@ -98,8 +101,9 @@ static void sync_voice_bus(HtStageEngine *stage) {
   weather.moon = stage->court.moon;
   weather.feedback = stage->bias.total_feedback;
   ht_composition_init_default(&composition, stage->seed, stage->bias.wildness);
-  stage->court.episode_wait = stage->episode_resting && !stage->episode_gap ? 1 : 0;
-  stage->court.episode_gap = stage->episode_resting && stage->episode_gap ? 1 : 0;
+  /* Same silence flags as device app.c — tail keeps gate open, gap ducks. */
+  stage->court.episode_wait = stage->episode_resting;
+  stage->court.episode_gap = stage->episode_gap;
   globals = ht_live_mix_globals(&composition, &weather, ht_court_silence_mode(&stage->court));
   bus.feedback = stage->controls.knob1;
   bus.scatter = ht_scatter_from_fx_knob(stage->controls.fx);
@@ -108,11 +112,7 @@ static void sync_voice_bus(HtStageEngine *stage) {
   bus.lfo_depth = ht_lfo_depth_from_knob(stage->controls.knob2);
   bus.wildness = stage->controls.glo;
   bus.compress = 0.35f + stage->controls.glo * 0.4f;
-  if (stage->episode_resting) {
-    bus.court_gate = stage->episode_gap ? 0.15f : 0.0f;
-  } else {
-    bus.court_gate = globals.court_gate > 0.05f ? globals.court_gate : 1.0f;
-  }
+  bus.court_gate = globals.court_gate > 0.05f ? globals.court_gate : 1.0f;
   bus.dry = globals.dry > 0.05f ? globals.dry : 0.85f;
   bus.wet = globals.wet > 0.05f ? globals.wet : 0.28f;
   bus.filter_hz = globals.filter_hz > 100.0f ? globals.filter_hz : 3800.0f;
@@ -131,19 +131,18 @@ static void sync_voice_bus(HtStageEngine *stage) {
   bus.tape_dry = 0.45f + stage->controls.presets * 0.4f;
   bus.tape_speed = 0.85f + stage->controls.algorithm * 0.4f;
   bus.tape_recording = stage->tape_recording;
-  bus.tape_held = 0;
-  bus.silence_mode =
-      stage->episode_resting ? (uint8_t)HT_SILENCE_GAP : (uint8_t)HT_SILENCE_OPEN;
+  bus.tape_held = stage->episode_resting && !stage->episode_gap ? 1u : 0u;
+  bus.silence_mode = (uint8_t)globals.mode;
   ht_voice_set_bus(&stage->voices, &bus);
-  /* Pluckier stage envelopes so throws read as events, not a pad. */
   stage->voices.envelope =
-      ht_envelope_from_env_knob(0.12f + stage->controls.env * 0.22f);
+      ht_envelope_from_env_knob(0.28f + stage->controls.env * 0.35f);
 }
 
 static void begin_episode_rest(HtStageEngine *stage, uint8_t gap) {
   stage->episode_resting = 1;
   stage->episode_gap = gap ? 1 : 0;
-  stage->rest_until_ms = stage->clock_ms + (gap ? 180.0 : 420.0);
+  /* Match JS rest tricks: short gap ~0.2s, longer tail rest ~0.6–1.2s. */
+  stage->rest_until_ms = stage->clock_ms + (gap ? 220.0 : 700.0 + (double)(stage->phrase_index % 5u) * 80.0);
   stage->court.airborne_count = 0;
   stage->court.hand_hold_count = 0;
   sync_voice_bus(stage);
@@ -178,7 +177,7 @@ static void pick_phrase(HtStageEngine *stage, uint32_t mix) {
     gen.min_throw = 0;
     gen.timing = timing;
     gen.family = attempt == 0u ? family : pick_family(mix + attempt * 17u, 0);
-    gen.rest_slots = (mix & 0x30u) == 0x30u ? 1u : 0u;
+    gen.rest_slots = ((mix >> 4) & 3u) == 0u ? 1u : 0u;
     gen.search_budget = 400u;
     gen.seed = (mix ? mix : 1u) ^ ((uint32_t)attempt * 0x9e3779b9u);
     if (ht_siteswap_generate(&gen, stage->siteswap, (uint16_t)sizeof(stage->siteswap)) != HT_SS_OK) {
@@ -198,11 +197,21 @@ static void pick_phrase(HtStageEngine *stage, uint32_t mix) {
   stage->court.hold_twos = 1;
   stage->last_throw_beat = -999;
   stage->last_occ = HT_OCC_EMPTY;
-  stage->phrase_until = stage->pattern_beat + 8.0f + (float)((mix >> 3) % 12u);
+  /* Match device app.c phrase length so siteswap arcs stay readable. */
+  stage->phrase_until = stage->pattern_beat + 12.0f + (float)((mix >> 3) % 20u);
+  stage->court.storm = 0.15f + (float)((mix >> 9) & 7u) * 0.05f;
+  stage->court.moon = 0.35f + (float)((mix >> 12) & 7u) * 0.07f;
+  stage->court.episode_wait = 0;
+  stage->court.episode_gap = 0;
   {
     HtDrumEnvelopes envelopes = ht_drum_envelopes_from_seed(stage->seed, stage->siteswap);
     ht_voice_set_drum_envelopes(&stage->voices, &envelopes);
   }
+}
+
+static uint8_t stage_melodic_engine(HtStageEngine *stage, uint32_t salt) {
+  stage->note_serial = stage->note_serial + 1u;
+  return ht_engine_assign_pick(&stage->engine_assign, salt ^ stage->note_serial);
 }
 
 static void apply_seed(HtStageEngine *stage, uint32_t next) {
@@ -227,11 +236,14 @@ static void apply_seed(HtStageEngine *stage, uint32_t next) {
   stage->episode_resting = 0;
   stage->episode_gap = 0;
   ht_court_clear_trails();
+  ht_engine_assign_voices(&stage->engine_assign, stage->seed, stage->bias.patch_type,
+                          stage->bias.wildness, HT_ENGINE_ASSIGN_SLOTS);
+  stage->note_serial = 0;
   pick_phrase(stage, stage->seed);
   stage->gen_armed = 1;
   sync_voice_bus(stage);
   ht_voice_note_on(&stage->voices, ht_scale_note(stage->bias.scale_index, 60.0f, 0, stage->octave),
-                   90, ht_voice_pick_engine(stage->seed, 60.0f, 0));
+                   90, stage_melodic_engine(stage, stage->seed));
 }
 
 static void siteswap_tick(HtStageEngine *stage) {
@@ -242,22 +254,23 @@ static void siteswap_tick(HtStageEngine *stage) {
   uint16_t i;
   uint8_t held = 0;
   uint8_t airborne = 0;
-  stage->pattern_beat += 0.25f;
-  if (stage->pattern_beat >= stage->phrase_until) {
-    stage->phrase_index = (uint8_t)(stage->phrase_index + 1u);
-    if ((stage->phrase_index % 3u) == 0u) {
-      begin_episode_rest(stage, (uint8_t)((stage->phrase_index / 3u) & 1u));
+  {
+    float previous_beat = stage->pattern_beat;
+    stage->pattern_beat += 0.25f;
+    if (stage->pattern_beat >= stage->phrase_until) {
+      stage->phrase_index = (uint8_t)(stage->phrase_index + 1u);
+      /* Occasional rest like JS ~N tricks — not every phrase. */
+      if ((stage->phrase_index % 5u) == 0u) {
+        begin_episode_rest(stage, (uint8_t)((stage->phrase_index / 5u) & 1u));
+      }
       pick_phrase(stage, stage->seed ^ ((uint32_t)stage->phrase_index * 0x9e3779b9u));
-      return;
     }
-    pick_phrase(stage, stage->seed ^ ((uint32_t)stage->phrase_index * 0x9e3779b9u));
-  }
   stage->court.time_beat = stage->pattern_beat;
   stage->court.siteswap = stage->siteswap;
   stage->court.hand_style = stage->hand_style;
   stage->court.dwell_ratio = stage->bias.dwell_ratio;
   stage->court.hold_twos = 1;
-  if (ht_siteswap_schedule(stage->siteswap, 1, (int16_t)(stage->pattern_beat + 4), &schedule) !=
+  if (ht_siteswap_schedule(stage->siteswap, 1, (int16_t)(stage->pattern_beat + 8), &schedule) !=
       HT_SS_OK) {
     pick_phrase(stage, stage->seed ^ 0x51e51e51u ^ stage->phrase_index);
     return;
@@ -269,7 +282,9 @@ static void siteswap_tick(HtStageEngine *stage) {
       continue;
     }
     flight = ev->hold ? 0.0f : (float)ev->height * (1.0f - stage->bias.dwell_ratio);
-    if (ev->beat == (int16_t)stage->pattern_beat && !ev->hold && ev->beat != stage->last_throw_beat) {
+    /* JS-style edge: fire when throw beat crosses the step window. */
+    if (!ev->hold && ev->beat != stage->last_throw_beat && (float)ev->beat > previous_beat &&
+        (float)ev->beat <= stage->pattern_beat + 0.0001f) {
       HtModFactors edge;
       HtModVector burst;
       memset(&edge, 0, sizeof(edge));
@@ -285,7 +300,9 @@ static void siteswap_tick(HtStageEngine *stage) {
         float midi =
             ht_scale_note(stage->bias.scale_index, 48.0f, (uint8_t)(ev->height % 12), stage->octave);
         uint8_t vel = (uint8_t)(70 + burst.burst_gain * 40.0f);
-        ht_voice_note_on(&stage->voices, midi, vel, ht_voice_pick_engine(stage->seed, midi, 0));
+        uint8_t engine =
+            stage_melodic_engine(stage, (uint32_t)ev->height * 17u + (uint32_t)ev->from_hand);
+        ht_voice_note_on(&stage->voices, midi, vel, engine);
       }
     }
     if (stage->pattern_beat >= (float)ev->beat &&
@@ -313,7 +330,7 @@ static void siteswap_tick(HtStageEngine *stage) {
     float midi =
         ht_scale_note(stage->bias.scale_index, 40.0f, (uint8_t)(sustain.engine_bias * 6.0f), stage->octave);
     ht_voice_note_on(&stage->voices, midi, (uint8_t)(60 + sustain.burst_gain * 50.0f),
-                     ht_voice_pick_engine(stage->seed, midi, 0));
+                     stage_melodic_engine(stage, (uint32_t)(sustain.engine_bias * 100.0f)));
   }
   stage->last_occ = sign;
 }
@@ -336,7 +353,8 @@ static void generator_tick(HtStageEngine *stage) {
   note = ht_gen_turing_step(&stage->turing);
   if (note.gate) {
     uint8_t midi = (uint8_t)(note.midi + 12 * stage->octave);
-    ht_voice_note_on(&stage->voices, midi, note.velocity, ht_voice_pick_engine(stage->seed, midi, 0));
+    ht_voice_note_on(&stage->voices, midi, note.velocity,
+                     stage_melodic_engine(stage, (uint32_t)midi * 3u));
   }
   drum_count = ht_gen_atlas_step(&stage->atlas, drums);
   for (index = 0; index < drum_count; index += 1) {
@@ -474,7 +492,7 @@ void ht_stage_chaos(HtStageEngine *stage) {
   }
   {
     float midi = (float)(53 + (ht_gen_stream(stage->seed + 99u) % 24) + 12 * stage->octave);
-    ht_voice_note_on(&stage->voices, midi, 100, ht_voice_pick_engine(stage->seed, midi, 0));
+    ht_voice_note_on(&stage->voices, midi, 100, stage_melodic_engine(stage, (uint32_t)midi));
   }
 }
 
