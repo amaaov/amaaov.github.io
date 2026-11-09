@@ -7,7 +7,8 @@
 
 #include "ht_fx.h"
 
-#define HT_GRAIN_DELAY_MAX 48000
+/* ~0.70 s at 44.1 kHz — sized for FM-1 .pool (336 KiB) with court/tape/wg. */
+#define HT_GRAIN_DELAY_MAX 30720
 #define HT_GRAIN_SLOTS 16
 
 typedef struct HtGrainSlot {

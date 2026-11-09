@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: MIT
  * Copyright (C) 2026 amaaov / Holding Topology FM-1
  *
- * All non-waveguide HT engines (matches js/rnd_patch.js ENGINES). */
+ * All non-waveguide HT engines (matches js/rnd_patch.js ENGINES, count 29). */
 #ifndef HT_ENGINES_H
 #define HT_ENGINES_H
 

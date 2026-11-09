@@ -40,8 +40,8 @@ int main(void) {
   expect_eq_u8("VOICE_COUNT", HT_VOICE_COUNT, 12);
   expect_eq_u8("TRACK_COUNT", HT_TRACK_COUNT, 4);
   expect_eq_u8("PATCH_TYPE_COUNT", HT_PATCH_TYPE_COUNT, 12);
-  expect_eq_u8("ENGINE_COUNT", HT_ENGINE_COUNT, 23);
-  expect_eq_u8("TIMBRE_COUNT", HT_TIMBRE_COUNT, 10);
+  expect_eq_u8("ENGINE_COUNT", HT_ENGINE_COUNT, 29);
+  expect_eq_u8("TIMBRE_COUNT", HT_TIMBRE_COUNT, 12);
   expect_eq_u8("KEY_MIDI_COUNT", HT_KEY_MIDI_COUNT, 27);
 
   HtControls controls;

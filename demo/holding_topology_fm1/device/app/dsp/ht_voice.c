@@ -5,8 +5,6 @@
 #include "ht_dsp_common.h"
 #include "ht_patch.h"
 
-#include <math.h>
-
 void ht_voice_init(HtVoiceBank *bank) {
   uint32_t index;
   for (index = 0; index < HT_VOICE_SLOTS; index += 1) {
@@ -163,7 +161,20 @@ void ht_voice_note_on(HtVoiceBank *bank, float midi, uint8_t velocity, uint8_t e
   bank->osc[slot].active = 1;
   bank->osc[slot].released = 0;
   bank->osc[slot].drum = drum;
-  bank->osc[slot].vowel_index = (uint8_t)(((uint8_t)(midi + 0.5f) + (bank->seed & 7u)) % 5u);
+  if (engine == HT_ENGINE_BIRD) {
+    bank->osc[slot].vowel_index =
+        (uint8_t)(((uint8_t)(midi + 0.5f) + (bank->seed & 7u)) % 4u);
+  } else if (engine == HT_ENGINE_DOLPHIN) {
+    bank->osc[slot].vowel_index =
+        (uint8_t)(((uint8_t)(midi + 0.5f) + bank->seed) % 4u);
+  } else if (engine == HT_ENGINE_BUBBLE || engine == HT_ENGINE_FOREST ||
+             engine == HT_ENGINE_DUB_BASS || engine == HT_ENGINE_FIRE) {
+    bank->osc[slot].vowel_index =
+        (uint8_t)(((uint8_t)(midi + 0.5f) + bank->seed) & 1u);
+  } else {
+    bank->osc[slot].vowel_index =
+        (uint8_t)(((uint8_t)(midi + 0.5f) + (bank->seed & 7u)) % 5u);
+  }
   bank->osc[slot].age = 0.0f;
   bank->osc[slot].target = (drum ? 0.4f : 0.28f) * vel;
 }
@@ -171,10 +182,10 @@ void ht_voice_note_on(HtVoiceBank *bank, float midi, uint8_t velocity, uint8_t e
 void ht_voice_note_off(HtVoiceBank *bank, float midi) {
   uint32_t index;
   for (index = 0; index < HT_VOICE_SLOTS; index += 1) {
-    if (bank->use_wg[index] && fabsf(bank->wg[index].midi - midi) < 0.06f) {
+    if (bank->use_wg[index] && ht_fabsf(bank->wg[index].midi - midi) < 0.06f) {
       ht_wg_note_off(&bank->wg[index]);
     }
-    if (bank->osc[index].active && fabsf(bank->osc[index].midi - midi) < 0.06f) {
+    if (bank->osc[index].active && ht_fabsf(bank->osc[index].midi - midi) < 0.06f) {
       bank->osc[index].released = 1;
       bank->osc[index].active = 0;
       bank->osc[index].target = 0.0f;
@@ -221,7 +232,8 @@ static float soft_compress(float input, float amount, float key_env) {
 void ht_voice_render(HtVoiceBank *bank, int32_t *lr, uint32_t frames, uint32_t master_q12) {
   uint32_t frame;
   uint32_t index;
-  float gain = (float)master_q12 / 4096.0f * 7200000.0f * bank->bus.court_gate;
+  /* Slightly hotter than template's 8.3e6 so generative engines stay clear at mid MASTER. */
+  float gain = (float)master_q12 / 4096.0f * 9200000.0f * bank->bus.court_gate;
   float lfo_phase = 0.0f;
   for (frame = 0; frame < frames; frame += 1) {
     float music = 0.0f;

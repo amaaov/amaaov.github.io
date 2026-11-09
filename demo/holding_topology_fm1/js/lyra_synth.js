@@ -11,10 +11,16 @@ import { noteToHz } from "./ht_tuning.js";
 import { createFormantBank, vowelFromIndex } from "./vowel_formants.js";
 import { PIPE_KINDS, createPipeVoice } from "./pipe_synth.js";
 import { STRING_KINDS, createStringVoice } from "./string_synth.js";
+import {
+  NATURE_ENGINES,
+  createNatureVoice,
+  natureModeIndex,
+} from "./nature_synth.js";
 import { createDrumKit, drumEnvelopesFromSeed } from "./drum_kit.js";
 
 const WIND_ENGINES = new Set(PIPE_KINDS);
 const STRING_ENGINES = new Set(STRING_KINDS);
+const NATURE_ENGINE_SET = new Set(NATURE_ENGINES);
 import { createFeedbackMix } from "./feedback_mix.js";
 import { mixSnapshotForSection, sectionAtBeat } from "./mix_composition.js";
 import { liveMixGlobals, liveMixSnapshot } from "./mix_motion.js";
@@ -209,10 +215,12 @@ export function createLyraSynth(audioContext) {
     const useNoise = spec.engine === "noise";
     const useWind = WIND_ENGINES.has(spec.engine);
     const useString = STRING_ENGINES.has(spec.engine);
+    const useNature = NATURE_ENGINE_SET.has(spec.engine);
     const usePhysical = useWind || useString;
+    const useExternal = usePhysical || useNature;
     if (spec.engine === "wavetable") {
       voice.osc.setPeriodicWave(makeWavetable(audioContext, spec.sharp, voice.index));
-    } else if (!useNoise && !usePhysical) {
+    } else if (!useNoise && !useExternal) {
       voice.osc.type = oscillatorTypeForEngine(spec.engine, voice.index);
     }
     voice.modulator.type =
@@ -234,12 +242,12 @@ export function createLyraSynth(audioContext) {
             ? 0.08
             : 0.18;
     voice.fmGain.gain.setTargetAtTime(
-      spec.active && !useNoise && !usePhysical ? spec.modDepth * hz * fmDepth : 0,
+      spec.active && !useNoise && !useExternal ? spec.modDepth * hz * fmDepth : 0,
       now,
       0.08,
     );
     voice.selfFb.gain.setTargetAtTime(
-      spec.active && !useNoise && !usePhysical
+      spec.active && !useNoise && !useExternal
         ? spec.selfFeedback * (spec.engine === "organ" ? 0.45 : 0.22)
         : 0,
       now,
@@ -251,7 +259,7 @@ export function createLyraSynth(audioContext) {
       now,
       0.05,
     );
-    const oscLevel = useNoise || usePhysical ? 0.0001 : spec.engine === "vowel" ? 1.15 : 1;
+    const oscLevel = useNoise || useExternal ? 0.0001 : spec.engine === "vowel" ? 1.15 : 1;
     voice.oscGain.gain.setTargetAtTime(oscLevel, now, 0.05);
     const noiseLevel = useNoise && spec.active ? 0.7 + spec.sharp * 0.35 : 0.0001;
     voice.noiseGain.gain.setTargetAtTime(noiseLevel, now, 0.05);
@@ -279,10 +287,13 @@ export function createLyraSynth(audioContext) {
             patchType === "vowel_chant" ||
             patchType === "orbit" ||
             spec.engine === "violin" ||
-            spec.engine === "didgeridoo")));
+            spec.engine === "didgeridoo" ||
+            spec.engine === "forest" ||
+            spec.engine === "fire" ||
+            spec.engine === "dub_bass")));
     const holdPeak = spec.level * engineHoldLevel(spec.engine);
     voice.amp.gain.cancelScheduledValues(now);
-    voice.amp.gain.setTargetAtTime(held ? holdPeak : 0.0001, now, 0.15);
+    voice.amp.gain.setTargetAtTime(held && !useNature ? holdPeak : 0.0001, now, 0.15);
     voice.sharp = spec.sharp;
     voice.active = spec.active;
     voice.engine = spec.engine;
@@ -302,14 +313,27 @@ export function createLyraSynth(audioContext) {
         voice.pipe.setVowel?.(voice.vowel, now);
       }
       voice.string.setActive(false, now);
+      voice.nature.noteOff(now);
     } else if (useString && spec.active) {
       voice.string.setKind(spec.engine === "karplus" ? "karplus" : spec.engine, now);
       voice.string.setActive(true, now);
       voice.string.setPitch(hz, spec.sharp, now);
       voice.pipe.setActive(false, now);
+      voice.nature.noteOff(now);
+    } else if (useNature && spec.active) {
+      const mode = natureModeIndex(spec.engine, spec.midi, patch?.seed ?? voice.index);
+      voice.nature.setKind(spec.engine, now);
+      voice.nature.setMode(mode, now);
+      voice.nature.noteOn(spec.midi, Math.round((spec.level ?? 0.5) * 127), mode, now);
+      if (held) {
+        voice.nature.setLevel(holdPeak, now);
+      }
+      voice.pipe.setActive(false, now);
+      voice.string.setActive(false, now);
     } else {
       voice.pipe.setActive(false, now);
       voice.string.setActive(false, now);
+      voice.nature.noteOff(now);
     }
   }
 
@@ -578,27 +602,41 @@ export function createLyraSynth(audioContext) {
           voice.amp.gain.setTargetAtTime(0.0001, now, mode === "gap" ? 0.04 : 0.1);
           voice.pipe.setActive(false, now);
           voice.string.setActive(false, now);
+          voice.nature.noteOff(now);
         } else if (voice.hold) {
           const level =
             (patch.voices[voice.index]?.level ?? 0.5) * engineHoldLevel(voice.engine);
-          voice.amp.gain.setTargetAtTime(level, now, 0.14);
+          voice.amp.gain.setTargetAtTime(
+            NATURE_ENGINE_SET.has(voice.engine) ? 0.0001 : level,
+            now,
+            0.14,
+          );
           if (WIND_ENGINES.has(voice.engine)) {
             voice.pipe.setActive(true, now);
             voice.pipe.setPitch(voice.baseHz || 220, voice.sharp ?? 0.4, now);
+            voice.nature.noteOff(now);
           } else if (STRING_ENGINES.has(voice.engine)) {
             voice.string.setActive(true, now);
             voice.string.setPitch(voice.baseHz || 220, voice.sharp ?? 0.4, now);
+            voice.nature.noteOff(now);
+          } else if (NATURE_ENGINE_SET.has(voice.engine)) {
+            voice.nature.setLevel(level, now);
+            voice.pipe.setActive(false, now);
+            voice.string.setActive(false, now);
           } else {
             voice.pipe.setActive(false, now);
             voice.string.setActive(false, now);
+            voice.nature.noteOff(now);
           }
         } else if (
           !WIND_ENGINES.has(voice.engine) &&
-          !STRING_ENGINES.has(voice.engine)
+          !STRING_ENGINES.has(voice.engine) &&
+          !NATURE_ENGINE_SET.has(voice.engine)
         ) {
           // Non-physical engines must never leave waveguides open into amp.
           voice.pipe.setActive(false, now);
           voice.string.setActive(false, now);
+          voice.nature.noteOff(now);
         }
       }
     },
@@ -770,6 +808,10 @@ export function createLyraSynth(audioContext) {
         voice.string.setKind(voice.engine === "karplus" ? "karplus" : voice.engine, time);
         voice.string.setPitch(hz, voice.sharp ?? 0.4, time);
       }
+      if (NATURE_ENGINE_SET.has(voice.engine)) {
+        voice.nature.setKind(voice.engine, time);
+        voice.nature.setMode(natureModeIndex(voice.engine, midi, patch.seed), time);
+      }
       if (voice.engine === "vowel") {
         voice.formants.setVowel(vowelFromIndex(midi), time);
       }
@@ -814,6 +856,7 @@ function createVoice(audioContext, index) {
   const formants = createFormantBank(audioContext);
   const pipe = createPipeVoice(audioContext, "pipe");
   const string = createStringVoice(audioContext, "guitar");
+  const nature = createNatureVoice(audioContext, "forest");
   const noise = audioContext.createBufferSource();
   noise.buffer = createNoiseBuffer(audioContext);
   noise.loop = true;
@@ -846,6 +889,7 @@ function createVoice(audioContext, index) {
   formants.output.connect(amp);
   pipe.output.connect(amp);
   string.output.connect(amp);
+  nature.output.connect(amp);
   amp.connect(levelMod);
   levelMod.connect(output);
   amp.connect(selfFb);
@@ -873,6 +917,7 @@ function createVoice(audioContext, index) {
     formants,
     pipe,
     string,
+    nature,
     baseHz: 110,
     baseCutoff: 4200,
     active: false,
@@ -931,12 +976,24 @@ function triggerVoiceBurst(voices, patch, voiceMute, voiceIndex, time, duration)
   const peak = level * engineBurstLevel(voice.engine);
   const envelope = { ...DEFAULT_ENVELOPE, ...patch.envelope };
   const physical = WIND_ENGINES.has(voice.engine) || STRING_ENGINES.has(voice.engine);
-  const attack = physical
+  const nature = NATURE_ENGINE_SET.has(voice.engine);
+  const attack = physical || nature
     ? Math.min(0.04, envelope.attack)
     : Math.max(0.005, envelope.attack);
   const decay = Math.max(0.02, envelope.decay);
   const sustain = clamp(envelope.sustain, 0.05, 1);
   const release = Math.max(0.08, envelope.release, duration * 0.45);
+  if (nature) {
+    const midi = patch.voices[voice.index]?.midi ?? 48;
+    const mode = natureModeIndex(voice.engine, midi, patch.seed ?? voice.index);
+    voice.nature.setKind(voice.engine, time);
+    voice.nature.setMode(mode, time);
+    voice.nature.noteOn(midi, Math.round(peak * 127), mode, time);
+    if (!voice.hold) {
+      voice.nature.noteOff(time + attack + decay + release);
+    }
+    return;
+  }
   const current = Math.max(voice.amp.gain.value, 0.0001);
   voice.amp.gain.cancelScheduledValues(time);
   voice.amp.gain.setValueAtTime(current, time);
@@ -1015,6 +1072,16 @@ function engineHoldLevel(engine) {
       return 0.42;
     case "granular":
       return 0.28;
+    case "forest":
+    case "fire":
+      return 0.4;
+    case "dub_bass":
+      return 0.5;
+    case "bubble":
+      return 0.3;
+    case "bird":
+    case "dolphin":
+      return 0.22;
     default:
       return 0.34;
   }
@@ -1045,6 +1112,16 @@ function engineBurstLevel(engine) {
       return 0.55;
     case "noise":
       return 0.6;
+    case "dub_bass":
+      return 0.72;
+    case "bird":
+    case "dolphin":
+      return 0.62;
+    case "bubble":
+      return 0.5;
+    case "forest":
+    case "fire":
+      return 0.45;
     default:
       return 0.48;
   }
@@ -1097,6 +1174,15 @@ function filterCutoffForEngine(engine, hz, sharp) {
   }
   if (engine === "vowel") {
     return 9000 + sharp * 2000;
+  }
+  if (engine === "dub_bass") {
+    return 180 + sharp * 900;
+  }
+  if (engine === "forest" || engine === "bubble" || engine === "fire") {
+    return 700 + sharp * 2800;
+  }
+  if (engine === "bird" || engine === "dolphin") {
+    return hz * (2.5 + sharp * 4);
   }
   if (WIND_ENGINES.has(engine) || STRING_ENGINES.has(engine)) {
     return hz * (2.2 + sharp * 3);

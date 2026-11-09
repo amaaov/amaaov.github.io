@@ -95,10 +95,12 @@ OUT="${OUT:-$(pwd)/out}"
 mkdir -p "$OUT"
 
 echo "docker-build-fwsc: running ./build.sh $BUILD_ARGS"
-# Mount the device tree and the SDK. JieLi toolchain is inside the image.
+# Mount the holding_topology_fm1 tree so app/ht → ../firmware symlinks resolve,
+# plus the AC79 SDK. JieLi toolchain is inside the image.
+HT_ROOT="$(cd .. && pwd)"
 # shellcheck disable=SC2086
 docker run --rm --platform "$PLATFORM" \
-  -v "$(pwd):/work" \
+  -v "$HT_ROOT:/ht" \
   -v "$AC79_SDK:/sdk:ro" \
   -e AC79_SDK=/sdk \
   -e JIELI_TOOLCHAIN=/opt/jieli/toolchain \

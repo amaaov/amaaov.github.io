@@ -39,4 +39,6 @@ COPY docker/entrypoint.sh /usr/local/bin/ht1-entrypoint
 RUN chmod +x /usr/local/bin/ht1-entrypoint
 
 ENTRYPOINT ["/usr/local/bin/ht1-entrypoint"]
-CMD ["--no-ble"]
+# Args come from docker-build-fwsc.sh (default --no-ble there). Empty CMD so
+# --with-ble is not overridden by a baked-in --no-ble.
+CMD []

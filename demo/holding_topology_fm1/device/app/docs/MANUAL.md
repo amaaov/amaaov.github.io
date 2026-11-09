@@ -24,11 +24,14 @@ MASTER is the hardware volume pot. The LCD shows a simple three-ball court and l
 
 ## Sound on device
 
-Device DSP (MIT, under `app/dsp/`) covers the full 23-engine catalogue:
+Device DSP (MIT, under `app/dsp/`) covers the full 29-engine catalogue:
 
 - Waveguides: pipe, saxophone, didgeridoo, vargan, guitar, violin, piano, karplus
 - Oscillators: subtractive, FM, acid, noise, supersaw, additive, organ, vowel, ring_mod, am, phase_distortion, waveshape, wavetable, granular, PWM
+- Nature / dub: bubble (pop vs waterfall), bird (chirp / trill / bark / owl), forest (canopy vs gust), dolphin whistle, fire (camp vs forest blaze), dub_bass (funk slap vs reggae dub)
 - Bus: sidechain → court dual-delay → scatter → tape → EQ → compress → analog
+
+Timbres `amazon_canopy` and `jamaica_dub` soft-bias PLAY toward nature and riddim engines without locking the rest of the catalogue.
 
 Seeds pick across all engines; KNOB 1 feeds physical feedback; FX/EDIT shape scatter and drive.
 

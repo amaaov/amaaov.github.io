@@ -12,8 +12,8 @@ extern "C" {
 #define HT_TRACK_COUNT 4
 #define HT_SCALE_COUNT 15
 #define HT_PATCH_TYPE_COUNT 12
-#define HT_ENGINE_COUNT 23
-#define HT_TIMBRE_COUNT 10
+#define HT_ENGINE_COUNT 29
+#define HT_TIMBRE_COUNT 12
 
 typedef enum HtPatchType {
   HT_PATCH_LOOPING = 0,
@@ -53,7 +53,13 @@ typedef enum HtEngine {
   HT_ENGINE_PIANO = 19,
   HT_ENGINE_SAXOPHONE = 20,
   HT_ENGINE_DIDGERIDOO = 21,
-  HT_ENGINE_VARGAN = 22
+  HT_ENGINE_VARGAN = 22,
+  HT_ENGINE_BUBBLE = 23,
+  HT_ENGINE_BIRD = 24,
+  HT_ENGINE_FOREST = 25,
+  HT_ENGINE_DOLPHIN = 26,
+  HT_ENGINE_DUB_BASS = 27,
+  HT_ENGINE_FIRE = 28
 } HtEngine;
 
 typedef enum HtTimbreProfile {
@@ -66,7 +72,9 @@ typedef enum HtTimbreProfile {
   HT_TIMBRE_KARPLUS_HALL = 6,
   HT_TIMBRE_FM_STORM = 7,
   HT_TIMBRE_STRING_COURT = 8,
-  HT_TIMBRE_WIND_COURT = 9
+  HT_TIMBRE_WIND_COURT = 9,
+  HT_TIMBRE_AMAZON_CANOPY = 10,
+  HT_TIMBRE_JAMAICA_DUB = 11
 } HtTimbreProfile;
 
 typedef enum HtTrackRole {

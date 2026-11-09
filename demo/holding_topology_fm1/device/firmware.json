@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "id": "ht",
+  "name": "amaaov",
+  "author": "amaaov",
+  "license": "MIT",
+  "tagline": "Juggling court generators on the FM-1",
+  "description": "Holding Topology HT-1 runs seed-driven court generators on the M-VAVE FM-1: PLAY rolls a unique seed, knobs bias tempo feedback and wildness, keys follow a seeded role map, and the LCD shows a juggling court. Device DSP covers waveguide pipes/strings, tape loop, scatter delay, and analog character; the browser demo keeps the full Web Audio engine set.",
+  "tags": ["synth", "generative", "sequencer"],
+  "install": "https://amaaov.github.io/demo/holding_topology_fm1/",
+  "site": "https://amaaov.github.io/demo/holding_topology_fm1/",
+  "source": "https://github.com/amaaov/amaaov.github.io",
+  "screenshot": "docs/img/screen-court.png",
+  "hardware": {
+    "models": ["FM-1"],
+    "flash": ["856014", "B36014"],
+    "features": ["bluetooth-midi", "usb-audio-in", "usb-audio-out", "velocity", "pressure", "screen-reader"]
+  },
+  "credits": "App and court generators by amaaov. Built on fm1-base and felucca-bsp (MPL-2.0), from Felucca by Leo Kuroshita (Hügelton Instruments)."
+}

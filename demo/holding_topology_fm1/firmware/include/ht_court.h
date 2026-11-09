@@ -43,6 +43,8 @@ HtSilenceMode ht_court_silence_mode(const HtCourtFrame *frame);
 /* Gain target for feedback_mix courtGate. */
 float ht_court_gate_amount(const HtCourtFrame *frame);
 
+void ht_court_clear_trails(void);
+void ht_court_push_trail(const HtCourtFrame *frame);
 void ht_court_draw_frame(uint16_t *rgb565_row, int row_y, const HtCourtFrame *frame);
 
 #ifdef __cplusplus

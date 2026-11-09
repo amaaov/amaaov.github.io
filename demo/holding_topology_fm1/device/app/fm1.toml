@@ -7,6 +7,8 @@ words = "words.tsv"
 ble = true
 ble_central = false
 include = ["ht", "dsp"]
+# Shim math.h/string.h/ctype.h/stdlib.h for freestanding (no libm / newlib on --no-ble).
+device_include = ["freestanding"]
 o2 = [
   "dsp/ht_voice.c",
   "dsp/ht_engines.c",
@@ -17,6 +19,7 @@ o2 = [
   "dsp/ht_court_chain.c",
   "dsp/ht_eq_bus.c",
   "dsp/ht_grain_delay.c",
+  "freestanding/ht_freestanding.c",
   "ht/ht_controls.c",
   "ht/ht_gen.c",
   "ht/ht_mix.c",

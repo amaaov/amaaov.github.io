@@ -48,12 +48,16 @@ int main(void) {
   bus.silence_mode = 0;
   ht_voice_set_bus(&bank, &bus);
 
-  expect_true("engine count", HT_ENGINE_COUNT == 23);
+  expect_true("engine count", HT_ENGINE_COUNT == 29);
   for (index = 0; index < HT_ENGINE_COUNT; index += 1) {
     seen[index] = 0;
   }
-  for (index = 0; index < 256; index += 1) {
-    seen[ht_voice_pick_engine(0xaced42u + index, (uint8_t)(40 + index % 40), 0)] = 1;
+  /* Midi 0 keeps the pitch term at 0 so seed ^ constant maps 1:1 onto engines. */
+  for (engine = 0; engine < HT_ENGINE_COUNT; engine += 1) {
+    uint32_t seed = (uint32_t)engine ^ 0xC001D00Du;
+    uint8_t picked = ht_voice_pick_engine(seed, 0.0f, 0);
+    expect_true("pick hits engine", picked == engine);
+    seen[picked] = 1;
   }
   for (engine = 0; engine < HT_ENGINE_COUNT; engine += 1) {
     expect_true("pick covers engine", seen[engine]);
@@ -72,6 +76,10 @@ int main(void) {
   ht_voice_note_on(&bank, 55, 85, HT_ENGINE_GRANULAR);
   ht_voice_note_on(&bank, 50, 80, HT_ENGINE_WAVETABLE);
   ht_voice_note_on(&bank, 36, 110, HT_ENGINE_NOISE);
+  ht_voice_note_on(&bank, 62, 100, HT_ENGINE_BIRD);
+  ht_voice_note_on(&bank, 40, 110, HT_ENGINE_DUB_BASS);
+  ht_voice_note_on(&bank, 58, 95, HT_ENGINE_BUBBLE);
+  ht_voice_note_on(&bank, 45, 100, HT_ENGINE_FIRE);
   for (index = 0; index < 40; index += 1) {
     ht_voice_render(&bank, block, 256, 2800);
   }

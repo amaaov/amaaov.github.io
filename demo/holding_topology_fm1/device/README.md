@@ -72,7 +72,7 @@ app/build/host/ht_host app/tests/basic.txt app/build/host
 | --- | --- |
 | `app/app.c` / `app.h` | FM-1 panel, LCD court, PLAY seed, generator clock |
 | `app/dsp/ht_voice.*` | Voice bank + bus orchestration |
-| `app/dsp/ht_engines.*` | All non-waveguide engines (23 catalog) |
+| `app/dsp/ht_engines.*` | All non-waveguide engines (29 catalog) |
 | `app/dsp/ht_waveguide.*` | Pipe / sax / didg / vargan + KS strings |
 | `app/dsp/ht_sidechain.*` | Drum-key sidechain duck on music bus |
 | `app/dsp/ht_court_chain.*` | Dual-delay court feedback |
@@ -104,7 +104,7 @@ make -C app/dsp test
 | Distinct PLAY / soft props | `createDistinctRndPatch` | soft object count + phrase/family diversify |
 | Tempo 40…220 BPM | `bpmFromTempoKnob` | `HT_BPM_MIN/MAX` + `ht_soft_bpm` on PLAY |
 | Silence open/tail/gap | `courtGate` + mix globals | Same via `ht_live_mix_globals` |
-| Full engine catalogue (23) | Web Audio | `ht_engines` + `ht_waveguide` |
+| Full engine catalogue (29) | Web Audio | `ht_engines` + `ht_waveguide` + `nature_synth` |
 | Court LCD | Canvas | `cv_*` + `ht_court_draw_frame` strip |
 
 ## Next

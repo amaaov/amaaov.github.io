@@ -4,7 +4,6 @@
  * FM-1 panel and audio surface for Holding Topology. Platform APIs from fm1-base
  * (plat.h). Generators and bias maps from the portable ht_* contract. */
 #include "fastmath.h"
-#include <string.h>
 #include "ht_action_loop.h"
 #include "ht_controls.h"
 #include "ht_court.h"
@@ -19,10 +18,23 @@
 #include "ht_voice.h"
 #include "touch.h"
 
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
+/* Freestanding: no libc string.h on the device build. */
+static int ht_strcmp(const char *a, const char *b) {
+  while (*a && *a == *b) {
+    a += 1;
+    b += 1;
+  }
+  return (unsigned char)*a - (unsigned char)*b;
+}
+
+static void sync_tempo_knob(void);
+
 /* Hand-style Lab strings are path presets (not siteswap shelves). */
 static const char *HAND_STYLE_CATALOG[] = {
-    NULL,
-    NULL,
     "(10)(32.5).",
     "(32.5)(10).",
     "(-30)(2.5).(30)(-2.5).(-30)(0).",
@@ -46,7 +58,8 @@ static uint8_t set_dirty;
 
 static HtControls controls;
 static HtPatchBias bias;
-static HtVoiceBank voices;
+/* Delay lines and voice state are too large for the 96 KiB .bss region. */
+static HtVoiceBank voices PLAT_POOL;
 static HtGenTuring turing;
 static HtGenAtlas atlas;
 static HtKeyRole key_roles[HT_KEY_MIDI_COUNT];
@@ -147,7 +160,7 @@ static void pick_siteswap_phrase(uint32_t mix) {
       generated_siteswap[0] = (char)('0' + gen.object_count);
       generated_siteswap[1] = 0;
     }
-    if (strcmp(generated_siteswap, prior) != 0 || attempt == 3u) {
+    if (ht_strcmp(generated_siteswap, prior) != 0 || attempt == 3u) {
       objects = gen.object_count;
       break;
     }
@@ -212,9 +225,6 @@ static struct {
   uint32_t keys;
   uint32_t btn;
   uint8_t redraw;
-  float ball_x[3];
-  float ball_y[3];
-  float ball_vy[3];
 } ui;
 
 static void text_cat(char *d, const char *s) {
@@ -225,22 +235,6 @@ static void text_cat(char *d, const char *s) {
     *d++ = *s++;
   }
   *d = 0;
-}
-
-static void int_text(int32_t v, char *b) {
-  char t[12];
-  int n = 0;
-  uint32_t u = (uint32_t)(v < 0 ? -v : v);
-  do {
-    t[n++] = (char)('0' + u % 10u);
-  } while ((u /= 10u) && n < 11);
-  if (v < 0) {
-    *b++ = '-';
-  }
-  while (n) {
-    *b++ = t[--n];
-  }
-  *b = 0;
 }
 
 static float clampf(float value, float lo, float hi) {
@@ -338,7 +332,7 @@ static int patch_axes_distinct(uint8_t objects, uint8_t patch_type, uint8_t scal
   if (bpm_b != previous_bpm_bucket) {
     score += 1;
   }
-  if (!previous_siteswap[0] || strcmp(siteswap, previous_siteswap) != 0) {
+  if (!previous_siteswap[0] || ht_strcmp(siteswap, previous_siteswap) != 0) {
     score += 2;
   }
   return score >= 4;
@@ -412,8 +406,12 @@ static void apply_seed(uint32_t next_seed) {
   }
   ht_action_loop_rebind(&action_loop, seed);
   remember_patch_axes();
+  ht_court_clear_trails();
   gen_armed = 1;
   sync_voice_bus();
+  /* Audible seed mark so a silent bus is obvious in the emulator. */
+  ht_voice_note_on(&voices, ht_scale_note(bias.scale_index, 60.0f, 0, set.octave), 110,
+                   ht_voice_pick_engine(seed, 60.0f, 0));
 }
 
 static void settings_defaults(void) {
@@ -456,12 +454,8 @@ void app_init(void) {
   court.cosmology = 0;
   court.airborne_count = 3;
   court.hand_hold_count = 0;
+  ht_court_clear_trails();
   apply_seed(ht_unique_seed(plat_ms() ^ 0x4854u));
-  for (index = 0; index < 3u; index += 1) {
-    ui.ball_x[index] = 40.0f + (float)index * 70.0f;
-    ui.ball_y[index] = 80.0f;
-    ui.ball_vy[index] = -1.2f - (float)index * 0.35f;
-  }
 }
 
 void app_panic(void) {
@@ -472,6 +466,7 @@ void app_panic(void) {
 void app_say(const char *a, const char *b) {
   uint32_t i;
   char t[48];
+  /* LCD stays props-only (JS pixel court). Keep announcements for screen readers. */
   for (i = 0; i < 23u && a && a[i]; i++) {
     ui.msg[0][i] = a[i];
   }
@@ -480,8 +475,7 @@ void app_say(const char *a, const char *b) {
     ui.msg[1][i] = b[i];
   }
   ui.msg[1][i] = 0;
-  ui.msg_until = plat_ms() + 1200u;
-  ui.redraw = 1;
+  ui.msg_until = 0;
   if (ann_on()) {
     t[0] = 0;
     text_cat(t, ui.msg[0]);
@@ -501,7 +495,8 @@ static void siteswap_tick(void) {
   uint16_t i;
   uint8_t held = 0;
   uint8_t airborne = 0;
-  pattern_beat += 1.0f;
+  /* step_period_ms is one 16th; advance a quarter-beat so wall tempo matches JS bpm. */
+  pattern_beat += 0.25f;
   if (pattern_beat >= phrase_until_beat) {
     phrase_index = (uint8_t)(phrase_index + 1u);
     pick_siteswap_phrase(seed ^ ((uint32_t)phrase_index * 0x9e3779b9u));
@@ -533,7 +528,7 @@ static void siteswap_tick(void) {
       edge.dwell_phase = 0.0f;
       edge.transition = HT_MOD_THROW;
       burst = ht_mod_matrix_combine(&edge);
-      if (burst.audible) {
+      {
         float midi = ht_scale_note(bias.scale_index, 48.0f, (uint8_t)(ev->height % 12), set.octave);
         uint8_t vel = (uint8_t)(70 + burst.burst_gain * 40.0f);
         ht_voice_note_on(&voices, midi, vel, ht_voice_pick_engine(seed, midi, 0));
@@ -618,6 +613,7 @@ static void generator_tick(void) {
                        ht_voice_pick_engine(seed, drums[index].midi, 1));
     }
   }
+  sync_voice_bus();
 }
 
 static void begin_episode_rest(uint8_t gap) {
@@ -632,6 +628,8 @@ static void begin_episode_rest(uint8_t gap) {
 void app_render(int32_t *lr, uint32_t n, uint32_t master_q12) {
   uint32_t pkt;
   int port;
+  uint32_t gain = master_q12;
+  /* Keep this ISR-thin: no bus reconfigure (8 KiB audio stack). Bus sync lives in app_frame. */
   while (plat_midi_in(&pkt, &port)) {
     uint32_t st = (pkt >> 8) & 0xFFu;
     uint32_t d1 = (pkt >> 16) & 0x7Fu;
@@ -643,10 +641,12 @@ void app_render(int32_t *lr, uint32_t n, uint32_t master_q12) {
       ht_voice_note_off(&voices, (uint8_t)d1);
     }
   }
-  (void)master_q12;
-  controls.master = (float)plat_master() / 4096.0f;
-  sync_voice_bus();
-  ht_voice_render(&voices, lr, n, plat_master());
+  /* Platform already applied APP_GAIN; keep a hard floor if a build skips it. */
+  if (gain < 1400u) {
+    gain = 1400u;
+  }
+  controls.master = (float)gain / 4096.0f;
+  ht_voice_render(&voices, lr, n, gain);
 }
 
 static void play_fresh_seed(void) {
@@ -806,42 +806,32 @@ static void input(void) {
 void app_input_only(void) { input(); }
 
 static void draw_court(void) {
-  uint32_t i;
-  char t[24];
-  uint32_t now = plat_ms();
-  cv_begin(240, 240, C_BLACK);
-  if (now < ui.msg_until) {
-    cv_text(8, 8, &FONT_B, ui.msg[0], C_WHITE);
-    cv_text(8, 28, &FONT_B, ui.msg[1], C_HI);
-  } else {
-    cv_text(8, 8, &FONT_B, APP_NAME, C_WHITE);
-    cv_text(70, 12, &FONT_XS, "COURT", C_DIM);
-  }
-  for (i = 0; i < 3u; i += 1) {
-    int32_t x;
-    int32_t y;
-    ui.ball_vy[i] += 0.12f;
-    ui.ball_y[i] += ui.ball_vy[i];
-    if (ui.ball_y[i] > 190.0f) {
-      ui.ball_y[i] = 190.0f;
-      ui.ball_vy[i] = -3.2f - (float)(i) * 0.4f;
-      ui.ball_x[i] = 30.0f + (float)((seed + i * 37u + now / 40u) % 180u);
+  /* Full 240×240 in horizontal strips (canvas budget is APP_CANVAS_PX). */
+  const uint32_t strip = 120u;
+  uint32_t y0;
+  court.dwell_ratio = bias.dwell_ratio;
+  court.hold_twos = 1;
+  court.siteswap = active_siteswap;
+  court.hand_style = active_hand_style;
+  court.time_beat = pattern_beat + (step_period_ms ? (float)step_ms_accum / (float)step_period_ms : 0.0f);
+  ht_court_push_trail(&court);
+  for (y0 = 0; y0 < (uint32_t)HT_COURT_HEIGHT; y0 += strip) {
+    uint32_t h = strip;
+    uint32_t row;
+    if (y0 + h > (uint32_t)HT_COURT_HEIGHT) {
+      h = (uint32_t)HT_COURT_HEIGHT - y0;
     }
-    x = (int32_t)ui.ball_x[i];
-    y = (int32_t)ui.ball_y[i];
-    cv_rect(x, y, 10, 10, C_HI);
+    cv_begin(240u, h, C_BLACK);
+    for (row = 0; row < h; row += 1) {
+      uint16_t line[HT_COURT_WIDTH];
+      uint32_t x;
+      ht_court_draw_frame(line, (int)(y0 + row), &court);
+      for (x = 0; x < (uint32_t)HT_COURT_WIDTH; x += 1) {
+        cv_px[row * 240u + x] = swap16(line[x]);
+      }
+    }
+    cv_blit(0, y0);
   }
-  cv_rect(20, 200, 200, 4, C_LINE);
-  int_text((int32_t)bias.bpm, t);
-  cv_text(8, 214, &FONT_XS, "BPM", C_GRAY);
-  cv_text(36, 214, &FONT_XS, t, C_HI);
-  cv_text(90, 214, &FONT_XS, "FB", C_GRAY);
-  int_text((int32_t)(controls.knob1 * 100.0f), t);
-  cv_text(110, 214, &FONT_XS, t, C_WHITE);
-  cv_text(160, 214, &FONT_XS, "OCT", C_GRAY);
-  int_text(set.octave, t);
-  cv_text(190, 214, &FONT_XS, t, C_HI);
-  cv_blit(0, 0);
 }
 
 void app_ui_init(void) {
@@ -859,7 +849,6 @@ void app_frame(void) {
     episode_resting = 0;
     episode_gap = 0;
     court.airborne_count = 3;
-    sync_voice_bus();
     ui.redraw = 1;
   }
   if (!last_ms) {
@@ -868,19 +857,21 @@ void app_frame(void) {
   dt = now - last_ms;
   last_ms = now;
   step_ms_accum += dt;
-  while (step_ms_accum >= step_period_ms) {
+  while (step_period_ms && step_ms_accum >= step_period_ms) {
     step_ms_accum -= step_period_ms;
     generator_tick();
     ui.redraw = 1;
   }
-  if (ui.msg_until && now >= ui.msg_until) {
-    ui.msg_until = 0;
-    ui.redraw = 1;
+  /* ~20 Hz court blit: full 240×240 SPI every frame starves the 8 KiB audio ISR in emu. */
+  {
+    static uint8_t court_div;
+    court_div = (uint8_t)(court_div + 1u);
+    if ((court_div % 3u) == 0u || ui.redraw) {
+      draw_court();
+    }
   }
-  if (ui.redraw || (now % 33u) < dt) {
-    ui.redraw = 0;
-    draw_court();
-  }
+  ui.redraw = 0;
+  (void)now;
 }
 
 #ifdef PLAT_HOST

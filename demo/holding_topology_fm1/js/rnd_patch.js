@@ -73,6 +73,12 @@ export const ENGINES = [
   "saxophone",
   "didgeridoo",
   "vargan",
+  "bubble",
+  "bird",
+  "forest",
+  "dolphin",
+  "dub_bass",
+  "fire",
 ];
 
 export const GENERATIVE_PATCH_TYPES = new Set([
@@ -93,6 +99,8 @@ export const TIMBRE_PROFILES = [
   "fm_storm",
   "string_court",
   "wind_court",
+  "amazon_canopy",
+  "jamaica_dub",
 ];
 
 export const SCALE_NAMES = Object.keys(SCALES);
@@ -174,6 +182,16 @@ function trackEngineBias(profile, patchType, trackIndex) {
   }
   if (profile === "fm_storm") {
     return ["fm", "phase_distortion", "waveshape", "ring_mod", "am", "saxophone"];
+  }
+  if (profile === "amazon_canopy") {
+    return trackIndex === 0
+      ? ["bubble", "forest", "fire", "dub_bass", "subtractive"]
+      : ["bird", "dolphin", "forest", "bubble", "fire", "granular", "noise"];
+  }
+  if (profile === "jamaica_dub") {
+    return trackIndex === 0
+      ? ["dub_bass", "subtractive", "acid", "organ"]
+      : ["dub_bass", "pwm", "organ", "fm", "forest", "noise"];
   }
   if (patchType === "atlas_drums" && trackIndex === 3) {
     return ["noise", "pwm", "subtractive", "waveshape"];
@@ -297,6 +315,26 @@ function profileMix(random, profile, wildness) {
       reverb: between(random, 0.3, 0.6),
       filterHz: between(random, 1600, 4500),
       holdBias: 0.7,
+    };
+  }
+  if (profile === "amazon_canopy") {
+    return {
+      delayTime: between(random, 0.32, 0.62),
+      drive: between(random, 0.12, 0.38),
+      totalFeedback: between(random, 0.35, 0.65),
+      reverb: between(random, 0.4, 0.72),
+      filterHz: between(random, 2200, 6200),
+      holdBias: 0.8,
+    };
+  }
+  if (profile === "jamaica_dub") {
+    return {
+      delayTime: between(random, 0.28, 0.55),
+      drive: between(random, 0.2, 0.5),
+      totalFeedback: between(random, 0.45, 0.78),
+      reverb: between(random, 0.25, 0.5),
+      filterHz: between(random, 900, 2800),
+      holdBias: 0.55,
     };
   }
   return {

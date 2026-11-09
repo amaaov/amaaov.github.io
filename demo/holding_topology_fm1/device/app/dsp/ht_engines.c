@@ -36,6 +36,195 @@ static float resonator(float input, float *z, float hz, float q_proxy) {
   return band * (0.35f + q_proxy * 0.2f) + *z * 0.15f;
 }
 
+static float wrap01(float phase) {
+  while (phase >= 1.0f) {
+    phase -= 1.0f;
+  }
+  while (phase < 0.0f) {
+    phase += 1.0f;
+  }
+  return phase;
+}
+
+/* Minnaert-style bubble pops + pinkish flow bed; mode1 = waterfall rush. */
+static float sample_bubble(HtOscSlot *slot, float hz, float lfo) {
+  float n = ht_noise_f(&slot->noise);
+  float flow;
+  float rate;
+  float bubble = 0.0f;
+  int waterfall = (slot->vowel_index & 1u) != 0;
+  rate = waterfall ? (0.0018f + hz * 0.0000025f) : (0.00035f + hz * 0.0000008f);
+  rate *= 1.0f + lfo * 0.35f;
+  flow = ht_onepole(n, &slot->formant_z[2], waterfall ? 0.12f : 0.045f);
+  if (((float)(ht_noise_u32(&slot->noise) & 0xffffu) / 65535.0f) < rate) {
+    slot->formant_z[0] = 1.0f;
+    slot->formant_z[1] =
+        (waterfall ? 280.0f : 520.0f) +
+        ((float)(ht_noise_u32(&slot->noise) & 0xffffu) / 65535.0f) *
+            (waterfall ? 2400.0f : 1600.0f);
+    slot->grain_phase = 0.0f;
+  }
+  if (slot->formant_z[0] > 0.0005f) {
+    float f = slot->formant_z[1];
+    slot->grain_phase = wrap01(slot->grain_phase + f / HT_DSP_SAMPLE_RATE);
+    bubble = ht_sinf(slot->grain_phase * 6.2831853f) * slot->formant_z[0];
+    /* Pitch falls slightly as the cavity stabilises. */
+    slot->formant_z[1] *= 0.99972f;
+    slot->formant_z[0] *= waterfall ? 0.9988f : 0.9975f;
+  }
+  return flow * (waterfall ? 0.55f : 0.22f) + bubble * (waterfall ? 0.55f : 0.85f);
+}
+
+/* Bird / bark / owl motifs via FM + sweeps. mode: chirp,trill,bark,owl. */
+static float sample_bird(HtOscSlot *slot, float hz, float lfo) {
+  uint8_t mode = (uint8_t)(slot->vowel_index % 4u);
+  float t = slot->age;
+  float cycle = wrap01(t * (mode == 3u ? 0.55f : 2.4f + (float)((int)slot->midi % 5) * 0.15f));
+  float base = hz * (mode == 3u ? 0.45f : 1.35f + (float)((int)slot->midi % 7) * 0.08f);
+  float f = base;
+  float depth = 0.8f + lfo * 0.4f;
+  float env = 1.0f;
+  float mod;
+  float carrier;
+  if (mode == 0u) {
+    /* Chirp: quadratic upsweep. */
+    f = base * (0.7f + 2.2f * cycle * cycle);
+    env = cycle < 0.72f ? 1.0f : 1.0f - (cycle - 0.72f) / 0.28f;
+  } else if (mode == 1u) {
+    /* Trill: two-pitch alternation. */
+    f = base * (cycle < 0.5f ? 1.0f : 1.22f);
+    env = 0.75f + 0.25f * ht_sinf(cycle * 25.13274f);
+  } else if (mode == 2u) {
+    /* Bark / harsh call: short AM noise + FM. */
+    f = base * (0.55f + 0.9f * (1.0f - cycle));
+    env = cycle < 0.18f ? cycle / 0.18f : (cycle < 0.55f ? 1.0f : 1.0f - (cycle - 0.55f) / 0.45f);
+    depth = 2.4f;
+  } else {
+    /* Owl whoop: slow down-glide. */
+    f = base * (1.35f - 0.55f * cycle);
+    env = cycle < 0.12f ? cycle / 0.12f : (cycle < 0.75f ? 1.0f : 1.0f - (cycle - 0.75f) / 0.25f);
+    depth = 0.35f;
+  }
+  slot->phase2 = wrap01(slot->phase2 + (f * 2.15f) / HT_DSP_SAMPLE_RATE);
+  slot->phase = wrap01(slot->phase + f / HT_DSP_SAMPLE_RATE);
+  mod = ht_sinf(slot->phase2 * 6.2831853f) * depth;
+  carrier = ht_sinf((slot->phase + mod * 0.07f) * 6.2831853f);
+  if (mode == 2u) {
+    carrier = carrier * (0.55f + 0.45f * ht_fabsf(ht_noise_f(&slot->noise))) +
+              ht_noise_f(&slot->noise) * 0.22f * env;
+  }
+  return carrier * ht_clampf(env, 0.0f, 1.0f);
+}
+
+/* Forest canopy bed vs gust wind — filtered noise + sparse rustle. */
+static float sample_forest(HtOscSlot *slot, float hz, float lfo) {
+  int gust = (slot->vowel_index & 1u) != 0;
+  float n = ht_noise_f(&slot->noise);
+  float brown = ht_onepole(n, &slot->formant_z[0], gust ? 0.08f : 0.03f);
+  float cut = (gust ? 900.0f : 420.0f) + hz * 0.35f +
+              (0.5f + 0.5f * ht_sinf(slot->age * (gust ? 1.1f : 0.28f) + lfo)) *
+                  (gust ? 2800.0f : 1400.0f);
+  float air = resonator(brown, &slot->formant_z[1], cut, gust ? 0.55f : 0.35f);
+  float rustle = 0.0f;
+  if (((float)(ht_noise_u32(&slot->noise) & 0xffffu) / 65535.0f) < (gust ? 0.0009f : 0.00025f)) {
+    slot->formant_z[2] = 0.9f;
+  }
+  if (slot->formant_z[2] > 0.001f) {
+    rustle = ht_noise_f(&slot->noise) * slot->formant_z[2];
+    slot->formant_z[2] *= 0.992f;
+  }
+  return air * (gust ? 0.7f : 0.45f) + rustle * 0.35f + brown * 0.12f;
+}
+
+/* Dolphin whistle: harmonic FM contour (up / down / convex / sine). */
+static float sample_dolphin(HtOscSlot *slot, float hz, float lfo) {
+  uint8_t contour = (uint8_t)(slot->vowel_index % 4u);
+  float cycle = wrap01(slot->age * (1.1f + (float)((int)slot->midi % 5) * 0.12f));
+  float shape;
+  float f;
+  float fund;
+  float h2;
+  float h3;
+  float env;
+  if (contour == 0u) {
+    shape = cycle;
+  } else if (contour == 1u) {
+    shape = 1.0f - cycle;
+  } else if (contour == 2u) {
+    shape = 1.0f - 4.0f * (cycle - 0.5f) * (cycle - 0.5f);
+  } else {
+    shape = 0.5f + 0.5f * ht_sinf(cycle * 6.2831853f);
+  }
+  f = hz * (3.2f + 5.5f * shape) * (1.0f + lfo * 0.03f);
+  env = cycle < 0.08f ? cycle / 0.08f : (cycle < 0.82f ? 1.0f : 1.0f - (cycle - 0.82f) / 0.18f);
+  slot->phase = wrap01(slot->phase + f / HT_DSP_SAMPLE_RATE);
+  slot->phase2 = wrap01(slot->phase2 + (f * 2.0f) / HT_DSP_SAMPLE_RATE);
+  slot->phase3 = wrap01(slot->phase3 + (f * 3.0f) / HT_DSP_SAMPLE_RATE);
+  fund = ht_sinf(slot->phase * 6.2831853f);
+  h2 = ht_sinf(slot->phase2 * 6.2831853f) * 0.42f;
+  h3 = ht_sinf(slot->phase3 * 6.2831853f) * 0.16f;
+  return (fund + h2 + h3) * ht_clampf(env, 0.0f, 1.0f);
+}
+
+/*
+ * Campfire vs forest fire — Farnell-style crackle + hiss + low lapping.
+ * mode0 = camp (sparse pops, soft rumble); mode1 = forest blaze (dense roar).
+ */
+static float sample_fire(HtOscSlot *slot, float hz, float lfo) {
+  int blaze = (slot->vowel_index & 1u) != 0;
+  float n = ht_noise_f(&slot->noise);
+  float rumble = ht_onepole(n, &slot->formant_z[0], blaze ? 0.06f : 0.025f);
+  float hiss_mod = ht_noise_f(&slot->noise);
+  /* Squared-squared dynamics for rare loud hiss bursts. */
+  hiss_mod = hiss_mod * hiss_mod;
+  hiss_mod = hiss_mod * hiss_mod;
+  float hiss = resonator(n, &slot->formant_z[1], blaze ? 2200.0f : 1400.0f, 0.45f) * hiss_mod;
+  float crackle = 0.0f;
+  float rate = blaze ? (0.0022f + hz * 0.0000015f) : (0.00045f + hz * 0.0000006f);
+  rate *= 1.0f + lfo * 0.25f;
+  if (((float)(ht_noise_u32(&slot->noise) & 0xffffu) / 65535.0f) < rate) {
+    slot->formant_z[2] = 1.0f;
+    slot->grain_phase =
+        120.0f + ((float)(ht_noise_u32(&slot->noise) & 0xffffu) / 65535.0f) *
+                     (blaze ? 1400.0f : 900.0f);
+  }
+  if (slot->formant_z[2] > 0.001f) {
+    float pop = n * slot->formant_z[2];
+    crackle = pop + resonator(pop, &slot->grain_buf[0], slot->grain_phase, 1.4f) * 0.55f;
+    slot->formant_z[2] *= blaze ? 0.985f : 0.96f;
+  }
+  float lap = ht_softsat(rumble * (blaze ? 2.8f : 1.6f), blaze ? 0.55f : 0.35f);
+  if (blaze) {
+    return crackle * 0.22f + hiss * 0.35f + lap * 0.55f;
+  }
+  return crackle * 0.45f + hiss * 0.2f + lap * 0.35f;
+}
+
+/* Funk slap vs reggae dub bass — dual osc + age-driven filter brightness. */
+static float sample_dub_bass(HtOscSlot *slot, float hz, float lfo) {
+  int dub = (slot->vowel_index & 1u) != 0;
+  float saw = 2.0f * slot->phase - 1.0f;
+  float square = slot->phase2 < 0.5f ? 0.7f : -0.7f;
+  float sub = ht_sinf(slot->phase * 6.2831853f);
+  float mix;
+  float bright;
+  float t = slot->age;
+  float fenv;
+  if (dub) {
+    /* Slow / reverse-ish filter open for dread bass. */
+    fenv = ht_clampf(t * 2.2f, 0.0f, 1.0f);
+    mix = sub * 0.62f + saw * 0.28f + square * 0.1f;
+    bright = 0.04f + fenv * 0.14f + lfo * 0.02f;
+  } else {
+    /* Funk slap: snappy filter burst then body. */
+    fenv = t < 0.06f ? 1.0f : ht_clampf(1.0f - (t - 0.06f) * 3.5f, 0.18f, 1.0f);
+    mix = saw * 0.45f + square * 0.35f + sub * 0.2f;
+    bright = 0.08f + fenv * 0.45f + lfo * 0.03f;
+  }
+  (void)hz;
+  return mix * (0.85f + bright * 0.2f);
+}
+
 void ht_osc_slot_clear(HtOscSlot *slot) {
   uint16_t index;
   slot->phase = 0.0f;
@@ -78,18 +267,32 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
   float freqs[3];
   uint16_t g;
   float grain;
+  int nature = slot->engine == HT_ENGINE_BUBBLE || slot->engine == HT_ENGINE_BIRD ||
+               slot->engine == HT_ENGINE_FOREST || slot->engine == HT_ENGINE_DOLPHIN ||
+               slot->engine == HT_ENGINE_DUB_BASS || slot->engine == HT_ENGINE_FIRE;
 
-  slot->phase += inc;
-  if (slot->phase >= 1.0f) {
-    slot->phase -= 1.0f;
-  }
-  slot->phase2 += inc * (slot->engine == HT_ENGINE_SUPERSAW ? 1.003f : 2.01f);
-  if (slot->phase2 >= 1.0f) {
-    slot->phase2 -= 1.0f;
-  }
-  slot->phase3 += inc * 3.02f;
-  if (slot->phase3 >= 1.0f) {
-    slot->phase3 -= 1.0f;
+  if (!nature) {
+    slot->phase += inc;
+    if (slot->phase >= 1.0f) {
+      slot->phase -= 1.0f;
+    }
+    slot->phase2 += inc * (slot->engine == HT_ENGINE_SUPERSAW ? 1.003f : 2.01f);
+    if (slot->phase2 >= 1.0f) {
+      slot->phase2 -= 1.0f;
+    }
+    slot->phase3 += inc * 3.02f;
+    if (slot->phase3 >= 1.0f) {
+      slot->phase3 -= 1.0f;
+    }
+  } else if (slot->engine == HT_ENGINE_DUB_BASS) {
+    slot->phase += inc;
+    if (slot->phase >= 1.0f) {
+      slot->phase -= 1.0f;
+    }
+    slot->phase2 += inc * 1.002f;
+    if (slot->phase2 >= 1.0f) {
+      slot->phase2 -= 1.0f;
+    }
   }
 
   switch (slot->engine) {
@@ -194,6 +397,36 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
       wave = slot->phase < width ? 0.7f : -0.7f;
       break;
     }
+
+    case HT_ENGINE_BUBBLE:
+      wave = sample_bubble(slot, hz, lfo);
+      bright = (slot->vowel_index & 1u) ? 0.28f : 0.42f;
+      break;
+
+    case HT_ENGINE_BIRD:
+      wave = sample_bird(slot, hz, lfo);
+      bright = 0.55f;
+      break;
+
+    case HT_ENGINE_FOREST:
+      wave = sample_forest(slot, hz, lfo);
+      bright = (slot->vowel_index & 1u) ? 0.32f : 0.18f;
+      break;
+
+    case HT_ENGINE_DOLPHIN:
+      wave = sample_dolphin(slot, hz, lfo);
+      bright = 0.48f;
+      break;
+
+    case HT_ENGINE_DUB_BASS:
+      wave = sample_dub_bass(slot, hz, lfo);
+      bright = (slot->vowel_index & 1u) ? 0.08f : 0.22f;
+      break;
+
+    case HT_ENGINE_FIRE:
+      wave = sample_fire(slot, hz, lfo);
+      bright = (slot->vowel_index & 1u) ? 0.38f : 0.28f;
+      break;
 
     default:
       /* Physical engines are rendered by waveguides; keep a quiet fallback. */
