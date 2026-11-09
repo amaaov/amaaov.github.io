@@ -13,11 +13,31 @@ void ht_voice_init(HtVoiceBank *bank) {
     ht_wg_clear(&bank->wg[index]);
     bank->use_wg[index] = 0;
     bank->wg_drum[index] = 0;
+    bank->pan[index] = 0.0f;
   }
   for (index = 0; index < HT_SCATTER_SAMPLES; index += 1) {
     bank->scatter_delay[index] = 0.0f;
   }
   bank->scatter_write = 0;
+  bank->pending_pan = 0.0f;
+  bank->pending_pan_valid = 0;
+#ifdef HT_STAGE_NATIVE
+  {
+    uint32_t p;
+    for (p = 0; p < 48000u; p += 1) {
+      bank->ping_l[p] = 0.0f;
+      bank->ping_r[p] = 0.0f;
+    }
+    bank->ping_write = 0;
+    bank->ping_delay = (uint32_t)(0.22f * HT_DSP_SAMPLE_RATE);
+    if (bank->ping_delay < 64u) {
+      bank->ping_delay = 64u;
+    }
+    if (bank->ping_delay > 47900u) {
+      bank->ping_delay = 47900u;
+    }
+  }
+#endif
   bank->duck_depth = 0.55f;
   bank->gain_now = 0.0f;
   bank->lfo_phase = 0.0f;
@@ -132,16 +152,35 @@ static uint32_t alloc_slot(HtVoiceBank *bank) {
   return 0;
 }
 
+void ht_voice_set_pending_pan(HtVoiceBank *bank, float pan) {
+  if (!bank) {
+    return;
+  }
+  bank->pending_pan = ht_clampf(pan, -1.0f, 1.0f);
+  bank->pending_pan_valid = 1;
+}
+
 void ht_voice_note_on(HtVoiceBank *bank, float midi, uint8_t velocity, uint8_t engine) {
   uint32_t slot = alloc_slot(bank);
   float vel = (float)velocity / 127.0f;
   uint8_t drum = (uint8_t)ht_engine_is_drum_midi(engine, midi);
+  float pan;
   if (vel < 0.05f) {
     vel = 0.05f;
   }
   if (engine >= HT_ENGINE_COUNT) {
     engine = HT_ENGINE_SUBTRACTIVE;
   }
+  if (bank->pending_pan_valid) {
+    pan = bank->pending_pan;
+    bank->pending_pan_valid = 0;
+  } else {
+    pan = (((float)((int)(midi + 0.5f) % 12) - 5.5f) / 7.0f);
+    if (drum) {
+      pan *= 0.35f;
+    }
+  }
+  bank->pan[slot] = ht_clampf(pan, -1.0f, 1.0f);
   if (ht_engine_is_physical(engine)) {
     ht_wg_note_on(&bank->wg[slot], engine, midi, velocity, bank->bus.feedback);
     bank->use_wg[slot] = 1;
@@ -179,7 +218,8 @@ void ht_voice_note_on(HtVoiceBank *bank, float midi, uint8_t velocity, uint8_t e
         (uint8_t)(((uint8_t)(midi + 0.5f) + (bank->seed & 7u)) % 5u);
   }
   bank->osc[slot].age = 0.0f;
-  bank->osc[slot].target = (drum ? 0.4f : 0.28f) * vel;
+  /* Melodic voices a bit hotter so they read above atlas hats. */
+  bank->osc[slot].target = (drum ? 0.32f : 0.42f) * vel;
 }
 
 void ht_voice_note_off(HtVoiceBank *bank, float midi) {
@@ -260,9 +300,17 @@ void ht_voice_render(HtVoiceBank *bank, int32_t *lr, uint32_t frames, uint32_t m
   /* Slightly hotter than template's 8.3e6 so generative engines stay clear at mid MASTER. */
   float gain = (float)master_q12 / 4096.0f * 9200000.0f * bank->bus.court_gate;
   for (frame = 0; frame < frames; frame += 1) {
-    float music = 0.0f;
-    float drums = 0.0f;
-    float out;
+    float music_l = 0.0f;
+    float music_r = 0.0f;
+    float drums_l = 0.0f;
+    float drums_r = 0.0f;
+    float drums_mono;
+    float dry_l;
+    float dry_r;
+    float mono;
+    float fx;
+    float out_l;
+    float out_r;
     float lfo;
     float sc_gain;
     bank->gain_now += (gain - bank->gain_now) * 0.004f;
@@ -274,6 +322,9 @@ void ht_voice_render(HtVoiceBank *bank, int32_t *lr, uint32_t frames, uint32_t m
 
     for (index = 0; index < HT_VOICE_SLOTS; index += 1) {
       float sample = 0.0f;
+      float pan;
+      float l_gain;
+      float r_gain;
       uint8_t drum = 0;
       bank->osc[index].age += 1.0f / HT_DSP_SAMPLE_RATE;
       if (bank->use_wg[index]) {
@@ -290,30 +341,64 @@ void ht_voice_render(HtVoiceBank *bank, int32_t *lr, uint32_t frames, uint32_t m
         sample = ht_engine_sample(slot, lfo) * slot->level;
         drum = slot->drum;
       }
+      pan = bank->pan[index];
+      /* Equal-power-ish stereo gains. */
+      l_gain = ht_clampf(0.7071f * (1.0f - pan), 0.0f, 1.25f);
+      r_gain = ht_clampf(0.7071f * (1.0f + pan), 0.0f, 1.25f);
       if (drum) {
-        drums += sample;
+        drums_l += sample * l_gain;
+        drums_r += sample * r_gain;
       } else {
-        music += sample;
+        music_l += sample * l_gain;
+        music_r += sample * r_gain;
       }
     }
 
-    sc_gain = ht_sidechain_process(&bank->sidechain, drums);
-    out = music * sc_gain + drums;
-    out = ht_court_chain_process(&bank->court, out);
-    out = scatter_process(bank, out);
-    out += ht_grain_delay_process(&bank->grain, out);
-    out = ht_tape_process(&bank->tape, out);
-    out = ht_eq_bus_process(&bank->eq, out);
-    out = soft_compress(out, bank->bus.compress, bank->sidechain.env);
-    out = ht_analog_bus_process(&bank->analog, out);
-    out *= bank->gain_now;
-    if (out > 8000000.0f) {
-      out = 8000000.0f;
+    drums_mono = 0.5f * (drums_l + drums_r);
+    sc_gain = ht_sidechain_process(&bank->sidechain, drums_mono);
+    dry_l = music_l * sc_gain + drums_l;
+    dry_r = music_r * sc_gain + drums_r;
+    mono = 0.5f * (dry_l + dry_r);
+    fx = ht_court_chain_process(&bank->court, mono);
+    fx = scatter_process(bank, fx);
+    fx += ht_grain_delay_process(&bank->grain, fx);
+    fx = ht_tape_process(&bank->tape, fx);
+    fx = ht_eq_bus_process(&bank->eq, fx);
+    fx = soft_compress(fx, bank->bus.compress, bank->sidechain.env);
+    fx = ht_analog_bus_process(&bank->analog, fx);
+#ifdef HT_STAGE_NATIVE
+    {
+      uint32_t delay = bank->ping_delay;
+      uint32_t read_l = (bank->ping_write + 48000u - delay) % 48000u;
+      uint32_t read_r =
+          (bank->ping_write + 48000u - (uint32_t)(delay * 1.37f)) % 48000u;
+      float tap_l = bank->ping_l[read_l];
+      float tap_r = bank->ping_r[read_r];
+      bank->ping_l[bank->ping_write] = fx * 0.62f + tap_r * 0.48f;
+      bank->ping_r[bank->ping_write] = fx * 0.62f + tap_l * 0.48f;
+      bank->ping_write = (bank->ping_write + 1u) % 48000u;
+      /* Dry image + wet mid + crossed ping-pong — pan must stay audible. */
+      out_l = (fx * 0.55f + tap_l * 0.7f + (dry_l - mono) * 1.15f) * bank->gain_now;
+      out_r = (fx * 0.55f + tap_r * 0.7f + (dry_r - mono) * 1.15f) * bank->gain_now;
     }
-    if (out < -8000000.0f) {
-      out = -8000000.0f;
+#else
+    /* Keep dry stereo image around the mono FX bus. */
+    out_l = (fx + (dry_l - mono)) * bank->gain_now;
+    out_r = (fx + (dry_r - mono)) * bank->gain_now;
+#endif
+    if (out_l > 8000000.0f) {
+      out_l = 8000000.0f;
     }
-    lr[2 * frame] = (int32_t)out;
-    lr[2 * frame + 1] = (int32_t)out;
+    if (out_l < -8000000.0f) {
+      out_l = -8000000.0f;
+    }
+    if (out_r > 8000000.0f) {
+      out_r = 8000000.0f;
+    }
+    if (out_r < -8000000.0f) {
+      out_r = -8000000.0f;
+    }
+    lr[2 * frame] = (int32_t)out_l;
+    lr[2 * frame + 1] = (int32_t)out_r;
   }
 }

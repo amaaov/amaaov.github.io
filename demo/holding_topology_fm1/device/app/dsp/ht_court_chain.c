@@ -46,8 +46,11 @@ void ht_court_chain_configure(HtCourtChain *chain, float delay_sec, float feedba
 
 float ht_court_chain_process(HtCourtChain *chain, float input) {
   float driven = ht_softsat(input, chain->drive);
-  uint32_t read_a = (chain->write_a + chain->len_a - 1u) % chain->len_a;
-  uint32_t read_b = (chain->write_b + chain->len_b - 1u) % chain->len_b;
+  /* Tap delay: buffer is HT_COURT_DELAY_MAX; len_* is delay in samples (not modulus). */
+  uint32_t read_a =
+      (chain->write_a + HT_COURT_DELAY_MAX - chain->len_a) % HT_COURT_DELAY_MAX;
+  uint32_t read_b =
+      (chain->write_b + HT_COURT_DELAY_MAX - chain->len_b) % HT_COURT_DELAY_MAX;
   float tap_a = chain->delay_a[read_a];
   float tap_b = chain->delay_b[read_b];
   float wet;
@@ -55,8 +58,8 @@ float ht_court_chain_process(HtCourtChain *chain, float input) {
       driven + tap_a * chain->feedback * 0.78f + tap_b * chain->cross;
   chain->delay_b[chain->write_b] =
       driven + tap_b * chain->feedback * 0.7f + tap_a * chain->cross;
-  chain->write_a = (chain->write_a + 1u) % chain->len_a;
-  chain->write_b = (chain->write_b + 1u) % chain->len_b;
+  chain->write_a = (chain->write_a + 1u) % HT_COURT_DELAY_MAX;
+  chain->write_b = (chain->write_b + 1u) % HT_COURT_DELAY_MAX;
   wet = ht_onepole((tap_a + tap_b) * 0.5f, &chain->filter_z, chain->filter_coeff);
   return input * chain->dry + wet * chain->wet;
 }

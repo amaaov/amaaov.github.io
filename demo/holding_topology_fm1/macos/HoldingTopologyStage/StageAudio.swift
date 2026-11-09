@@ -24,6 +24,7 @@ final class StageAudio {
 
   func start() {
     lastError = nil
+    /* Must match HT_DSP_SAMPLE_RATE (96 kHz). Engine converts down to hardware. */
     let format = AVAudioFormat(
       commonFormat: .pcmFormatFloat32,
       sampleRate: sampleRate,
@@ -52,6 +53,13 @@ final class StageAudio {
           left[index] = self.scratch[index * 2]
           right[index] = self.scratch[index * 2 + 1]
         }
+      } else if abl.count >= 1,
+                let mono = abl[0].mData?.assumingMemoryBound(to: Float.self)
+      {
+        /* Fallback: fold stereo to whatever buffer the host gave. */
+        for index in 0 ..< frames {
+          mono[index] = 0.5 * (self.scratch[index * 2] + self.scratch[index * 2 + 1])
+        }
       }
       return noErr
     }
@@ -59,6 +67,7 @@ final class StageAudio {
     engine.attach(source)
     engine.connect(source, to: engine.mainMixerNode, format: format)
     engine.mainMixerNode.outputVolume = 1
+    engine.mainMixerNode.pan = 0
     do {
       try engine.start()
       isRunning = true

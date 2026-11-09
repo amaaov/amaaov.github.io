@@ -10,7 +10,11 @@
 #include "ht_dsp_common.h"
 #include "ht_fx.h"
 
+#ifdef HT_STAGE_NATIVE
+#define HT_ANALOG_WOW_DELAY 2048 /* ~21 ms at 96 kHz — device keeps 128 */
+#else
 #define HT_ANALOG_WOW_DELAY 128
+#endif
 
 typedef struct HtAnalogBus {
   HtAnalog amount;

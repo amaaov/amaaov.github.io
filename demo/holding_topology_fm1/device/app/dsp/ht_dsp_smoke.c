@@ -89,6 +89,26 @@ int main(void) {
   expect_true("audio energy", energy > 1.0);
 
   {
+    double left = 0.0;
+    double right = 0.0;
+    ht_voice_panic(&bank);
+    ht_voice_set_pending_pan(&bank, -0.9f);
+    ht_voice_note_on(&bank, 60, 110, HT_ENGINE_ORGAN);
+    ht_voice_set_pending_pan(&bank, 0.9f);
+    ht_voice_note_on(&bank, 67, 110, HT_ENGINE_ORGAN);
+    for (index = 0; index < 30; index += 1) {
+      ht_voice_render(&bank, block, 256, 3000);
+    }
+    for (index = 0; index < 256; index += 1) {
+      left += (double)block[index * 2] * (double)block[index * 2];
+      right += (double)block[index * 2 + 1] * (double)block[index * 2 + 1];
+    }
+    expect_true("stereo left energy", left > 1.0);
+    expect_true("stereo right energy", right > 1.0);
+    expect_true("stereo channels differ", fabs(left - right) / (left + right + 1.0) > 0.02);
+  }
+
+  {
     HtDrumEnvelopes drums = ht_drum_envelopes_from_seed(0x51e51eu, "[40]2");
     HtGrainPlan grain = ht_grain_plan(0.7f, 0.3f);
     double grain_energy = 0.0;

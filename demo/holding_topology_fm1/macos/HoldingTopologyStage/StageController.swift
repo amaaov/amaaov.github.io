@@ -21,6 +21,11 @@ final class StageController: ObservableObject {
   private let scaleFactor = 3
   private var recording = false
   private var lastStatusBeat: Float = -1
+  private var lastSnapWall = 0.0
+  private var lastSnapBeat: Float = 0
+  private var lastSnapBpm: Float = 100
+  private var lastSnap = HtStageCourtSnapshot()
+  private var hasSnap = false
 
   init(sampleRate: Double = 96_000) {
     self.sampleRate = sampleRate
@@ -144,20 +149,38 @@ final class StageController: ObservableObject {
   }
 
   private func refreshCourt() {
-    lock.lock()
-    if !audio.isRunning {
-      /* Backup clock when the audio graph failed to start. */
-      ht_stage_tick_ms(engine, CACurrentMediaTime() * 1000.0)
-    }
-    ht_stage_court_rgba(engine, courtBytes)
-    let beat = ht_stage_pattern_beat(engine)
-    let shouldRecord = recording
     var statusLine: String?
-    if abs(beat - lastStatusBeat) >= 1.0 {
-      lastStatusBeat = beat
-      statusLine = makeStatusLocked(prefix: nil)
+    let shouldRecord: Bool
+    let now = CACurrentMediaTime()
+
+    /* Prefer a fresh snapshot without blocking the audio callback. */
+    if lock.try() {
+      if !audio.isRunning {
+        ht_stage_tick_ms(engine, now * 1000.0)
+      }
+      ht_stage_snapshot_court(engine, &lastSnap)
+      lastSnapWall = now
+      lastSnapBeat = lastSnap.frame.time_beat
+      lastSnapBpm = lastSnap.bpm > 1 ? lastSnap.bpm : 100
+      hasSnap = true
+      if abs(lastSnap.pattern_beat - lastStatusBeat) >= 1.0 {
+        lastStatusBeat = lastSnap.pattern_beat
+        statusLine = makeStatusLocked(prefix: nil)
+      }
+      shouldRecord = recording
+      lock.unlock()
+    } else if hasSnap {
+      shouldRecord = recording
+    } else {
+      return
     }
-    lock.unlock()
+
+    /* Extrapolate beat while audio holds the lock so arcs stay continuous. */
+    let extra = Float(max(0, now - lastSnapWall) * Double(lastSnapBpm) / 60.0)
+    let drawBeat = lastSnapBeat + extra
+    var snap = lastSnap
+    ht_stage_draw_court_rgba(&snap, drawBeat, courtBytes)
+
     if let statusLine {
       DispatchQueue.main.async {
         self.status = statusLine

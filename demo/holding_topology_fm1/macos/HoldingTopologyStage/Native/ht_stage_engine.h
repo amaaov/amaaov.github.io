@@ -5,11 +5,24 @@
 
 #include <stdint.h>
 
+#include "ht_court.h"
+#include "ht_siteswap.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef struct HtStageEngine HtStageEngine;
+
+/* Coherent court state for drawing outside the audio lock. */
+typedef struct HtStageCourtSnapshot {
+  HtCourtFrame frame;
+  char siteswap[HT_SITESWAP_MAX_STRING];
+  char hand_style[96];
+  float bpm;
+  float pattern_beat;
+  double clock_ms;
+} HtStageCourtSnapshot;
 
 /* sample_rate: 96000 or 192000 preferred. master 0..1. */
 HtStageEngine *ht_stage_create(double sample_rate);
@@ -25,8 +38,10 @@ void ht_stage_tick_ms(HtStageEngine *stage, double wall_ms);
 /* Interleaved stereo float32 frames in [-1, 1]. Advances clock by frames. */
 void ht_stage_render(HtStageEngine *stage, float *interleaved, uint32_t frames);
 
-/* 240x240 RGBA8888 court (row-major). */
+/* 240x240 RGBA8888 court (row-major). Prefer snapshot + draw for UI thread. */
 void ht_stage_court_rgba(HtStageEngine *stage, uint8_t *rgba);
+void ht_stage_snapshot_court(const HtStageEngine *stage, HtStageCourtSnapshot *out);
+void ht_stage_draw_court_rgba(const HtStageCourtSnapshot *snap, float time_beat, uint8_t *rgba);
 
 double ht_stage_sample_rate(const HtStageEngine *stage);
 float ht_stage_bpm(const HtStageEngine *stage);

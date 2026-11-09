@@ -298,18 +298,19 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
   switch (slot->engine) {
     case HT_ENGINE_SUBTRACTIVE:
       wave = 2.0f * slot->phase - 1.0f;
-      bright = 0.18f;
+      bright = 0.42f;
       break;
 
     case HT_ENGINE_FM:
-      mod = ht_sinf(slot->phase2 * 6.2831853f) * 1.8f;
-      wave = ht_sinf((slot->phase + mod * 0.08f) * 6.2831853f);
+      mod = ht_sinf(slot->phase2 * 6.2831853f) * 2.4f;
+      wave = ht_sinf((slot->phase + mod * 0.14f) * 6.2831853f);
+      bright = 0.5f;
       break;
 
     case HT_ENGINE_ACID:
       wave = slot->phase < 0.5f ? 1.0f - 4.0f * ht_fabsf(slot->phase - 0.25f)
                                 : -1.0f + 4.0f * ht_fabsf(slot->phase - 0.75f);
-      bright = 0.55f;
+      bright = 0.72f;
       break;
 
     case HT_ENGINE_NOISE:
