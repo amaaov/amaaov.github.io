@@ -32,6 +32,8 @@ typedef struct HtCourtFrame {
   uint8_t hand_hold_count;
   uint8_t episode_wait;
   uint8_t episode_gap; /* 1 → gap during wait; 0 → tail */
+  /* 1 → draw third hand + parked prop (siteswap + / third_hand phrase). */
+  uint8_t third_hand;
 } HtCourtFrame;
 
 /* True only on episode rests — empty court during play stays open (JS parity). */

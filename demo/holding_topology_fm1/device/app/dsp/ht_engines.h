@@ -35,7 +35,8 @@ typedef struct HtOscSlot {
 } HtOscSlot;
 
 void ht_osc_slot_clear(HtOscSlot *slot);
-float ht_engine_sample(HtOscSlot *slot, float lfo);
+/* filter_env 0..1 opens the voice brightness (js/lyra_synth filterEnv). */
+float ht_engine_sample(HtOscSlot *slot, float lfo, float filter_env);
 int ht_engine_is_drum_midi(uint8_t engine, float midi);
 
 #endif

@@ -40,6 +40,15 @@ static uint8_t fill_bias(uint8_t profile, uint8_t patch_type, uint8_t track_inde
     PUSH(HT_ENGINE_ADDITIVE);
     return n;
   }
+  if (profile == HT_TIMBRE_LYRA_ORGAN) {
+    PUSH(HT_ENGINE_ORGAN);
+    PUSH(HT_ENGINE_VOWEL);
+    PUSH(HT_ENGINE_ADDITIVE);
+    PUSH(HT_ENGINE_PIPE);
+    PUSH(HT_ENGINE_KARPLUS);
+    PUSH(HT_ENGINE_FM);
+    return n;
+  }
   if (profile == HT_TIMBRE_CHOIR_CAVE) {
     if (track_index == 3u) {
       PUSH(HT_ENGINE_NOISE);

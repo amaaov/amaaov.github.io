@@ -2,7 +2,7 @@ CC ?= cc
 CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -O2 -DHT_DSP_HOST=1
 ROOT = ../../..
 INCLUDES = -I. -I$(ROOT)/firmware/include
-DSP = ht_voice.c ht_engines.c ht_waveguide.c ht_tape.c ht_analog_bus.c ht_sidechain.c ht_court_chain.c ht_eq_bus.c ht_grain_delay.c
+DSP = ht_voice.c ht_engines.c ht_waveguide.c ht_tape.c ht_analog_bus.c ht_sidechain.c ht_court_chain.c ht_eq_bus.c ht_grain_delay.c ht_reverb.c
 CONTRACT = \
 	$(ROOT)/firmware/src/ht_controls.c \
 	$(ROOT)/firmware/src/ht_fx.c \

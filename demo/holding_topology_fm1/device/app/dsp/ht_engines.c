@@ -256,7 +256,7 @@ int ht_engine_is_drum_midi(uint8_t engine, float midi) {
   return engine == HT_ENGINE_NOISE || rounded == 36 || rounded == 38 || rounded == 42;
 }
 
-float ht_engine_sample(HtOscSlot *slot, float lfo) {
+float ht_engine_sample(HtOscSlot *slot, float lfo, float filter_env) {
   float hz = ht_note_hz_f(slot->midi) * (1.0f + lfo * 0.02f);
   float inc = hz / HT_DSP_SAMPLE_RATE;
   float wave = 0.0f;
@@ -267,11 +267,13 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
   float freqs[3];
   uint16_t g;
   float grain;
+  uint8_t midi_round = (uint8_t)(slot->midi + 0.5f);
+  int kit_drum = slot->drum && (midi_round == 36 || midi_round == 38 || midi_round == 42);
   int nature = slot->engine == HT_ENGINE_BUBBLE || slot->engine == HT_ENGINE_BIRD ||
                slot->engine == HT_ENGINE_FOREST || slot->engine == HT_ENGINE_DOLPHIN ||
                slot->engine == HT_ENGINE_DUB_BASS || slot->engine == HT_ENGINE_FIRE;
 
-  if (!nature) {
+  if (!nature && !kit_drum) {
     slot->phase += inc;
     if (slot->phase >= 1.0f) {
       slot->phase -= 1.0f;
@@ -302,26 +304,61 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
       break;
 
     case HT_ENGINE_FM:
-      mod = ht_sinf(slot->phase2 * 6.2831853f) * 2.4f;
-      wave = ht_sinf((slot->phase + mod * 0.14f) * 6.2831853f);
-      bright = 0.5f;
+      mod = ht_sinf(slot->phase2 * 6.2831853f) * (2.8f + filter_env * 1.6f);
+      wave = ht_sinf((slot->phase + mod * 0.18f) * 6.2831853f);
+      bright = 0.55f;
       break;
 
     case HT_ENGINE_ACID:
       wave = slot->phase < 0.5f ? 1.0f - 4.0f * ht_fabsf(slot->phase - 0.25f)
                                 : -1.0f + 4.0f * ht_fabsf(slot->phase - 0.75f);
-      bright = 0.72f;
+      bright = 0.78f;
       break;
 
     case HT_ENGINE_NOISE:
-      wave = ht_noise_f(&slot->noise);
-      bright = 0.4f;
+      /* Analog kit voices (js/drum_kit.js) when MIDI maps to kick/snare/hat. */
+      if (midi_round == 36) {
+        float body = 1.0f / (1.0f + slot->age * 18.0f);
+        float chirp_hz = 42.0f + 103.0f * body;
+        slot->phase += chirp_hz / HT_DSP_SAMPLE_RATE;
+        if (slot->phase >= 1.0f) {
+          slot->phase -= 1.0f;
+        }
+        wave = ht_sinf(slot->phase * 6.2831853f) * 0.95f + ht_noise_f(&slot->noise) * 0.04f;
+        bright = 0.12f;
+      } else if (midi_round == 38) {
+        float n = ht_noise_f(&slot->noise);
+        float tone_hz = 190.0f - 70.0f * ht_clampf(slot->age * 9.0f, 0.0f, 1.0f);
+        float hp;
+        slot->phase += tone_hz / HT_DSP_SAMPLE_RATE;
+        if (slot->phase >= 1.0f) {
+          slot->phase -= 1.0f;
+        }
+        slot->formant_z[0] = slot->formant_z[0] * 0.82f + n * 0.18f;
+        hp = n - slot->formant_z[0];
+        wave = hp * 0.72f + ht_sinf(slot->phase * 6.2831853f) * 0.42f;
+        bright = 0.58f;
+      } else if (midi_round == 42) {
+        float n = ht_noise_f(&slot->noise);
+        slot->formant_z[1] = slot->formant_z[1] * 0.55f + n * 0.45f;
+        wave = (n - slot->formant_z[1]) * 1.15f;
+        bright = 0.88f;
+      } else {
+        wave = ht_noise_f(&slot->noise);
+        bright = 0.4f;
+      }
       break;
 
-    case HT_ENGINE_SUPERSAW:
-      wave = (2.0f * slot->phase - 1.0f) * 0.45f + (2.0f * slot->phase2 - 1.0f) * 0.35f +
-             (2.0f * slot->phase3 - 1.0f) * 0.2f;
+    case HT_ENGINE_SUPERSAW: {
+      float phase4 = slot->phase + 0.17f;
+      if (phase4 >= 1.0f) {
+        phase4 -= 1.0f;
+      }
+      wave = (2.0f * slot->phase - 1.0f) * 0.4f + (2.0f * slot->phase2 - 1.0f) * 0.32f +
+             (2.0f * slot->phase3 - 1.0f) * 0.18f + (2.0f * phase4 - 1.0f) * 0.1f;
+      bright = 0.48f;
       break;
+    }
 
     case HT_ENGINE_ADDITIVE:
       wave = ht_sinf(slot->phase * 6.2831853f) * 0.5f +
@@ -337,13 +374,14 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
       break;
 
     case HT_ENGINE_VOWEL:
+      /* Parallel formants closer to vowel_formants.js (Q~5–8 feel via higher q_proxy). */
       carrier = 2.0f * slot->phase - 1.0f;
       vowel_freqs(slot->vowel_index, freqs);
-      wave = resonator(carrier, &slot->formant_z[0], freqs[0], 0.95f) * 1.35f +
-             resonator(carrier, &slot->formant_z[1], freqs[1], 1.15f) * 0.95f +
-             resonator(carrier, &slot->formant_z[2], freqs[2], 1.35f) * 0.55f +
+      wave = resonator(carrier, &slot->formant_z[0], freqs[0], 1.55f) * 1.45f +
+             resonator(carrier, &slot->formant_z[1], freqs[1], 1.85f) * 1.05f +
+             resonator(carrier, &slot->formant_z[2], freqs[2], 2.15f) * 0.7f +
              carrier * 0.22f;
-      bright = 0.58f;
+      bright = 0.72f;
       break;
 
     case HT_ENGINE_RING_MOD:
@@ -435,5 +473,13 @@ float ht_engine_sample(HtOscSlot *slot, float lfo) {
       break;
   }
 
+  bright = ht_clampf(bright * (1.0f + filter_env * 1.6f) + filter_env * 0.12f, 0.05f, 0.95f);
+#ifdef HT_STAGE_NATIVE
+  /* Keep more harmonics for analogue body; softsat instead of a dull brickwall LP. */
+  bright = ht_clampf(bright * 1.35f + 0.12f, 0.18f, 0.98f);
+  wave = ht_softsat(wave * (1.05f + filter_env * 0.35f), 0.28f + bright * 0.35f);
   return ht_onepole(wave, &slot->cutoff_z, bright);
+#else
+  return ht_onepole(wave, &slot->cutoff_z, bright);
+#endif
 }

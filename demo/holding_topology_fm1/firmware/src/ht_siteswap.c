@@ -15,6 +15,14 @@ static const char *skip_space(const char *p) {
   return p;
 }
 
+/* Domain marks (+ add / - remove) are consumed so 555+ and (4,2)+ stay playable. */
+static const char *skip_domain_marks(const char *p) {
+  while (*p == '+' || *p == '-') {
+    p += 1;
+  }
+  return p;
+}
+
 static int solo_lab_reject(const char *source) {
   for (const char *p = source; *p; p += 1) {
     if (*p == '<' || *p == '>' || *p == '|') {
@@ -199,6 +207,7 @@ HtSiteswapError ht_siteswap_parse(const char *source, HtSiteswapPattern *out) {
     memset(&frame, 0, sizeof(frame));
     frame.forced_hand = 255;
     p = skip_space(p);
+    p = skip_domain_marks(p);
     if (!*p) {
       break;
     }
@@ -215,6 +224,7 @@ HtSiteswapError ht_siteswap_parse(const char *source, HtSiteswapPattern *out) {
         frame.duration = 1;
         p += 1;
       }
+      p = skip_domain_marks(p);
       out->frames[out->frame_count++] = frame;
       continue;
     }
@@ -236,6 +246,7 @@ HtSiteswapError ht_siteswap_parse(const char *source, HtSiteswapPattern *out) {
       frame.duration = 1;
       frame.left_count = count;
       memcpy(frame.left, throws, sizeof(HtSiteswapThrow) * count);
+      p = skip_domain_marks(p);
       out->frames[out->frame_count++] = frame;
     }
   }
@@ -432,6 +443,7 @@ static HtSiteswapError toss_hand(const HtSiteswapThrow *throws, uint8_t count, H
       events[*event_count].from_hand = throw_hand;
       events[*event_count].to_hand = catch_hand;
       events[*event_count].hold = hold;
+      events[*event_count].parked = 0;
       *event_count += 1;
     }
     landing_push(&landing[catch_hand], height, ball);

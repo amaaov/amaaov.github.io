@@ -71,6 +71,7 @@ static uint8_t gen_armed;
 static uint8_t tape_recording;
 static uint8_t episode_resting;
 static uint8_t episode_gap;
+static uint8_t rest_after_phrase;
 static uint32_t rest_until_ms;
 static float knob01[NE];
 static HtCourtFrame court;
@@ -109,6 +110,44 @@ static void refresh_drum_envelopes(void) {
   ht_voice_set_drum_envelopes(&voices, &envelopes);
 }
 
+enum {
+  HT_PHRASE_PLAY = 0,
+  HT_PHRASE_WAIT = 1,
+  HT_PHRASE_DROP = 2,
+  HT_PHRASE_THIRD = 3
+};
+
+static uint8_t pick_phrase_role(uint32_t mix, uint8_t index) {
+  uint32_t ticket;
+  if (index == 0) {
+    return HT_PHRASE_PLAY;
+  }
+  ticket = mix % 100u;
+  if (ticket < 5u) {
+    return HT_PHRASE_WAIT;
+  }
+  if (ticket < 12u) {
+    return HT_PHRASE_DROP;
+  }
+  if (ticket < 19u) {
+    return HT_PHRASE_THIRD;
+  }
+  return HT_PHRASE_PLAY;
+}
+
+static void append_siteswap_mark(char *siteswap, uint16_t cap, char mark) {
+  uint16_t len = 0;
+  while (siteswap[len] && (uint16_t)(len + 1u) < cap) {
+    len = (uint16_t)(len + 1u);
+  }
+  if ((uint16_t)(len + 1u) < cap) {
+    siteswap[len] = mark;
+    siteswap[len + 1u] = 0;
+  }
+}
+
+static void begin_episode_rest(uint8_t gap);
+
 static void pick_siteswap_phrase(uint32_t mix) {
   HtSiteswapGenParams gen;
   uint8_t objects =
@@ -117,8 +156,18 @@ static void pick_siteswap_phrase(uint32_t mix) {
   uint8_t timing = HT_SS_ASYNC;
   uint8_t period = (uint8_t)(2u + (mix % 7u));
   uint8_t attempt;
+  uint8_t role = pick_phrase_role(mix, phrase_index);
   char prior[HT_SITESWAP_MAX_STRING];
   uint16_t i;
+
+  if (role == HT_PHRASE_WAIT) {
+    begin_episode_rest(((mix >> 6) & 3u) == 0u ? 1u : 0u);
+    rest_after_phrase = 0;
+    court.third_hand = 0;
+    phrase_until_beat = pattern_beat + 64.0f;
+    return;
+  }
+
   for (i = 0; i < HT_SITESWAP_MAX_STRING; i += 1) {
     prior[i] = generated_siteswap[i];
     if (!generated_siteswap[i]) {
@@ -140,6 +189,13 @@ static void pick_siteswap_phrase(uint32_t mix) {
     if (period & 1u) {
       period = (uint8_t)(period + 1u);
     }
+  }
+  if (role == HT_PHRASE_DROP) {
+    period = (uint8_t)(2u + (mix % 4u));
+    family = HT_SS_FAMILY_SHOWER;
+    timing = HT_SS_ASYNC;
+  } else if (role == HT_PHRASE_THIRD) {
+    period = (uint8_t)(2u + (mix % 5u));
   }
   bias.object_count = objects;
   for (attempt = 0; attempt < 4u; attempt += 1) {
@@ -165,6 +221,12 @@ static void pick_siteswap_phrase(uint32_t mix) {
       break;
     }
   }
+  if (role == HT_PHRASE_THIRD) {
+    append_siteswap_mark(generated_siteswap, (uint16_t)sizeof(generated_siteswap), '+');
+    court.third_hand = 1;
+  } else {
+    court.third_hand = 0;
+  }
   bias.object_count = objects;
   controls.knob3 = (float)(objects - 3u) / 4.0f;
   knob01[EN_K3] = controls.knob3;
@@ -174,7 +236,13 @@ static void pick_siteswap_phrase(uint32_t mix) {
   court.hand_style = active_hand_style;
   last_throw_beat = -999;
   last_occ = HT_OCC_EMPTY;
-  phrase_until_beat = pattern_beat + 12.0f + (float)((mix >> 3) % 20u);
+  if (role == HT_PHRASE_DROP) {
+    phrase_until_beat = pattern_beat + 5.0f + (float)((mix >> 3) % 5u);
+    rest_after_phrase = 1;
+  } else {
+    phrase_until_beat = pattern_beat + 12.0f + (float)((mix >> 3) % 20u);
+    rest_after_phrase = 0;
+  }
   refresh_drum_envelopes();
 }
 
@@ -187,7 +255,13 @@ static void sync_voice_bus(void) {
   court.moon = weather.moon;
   court.chaos = weather.chaos;
   court.feedback = weather.feedback;
-  globals = ht_live_mix_globals(&composition, &weather, ht_court_silence_mode(&court));
+  {
+    HtTrackMix live[HT_TRACK_COUNT];
+    globals = ht_live_mix_globals(&composition, &weather, ht_court_silence_mode(&court));
+    ht_live_mix_snapshot_beat(&composition, pattern_beat, (float)plat_ms() * 0.001f, seed, &weather,
+                              ht_court_silence_mode(&court), live, NULL);
+    ht_voice_set_tracks(&voices, live);
+  }
   bus.feedback = controls.knob1;
   bus.scatter = ht_scatter_from_fx_knob(controls.fx);
   bus.drive = ht_drive_from_edit_knob(controls.edit);
@@ -198,6 +272,8 @@ static void sync_voice_bus(void) {
   bus.court_gate = globals.court_gate;
   bus.dry = globals.dry;
   bus.wet = globals.wet;
+  bus.reverb = globals.reverb;
+  bus.env_amount = controls.env;
   bus.filter_hz = globals.filter_hz;
   bus.eq_lows = 0.5f + controls.presets * 0.15f;
   bus.eq_mids = 0.55f;
@@ -390,7 +466,7 @@ static void apply_seed(uint32_t next_seed) {
                       (uint8_t)(50u + (uint32_t)(bias.wildness * 40.0f)),
                       (uint8_t)(5u + (uint32_t)(bias.wildness * 30.0f)), try_seed ^ 0x4d07u);
     ht_key_map_build(try_seed, key_roles);
-    ht_composition_init_default(&composition, try_seed, bias.wildness);
+    ht_composition_init(&composition, try_seed, bias.wildness, bias.patch_type);
     (void)composition.active_tracks;
     ht_voice_set_seed(&voices, try_seed);
     step_ms_accum = 0;
@@ -440,6 +516,8 @@ void app_init(void) {
   tape_recording = 0;
   episode_resting = 0;
   episode_gap = 0;
+  rest_after_phrase = 0;
+  court.third_hand = 0;
   rest_until_ms = 0;
   previous_siteswap[0] = 0;
   previous_objects = 0;
@@ -499,6 +577,12 @@ static void siteswap_tick(void) {
   pattern_beat += 0.25f;
   if (pattern_beat >= phrase_until_beat) {
     phrase_index = (uint8_t)(phrase_index + 1u);
+    if (rest_after_phrase) {
+      rest_after_phrase = 0;
+      begin_episode_rest(0);
+      phrase_until_beat = pattern_beat + 64.0f;
+      return;
+    }
     pick_siteswap_phrase(seed ^ ((uint32_t)phrase_index * 0x9e3779b9u));
   }
   court.time_beat = pattern_beat;

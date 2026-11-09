@@ -12,7 +12,7 @@
 
 #ifndef HT_TAPE_SAMPLES
 #ifdef HT_STAGE_NATIVE
-#define HT_TAPE_SAMPLES 65536
+#define HT_TAPE_SAMPLES 288000 /* ~3 s at 96 kHz — js tape loops sit at 2–8 s */
 #else
 #define HT_TAPE_SAMPLES 8192 /* ~0.186 s at 44.1 kHz */
 #endif

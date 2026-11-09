@@ -89,7 +89,12 @@ int main(void) {
   expect_true("atlas step count", drum_count >= 0 && drum_count <= 3);
 
   HtComposition comp;
-  ht_composition_init_default(&comp, 7, 0.55f);
+  HtMixSection section;
+  uint8_t section_index = 255;
+  ht_composition_init(&comp, 7, 0.55f, HT_PATCH_EUCLID_GROOVE);
+  expect_true("composition has sections", comp.section_count >= 1);
+  expect_true("section at beat", ht_composition_section_at_beat(&comp, 0.0f, &section, &section_index));
+  expect_eq_u8("section index zero", section_index, 0);
   expect_true("active tracks", comp.active_tracks >= 2 && comp.active_tracks <= 4);
 
   HtWeather weather = {.storm = 0.4f, .chaos = 0.2f, .moon = 0.3f, .feedback = 0.5f};
@@ -126,6 +131,7 @@ int main(void) {
   {
     uint16_t row[HT_COURT_WIDTH];
     uint16_t blank = 0;
+    uint16_t rest_paint = 0;
     int px;
     frame.siteswap = "3";
     frame.time_beat = 2.5f;
@@ -133,14 +139,38 @@ int main(void) {
     frame.hand_hold_count = 1;
     frame.episode_wait = 0;
     frame.episode_gap = 0;
+    frame.third_hand = 0;
+    ht_court_clear_trails();
     for (px = 0; px < HT_COURT_WIDTH; px += 1) {
       row[px] = 0;
     }
+    ht_court_draw_frame(row, 0, &frame);
     ht_court_draw_frame(row, 120, &frame);
     for (px = 0; px < HT_COURT_WIDTH; px += 1) {
       blank = (uint16_t)(blank | row[px]);
     }
     expect_true("court draw paints mid row", blank != 0);
+
+    frame.siteswap = "555+";
+    frame.third_hand = 1;
+    frame.time_beat = 1.2f;
+    ht_court_clear_trails();
+    ht_court_draw_frame(row, 0, &frame);
+    ht_court_draw_frame(row, 100, &frame);
+    blank = 0;
+    for (px = 0; px < HT_COURT_WIDTH; px += 1) {
+      blank = (uint16_t)(blank | row[px]);
+    }
+    expect_true("third hand court paints", blank != 0);
+
+    frame.episode_wait = 1;
+    frame.third_hand = 0;
+    ht_court_draw_frame(row, 0, &frame);
+    ht_court_draw_frame(row, 180, &frame);
+    for (px = 0; px < HT_COURT_WIDTH; px += 1) {
+      rest_paint = (uint16_t)(rest_paint | row[px]);
+    }
+    expect_true("rest keeps court paint", rest_paint != 0);
   }
 
   expect_eq_u8("soft objects prefer lock", ht_soft_object_count(5, 1u, 0.0f, 0), 5);

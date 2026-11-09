@@ -30,6 +30,7 @@ targets:
           - ht_court_chain.c
           - ht_eq_bus.c
           - ht_grain_delay.c
+          - ht_reverb.c
       - path: ../firmware/src
         includes:
           - ht_controls.c

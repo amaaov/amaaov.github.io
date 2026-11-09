@@ -32,6 +32,7 @@
 		E2666DC70610C485D3AC28EF /* ht_court_chain.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C804FFC95DF962DB38F69F7 /* ht_court_chain.c */; };
 		ED2AFFD5DF401465DA7324B0 /* StageAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F25AB4135BC63E6ACDE442C /* StageAudio.swift */; };
 		ED7A06F231FBCF09093A8D89 /* ht_mix.c in Sources */ = {isa = PBXBuildFile; fileRef = B16617F644231DF1C51ABD96 /* ht_mix.c */; };
+		EF78C9CB9A90A68A44E341CD /* ht_reverb.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C03044A633B818D9AE826DB /* ht_reverb.c */; };
 		F9B0D38872C552723A1C4A6C /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B2CD4A3B21807EA8D48F8 /* App.swift */; };
 		FAC1D8671899638B4EEEEB16 /* ht_keys.c in Sources */ = {isa = PBXBuildFile; fileRef = 460EBC7011273EBD66F36084 /* ht_keys.c */; };
 /* End PBXBuildFile section */
@@ -59,6 +60,7 @@
 		8409CA9B082354F8C1A558F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		842B3F50201371E89497B5F9 /* ht_engines.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_engines.c; sourceTree = "<group>"; };
 		8A0C1A9ECE1BEBC09F6B3E28 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8C03044A633B818D9AE826DB /* ht_reverb.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_reverb.c; sourceTree = "<group>"; };
 		981EABB99BF463E33B47FDFD /* ht_sidechain.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_sidechain.c; sourceTree = "<group>"; };
 		A0382F51D4FAC28756D8F666 /* ht_analog_bus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_analog_bus.c; sourceTree = "<group>"; };
 		B16617F644231DF1C51ABD96 /* ht_mix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_mix.c; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				842B3F50201371E89497B5F9 /* ht_engines.c */,
 				1509DE5B723937C90FC06791 /* ht_eq_bus.c */,
 				397F8F835E90572487D29504 /* ht_grain_delay.c */,
+				8C03044A633B818D9AE826DB /* ht_reverb.c */,
 				981EABB99BF463E33B47FDFD /* ht_sidechain.c */,
 				7FFCADA3EB332E246B84CFF9 /* ht_tape.c */,
 				079303A4BD6DE7F68A6EE031 /* ht_voice.c */,
@@ -259,6 +262,7 @@
 				FAC1D8671899638B4EEEEB16 /* ht_keys.c in Sources */,
 				ED7A06F231FBCF09093A8D89 /* ht_mix.c in Sources */,
 				5E533D2FE8770B0D9306D43A /* ht_mod_matrix.c in Sources */,
+				EF78C9CB9A90A68A44E341CD /* ht_reverb.c in Sources */,
 				9F5C39FF11B4702E4E3D72F9 /* ht_sidechain.c in Sources */,
 				2E2D6FCD1541B8DDF5579B7A /* ht_siteswap.c in Sources */,
 				AB55446C3F6C21C6A88C30AB /* ht_stage_engine.c in Sources */,

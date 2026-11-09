@@ -257,6 +257,21 @@ float ht_string_feedback_cap(uint8_t engine, float sharp) {
 }
 
 float ht_physical_output_gain(uint8_t engine) {
+#ifdef HT_STAGE_NATIVE
+  if (engine == HT_ENGINE_VARGAN) {
+    return 0.95f;
+  }
+  if (engine == HT_ENGINE_SAXOPHONE || engine == HT_ENGINE_PIPE) {
+    return 0.78f;
+  }
+  if (ht_engine_is_wind(engine)) {
+    return 0.72f;
+  }
+  if (ht_engine_is_string(engine)) {
+    return 0.8f;
+  }
+  return 1.0f;
+#else
   if (engine == HT_ENGINE_VARGAN) {
     return 0.72f;
   }
@@ -270,4 +285,5 @@ float ht_physical_output_gain(uint8_t engine) {
     return 0.55f;
   }
   return 1.0f;
+#endif
 }

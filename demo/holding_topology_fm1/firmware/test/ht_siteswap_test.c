@@ -31,6 +31,8 @@ int main(void) {
   expect_true("valid 531", ht_siteswap_valid("531"));
   expect_true("valid 531*", ht_siteswap_valid("531*"));
   expect_true("valid sync star", ht_siteswap_valid("(4x,2x)(2,4x)*"));
+  expect_true("valid third-hand mark", ht_siteswap_valid("555+"));
+  expect_true("valid sync add mark", ht_siteswap_valid("(4,2)+"));
   expect_true("reject bounce", !ht_siteswap_valid("3B"));
   expect_true("reject pass", !ht_siteswap_valid("<3|3>"));
   expect_true("reject 76", !ht_siteswap_valid("76"));

@@ -62,6 +62,7 @@ typedef struct HtSiteswapEvent {
   uint8_t from_hand;
   uint8_t to_hand;
   uint8_t hold;
+  uint8_t parked; /* 1 → hold from siteswap + (third hand add) */
 } HtSiteswapEvent;
 
 typedef struct HtSiteswapSchedule {

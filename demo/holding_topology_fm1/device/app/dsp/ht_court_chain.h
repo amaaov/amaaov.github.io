@@ -29,6 +29,7 @@ typedef struct HtCourtChain {
   float dry;
   float wet;
   float filter_z;
+  float filter_z_r;
   float filter_coeff;
   float drive;
 } HtCourtChain;
@@ -37,5 +38,8 @@ void ht_court_chain_init(HtCourtChain *chain);
 void ht_court_chain_configure(HtCourtChain *chain, float delay_sec, float feedback, float dry,
                               float wet, float filter_hz, float drive);
 float ht_court_chain_process(HtCourtChain *chain, float input);
+/* Stereo dual-delay with cross-feedback (js/feedback_mix.js delayA/B). */
+void ht_court_chain_process_stereo(HtCourtChain *chain, float in_l, float in_r, float *out_l,
+                                   float *out_r);
 
 #endif

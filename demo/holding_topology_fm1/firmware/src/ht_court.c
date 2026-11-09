@@ -3,22 +3,44 @@
 #include "ht_hand_style.h"
 #include "ht_siteswap.h"
 
+#include <math.h>
+#include <string.h>
+
 #define HT_COURT_TRAIL 18
 #define HT_COURT_PROP_MAX 8
+#define HT_COURT_HAND_MAX 3
+#define HT_COURT_PEAK_LIFT 0.56f
+#define HT_COURT_MULTIPLEX 0.038f
+#define HT_COURT_EMPTY_RECOVER 1.15f
+#define HT_COURT_REST_LX 0.32f
+#define HT_COURT_REST_RX 0.68f
+#define HT_COURT_REST_Y 0.82f
+#define HT_COURT_THIRD_X 0.50f
+#define HT_COURT_THIRD_Y 0.52f
+#define HT_COURT_PI 3.14159265f
+
+typedef struct {
+  float x;
+  float y;
+} HtCourtVec;
 
 typedef struct {
   uint8_t count;
+  uint8_t hand_count;
   uint8_t x[HT_COURT_PROP_MAX];
   uint8_t y[HT_COURT_PROP_MAX];
   uint8_t held[HT_COURT_PROP_MAX];
-  uint8_t hand_x[2];
-  uint8_t hand_y[2];
+  uint8_t abandoned[HT_COURT_PROP_MAX];
+  uint8_t hand_x[HT_COURT_HAND_MAX];
+  uint8_t hand_y[HT_COURT_HAND_MAX];
 } HtCourtSnap;
 
 static HtCourtSnap court_trails[HT_COURT_TRAIL];
 static uint8_t court_trail_count;
 static uint8_t court_trail_write;
 static float court_trail_last_beat = -999.0f;
+static HtCourtSnap court_last_live;
+static uint8_t court_last_live_valid;
 
 /* Palm + fingers + thumb; same silhouette as js/pixel_court.js HAND_LEFT. */
 static const int8_t HAND_LEFT[][2] = {
@@ -31,6 +53,16 @@ static const int8_t HAND_LEFT[][2] = {
 #define HAND_LEFT_N (sizeof(HAND_LEFT) / sizeof(HAND_LEFT[0]))
 
 static float ht_fmaxf(float a, float b) { return a > b ? a : b; }
+static float ht_fminf(float a, float b) { return a < b ? a : b; }
+static float ht_clampf(float v, float lo, float hi) {
+  if (v < lo) {
+    return lo;
+  }
+  if (v > hi) {
+    return hi;
+  }
+  return v;
+}
 
 int ht_court_is_silent(const HtCourtFrame *frame) {
   if (!frame) {
@@ -121,117 +153,339 @@ static void plot_hand(uint16_t *row, int row_y, int cx, int cy, int hand_index) 
   }
 }
 
-static void plot_ball(uint16_t *row, int row_y, int cx, int cy, uint8_t held) {
-  uint16_t shade = held ? rgb565(150, 50, 24) : rgb565(28, 100, 124);
-  uint16_t mid = held ? rgb565(220, 96, 48) : rgb565(64, 168, 196);
-  uint16_t light = held ? rgb565(255, 180, 120) : rgb565(160, 220, 236);
+static void plot_ball(uint16_t *row, int row_y, int cx, int cy, uint8_t held, uint8_t abandoned) {
+  uint16_t shade;
+  uint16_t mid;
+  uint16_t light;
+  if (abandoned) {
+    shade = rgb565(70, 66, 60);
+    mid = rgb565(96, 90, 84);
+    light = rgb565(140, 132, 120);
+  } else if (held) {
+    shade = rgb565(150, 50, 24);
+    mid = rgb565(220, 96, 48);
+    light = rgb565(255, 180, 120);
+  } else {
+    shade = rgb565(28, 100, 124);
+    mid = rgb565(64, 168, 196);
+    light = rgb565(160, 220, 236);
+  }
   plot_disk(row, row_y, cx, cy, 5, shade);
   plot_disk(row, row_y, cx, cy, 4, mid);
   plot_disk(row, row_y, cx - 1, cy - 2, 2, light);
   plot_px(row, row_y, cx - 2, cy - 3, light);
 }
 
-static void sample_hands(const HtCourtFrame *frame, float *left_x, float *left_y, float *right_x,
-                         float *right_y) {
-  HtHandStyle style;
-  *left_x = 0.32f;
-  *left_y = 0.82f;
-  *right_x = 0.68f;
-  *right_y = 0.82f;
-  if (frame->hand_style && ht_hand_style_parse(frame->hand_style, &style)) {
-    HtHandPose left = ht_hand_style_sample(&style, 0, frame->time_beat, 0.5f);
-    HtHandPose right = ht_hand_style_sample(&style, 1, frame->time_beat, 0.5f);
-    if (left.valid) {
-      *left_x = 0.32f + left.x;
-      *left_y = 0.82f + left.y;
+static float throw_flight(uint8_t height, float dwell_ratio, uint8_t hold_twos) {
+  float shannon;
+  float ceiling;
+  if (height == 0) {
+    return 0.0f;
+  }
+  if (height == 2 && hold_twos) {
+    return 0.0f;
+  }
+  shannon = (float)height - 2.0f * dwell_ratio;
+  if (shannon >= 0.5f) {
+    return shannon;
+  }
+  ceiling = ht_fmaxf((float)height - 0.15f, 0.2f);
+  return ht_fminf(0.5f, ceiling);
+}
+
+static float gravity_for_flight(float flight) {
+  float duration = ht_fmaxf(flight, 0.25f);
+  return (HT_COURT_PEAK_LIFT * 8.0f) / (duration * duration);
+}
+
+static HtCourtVec ballistic(HtCourtVec from, HtCourtVec to, float progress, float gravity, float flight,
+                            float wind_x, float wind_y) {
+  float lift = 0.5f * gravity * flight * flight * (progress - progress * progress);
+  float gust = 4.0f * progress * (1.0f - progress);
+  HtCourtVec point;
+  point.x = from.x + (to.x - from.x) * progress + wind_x * gust;
+  point.y = from.y + (to.y - from.y) * progress - lift + wind_y * gust;
+  return point;
+}
+
+static float ease_in_out(float progress) {
+  float clamped = ht_clampf(progress, 0.0f, 1.0f);
+  return clamped * clamped * (3.0f - 2.0f * clamped);
+}
+
+static HtCourtVec mix_poses(HtCourtVec from, HtCourtVec to, float blend) {
+  HtCourtVec out;
+  out.x = from.x + (to.x - from.x) * blend;
+  out.y = from.y + (to.y - from.y) * blend;
+  return out;
+}
+
+static HtCourtVec dwell_point(HtCourtVec from, HtCourtVec to, float progress) {
+  float eased = ease_in_out(progress);
+  float dx = to.x - from.x;
+  float dy = to.y - from.y;
+  float travel = sqrtf(dx * dx + dy * dy);
+  float scoop = ht_fminf(0.025f, travel * 0.35f) * sinf(HT_COURT_PI * ht_clampf(progress, 0.0f, 1.0f));
+  HtCourtVec out;
+  out.x = from.x + dx * eased;
+  out.y = from.y + dy * eased + scoop;
+  return out;
+}
+
+static HtCourtVec rest_hand(uint8_t hand) {
+  HtCourtVec rest;
+  rest.x = hand ? HT_COURT_REST_RX : HT_COURT_REST_LX;
+  rest.y = HT_COURT_REST_Y;
+  return rest;
+}
+
+static HtCourtVec catch_pose(uint8_t hand, const HtCourtVec *style) {
+  HtCourtVec rest = rest_hand(hand);
+  HtCourtVec base;
+  float outward = hand == 0 ? -0.045f : 0.045f;
+  if (style) {
+    base.x = rest.x + style->x;
+    base.y = rest.y + style->y;
+    return base;
+  }
+  base.x = rest.x + outward;
+  base.y = rest.y - 0.045f;
+  return base;
+}
+
+static HtCourtVec throw_pose(uint8_t hand, const HtCourtVec *style) {
+  HtCourtVec rest = rest_hand(hand);
+  HtCourtVec base;
+  float inward = hand == 0 ? 0.05f : -0.05f;
+  if (style) {
+    base.x = rest.x + style->x;
+    base.y = rest.y + style->y;
+    return base;
+  }
+  base.x = rest.x + inward;
+  base.y = rest.y + 0.02f;
+  return base;
+}
+
+static HtCourtVec hold_idle_pose(uint8_t hand, float time_beat) {
+  HtCourtVec rest = catch_pose(hand, NULL);
+  float side = hand == 0 ? -1.0f : 1.0f;
+  float sway = 0.008f * sinf(HT_COURT_PI * time_beat);
+  HtCourtVec out;
+  out.x = rest.x + side * sway;
+  out.y = rest.y + 0.005f * sinf(HT_COURT_PI * time_beat + 0.5f);
+  return out;
+}
+
+static int is_leaving_toss(const HtSiteswapEvent *ev) {
+  return !ev->hold && ev->height > 0 && !ev->parked;
+}
+
+static HtCourtVec hold_carry_pose(uint8_t hand, float time_beat, const HtSiteswapEvent *events,
+                                  uint16_t event_count) {
+  HtCourtVec idle = hold_idle_pose(hand, time_beat);
+  HtCourtVec throw_at = throw_pose(hand, NULL);
+  float blend_window = 0.55f;
+  float last_release = -1.0e9f;
+  float next_release = 1.0e9f;
+  float since;
+  float until;
+  float blend = 0.0f;
+  uint16_t i;
+  for (i = 0; i < event_count; i += 1) {
+    const HtSiteswapEvent *ev = &events[i];
+    if (ev->from_hand != hand || !is_leaving_toss(ev)) {
+      continue;
     }
-    if (right.valid) {
-      *right_x = 0.68f + right.x;
-      *right_y = 0.82f + right.y;
+    if ((float)ev->beat <= time_beat && (float)ev->beat >= last_release) {
+      last_release = (float)ev->beat;
+    }
+    if ((float)ev->beat > time_beat && (float)ev->beat < next_release) {
+      next_release = (float)ev->beat;
+    }
+  }
+  since = time_beat - last_release;
+  until = next_release - time_beat;
+  if (since >= 0.0f && since < blend_window) {
+    blend = 1.0f - since / blend_window;
+  }
+  if (until >= 0.0f && until < blend_window) {
+    blend = ht_fmaxf(blend, 1.0f - until / blend_window);
+  }
+  return mix_poses(idle, throw_at, ease_in_out(blend));
+}
+
+static HtCourtVec empty_hand_pose(uint8_t hand, float time_beat, const HtSiteswapEvent *events,
+                                  uint16_t event_count, float dwell_ratio, uint8_t hold_twos) {
+  float last_throw = -1.0e9f;
+  float next_catch = 1.0e9f;
+  uint16_t i;
+  float vacant_end;
+  float recover_for;
+  float progress;
+  for (i = 0; i < event_count; i += 1) {
+    const HtSiteswapEvent *ev = &events[i];
+    float catch_time;
+    if (ev->height == 0) {
+      continue;
+    }
+    if (is_leaving_toss(ev) && ev->from_hand == hand && (float)ev->beat <= time_beat &&
+        (float)ev->beat >= last_throw) {
+      last_throw = (float)ev->beat;
+    }
+    catch_time = ev->hold ? (float)ev->beat : (float)ev->beat + throw_flight(ev->height, dwell_ratio, hold_twos);
+    if (ev->to_hand == hand && catch_time > time_beat && catch_time < next_catch) {
+      next_catch = catch_time;
+    }
+  }
+  if (last_throw < -1.0e8f) {
+    return rest_hand(hand);
+  }
+  vacant_end = next_catch < 1.0e8f ? next_catch : last_throw + HT_COURT_EMPTY_RECOVER;
+  recover_for = ht_fminf(ht_fmaxf(vacant_end - last_throw, 1e-6f), HT_COURT_EMPTY_RECOVER);
+  progress = ht_clampf((time_beat - last_throw) / recover_for, 0.0f, 1.0f);
+  return dwell_point(throw_pose(hand, NULL), catch_pose(hand, NULL), progress);
+}
+
+static const HtSiteswapEvent *next_event_for_ball(const HtSiteswapEvent *events, uint16_t event_count,
+                                                  const HtSiteswapEvent *ev) {
+  int16_t landing = (int16_t)(ev->beat + (int16_t)ev->height);
+  uint16_t i;
+  for (i = 0; i < event_count; i += 1) {
+    if (events[i].ball == ev->ball && events[i].beat == landing) {
+      return &events[i];
+    }
+  }
+  return NULL;
+}
+
+static void style_offsets(const HtCourtFrame *frame, HtCourtVec *left, HtCourtVec *right,
+                          uint8_t *have_left, uint8_t *have_right) {
+  HtHandStyle style;
+  *have_left = 0;
+  *have_right = 0;
+  left->x = left->y = 0.0f;
+  right->x = right->y = 0.0f;
+  if (frame->hand_style && ht_hand_style_parse(frame->hand_style, &style)) {
+    HtHandPose l = ht_hand_style_sample(&style, 0, frame->time_beat, 0.5f);
+    HtHandPose r = ht_hand_style_sample(&style, 1, frame->time_beat, 0.5f);
+    if (l.valid) {
+      left->x = l.x;
+      left->y = l.y;
+      *have_left = 1;
+    }
+    if (r.valid) {
+      right->x = r.x;
+      right->y = r.y;
+      *have_right = 1;
     }
   }
 }
 
-static void append_prop(HtCourtSnap *snap, float px, float py, uint8_t held) {
+static int pattern_has_third_hand(const HtCourtFrame *frame) {
+  const char *p;
+  if (frame->third_hand) {
+    return 1;
+  }
+  if (!frame->siteswap) {
+    return 0;
+  }
+  for (p = frame->siteswap; *p; p += 1) {
+    if (*p == '+') {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+static void append_prop(HtCourtSnap *snap, float px, float py, uint8_t held, uint8_t abandoned) {
   if (snap->count >= HT_COURT_PROP_MAX) {
     return;
   }
   snap->x[snap->count] = (uint8_t)map_x(px);
   snap->y[snap->count] = (uint8_t)map_y(py);
   snap->held[snap->count] = held;
+  snap->abandoned[snap->count] = abandoned;
   snap->count = (uint8_t)(snap->count + 1u);
 }
 
-static void capture_snap(const HtCourtFrame *frame, HtCourtSnap *snap) {
-  float left_x;
-  float left_y;
-  float right_x;
-  float right_y;
-  HtSiteswapSchedule schedule;
-  snap->count = 0;
-  sample_hands(frame, &left_x, &left_y, &right_x, &right_y);
-  snap->hand_x[0] = (uint8_t)map_x(left_x);
-  snap->hand_y[0] = (uint8_t)map_y(left_y);
-  snap->hand_x[1] = (uint8_t)map_x(right_x);
-  snap->hand_y[1] = (uint8_t)map_y(right_y);
-
-  if (frame->episode_wait) {
+static void store_hand(HtCourtSnap *snap, uint8_t index, HtCourtVec pose) {
+  if (index >= HT_COURT_HAND_MAX) {
     return;
   }
-  if (frame->siteswap &&
-      ht_siteswap_schedule(frame->siteswap, frame->hold_twos, (int16_t)(frame->time_beat + 16),
-                           &schedule) == HT_SS_OK) {
-    uint16_t i;
-    float dwell = frame->dwell_ratio > 0.05f ? frame->dwell_ratio : 0.5f;
-    for (i = 0; i < schedule.event_count; i += 1) {
-      const HtSiteswapEvent *ev = &schedule.events[i];
-      float throw_time = (float)ev->beat;
-      float flight = ev->hold ? 0.0f : (float)ev->height * (1.0f - dwell);
-      float catch_time = throw_time + (ev->hold ? 0.0f : flight);
-      float next_throw = throw_time + (float)ev->height;
-      float from_x = ev->from_hand ? 0.68f : 0.32f;
-      float to_x = ev->to_hand ? 0.68f : 0.32f;
-      float from_y = 0.78f;
-      float to_y = 0.78f;
-      float px;
-      float py;
-      uint8_t held;
-      if (ev->height == 0) {
-        continue;
-      }
-      if (frame->time_beat < throw_time - 0.02f || frame->time_beat > next_throw + 0.08f) {
-        continue;
-      }
-      if (!ev->hold && frame->time_beat < catch_time) {
-        float progress = (frame->time_beat - throw_time) / ht_fmaxf(flight, 1e-3f);
-        float lift = 4.0f * progress * (1.0f - progress);
-        if (progress < 0.0f) {
-          progress = 0.0f;
-        }
-        if (progress > 1.0f) {
-          progress = 1.0f;
-        }
-        px = from_x + (to_x - from_x) * progress;
-        py = from_y + (to_y - from_y) * progress - 0.42f * lift * ht_court_gate_amount(frame);
-        held = 0;
-      } else {
-        float progress =
-            ev->hold ? 0.5f
-                     : (frame->time_beat - catch_time) / ht_fmaxf(next_throw - catch_time, 1e-3f);
-        if (progress < 0.0f) {
-          progress = 0.0f;
-        }
-        if (progress > 1.0f) {
-          progress = 1.0f;
-        }
-        px = to_x + (progress - 0.5f) * 0.04f;
-        py = to_y - 0.02f * progress;
-        held = 1;
-      }
-      append_prop(snap, px, py, held);
+  snap->hand_x[index] = (uint8_t)map_x(pose.x);
+  snap->hand_y[index] = (uint8_t)map_y(pose.y);
+}
+
+static void capture_abandoned(HtCourtSnap *snap) {
+  uint8_t i;
+  snap->count = 0;
+  snap->hand_count = court_last_live_valid ? court_last_live.hand_count : 2;
+  if (court_last_live_valid) {
+    for (i = 0; i < snap->hand_count && i < HT_COURT_HAND_MAX; i += 1) {
+      snap->hand_x[i] = court_last_live.hand_x[i];
+      snap->hand_y[i] = court_last_live.hand_y[i];
+    }
+    for (i = 0; i < court_last_live.count && snap->count < HT_COURT_PROP_MAX; i += 1) {
+      snap->x[snap->count] = court_last_live.x[i];
+      snap->y[snap->count] = court_last_live.y[i];
+      snap->held[snap->count] = 0;
+      snap->abandoned[snap->count] = 1;
+      snap->count = (uint8_t)(snap->count + 1u);
     }
   } else {
-    /* Cascade fallback when siteswap parse fails — three balls, JS-like arcs. */
+    store_hand(snap, 0, rest_hand(0));
+    store_hand(snap, 1, rest_hand(1));
+  }
+}
+
+static void capture_snap(const HtCourtFrame *frame, HtCourtSnap *snap) {
+  HtSiteswapSchedule schedule;
+  HtCourtVec style_l;
+  HtCourtVec style_r;
+  uint8_t have_l;
+  uint8_t have_r;
+  HtCourtVec hand_now[2];
+  uint8_t occupied[2];
+  float dwell;
+  float max_flight;
+  float gravity;
+  float wind_x;
+  float wind_y;
+  uint8_t third;
+  uint16_t i;
+  typedef struct {
+    float x;
+    float y;
+    uint8_t held;
+    uint8_t hand;
+    uint8_t abandoned;
+    uint8_t visible;
+  } PropState;
+  PropState props[HT_SITESWAP_MAX_BALLS];
+  uint8_t ball_count;
+  uint8_t held_slots[2];
+
+  memset(snap, 0, sizeof(*snap));
+  if (frame->episode_wait) {
+    capture_abandoned(snap);
+    return;
+  }
+
+  style_offsets(frame, &style_l, &style_r, &have_l, &have_r);
+  dwell = frame->dwell_ratio > 0.05f ? frame->dwell_ratio : 0.5f;
+  wind_x = frame->storm * 0.04f * (frame->chaos - 0.5f);
+  wind_y = frame->storm * 0.02f;
+  third = pattern_has_third_hand(frame) ? 1u : 0u;
+  hand_now[0] = rest_hand(0);
+  hand_now[1] = rest_hand(1);
+  occupied[0] = occupied[1] = 0;
+  held_slots[0] = held_slots[1] = 0;
+
+  if (!frame->siteswap ||
+      ht_siteswap_schedule(frame->siteswap, frame->hold_twos, (int16_t)(frame->time_beat + 16),
+                           &schedule) != HT_SS_OK) {
+    /* Cascade fallback — three balls with throw/catch hand motion. */
     int ball_index;
     float beat = frame->time_beat;
     for (ball_index = 0; ball_index < 3; ball_index += 1) {
@@ -239,21 +493,174 @@ static void capture_snap(const HtCourtFrame *frame, HtCourtSnap *snap) {
       float phase = beat + (float)ball_index * (cycle / 3.0f);
       float throw_beat = (float)((int)(phase / cycle)) * cycle + (float)ball_index;
       float local = phase - throw_beat;
-      float from_x = (ball_index & 1) ? 0.68f : 0.32f;
-      float to_x = (ball_index & 1) ? 0.32f : 0.68f;
-      float progress = local / cycle;
-      float lift = 4.0f * progress * (1.0f - progress);
-      float px = from_x + (to_x - from_x) * progress;
-      float py = 0.78f - 0.40f * lift;
-      append_prop(snap, px, py, 0);
+      uint8_t from_hand = (uint8_t)(ball_index & 1);
+      uint8_t to_hand = (uint8_t)(1 - from_hand);
+      HtCourtVec from = throw_pose(from_hand, from_hand ? (have_r ? &style_r : NULL) : (have_l ? &style_l : NULL));
+      HtCourtVec to = catch_pose(to_hand, to_hand ? (have_r ? &style_r : NULL) : (have_l ? &style_l : NULL));
+      float progress = ht_clampf(local / cycle, 0.0f, 1.0f);
+      float flight = throw_flight(3, dwell, 1);
+      float g = gravity_for_flight(flight);
+      HtCourtVec point = ballistic(from, to, progress, g, flight, wind_x, wind_y);
+      append_prop(snap, point.x, point.y, 0, 0);
+    }
+    hand_now[0] = empty_hand_pose(0, beat, NULL, 0, dwell, 1);
+    hand_now[1] = empty_hand_pose(1, beat, NULL, 0, dwell, 1);
+    store_hand(snap, 0, hand_now[0]);
+    store_hand(snap, 1, hand_now[1]);
+    snap->hand_count = 2;
+    if (third) {
+      HtCourtVec third_pose;
+      third_pose.x = HT_COURT_THIRD_X;
+      third_pose.y = HT_COURT_THIRD_Y + 0.01f * sinf(HT_COURT_PI * beat * 0.5f);
+      store_hand(snap, 2, third_pose);
+      snap->hand_count = 3;
+      append_prop(snap, third_pose.x, third_pose.y - 0.02f, 1, 0);
+    }
+    court_last_live = *snap;
+    court_last_live_valid = 1;
+    return;
+  }
+
+  ball_count = schedule.ball_count;
+  if (ball_count > HT_SITESWAP_MAX_BALLS) {
+    ball_count = HT_SITESWAP_MAX_BALLS;
+  }
+  memset(props, 0, sizeof(props));
+  max_flight = 0.3f;
+  for (i = 0; i < schedule.event_count; i += 1) {
+    float flight = throw_flight(schedule.events[i].height, dwell, frame->hold_twos);
+    if (flight > max_flight) {
+      max_flight = flight;
     }
   }
+  gravity = gravity_for_flight(max_flight) / ht_fmaxf(0.35f, 1.0f - frame->storm * 0.25f);
+
+  for (i = 0; i < schedule.event_count; i += 1) {
+    const HtSiteswapEvent *ev = &schedule.events[i];
+    float flight;
+    float throw_time;
+    float catch_time;
+    float next_throw;
+    const HtCourtVec *from_style;
+    const HtCourtVec *to_style;
+    HtCourtVec from;
+    HtCourtVec to;
+    uint8_t ball;
+    if (ev->height == 0 || ev->ball >= HT_SITESWAP_MAX_BALLS) {
+      continue;
+    }
+    ball = ev->ball;
+    flight = throw_flight(ev->height, dwell, frame->hold_twos);
+    throw_time = (float)ev->beat;
+    catch_time = ev->hold ? throw_time : throw_time + flight;
+    next_throw = throw_time + (float)ev->height;
+    if (frame->time_beat < throw_time || frame->time_beat >= next_throw) {
+      continue;
+    }
+    from_style = ev->from_hand ? (have_r ? &style_r : NULL) : (have_l ? &style_l : NULL);
+    to_style = ev->to_hand ? (have_r ? &style_r : NULL) : (have_l ? &style_l : NULL);
+    from = throw_pose(ev->from_hand, from_style);
+    to = catch_pose(ev->to_hand, to_style);
+    if (!ev->hold && frame->time_beat < catch_time) {
+      float progress = (frame->time_beat - throw_time) / ht_fmaxf(flight, 1e-6f);
+      HtCourtVec point = ballistic(from, to, progress, gravity, flight, wind_x, wind_y);
+      point.y -= (1.0f - ht_court_gate_amount(frame)) * 0.08f;
+      props[ball].x = point.x;
+      props[ball].y = point.y;
+      props[ball].held = 0;
+      props[ball].hand = ev->from_hand;
+      props[ball].abandoned = 0;
+      props[ball].visible = 1;
+    } else if (ev->hold || ev->parked) {
+      HtCourtVec point =
+          ev->parked ? hold_idle_pose(ev->to_hand, frame->time_beat)
+                     : hold_carry_pose(ev->to_hand, frame->time_beat, schedule.events, schedule.event_count);
+      props[ball].x = point.x;
+      props[ball].y = point.y;
+      props[ball].held = 1;
+      props[ball].hand = ev->to_hand;
+      props[ball].abandoned = 0;
+      props[ball].visible = 1;
+      hand_now[ev->to_hand] = point;
+      occupied[ev->to_hand] = 1;
+    } else {
+      float dwell_span = ht_fmaxf(next_throw - catch_time, 1e-6f);
+      float progress = (frame->time_beat - catch_time) / dwell_span;
+      const HtSiteswapEvent *following = next_event_for_ball(schedule.events, schedule.event_count, ev);
+      HtCourtVec carry_to =
+          following && following->hold ? hold_idle_pose(ev->to_hand, next_throw) : throw_pose(ev->to_hand, NULL);
+      HtCourtVec point = dwell_point(to, carry_to, ht_fminf(progress, 1.0f));
+      props[ball].x = point.x;
+      props[ball].y = point.y;
+      props[ball].held = 1;
+      props[ball].hand = ev->to_hand;
+      props[ball].abandoned = 0;
+      props[ball].visible = 1;
+      hand_now[ev->to_hand] = point;
+      occupied[ev->to_hand] = 1;
+    }
+  }
+
+  for (i = 0; i < 2; i += 1) {
+    if (!occupied[i]) {
+      hand_now[i] = empty_hand_pose((uint8_t)i, frame->time_beat, schedule.events, schedule.event_count, dwell,
+                                    frame->hold_twos);
+    }
+  }
+
+  /* Multiplex spread for co-held props in one hand (toss.js spreadHeldInHand). */
+  for (i = 0; i < ball_count; i += 1) {
+    if (props[i].visible && props[i].held && props[i].hand < 2) {
+      held_slots[props[i].hand] = (uint8_t)(held_slots[props[i].hand] + 1u);
+    }
+  }
+  {
+    uint8_t seen[2] = {0, 0};
+    for (i = 0; i < ball_count; i += 1) {
+      uint8_t hand;
+      uint8_t group;
+      uint8_t slot;
+      if (!props[i].visible || !props[i].held || props[i].hand > 1) {
+        continue;
+      }
+      hand = props[i].hand;
+      group = held_slots[hand];
+      if (group < 2) {
+        continue;
+      }
+      slot = seen[hand];
+      seen[hand] = (uint8_t)(seen[hand] + 1u);
+      props[i].x += ((float)slot - (float)(group - 1u) * 0.5f) * HT_COURT_MULTIPLEX;
+    }
+  }
+
+  for (i = 0; i < ball_count; i += 1) {
+    if (props[i].visible) {
+      append_prop(snap, props[i].x, props[i].y, props[i].held, props[i].abandoned);
+    }
+  }
+
+  store_hand(snap, 0, hand_now[0]);
+  store_hand(snap, 1, hand_now[1]);
+  snap->hand_count = 2;
+  if (third) {
+    HtCourtVec third_pose;
+    third_pose.x = HT_COURT_THIRD_X + 0.01f * sinf(HT_COURT_PI * frame->time_beat * 0.35f);
+    third_pose.y = HT_COURT_THIRD_Y + 0.012f * sinf(HT_COURT_PI * frame->time_beat * 0.5f);
+    store_hand(snap, 2, third_pose);
+    snap->hand_count = 3;
+    append_prop(snap, third_pose.x, third_pose.y - 0.025f, 1, 0);
+  }
+
+  court_last_live = *snap;
+  court_last_live_valid = 1;
 }
 
 void ht_court_clear_trails(void) {
   court_trail_count = 0;
   court_trail_write = 0;
   court_trail_last_beat = -999.0f;
+  court_last_live_valid = 0;
 }
 
 void ht_court_push_trail(const HtCourtFrame *frame) {
@@ -327,30 +734,36 @@ void ht_court_draw_frame(uint16_t *rgb565_row, int row_y, const HtCourtFrame *fr
     uint8_t dim = (uint8_t)(24u + (uint8_t)((t * 50u) / (court_trail_count ? court_trail_count : 1u)));
     uint16_t trail_air = rgb565((uint8_t)(dim / 2), dim, (uint8_t)(dim + 20));
     uint16_t trail_held = rgb565((uint8_t)(dim + 40), (uint8_t)(dim / 2), (uint8_t)(dim / 3));
+    uint16_t trail_abandoned = rgb565((uint8_t)(dim / 3), (uint8_t)(dim / 3), (uint8_t)(dim / 2));
     uint8_t p;
     if (age > 14u) {
       continue;
     }
     for (p = 0; p < snap->count; p += 1) {
-      plot_px(rgb565_row, row_y, (int)snap->x[p], (int)snap->y[p],
-              snap->held[p] ? trail_held : trail_air);
+      uint16_t color =
+          snap->abandoned[p] ? trail_abandoned : (snap->held[p] ? trail_held : trail_air);
+      plot_px(rgb565_row, row_y, (int)snap->x[p], (int)snap->y[p], color);
       if (age < 6u) {
-        plot_px(rgb565_row, row_y, (int)snap->x[p] + 1, (int)snap->y[p],
-                snap->held[p] ? trail_held : trail_air);
+        plot_px(rgb565_row, row_y, (int)snap->x[p] + 1, (int)snap->y[p], color);
       }
     }
   }
 
-  if (frame->episode_wait || !live_valid) {
+  if (!live_valid) {
     return;
   }
 
-  plot_hand(rgb565_row, row_y, (int)live.hand_x[0], (int)live.hand_y[0], 0);
-  plot_hand(rgb565_row, row_y, (int)live.hand_x[1], (int)live.hand_y[1], 1);
+  /* Hands stay visible on rests (JS echoOnly still paints hands). */
+  {
+    uint8_t h;
+    for (h = 0; h < live.hand_count && h < HT_COURT_HAND_MAX; h += 1) {
+      plot_hand(rgb565_row, row_y, (int)live.hand_x[h], (int)live.hand_y[h], h == 2 ? 0 : (int)h);
+    }
+  }
   {
     uint8_t p;
     for (p = 0; p < live.count; p += 1) {
-      plot_ball(rgb565_row, row_y, (int)live.x[p], (int)live.y[p], live.held[p]);
+      plot_ball(rgb565_row, row_y, (int)live.x[p], (int)live.y[p], live.held[p], live.abandoned[p]);
     }
   }
 }
