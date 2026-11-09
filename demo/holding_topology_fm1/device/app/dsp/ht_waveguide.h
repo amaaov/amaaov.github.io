@@ -9,7 +9,13 @@
 
 #include "ht_dsp_common.h"
 
+#ifndef HT_WG_DELAY_MAX
+#ifdef HT_STAGE_NATIVE
+#define HT_WG_DELAY_MAX 4096
+#else
 #define HT_WG_DELAY_MAX 768
+#endif
+#endif
 
 typedef struct HtWaveguide {
   float delay[HT_WG_DELAY_MAX];

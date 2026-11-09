@@ -9,7 +9,13 @@
 
 #include "ht_dsp_common.h"
 
+#ifndef HT_COURT_DELAY_MAX
+#ifdef HT_STAGE_NATIVE
+#define HT_COURT_DELAY_MAX 48000
+#else
 #define HT_COURT_DELAY_MAX 9000 /* ~0.20 s — keep RAM modest on FM-1 */
+#endif
+#endif
 
 typedef struct HtCourtChain {
   float delay_a[HT_COURT_DELAY_MAX];

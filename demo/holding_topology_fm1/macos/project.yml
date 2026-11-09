@@ -1,0 +1,71 @@
+name: HoldingTopologyStage
+options:
+  bundleIdPrefix: org.amaaov
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    PRODUCT_BUNDLE_IDENTIFIER: org.amaaov.HoldingTopologyStage
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+targets:
+  HoldingTopologyStage:
+    type: application
+    platform: macOS
+    sources:
+      - path: HoldingTopologyStage
+        excludes:
+          - "**/*.md"
+      - path: ../device/app/dsp
+        includes:
+          - ht_voice.c
+          - ht_engines.c
+          - ht_waveguide.c
+          - ht_tape.c
+          - ht_analog_bus.c
+          - ht_sidechain.c
+          - ht_court_chain.c
+          - ht_eq_bus.c
+          - ht_grain_delay.c
+      - path: ../firmware/src
+        includes:
+          - ht_controls.c
+          - ht_fx.c
+          - ht_gen.c
+          - ht_mix.c
+          - ht_court.c
+          - ht_keys.c
+          - ht_siteswap.c
+          - ht_hand_style.c
+          - ht_mod_matrix.c
+          - ht_tuning.c
+          - ht_action_loop.c
+    settings:
+      base:
+        INFOPLIST_FILE: HoldingTopologyStage/Info.plist
+        PRODUCT_NAME: HoldingTopologyStage
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks"
+        GENERATE_INFOPLIST_FILE: NO
+        SWIFT_OBJC_BRIDGING_HEADER: HoldingTopologyStage/Bridging-Header.h
+        HEADER_SEARCH_PATHS:
+          - $(SRCROOT)/HoldingTopologyStage/Native
+          - $(SRCROOT)/../device/app/dsp
+          - $(SRCROOT)/../firmware/include
+        OTHER_CFLAGS: >
+          -std=c11
+          -DHT_DSP_HOST=1
+          -DHT_STAGE_NATIVE=1
+          -DHT_DSP_SAMPLE_RATE=96000.0f
+          -Wno-unused-parameter
+        CLANG_ENABLE_MODULES: YES
+    info:
+      path: HoldingTopologyStage/Info.plist
+      properties:
+        CFBundleName: Holding Topology Stage
+        CFBundleDisplayName: Holding Topology Stage
+        LSMinimumSystemVersion: "14.0"
+        NSHighResolutionCapable: true
+        NSPrincipalClass: NSApplication

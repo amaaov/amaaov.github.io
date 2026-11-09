@@ -20,6 +20,7 @@ void ht_voice_init(HtVoiceBank *bank) {
   bank->scatter_write = 0;
   bank->duck_depth = 0.55f;
   bank->gain_now = 0.0f;
+  bank->lfo_phase = 0.0f;
   bank->seed = 1;
   bank->envelope = ht_envelope_from_env_knob(0.5f);
   bank->bus.feedback = 0.45f;
@@ -146,9 +147,11 @@ void ht_voice_note_on(HtVoiceBank *bank, float midi, uint8_t velocity, uint8_t e
     bank->use_wg[slot] = 1;
     bank->wg_drum[slot] = drum;
     bank->osc[slot].active = 0;
+    bank->osc[slot].released = 0;
     bank->osc[slot].midi = midi;
     bank->osc[slot].drum = drum;
     bank->osc[slot].engine = engine;
+    bank->osc[slot].age = 0.0f;
     return;
   }
   bank->use_wg[slot] = 0;
@@ -184,11 +187,33 @@ void ht_voice_note_off(HtVoiceBank *bank, float midi) {
   for (index = 0; index < HT_VOICE_SLOTS; index += 1) {
     if (bank->use_wg[index] && ht_fabsf(bank->wg[index].midi - midi) < 0.06f) {
       ht_wg_note_off(&bank->wg[index]);
+      bank->use_wg[index] = 0;
     }
     if (bank->osc[index].active && ht_fabsf(bank->osc[index].midi - midi) < 0.06f) {
       bank->osc[index].released = 1;
       bank->osc[index].active = 0;
       bank->osc[index].target = 0.0f;
+    }
+  }
+}
+
+void ht_voice_release_aged(HtVoiceBank *bank, float max_age_sec) {
+  uint32_t index;
+  float limit = max_age_sec > 0.02f ? max_age_sec : 0.02f;
+  if (!bank) {
+    return;
+  }
+  for (index = 0; index < HT_VOICE_SLOTS; index += 1) {
+    HtOscSlot *slot = &bank->osc[index];
+    if (slot->active && !slot->drum && slot->age >= limit) {
+      slot->released = 1;
+      slot->active = 0;
+      slot->target = 0.0f;
+    }
+    if (bank->use_wg[index] && !bank->wg_drum[index] && !bank->wg[index].bowed &&
+        bank->wg[index].active && slot->age >= limit) {
+      ht_wg_note_off(&bank->wg[index]);
+      bank->use_wg[index] = 0;
     }
   }
 }
@@ -234,7 +259,6 @@ void ht_voice_render(HtVoiceBank *bank, int32_t *lr, uint32_t frames, uint32_t m
   uint32_t index;
   /* Slightly hotter than template's 8.3e6 so generative engines stay clear at mid MASTER. */
   float gain = (float)master_q12 / 4096.0f * 9200000.0f * bank->bus.court_gate;
-  float lfo_phase = 0.0f;
   for (frame = 0; frame < frames; frame += 1) {
     float music = 0.0f;
     float drums = 0.0f;
@@ -242,22 +266,22 @@ void ht_voice_render(HtVoiceBank *bank, int32_t *lr, uint32_t frames, uint32_t m
     float lfo;
     float sc_gain;
     bank->gain_now += (gain - bank->gain_now) * 0.004f;
-    lfo_phase += (0.4f + bank->bus.lfo_depth * 2.5f) / HT_DSP_SAMPLE_RATE;
-    if (lfo_phase >= 1.0f) {
-      lfo_phase -= 1.0f;
+    bank->lfo_phase += (0.4f + bank->bus.lfo_depth * 2.5f) / HT_DSP_SAMPLE_RATE;
+    if (bank->lfo_phase >= 1.0f) {
+      bank->lfo_phase -= 1.0f;
     }
-    lfo = ht_sinf(lfo_phase * 6.2831853f) * bank->bus.lfo_depth;
+    lfo = ht_sinf(bank->lfo_phase * 6.2831853f) * bank->bus.lfo_depth;
 
     for (index = 0; index < HT_VOICE_SLOTS; index += 1) {
       float sample = 0.0f;
       uint8_t drum = 0;
+      bank->osc[index].age += 1.0f / HT_DSP_SAMPLE_RATE;
       if (bank->use_wg[index]) {
         sample = ht_wg_process(&bank->wg[index]);
         drum = bank->wg_drum[index];
       } else {
         HtOscSlot *slot = &bank->osc[index];
         float env;
-        slot->age += 1.0f / HT_DSP_SAMPLE_RATE;
         env = ht_envelope_level(slot->age, envelope_for_slot(bank, slot), slot->released);
         slot->level += (slot->target * env - slot->level) * 0.01f;
         if (slot->level < 0.00008f && slot->target <= 0.0f) {

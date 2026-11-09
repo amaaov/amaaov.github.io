@@ -29,7 +29,9 @@ static inline float ht_tanhf(float x) {
 }
 #endif
 
+#ifndef HT_DSP_SAMPLE_RATE
 #define HT_DSP_SAMPLE_RATE 44100.0f
+#endif
 
 static inline float ht_clampf(float value, float lo, float hi) {
   if (value < lo) {

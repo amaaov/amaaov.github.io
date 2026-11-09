@@ -48,7 +48,7 @@ import { sectionAtBeat } from "./mix_composition.js";
 import { createKeyMap, describeKeyRole, KEY_MIDI_COUNT } from "./key_roles.js";
 import { createActionLooper } from "./action_looper.js";
 
-export function createInstrument({ face, statusNode, seedNode }) {
+export function createInstrument({ face, statusNode, seedNode, sampleRate } = {}) {
   const controls = structuredClone(DEFAULT_CONTROLS);
   const court = createPixelCourt(face.screen);
   const actionLooper = createActionLooper({ seed: 1 });
@@ -57,6 +57,7 @@ export function createInstrument({ face, statusNode, seedNode }) {
     sequencer: null,
     synth: null,
     audio: null,
+    outputBus: null,
     beat: 0,
     lastFrame: 0,
     startedAt: performance.now(),
@@ -107,9 +108,14 @@ export function createInstrument({ face, statusNode, seedNode }) {
       await state.synth.resume();
       return;
     }
-    const audio = new (window.AudioContext || window.webkitAudioContext)();
+    const Context = window.AudioContext || window.webkitAudioContext;
+    const audio = sampleRate ? new Context({ sampleRate }) : new Context();
+    const outputBus = audio.createGain();
+    outputBus.gain.value = 1;
+    outputBus.connect(audio.destination);
     state.audio = audio;
-    state.synth = createLyraSynth(audio);
+    state.outputBus = outputBus;
+    state.synth = createLyraSynth(audio, { destination: outputBus });
     await state.synth.resume();
     if (state.patch) {
       state.synth.applyPatch(state.patch);
@@ -935,5 +941,8 @@ export function createInstrument({ face, statusNode, seedNode }) {
     onKey,
     newPatch,
     ensureAudio,
+    getAudioContext: () => state.audio,
+    getOutputBus: () => state.outputBus,
+    getCourtCanvas: () => face.screen,
   };
 }

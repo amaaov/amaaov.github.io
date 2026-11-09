@@ -1,0 +1,462 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00448CB0AA917756B75A25C5 /* ht_tuning.c in Sources */ = {isa = PBXBuildFile; fileRef = 535ED4D5C7D631E70CAEEA43 /* ht_tuning.c */; };
+		1A8D1A743630BF587F74462D /* ht_voice.c in Sources */ = {isa = PBXBuildFile; fileRef = 079303A4BD6DE7F68A6EE031 /* ht_voice.c */; };
+		295FED1D0880BAF1F362541E /* ht_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = 0267311D580FC2B29BB87632 /* ht_gen.c */; };
+		2D1879172FC5C8E4BAC23023 /* ht_analog_bus.c in Sources */ = {isa = PBXBuildFile; fileRef = A0382F51D4FAC28756D8F666 /* ht_analog_bus.c */; };
+		2E2D6FCD1541B8DDF5579B7A /* ht_siteswap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2AC646C508B243EF803156A1 /* ht_siteswap.c */; };
+		3BAB1A9F965DD800D0CE3054 /* ht_eq_bus.c in Sources */ = {isa = PBXBuildFile; fileRef = 1509DE5B723937C90FC06791 /* ht_eq_bus.c */; };
+		3C0DA2BDA012D0ED23D35CB3 /* ht_grain_delay.c in Sources */ = {isa = PBXBuildFile; fileRef = 397F8F835E90572487D29504 /* ht_grain_delay.c */; };
+		404142BDA95D6D18F80D734D /* ht_hand_style.c in Sources */ = {isa = PBXBuildFile; fileRef = 38A86CAD55E01E4D1C53968D /* ht_hand_style.c */; };
+		4EA8BB9E0953D66127C6CCE5 /* ht_waveguide.c in Sources */ = {isa = PBXBuildFile; fileRef = F23929D1506FD91428176F30 /* ht_waveguide.c */; };
+		4EB7489A9009B0D72297F810 /* StageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F3A2277FB94D881162D1CE /* StageController.swift */; };
+		5E533D2FE8770B0D9306D43A /* ht_mod_matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 63B50B01C77A6119AB048757 /* ht_mod_matrix.c */; };
+		5FF6775AA63436158EB2458D /* ht_court.c in Sources */ = {isa = PBXBuildFile; fileRef = 42A75FA057AF9E6B6561E6CE /* ht_court.c */; };
+		6EA696DFAAEA5D150DABB12D /* ht_controls.c in Sources */ = {isa = PBXBuildFile; fileRef = BC5A6EC5C59A98F67AFD47A4 /* ht_controls.c */; };
+		8AD11391F96CA71AD17DEBA7 /* ht_engines.c in Sources */ = {isa = PBXBuildFile; fileRef = 842B3F50201371E89497B5F9 /* ht_engines.c */; };
+		8E288DC6E1776917FA945C71 /* ht_action_loop.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F911364E649DB244D4D6715 /* ht_action_loop.c */; };
+		99B70ECFB40431BEE5DACAA4 /* ht_fx.c in Sources */ = {isa = PBXBuildFile; fileRef = 47B48569DA52782E20FD2C65 /* ht_fx.c */; };
+		9F5C39FF11B4702E4E3D72F9 /* ht_sidechain.c in Sources */ = {isa = PBXBuildFile; fileRef = 981EABB99BF463E33B47FDFD /* ht_sidechain.c */; };
+		AB55446C3F6C21C6A88C30AB /* ht_stage_engine.c in Sources */ = {isa = PBXBuildFile; fileRef = C2E7B542A8014C9C0EC5D3B3 /* ht_stage_engine.c */; };
+		ACA255AF264B10DB8845FF5E /* ht_tape.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FFCADA3EB332E246B84CFF9 /* ht_tape.c */; };
+		BC83C8D3C3B961A9F4A3D495 /* StageRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6488D30743306C80933F57 /* StageRecorder.swift */; };
+		DA2E9282710A1C76DAF1B3E0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0C1A9ECE1BEBC09F6B3E28 /* ContentView.swift */; };
+		E2666DC70610C485D3AC28EF /* ht_court_chain.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C804FFC95DF962DB38F69F7 /* ht_court_chain.c */; };
+		ED2AFFD5DF401465DA7324B0 /* StageAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F25AB4135BC63E6ACDE442C /* StageAudio.swift */; };
+		ED7A06F231FBCF09093A8D89 /* ht_mix.c in Sources */ = {isa = PBXBuildFile; fileRef = B16617F644231DF1C51ABD96 /* ht_mix.c */; };
+		F9B0D38872C552723A1C4A6C /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3B2CD4A3B21807EA8D48F8 /* App.swift */; };
+		FAC1D8671899638B4EEEEB16 /* ht_keys.c in Sources */ = {isa = PBXBuildFile; fileRef = 460EBC7011273EBD66F36084 /* ht_keys.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0267311D580FC2B29BB87632 /* ht_gen.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_gen.c; sourceTree = "<group>"; };
+		079303A4BD6DE7F68A6EE031 /* ht_voice.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_voice.c; sourceTree = "<group>"; };
+		0E6488D30743306C80933F57 /* StageRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageRecorder.swift; sourceTree = "<group>"; };
+		1509DE5B723937C90FC06791 /* ht_eq_bus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_eq_bus.c; sourceTree = "<group>"; };
+		1AD15D95AB0EFFF2895E7D70 /* HoldingTopologyStage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoldingTopologyStage.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D8ADD91DBBF9A255B6D7427 /* ht_stage_engine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ht_stage_engine.h; sourceTree = "<group>"; };
+		2AC646C508B243EF803156A1 /* ht_siteswap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_siteswap.c; sourceTree = "<group>"; };
+		2F911364E649DB244D4D6715 /* ht_action_loop.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_action_loop.c; sourceTree = "<group>"; };
+		38A86CAD55E01E4D1C53968D /* ht_hand_style.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_hand_style.c; sourceTree = "<group>"; };
+		397F8F835E90572487D29504 /* ht_grain_delay.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_grain_delay.c; sourceTree = "<group>"; };
+		42A75FA057AF9E6B6561E6CE /* ht_court.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_court.c; sourceTree = "<group>"; };
+		460EBC7011273EBD66F36084 /* ht_keys.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_keys.c; sourceTree = "<group>"; };
+		47B48569DA52782E20FD2C65 /* ht_fx.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_fx.c; sourceTree = "<group>"; };
+		535ED4D5C7D631E70CAEEA43 /* ht_tuning.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_tuning.c; sourceTree = "<group>"; };
+		5A3B2CD4A3B21807EA8D48F8 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		63B50B01C77A6119AB048757 /* ht_mod_matrix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_mod_matrix.c; sourceTree = "<group>"; };
+		7C804FFC95DF962DB38F69F7 /* ht_court_chain.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_court_chain.c; sourceTree = "<group>"; };
+		7F25AB4135BC63E6ACDE442C /* StageAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageAudio.swift; sourceTree = "<group>"; };
+		7FFCADA3EB332E246B84CFF9 /* ht_tape.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_tape.c; sourceTree = "<group>"; };
+		8409CA9B082354F8C1A558F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		842B3F50201371E89497B5F9 /* ht_engines.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_engines.c; sourceTree = "<group>"; };
+		8A0C1A9ECE1BEBC09F6B3E28 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		981EABB99BF463E33B47FDFD /* ht_sidechain.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_sidechain.c; sourceTree = "<group>"; };
+		A0382F51D4FAC28756D8F666 /* ht_analog_bus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_analog_bus.c; sourceTree = "<group>"; };
+		B16617F644231DF1C51ABD96 /* ht_mix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_mix.c; sourceTree = "<group>"; };
+		BC5A6EC5C59A98F67AFD47A4 /* ht_controls.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_controls.c; sourceTree = "<group>"; };
+		C2E7B542A8014C9C0EC5D3B3 /* ht_stage_engine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_stage_engine.c; sourceTree = "<group>"; };
+		C2F3A2277FB94D881162D1CE /* StageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageController.swift; sourceTree = "<group>"; };
+		E6AE4B88C7A19AE9213F652C /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		F23929D1506FD91428176F30 /* ht_waveguide.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ht_waveguide.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		07F42DCA06CCCF1B2FA71215 /* app */ = {
+			isa = PBXGroup;
+			children = (
+				7CCA291147662BBF7960391B /* dsp */,
+			);
+			path = app;
+			sourceTree = "<group>";
+		};
+		12B0AC6778BBECC2546BB551 = {
+			isa = PBXGroup;
+			children = (
+				A502279267D3E43D8CA61DAA /* holding_topology_fm1 */,
+				956E27D4257DE458886C30B7 /* HoldingTopologyStage */,
+				924FB87E4C3882EFF1E958B5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		302191B48079C831C83F75E8 /* firmware */ = {
+			isa = PBXGroup;
+			children = (
+				BA1FEC13526BFDE64C077B79 /* src */,
+			);
+			path = firmware;
+			sourceTree = "<group>";
+		};
+		5EB2A0B73C920E1932B0DE91 /* Native */ = {
+			isa = PBXGroup;
+			children = (
+				C2E7B542A8014C9C0EC5D3B3 /* ht_stage_engine.c */,
+				1D8ADD91DBBF9A255B6D7427 /* ht_stage_engine.h */,
+			);
+			path = Native;
+			sourceTree = "<group>";
+		};
+		78F1EC5A4A6DA5BDCB293A3C /* device */ = {
+			isa = PBXGroup;
+			children = (
+				07F42DCA06CCCF1B2FA71215 /* app */,
+			);
+			path = device;
+			sourceTree = "<group>";
+		};
+		7CCA291147662BBF7960391B /* dsp */ = {
+			isa = PBXGroup;
+			children = (
+				A0382F51D4FAC28756D8F666 /* ht_analog_bus.c */,
+				7C804FFC95DF962DB38F69F7 /* ht_court_chain.c */,
+				842B3F50201371E89497B5F9 /* ht_engines.c */,
+				1509DE5B723937C90FC06791 /* ht_eq_bus.c */,
+				397F8F835E90572487D29504 /* ht_grain_delay.c */,
+				981EABB99BF463E33B47FDFD /* ht_sidechain.c */,
+				7FFCADA3EB332E246B84CFF9 /* ht_tape.c */,
+				079303A4BD6DE7F68A6EE031 /* ht_voice.c */,
+				F23929D1506FD91428176F30 /* ht_waveguide.c */,
+			);
+			path = dsp;
+			sourceTree = "<group>";
+		};
+		924FB87E4C3882EFF1E958B5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1AD15D95AB0EFFF2895E7D70 /* HoldingTopologyStage.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		956E27D4257DE458886C30B7 /* HoldingTopologyStage */ = {
+			isa = PBXGroup;
+			children = (
+				5A3B2CD4A3B21807EA8D48F8 /* App.swift */,
+				E6AE4B88C7A19AE9213F652C /* Bridging-Header.h */,
+				8A0C1A9ECE1BEBC09F6B3E28 /* ContentView.swift */,
+				8409CA9B082354F8C1A558F7 /* Info.plist */,
+				7F25AB4135BC63E6ACDE442C /* StageAudio.swift */,
+				C2F3A2277FB94D881162D1CE /* StageController.swift */,
+				0E6488D30743306C80933F57 /* StageRecorder.swift */,
+				5EB2A0B73C920E1932B0DE91 /* Native */,
+			);
+			path = HoldingTopologyStage;
+			sourceTree = "<group>";
+		};
+		A502279267D3E43D8CA61DAA /* holding_topology_fm1 */ = {
+			isa = PBXGroup;
+			children = (
+				78F1EC5A4A6DA5BDCB293A3C /* device */,
+				302191B48079C831C83F75E8 /* firmware */,
+			);
+			name = holding_topology_fm1;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		BA1FEC13526BFDE64C077B79 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2F911364E649DB244D4D6715 /* ht_action_loop.c */,
+				BC5A6EC5C59A98F67AFD47A4 /* ht_controls.c */,
+				42A75FA057AF9E6B6561E6CE /* ht_court.c */,
+				47B48569DA52782E20FD2C65 /* ht_fx.c */,
+				0267311D580FC2B29BB87632 /* ht_gen.c */,
+				38A86CAD55E01E4D1C53968D /* ht_hand_style.c */,
+				460EBC7011273EBD66F36084 /* ht_keys.c */,
+				B16617F644231DF1C51ABD96 /* ht_mix.c */,
+				63B50B01C77A6119AB048757 /* ht_mod_matrix.c */,
+				2AC646C508B243EF803156A1 /* ht_siteswap.c */,
+				535ED4D5C7D631E70CAEEA43 /* ht_tuning.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9C5C29768B0C3BB10351D621 /* HoldingTopologyStage */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 886C13D4D4409D328ADD9704 /* Build configuration list for PBXNativeTarget "HoldingTopologyStage" */;
+			buildPhases = (
+				07D307770A043EBD72129E63 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HoldingTopologyStage;
+			packageProductDependencies = (
+			);
+			productName = HoldingTopologyStage;
+			productReference = 1AD15D95AB0EFFF2895E7D70 /* HoldingTopologyStage.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ACC6B38B3C654E88BE9297EE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					9C5C29768B0C3BB10351D621 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = D365853B8CDA2919AD1E308A /* Build configuration list for PBXProject "HoldingTopologyStage" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 12B0AC6778BBECC2546BB551;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 924FB87E4C3882EFF1E958B5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9C5C29768B0C3BB10351D621 /* HoldingTopologyStage */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07D307770A043EBD72129E63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9B0D38872C552723A1C4A6C /* App.swift in Sources */,
+				DA2E9282710A1C76DAF1B3E0 /* ContentView.swift in Sources */,
+				ED2AFFD5DF401465DA7324B0 /* StageAudio.swift in Sources */,
+				4EB7489A9009B0D72297F810 /* StageController.swift in Sources */,
+				BC83C8D3C3B961A9F4A3D495 /* StageRecorder.swift in Sources */,
+				8E288DC6E1776917FA945C71 /* ht_action_loop.c in Sources */,
+				2D1879172FC5C8E4BAC23023 /* ht_analog_bus.c in Sources */,
+				6EA696DFAAEA5D150DABB12D /* ht_controls.c in Sources */,
+				5FF6775AA63436158EB2458D /* ht_court.c in Sources */,
+				E2666DC70610C485D3AC28EF /* ht_court_chain.c in Sources */,
+				8AD11391F96CA71AD17DEBA7 /* ht_engines.c in Sources */,
+				3BAB1A9F965DD800D0CE3054 /* ht_eq_bus.c in Sources */,
+				99B70ECFB40431BEE5DACAA4 /* ht_fx.c in Sources */,
+				295FED1D0880BAF1F362541E /* ht_gen.c in Sources */,
+				3C0DA2BDA012D0ED23D35CB3 /* ht_grain_delay.c in Sources */,
+				404142BDA95D6D18F80D734D /* ht_hand_style.c in Sources */,
+				FAC1D8671899638B4EEEEB16 /* ht_keys.c in Sources */,
+				ED7A06F231FBCF09093A8D89 /* ht_mix.c in Sources */,
+				5E533D2FE8770B0D9306D43A /* ht_mod_matrix.c in Sources */,
+				9F5C39FF11B4702E4E3D72F9 /* ht_sidechain.c in Sources */,
+				2E2D6FCD1541B8DDF5579B7A /* ht_siteswap.c in Sources */,
+				AB55446C3F6C21C6A88C30AB /* ht_stage_engine.c in Sources */,
+				ACA255AF264B10DB8845FF5E /* ht_tape.c in Sources */,
+				00448CB0AA917756B75A25C5 /* ht_tuning.c in Sources */,
+				1A8D1A743630BF587F74462D /* ht_voice.c in Sources */,
+				4EA8BB9E0953D66127C6CCE5 /* ht_waveguide.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		383F892052E55EE3D497AFF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/HoldingTopologyStage/Native",
+					"$(SRCROOT)/../device/app/dsp",
+					"$(SRCROOT)/../firmware/include",
+				);
+				INFOPLIST_FILE = HoldingTopologyStage/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "-std=c11 -DHT_DSP_HOST=1 -DHT_STAGE_NATIVE=1 -DHT_DSP_SAMPLE_RATE=96000.0f -Wno-unused-parameter\n";
+				PRODUCT_NAME = HoldingTopologyStage;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "HoldingTopologyStage/Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		4E51DE78584F01F537A7740D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.amaaov.HoldingTopologyStage;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F4E6AA1E474E6043CD2EF17F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.amaaov.HoldingTopologyStage;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F5818D344A5A171721B53711 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/HoldingTopologyStage/Native",
+					"$(SRCROOT)/../device/app/dsp",
+					"$(SRCROOT)/../firmware/include",
+				);
+				INFOPLIST_FILE = HoldingTopologyStage/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "-std=c11 -DHT_DSP_HOST=1 -DHT_STAGE_NATIVE=1 -DHT_DSP_SAMPLE_RATE=96000.0f -Wno-unused-parameter\n";
+				PRODUCT_NAME = HoldingTopologyStage;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "HoldingTopologyStage/Bridging-Header.h";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		886C13D4D4409D328ADD9704 /* Build configuration list for PBXNativeTarget "HoldingTopologyStage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				383F892052E55EE3D497AFF4 /* Debug */,
+				F5818D344A5A171721B53711 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D365853B8CDA2919AD1E308A /* Build configuration list for PBXProject "HoldingTopologyStage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E51DE78584F01F537A7740D /* Debug */,
+				F4E6AA1E474E6043CD2EF17F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ACC6B38B3C654E88BE9297EE /* Project object */;
+}

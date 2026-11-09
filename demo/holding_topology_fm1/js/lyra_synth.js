@@ -44,8 +44,8 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-export function createLyraSynth(audioContext) {
-  const mix = createFeedbackMix(audioContext, audioContext.destination);
+export function createLyraSynth(audioContext, { destination } = {}) {
+  const mix = createFeedbackMix(audioContext, destination ?? audioContext.destination);
   const drums = createDrumKit(audioContext, mix.tracks[3].input);
 
   const voices = Array.from({ length: VOICE_COUNT }, (_, index) =>

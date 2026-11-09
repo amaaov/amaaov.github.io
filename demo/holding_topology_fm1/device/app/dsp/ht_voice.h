@@ -62,6 +62,7 @@ typedef struct HtVoiceBank {
   uint32_t scatter_write;
   float duck_depth;
   float gain_now;
+  float lfo_phase;
   uint32_t seed;
   HtEnvelope envelope;
   HtDrumEnvelopes drum_envelopes;
@@ -75,6 +76,8 @@ void ht_voice_set_bus(HtVoiceBank *bank, const HtVoiceBus *bus);
 uint8_t ht_voice_pick_engine(uint32_t seed, float midi, uint8_t drum_part);
 void ht_voice_note_on(HtVoiceBank *bank, float midi, uint8_t velocity, uint8_t engine);
 void ht_voice_note_off(HtVoiceBank *bank, float midi);
+/* Release held voices older than max_age_sec so generative patterns read as rhythm. */
+void ht_voice_release_aged(HtVoiceBank *bank, float max_age_sec);
 void ht_voice_render(HtVoiceBank *bank, int32_t *lr, uint32_t frames, uint32_t master_q12);
 
 #endif

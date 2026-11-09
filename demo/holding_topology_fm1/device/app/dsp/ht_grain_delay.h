@@ -7,8 +7,14 @@
 
 #include "ht_fx.h"
 
-/* ~0.70 s at 44.1 kHz — sized for FM-1 .pool (336 KiB) with court/tape/wg. */
+/* FM-1 .pool budget vs macOS stage (96–192 kHz needs a longer line). */
+#ifndef HT_GRAIN_DELAY_MAX
+#ifdef HT_STAGE_NATIVE
+#define HT_GRAIN_DELAY_MAX 196608
+#else
 #define HT_GRAIN_DELAY_MAX 30720
+#endif
+#endif
 #define HT_GRAIN_SLOTS 16
 
 typedef struct HtGrainSlot {

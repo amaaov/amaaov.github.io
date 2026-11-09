@@ -10,7 +10,13 @@
 #include "ht_dsp_common.h"
 #include "ht_fx.h"
 
+#ifndef HT_TAPE_SAMPLES
+#ifdef HT_STAGE_NATIVE
+#define HT_TAPE_SAMPLES 65536
+#else
 #define HT_TAPE_SAMPLES 8192 /* ~0.186 s at 44.1 kHz */
+#endif
+#endif
 
 typedef struct HtTape {
   float ring[HT_TAPE_SAMPLES];
