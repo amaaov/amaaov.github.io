@@ -234,14 +234,28 @@ static void pick_siteswap_phrase(uint32_t mix) {
   controls.knob3 = (float)(objects - 3u) / 4.0f;
   knob01[EN_K3] = controls.knob3;
   active_siteswap = generated_siteswap;
-  active_hand_style = HAND_STYLE_CATALOG[(mix >> 5) % HAND_STYLE_COUNT];
+  active_hand_style = (role == HT_PHRASE_THIRD || role == HT_PHRASE_DROP)
+                          ? NULL
+                          : HAND_STYLE_CATALOG[(mix >> 5) % HAND_STYLE_COUNT];
   court.siteswap = active_siteswap;
   court.hand_style = active_hand_style;
   last_throw_beat = -999;
   last_occ = HT_OCC_EMPTY;
-  if (role == HT_PHRASE_DROP) {
-    phrase_until_beat = pattern_beat + 5.0f + (float)((mix >> 3) % 5u);
-    rest_after_phrase = 1;
+  if (role == HT_PHRASE_DROP || role == HT_PHRASE_THIRD) {
+    HtSiteswapSchedule horizon;
+    float span = 8.0f;
+    if (ht_siteswap_schedule_playable(generated_siteswap, 1, 48, &horizon) == HT_SS_OK) {
+      float end = (float)(horizon.break_beat >= 0 ? horizon.break_beat + 2 : horizon.cycle_length + 2);
+      if (end < 4.0f) {
+        end = 4.0f;
+      }
+      if (end > 18.0f) {
+        end = 18.0f;
+      }
+      span = end;
+    }
+    phrase_until_beat = pattern_beat + span;
+    rest_after_phrase = role == HT_PHRASE_DROP ? 1u : 0u;
   } else {
     phrase_until_beat = pattern_beat + 12.0f + (float)((mix >> 3) % 20u);
     rest_after_phrase = 0;

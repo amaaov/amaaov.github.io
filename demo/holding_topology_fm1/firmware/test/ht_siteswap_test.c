@@ -37,10 +37,41 @@ int main(void) {
   expect_true("reject pass", !ht_siteswap_valid("<3|3>"));
   expect_true("reject 76", !ht_siteswap_valid("76"));
 
-  expect_true("schedule 3", ht_siteswap_schedule("3", 1, 8, &schedule) == HT_SS_OK);
+  expect_true("schedule 3", ht_siteswap_schedule("3", 1, 12, &schedule) == HT_SS_OK);
   expect_eq_u8("sched balls", schedule.ball_count, 3);
   expect_true("sched events", schedule.event_count > 0);
   expect_true("cyclic 3", schedule.cyclic);
+  expect_true("cascade cycle spans balls+hands", schedule.cycle_length >= 6);
+  {
+    uint8_t seen[HT_SITESWAP_MAX_BALLS];
+    uint8_t distinct = 0;
+    uint16_t i;
+    memset(seen, 0, sizeof(seen));
+    for (i = 0; i < schedule.event_count; i += 1) {
+      uint8_t ball = schedule.events[i].ball;
+      if (ball < HT_SITESWAP_MAX_BALLS && !seen[ball]) {
+        seen[ball] = 1;
+        distinct = (uint8_t)(distinct + 1u);
+      }
+    }
+    expect_eq_u8("cascade distinct balls", distinct, 3);
+  }
+  expect_true("schedule shower 51", ht_siteswap_schedule("51", 1, 12, &schedule) == HT_SS_OK);
+  expect_eq_u8("shower balls", schedule.ball_count, 3);
+  {
+    uint8_t seen[HT_SITESWAP_MAX_BALLS];
+    uint8_t distinct = 0;
+    uint16_t i;
+    memset(seen, 0, sizeof(seen));
+    for (i = 0; i < schedule.event_count; i += 1) {
+      uint8_t ball = schedule.events[i].ball;
+      if (ball < HT_SITESWAP_MAX_BALLS && !seen[ball]) {
+        seen[ball] = 1;
+        distinct = (uint8_t)(distinct + 1u);
+      }
+    }
+    expect_eq_u8("shower distinct balls", distinct, 3);
+  }
 
   expect_true("playable third-hand",
               ht_siteswap_schedule_playable("555+", 1, 16, &schedule) == HT_SS_OK);

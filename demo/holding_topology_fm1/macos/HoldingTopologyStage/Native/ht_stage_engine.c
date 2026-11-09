@@ -417,19 +417,18 @@ enum {
 };
 
 static uint8_t pick_phrase_role(uint32_t mix, uint8_t phrase_index) {
-  uint32_t ticket;
-  /* First three phrases stay in PLAY so the court can settle on a real pattern. */
-  if (phrase_index < 3u) {
+  uint32_t ticket = mix % 100u;
+  /* Mirror js PHRASE_ROLE_WEIGHTS: drop/third/wait are first-class, not afterthoughts. */
+  if (phrase_index == 0u) {
     return HT_PHRASE_PLAY;
   }
-  ticket = mix % 100u;
   if (ticket < 2u) {
     return HT_PHRASE_WAIT;
   }
-  if (ticket < 5u) {
+  if (ticket < 8u) {
     return HT_PHRASE_DROP;
   }
-  if (ticket < 7u) {
+  if (ticket < 14u) {
     return HT_PHRASE_THIRD;
   }
   return HT_PHRASE_PLAY;
@@ -497,15 +496,29 @@ static void pick_phrase(HtStageEngine *stage, uint32_t mix) {
   }
   stage->bias.object_count = objects;
   stage->controls.knob3 = (float)(objects - 3u) / 4.0f;
-  stage->hand_style = pick_hand_style(mix, stage->bias.wildness);
+  /* Domain marks (+/−) break cyclic hand styles — keep clean palms so parks/drops read. */
+  stage->hand_style =
+      (role == HT_PHRASE_THIRD || role == HT_PHRASE_DROP) ? NULL : pick_hand_style(mix, stage->bias.wildness);
   stage->court.siteswap = stage->siteswap;
   stage->court.hand_style = stage->hand_style;
   stage->court.hold_twos = 1;
   stage->last_throw_beat = -999;
   stage->last_occ = HT_OCC_EMPTY;
-  if (role == HT_PHRASE_DROP) {
-    stage->phrase_until = stage->pattern_beat + 6.0f + (float)((mix >> 3) % 4u);
-    stage->rest_after_phrase = 1;
+  if (role == HT_PHRASE_DROP || role == HT_PHRASE_THIRD) {
+    HtSiteswapSchedule horizon;
+    float span = 8.0f;
+    if (ht_siteswap_schedule_playable(stage->siteswap, 1, 48, &horizon) == HT_SS_OK) {
+      float end = (float)(horizon.break_beat >= 0 ? horizon.break_beat + 2 : horizon.cycle_length + 2);
+      if (end < 4.0f) {
+        end = 4.0f;
+      }
+      if (end > 18.0f) {
+        end = 18.0f;
+      }
+      span = end;
+    }
+    stage->phrase_until = stage->pattern_beat + span;
+    stage->rest_after_phrase = role == HT_PHRASE_DROP ? 1u : 0u;
   } else {
     /* Short phrases so the court and sound morph quickly within a seed. */
     stage->phrase_until = stage->pattern_beat + 10.0f + (float)((mix >> 3) % 14u);

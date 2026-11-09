@@ -813,6 +813,26 @@ static uint8_t pattern_highest(const HtSiteswapPattern *pattern) {
   return highest;
 }
 
+/* Match JS landingKey: cycle closes only when queues (ball ids) repeat. */
+static int landing_equal(const HandLanding a[2], const HandLanding b[2]) {
+  uint8_t hand;
+  uint8_t d;
+  uint8_t i;
+  for (hand = 0; hand < 2; hand += 1) {
+    for (d = 0; d < HT_SITESWAP_MAX_DEPTH; d += 1) {
+      if (a[hand].counts[d] != b[hand].counts[d]) {
+        return 0;
+      }
+      for (i = 0; i < a[hand].counts[d]; i += 1) {
+        if (a[hand].slots[d][i] != b[hand].slots[d][i]) {
+          return 0;
+        }
+      }
+    }
+  }
+  return 1;
+}
+
 HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int16_t until_beat,
                                      HtSiteswapSchedule *out) {
   HtSiteswapPattern pattern;
@@ -836,6 +856,8 @@ HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int1
   uint16_t i;
   int copy;
   int swap_hands;
+  HandLanding start_landing[2];
+  int start_key_set = 0;
   if (!out) {
     return HT_SS_ERR_EMPTY;
   }
@@ -859,6 +881,7 @@ HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int1
     return HT_SS_ERR_OVERFLOW;
   }
   memset(landing, 0, sizeof(landing));
+  memset(start_landing, 0, sizeof(start_landing));
   intro_count = ball_count;
   for (i = 0; i < ball_count; i += 1) {
     intro[i] = (uint8_t)i;
@@ -871,17 +894,23 @@ HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int1
       return err;
     }
     if (init_complete) {
-      if (beat > 0 && (beat % period) == 0) {
+      /* Mirror JS: first post-init landing is the key; close only when it repeats. */
+      if (!start_key_set) {
+        memcpy(start_landing, landing, sizeof(start_landing));
+        start_key_set = 1;
+      } else if (beat > 0 && period > 0 && (beat % period) == 0 &&
+                 landing_equal(landing, start_landing)) {
         while (cycle_count > 0 && cycle[cycle_count - 1].beat == beat) {
           cycle_count -= 1;
         }
-        cycle_length = (uint8_t)beat;
+        cycle_length = (uint8_t)(beat > 255 ? 255 : beat);
         break;
       }
     } else if (intro_count == 0 && ((beat + 1) % period) == 0) {
       init_complete = 1;
       beat = -1;
       cycle_count = 0;
+      start_key_set = 0;
     }
     beat = (int16_t)(beat + 1);
     throw_hand = (uint8_t)(1 - throw_hand);
@@ -1248,9 +1277,34 @@ static uint8_t even_height(int value) {
   return (uint8_t)rounded;
 }
 
+static int pattern_too_degenerate(const char *source) {
+  uint8_t zeros = 0;
+  uint8_t digits = 0;
+  const char *p;
+  if (!source) {
+    return 1;
+  }
+  for (p = source; *p; p += 1) {
+    if ((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'z')) {
+      digits = (uint8_t)(digits + 1u);
+      if (*p == '0') {
+        zeros = (uint8_t)(zeros + 1u);
+      }
+    }
+  }
+  /* Reject all-zero hands / flash-looking family shells that read as broken. */
+  if (digits > 0u && zeros * 2u >= digits) {
+    return 1;
+  }
+  return 0;
+}
+
 static int copy_if_valid(const char *source, uint8_t objects, char *out, uint16_t cap) {
   uint16_t i = 0;
   if (!source || !out || cap < 2u) {
+    return 0;
+  }
+  if (pattern_too_degenerate(source)) {
     return 0;
   }
   while (source[i] && i + 1u < cap) {
@@ -1371,11 +1425,12 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
         }
       }
     } else if (family == HT_SS_FAMILY_COLUMNS) {
+      /* Period-4 sync with one hold: 2*column + held = 4*n (JS constructFamilySiteswap). */
       uint8_t column = even_height((int)(2u + (gen_rand(&state) % (n + 4u))));
       int held = (int)(4u * n) - 2 * (int)column;
-      if (held >= 0 && held <= 35 && (held % 2) == 0) {
+      if (held >= 2 && held <= 35 && (held % 2) == 0 && column >= 2u) {
         uint16_t len = 0;
-        uint8_t shape = (uint8_t)(gen_rand(&state) % 6u);
+        uint8_t shape = (uint8_t)(gen_rand(&state) % 8u);
         uint8_t c = column;
         uint8_t h = (uint8_t)held;
         if (shape == 0u || shape == 1u) {
@@ -1412,7 +1467,7 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
           append_char(candidate, sizeof candidate, &len, ',');
           append_char(candidate, sizeof candidate, &len, height_char(c));
           append_char(candidate, sizeof candidate, &len, ')');
-        } else {
+        } else if (shape == 4u || shape == 5u) {
           append_char(candidate, sizeof candidate, &len, '(');
           append_char(candidate, sizeof candidate, &len, height_char(c));
           append_char(candidate, sizeof candidate, &len, ',');
@@ -1422,6 +1477,17 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
           append_char(candidate, sizeof candidate, &len, height_char(c));
           append_char(candidate, sizeof candidate, &len, ',');
           append_char(candidate, sizeof candidate, &len, '0');
+          append_char(candidate, sizeof candidate, &len, ')');
+        } else {
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(h));
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(c));
+          append_char(candidate, sizeof candidate, &len, ')');
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, '0');
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(c));
           append_char(candidate, sizeof candidate, &len, ')');
         }
       }
@@ -1457,32 +1523,47 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
         }
       }
     } else if (family == HT_SS_FAMILY_MULTIPLEX) {
-      uint8_t high = (uint8_t)(2u + (gen_rand(&state) % (n + 3u)));
-      uint8_t low = (uint8_t)(gen_rand(&state) % (high < 1u ? 1u : high));
-      int rest = (int)(2u * n) - (int)high - (int)low;
+      /* Prefer compact [ab] (period 1, a+b=n) then [ab]c with rest = 2n-a-b. */
+      uint8_t high = (uint8_t)(1u + (gen_rand(&state) % n));
+      uint8_t low = (uint8_t)(n - high);
       uint16_t len = 0;
-      uint8_t shape = (uint8_t)(gen_rand(&state) % 3u);
-      if (rest >= 0 && rest <= 35) {
-        if (shape == 0u) {
-          append_char(candidate, sizeof candidate, &len, '[');
-          append_char(candidate, sizeof candidate, &len, height_char(high));
-          append_char(candidate, sizeof candidate, &len, height_char(low));
-          append_char(candidate, sizeof candidate, &len, ']');
-          append_char(candidate, sizeof candidate, &len, height_char((uint8_t)rest));
-        } else {
-          append_char(candidate, sizeof candidate, &len, height_char((uint8_t)rest));
-          append_char(candidate, sizeof candidate, &len, '[');
-          append_char(candidate, sizeof candidate, &len, height_char(high));
-          append_char(candidate, sizeof candidate, &len, height_char(low));
-          append_char(candidate, sizeof candidate, &len, ']');
+      uint8_t shape = (uint8_t)(gen_rand(&state) % 4u);
+      if (low > high) {
+        uint8_t tmp = high;
+        high = low;
+        low = tmp;
+      }
+      if (shape == 0u || shape == 1u || low == 0u) {
+        if (low == 0u) {
+          low = 1u;
+          high = (uint8_t)(n - 1u);
         }
-      } else {
-        high = (uint8_t)(1u + (gen_rand(&state) % n));
-        low = (uint8_t)(n - high);
         append_char(candidate, sizeof candidate, &len, '[');
         append_char(candidate, sizeof candidate, &len, height_char(high));
         append_char(candidate, sizeof candidate, &len, height_char(low));
         append_char(candidate, sizeof candidate, &len, ']');
+      } else {
+        int rest = (int)(2u * n) - (int)high - (int)low;
+        if (rest < 1 || rest > 35) {
+          high = (uint8_t)(2u + (gen_rand(&state) % (n + 2u)));
+          low = (uint8_t)(1u + (gen_rand(&state) % high));
+          rest = (int)(2u * n) - (int)high - (int)low;
+        }
+        if (rest >= 1 && rest <= 35) {
+          if (shape == 2u) {
+            append_char(candidate, sizeof candidate, &len, '[');
+            append_char(candidate, sizeof candidate, &len, height_char(high));
+            append_char(candidate, sizeof candidate, &len, height_char(low));
+            append_char(candidate, sizeof candidate, &len, ']');
+            append_char(candidate, sizeof candidate, &len, height_char((uint8_t)rest));
+          } else {
+            append_char(candidate, sizeof candidate, &len, height_char((uint8_t)rest));
+            append_char(candidate, sizeof candidate, &len, '[');
+            append_char(candidate, sizeof candidate, &len, height_char(high));
+            append_char(candidate, sizeof candidate, &len, height_char(low));
+            append_char(candidate, sizeof candidate, &len, ']');
+          }
+        }
       }
     } else {
       return HT_SS_ERR_UNSUPPORTED;

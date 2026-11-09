@@ -294,11 +294,24 @@ static HtCourtVec throw_pose(uint8_t hand, const HtCourtVec *style) {
   return base;
 }
 
-static HtCourtVec hold_idle_pose(uint8_t hand, float time_beat) {
-  HtCourtVec rest = catch_pose(hand, NULL);
-  float side = hand == 0 ? -1.0f : 1.0f;
-  float sway = 0.008f * sinf(HT_COURT_PI * time_beat);
+static HtCourtVec third_hand_pose(float time_beat) {
   HtCourtVec out;
+  out.x = HT_COURT_THIRD_X + 0.01f * sinf(HT_COURT_PI * time_beat * 0.35f);
+  out.y = HT_COURT_THIRD_Y + 0.012f * sinf(HT_COURT_PI * time_beat * 0.5f);
+  return out;
+}
+
+static HtCourtVec hold_idle_pose(uint8_t hand, float time_beat) {
+  HtCourtVec rest;
+  float side;
+  float sway;
+  HtCourtVec out;
+  if (hand >= 2u) {
+    return third_hand_pose(time_beat);
+  }
+  rest = catch_pose(hand, NULL);
+  side = hand == 0 ? -1.0f : 1.0f;
+  sway = 0.008f * sinf(HT_COURT_PI * time_beat);
   out.x = rest.x + side * sway;
   out.y = rest.y + 0.005f * sinf(HT_COURT_PI * time_beat + 0.5f);
   return out;
@@ -619,17 +632,20 @@ static void capture_snap(const HtCourtFrame *frame, HtCourtSnap *snap) {
         occupied[ev->to_hand] = 1;
       }
     } else if (ev->hold || ev->parked) {
+      uint8_t park_hand = (ev->parked && third) ? 2u : ev->to_hand;
       HtCourtVec point =
-          ev->parked ? hold_idle_pose(ev->to_hand, frame->time_beat)
+          ev->parked ? hold_idle_pose(park_hand, frame->time_beat)
                      : hold_carry_pose(ev->to_hand, frame->time_beat, schedule.events, schedule.event_count);
       props[ball].x = point.x;
       props[ball].y = point.y;
       props[ball].held = 1;
-      props[ball].hand = ev->to_hand;
+      props[ball].hand = park_hand;
       props[ball].abandoned = 0;
       props[ball].visible = 1;
-      hand_now[ev->to_hand] = point;
-      occupied[ev->to_hand] = 1;
+      if (park_hand < 2u) {
+        hand_now[park_hand] = point;
+        occupied[park_hand] = 1;
+      }
     } else {
       float dwell_span = ht_fmaxf(next_throw - catch_time, 1e-6f);
       float progress = (frame->time_beat - catch_time) / dwell_span;
@@ -692,11 +708,8 @@ static void capture_snap(const HtCourtFrame *frame, HtCourtSnap *snap) {
   store_hand(snap, 1, hand_now[1]);
   snap->hand_count = 2;
   if (third) {
-    /* Silhouette only — parked props come from schedule + marks, not a fake ball. */
-    HtCourtVec third_pose;
-    third_pose.x = HT_COURT_THIRD_X + 0.01f * sinf(HT_COURT_PI * frame->time_beat * 0.35f);
-    third_pose.y = HT_COURT_THIRD_Y + 0.012f * sinf(HT_COURT_PI * frame->time_beat * 0.5f);
-    store_hand(snap, 2, third_pose);
+    /* Third hand holds parked (+) props; silhouette tracks the park pose. */
+    store_hand(snap, 2, third_hand_pose(frame->time_beat));
     snap->hand_count = 3;
   }
 
