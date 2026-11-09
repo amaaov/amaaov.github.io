@@ -71,8 +71,23 @@ final class StageController: ObservableObject {
 
   func newPatch() {
     lock.lock()
-    ht_stage_new_patch(engine)
-    let line = makeStatusLocked(prefix: "patch")
+    let wasArmed = ht_stage_is_armed(engine) != 0
+    if wasArmed {
+      ht_stage_new_patch(engine)
+    } else {
+      /* Click while stopped starts playback (not a silent prep). */
+      ht_stage_play_start(engine)
+    }
+    let line = makeStatusLocked(prefix: wasArmed ? "patch" : "play")
+    lock.unlock()
+    status = line
+  }
+
+  func togglePlay() {
+    lock.lock()
+    ht_stage_play_toggle(engine)
+    let armed = ht_stage_is_armed(engine) != 0
+    let line = makeStatusLocked(prefix: armed ? "play" : "stop")
     lock.unlock()
     status = line
   }
@@ -248,8 +263,12 @@ final class StageController: ObservableObject {
     let bpm = ht_stage_bpm(engine)
     let beat = ht_stage_pattern_beat(engine)
     let siteswap = String(cString: ht_stage_siteswap(engine))
+    let armed = ht_stage_is_armed(engine) != 0
     let head = prefix.map { "\($0) · " } ?? ""
-    return String(format: "%@%@ · beat %.1f · %.0f bpm · %.0f Hz · %08x", head, siteswap, beat, bpm, rate, seed)
+    let run = armed ? "armed" : "stopped"
+    return String(
+      format: "%@%@ · %@ · beat %.1f · %.0f bpm · %.0f Hz · %08x", head, siteswap, run, beat, bpm,
+      rate, seed)
   }
 
   private func observeCommands() {
@@ -261,6 +280,11 @@ final class StageController: ObservableObject {
     observers.append(
       NotificationCenter.default.addObserver(forName: .stageNewPatch, object: nil, queue: .main) { [weak self] _ in
         self?.newPatch()
+      }
+    )
+    observers.append(
+      NotificationCenter.default.addObserver(forName: .stageTogglePlay, object: nil, queue: .main) { [weak self] _ in
+        self?.togglePlay()
       }
     )
     observers.append(

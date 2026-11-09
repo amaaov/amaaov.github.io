@@ -10,6 +10,10 @@ struct HoldingTopologyStageApp: App {
     .commands {
       CommandGroup(replacing: .newItem) {}
       CommandMenu("Stage") {
+        Button("Play / Stop") {
+          NotificationCenter.default.post(name: .stageTogglePlay, object: nil)
+        }
+        .keyboardShortcut(.space, modifiers: [])
         Button("Chaos") {
           NotificationCenter.default.post(name: .stageChaos, object: nil)
         }
@@ -30,5 +34,6 @@ struct HoldingTopologyStageApp: App {
 extension Notification.Name {
   static let stageChaos = Notification.Name("ht.stage.chaos")
   static let stageNewPatch = Notification.Name("ht.stage.newPatch")
+  static let stageTogglePlay = Notification.Name("ht.stage.togglePlay")
   static let stageToggleRecord = Notification.Name("ht.stage.toggleRecord")
 }

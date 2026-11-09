@@ -687,11 +687,8 @@ static void apply_seed(HtStageEngine *stage, uint32_t next) {
   stage->tape_recording = stage->bias.wildness > 0.4f || stage->controls.select > 0.45f ? 1u : 0u;
   stage->note_serial = 0;
   pick_phrase(stage, stage->seed);
-  stage->gen_armed = 1;
+  /* Does not arm generators: boot / reshuffle stay silent until play_start. */
   sync_voice_bus(stage);
-  ht_voice_note_on(&stage->voices,
-                   ht_scale_note(stage->bias.scale_index, stage->root_midi, 0, stage->octave), 90,
-                   stage_melodic_engine(stage, stage->seed));
 }
 
 static void siteswap_tick(HtStageEngine *stage) {
@@ -854,8 +851,8 @@ static void generator_tick(HtStageEngine *stage) {
     return;
   }
   stage->gen_step = (uint16_t)(stage->gen_step + 1u);
-  /* Without release, 12 slots pin forever and every new note steals slot 0 → one crappy voice. */
-  ht_voice_release_aged(&stage->voices, 0.55f + stage->bias.wildness * 0.45f);
+  /* Generators only send note-ons; keep notes to about one beat (device parity). */
+  ht_voice_release_aged(&stage->voices, 60.0f / (stage->bias.bpm > 1.0f ? stage->bias.bpm : 100.0f));
   /* JS fireGenerators uses eighths (step 0.5); 16ths stacked with throws sounded fragmented. */
   if ((stage->gen_step & 1u) != 0u) {
     sync_voice_bus(stage);
@@ -1003,11 +1000,68 @@ void ht_stage_set_master(HtStageEngine *stage, float master01) {
   stage->controls.master = master01;
 }
 
-void ht_stage_new_patch(HtStageEngine *stage) {
+static void play_stop(HtStageEngine *stage) {
+  stage->gen_armed = 0;
+  stage->episode_resting = 0;
+  stage->episode_gap = 0;
+  ht_voice_panic(&stage->voices);
+  sync_voice_bus(stage);
+}
+
+static void play_start(HtStageEngine *stage) {
+  uint32_t next = ht_unique_seed(stage->seed ^ 0x9e3779b9u ^ (uint32_t)stage->clock_ms);
+  apply_seed(stage, next);
+  stage->gen_armed = 1;
+  stage->step_accum_ms = 0.0;
+  ht_voice_note_on(&stage->voices,
+                   ht_scale_note(stage->bias.scale_index, stage->root_midi, 0, stage->octave), 90,
+                   stage_melodic_engine(stage, stage->seed));
+}
+
+void ht_stage_play_stop(HtStageEngine *stage) {
   if (!stage) {
     return;
   }
+  play_stop(stage);
+}
+
+void ht_stage_play_start(HtStageEngine *stage) {
+  if (!stage) {
+    return;
+  }
+  play_start(stage);
+}
+
+void ht_stage_play_toggle(HtStageEngine *stage) {
+  if (!stage) {
+    return;
+  }
+  if (stage->gen_armed) {
+    play_stop(stage);
+  } else {
+    play_start(stage);
+  }
+}
+
+int ht_stage_is_armed(const HtStageEngine *stage) {
+  return stage && stage->gen_armed ? 1 : 0;
+}
+
+void ht_stage_new_patch(HtStageEngine *stage) {
+  uint8_t was_armed;
+  if (!stage) {
+    return;
+  }
+  was_armed = stage->gen_armed;
   apply_seed(stage, ht_unique_seed(stage->seed ^ 0x9e3779b9u));
+  if (was_armed) {
+    /* Stay playing with a fresh seed (device SEQ-while-armed). */
+    stage->gen_armed = 1;
+    stage->step_accum_ms = 0.0;
+    ht_voice_note_on(&stage->voices,
+                     ht_scale_note(stage->bias.scale_index, stage->root_midi, 0, stage->octave), 90,
+                     stage_melodic_engine(stage, stage->seed));
+  }
 }
 
 void ht_stage_chaos(HtStageEngine *stage) {
@@ -1016,9 +1070,13 @@ void ht_stage_chaos(HtStageEngine *stage) {
     return;
   }
   roll = (float)(ht_gen_stream(stage->seed ^ (uint32_t)(stage->pattern_beat * 1000.0f)) % 1000u) / 1000.0f;
-  /* Most clicks hard-reset the scene; soft knob chaos stays rare. */
+  /* Most presses hard-reset the scene; soft knob chaos stays rare. */
   if (roll < 0.62f) {
-    ht_stage_new_patch(stage);
+    if (stage->gen_armed) {
+      ht_stage_new_patch(stage);
+    } else {
+      play_start(stage);
+    }
     return;
   }
   if (roll < 0.55f) {
@@ -1078,7 +1136,7 @@ void ht_stage_chaos(HtStageEngine *stage) {
     begin_episode_rest(stage, 1);
     return;
   }
-  {
+  if (stage->gen_armed) {
     float midi = (float)(53 + (ht_gen_stream(stage->seed + 99u) % 24) + 12 * stage->octave);
     ht_voice_note_on(&stage->voices, midi, 100, stage_melodic_engine(stage, (uint32_t)midi));
   }
@@ -1112,10 +1170,8 @@ void ht_stage_render(HtStageEngine *stage, float *interleaved, uint32_t frames) 
   }
   /* Musical clock follows audio buffers so the court and notes stay locked. */
   advance_clock(stage, 1000.0 * (double)use_frames / stage->sample_rate);
+  /* Squared master; 0 must stay silent (no floor — device APP_GAIN parity). */
   master = stage->controls.master * stage->controls.master;
-  if (master < 0.35f) {
-    master = 0.35f;
-  }
   memset(interleaved, 0, (size_t)use_frames * 2u * sizeof(float));
   ht_voice_render_f32(&stage->voices, interleaved, use_frames, master);
   for (i = use_frames; i < frames; i += 1) {

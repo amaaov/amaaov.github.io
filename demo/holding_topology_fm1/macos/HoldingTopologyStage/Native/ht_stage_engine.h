@@ -29,6 +29,12 @@ HtStageEngine *ht_stage_create(double sample_rate);
 void ht_stage_destroy(HtStageEngine *stage);
 
 void ht_stage_set_master(HtStageEngine *stage, float master01);
+/* PLAY parity: boot stopped; start arms a fresh seed; toggle stops/starts. */
+void ht_stage_play_start(HtStageEngine *stage);
+void ht_stage_play_stop(HtStageEngine *stage);
+void ht_stage_play_toggle(HtStageEngine *stage);
+int ht_stage_is_armed(const HtStageEngine *stage);
+/* New seed; if already armed keeps playing, otherwise prepares silently. */
 void ht_stage_new_patch(HtStageEngine *stage);
 void ht_stage_chaos(HtStageEngine *stage);
 

@@ -26,12 +26,13 @@ struct ContentView: View {
     }
     .focusable()
     .onTapGesture {
-      /* Click = next scene/sound; soft chaos stays on other keys. */
+      /* Click = next scene (starts if stopped). */
       stage.newPatch()
     }
     .onKeyPress(phases: .down) { press in
       if press.key == .space {
-        stage.newPatch()
+        /* Space = PLAY toggle (device B_PLAY parity). */
+        stage.togglePlay()
         return .handled
       }
       if press.modifiers.contains(.command), press.key == KeyEquivalent("r") {

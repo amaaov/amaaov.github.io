@@ -5,10 +5,12 @@ Fully native macOS app: C DSP + portable `ht_*` generators, SwiftUI court. No We
 ## What it does
 
 - Court only (hands + props + trails), black 9:16-friendly window
-- Click / Space / Cmd+N → hard scene reset (new seed; FX buffers cleared)
+- Boots stopped and silent; Space → PLAY start/stop toggle
+- Click / Cmd+N → new seed (starts if stopped; FX buffers cleared)
 - Other keys → chaos (often a new seed; pointer move ignored)
 - Cmd+R → record 4K vertical MOV to `~/Movies`
-- Status line shows siteswap, beat, and bpm as the phrase moves
+- Status line shows siteswap, armed/stopped, beat, and bpm
+- Master squared with no floor (0 is silent)
 - Audio: 32-bit float PCM at **96 kHz** (compile-time; see below for 192 kHz)
 
 ## Stack
