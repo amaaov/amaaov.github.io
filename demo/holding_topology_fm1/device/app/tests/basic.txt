@@ -1,6 +1,16 @@
 # HT-1 host simulator smoke (after ./build.sh --host)
+master 0
 wait 600
 shot boot.png
+expect armed 0
+expect peak_db_max -90
+tap PLAY
+wait 400
+expect peak_db_max -90
+master 2048
+tap PLAY
+wait 30
+expect armed 0
 tap PLAY
 wait 80
 expect armed 1

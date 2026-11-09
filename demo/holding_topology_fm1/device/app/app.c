@@ -500,11 +500,8 @@ static void apply_seed(uint32_t next_seed) {
   ht_action_loop_rebind(&action_loop, seed);
   remember_patch_axes();
   ht_court_clear_trails();
-  gen_armed = 1;
+  /* Does not arm the generators: boot stays silent until PLAY (play_start). */
   sync_voice_bus();
-  /* Audible seed mark so a silent bus is obvious in the emulator. */
-  ht_voice_note_on(&voices, ht_scale_note(bias.scale_index, 60.0f, 0, set.octave), 110,
-                   ht_voice_pick_engine(seed, 60.0f, 0));
 }
 
 static void settings_defaults(void) {
@@ -771,6 +768,9 @@ static void generator_tick(void) {
                        ht_voice_pick_engine(seed, drums[index].midi, 1));
     }
   }
+  /* Generators only send note-ons; without this, sustaining engines fill every
+   * slot and drone forever. Keep generated notes to about one beat. */
+  ht_voice_release_aged(&voices, 60.0f / bias.bpm);
   sync_voice_bus();
 }
 
@@ -799,18 +799,28 @@ void app_render(int32_t *lr, uint32_t n, uint32_t master_q12) {
       ht_voice_note_off(&voices, (uint8_t)d1);
     }
   }
-  /* Platform already applied APP_GAIN; keep a hard floor if a build skips it. */
-  if (gain < 1400u) {
-    gain = 1400u;
-  }
+  /* Platform already applied APP_GAIN (MASTER squared); 0 must stay silent. */
   controls.master = (float)gain / 4096.0f;
   ht_voice_render(&voices, lr, n, gain);
 }
 
-static void play_fresh_seed(void) {
+static void play_stop(void) {
+  gen_armed = 0;
+  episode_resting = 0;
+  episode_gap = 0;
+  ht_voice_panic(&voices);
+  app_say("STOP", "");
+}
+
+static void play_start(void) {
   char hex[12];
   uint32_t next = ht_unique_seed(plat_ms() ^ seed ^ plat_buttons());
   apply_seed(next);
+  gen_armed = 1;
+  step_ms_accum = 0;
+  /* Audible seed mark so a silent bus is obvious in the emulator. */
+  ht_voice_note_on(&voices, ht_scale_note(bias.scale_index, 60.0f, 0, set.octave), 110,
+                   ht_voice_pick_engine(seed, 60.0f, 0));
   hex[0] = '0';
   hex[1] = 'x';
   {
@@ -871,7 +881,11 @@ static void input(void) {
       continue;
     }
     if (k == B_PLAY) {
-      play_fresh_seed();
+      if (gen_armed) {
+        play_stop();
+      } else {
+        play_start();
+      }
     } else if (!action_loop.replaying) {
       ht_action_loop_capture(&action_loop, HT_ACTION_BUTTON, (uint8_t)k, 1.0f, pattern_beat);
     }

@@ -6,7 +6,7 @@ Juggling-court generators on the M-VAVE FM-1.
 
 | Control | Action |
 | --- | --- |
-| PLAY | New unique seed, restart Turing + atlas generators |
+| PLAY | Start: new unique seed, restart Turing + atlas generators. Press again to stop. Boots stopped. |
 | SEQ | Reshuffle generators from the current seed family |
 | KNOB 1–4 | Feedback, LFO depth, siteswap/objects, tempo |
 | PRESETS / ALGORITHM | Scale and patch-type bias |

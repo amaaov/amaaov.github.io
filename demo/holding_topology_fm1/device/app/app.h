@@ -13,9 +13,8 @@
 #define APP_TOUCH
 /* Strip height for court blit (full 240 needs too much .pool with the voice bank). */
 #define APP_CANVAS_PX (240u * 120u)
-/* MASTER pot squared is near-silent until the knob moves; keep a floor so the
- * generative path is audible at boot (emu pots often sit at 0 until dragged). */
-#define APP_GAIN(m) (((m) * (m) >> 12) < 600u ? 1400u : ((m) * (m) >> 12))
+/* No APP_GAIN override: fm1-base's default (MASTER squared, 0 = silent) applies.
+ * A gain floor here made MASTER at 0 still play at about -9 dB. */
 
 enum { OBJ_SETTINGS, OBJ_PANEL, OBJ_BLE, OBJ_NOBJ };
 #define APP_STORE_MAP {0xFC000u, 0xDC000u, 0xDE000u}
