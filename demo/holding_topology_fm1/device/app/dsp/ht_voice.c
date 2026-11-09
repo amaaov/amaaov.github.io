@@ -122,13 +122,45 @@ void ht_voice_init(HtVoiceBank *bank) {
 
 void ht_voice_panic(HtVoiceBank *bank) {
   uint32_t index;
+  if (!bank) {
+    return;
+  }
   for (index = 0; index < HT_VOICE_SLOTS; index += 1) {
     bank->osc[index].target = 0.0f;
     bank->osc[index].active = 0;
     bank->osc[index].released = 1;
     ht_wg_note_off(&bank->wg[index]);
     bank->use_wg[index] = 0;
+    ht_wg_clear(&bank->wg[index]);
   }
+  /* Hard scene cut: wipe delay/reverb/tape so the next seed is not wet wash from the last. */
+  for (index = 0; index < HT_SCATTER_SAMPLES; index += 1) {
+    bank->scatter_delay_l[index] = 0.0f;
+    bank->scatter_delay_r[index] = 0.0f;
+  }
+  bank->scatter_write = 0;
+  bank->gain_now = 0.0f;
+  ht_tape_init(&bank->tape);
+  ht_court_chain_init(&bank->court);
+  ht_grain_delay_init(&bank->grain, (uint32_t)HT_DSP_SAMPLE_RATE);
+  ht_reverb_init(&bank->reverb);
+  ht_analog_bus_init(&bank->analog);
+  ht_sidechain_init(&bank->sidechain);
+  ht_eq_bus_init(&bank->eq);
+#ifdef HT_STAGE_NATIVE
+  {
+    uint32_t p;
+    for (p = 0; p < 48000u; p += 1) {
+      bank->ping_l[p] = 0.0f;
+      bank->ping_r[p] = 0.0f;
+    }
+    bank->ping_write = 0;
+  }
+  ht_tape_init(&bank->tape_r);
+  ht_analog_bus_init(&bank->analog_r);
+  ht_grain_delay_init(&bank->grain_r, (uint32_t)HT_DSP_SAMPLE_RATE);
+  ht_eq_bus_init(&bank->eq_r);
+#endif
 }
 
 void ht_voice_set_seed(HtVoiceBank *bank, uint32_t seed) {
@@ -470,16 +502,21 @@ static void ht_voice_render_linear(HtVoiceBank *bank, float *lr, uint32_t frames
       track_r[t] = 0.0f;
     }
     bank->gain_now += (gain - bank->gain_now) * 0.004f;
-    bank->lfo_phase += (0.4f + bank->bus.lfo_depth * 2.5f) / HT_DSP_SAMPLE_RATE;
+    /* Dual LFO like js/lyra_synth (0.35 Hz sine + 0.55 Hz triangle feel). */
+    bank->lfo_phase += (0.35f + bank->bus.lfo_depth * 0.9f) / HT_DSP_SAMPLE_RATE;
     if (bank->lfo_phase >= 1.0f) {
       bank->lfo_phase -= 1.0f;
     }
-    bank->lfo_pan_phase += (0.11f + bank->bus.lfo_depth * 0.35f) / HT_DSP_SAMPLE_RATE;
+    bank->lfo_pan_phase += (0.55f + bank->bus.lfo_depth * 0.7f) / HT_DSP_SAMPLE_RATE;
     if (bank->lfo_pan_phase >= 1.0f) {
       bank->lfo_pan_phase -= 1.0f;
     }
-    lfo = ht_sinf(bank->lfo_phase * 6.2831853f) * bank->bus.lfo_depth;
-    lfo_pan = ht_sinf(bank->lfo_pan_phase * 6.2831853f) * bank->bus.lfo_depth * 0.35f;
+    {
+      float tri = bank->lfo_pan_phase < 0.5f ? bank->lfo_pan_phase * 4.0f - 1.0f
+                                            : 3.0f - bank->lfo_pan_phase * 4.0f;
+      lfo = (ht_sinf(bank->lfo_phase * 6.2831853f) * 0.62f + tri * 0.38f) * bank->bus.lfo_depth;
+    }
+    lfo_pan = ht_sinf(bank->lfo_pan_phase * 6.2831853f) * bank->bus.lfo_depth * 0.45f;
     /* Destinations: 0 pitch, 1 cutoff, 2 width, 3 level, 4 pan (js/ht_fx.js). */
     if (lfo_dest == 1u) {
       lfo_cutoff = lfo;
@@ -525,7 +562,8 @@ static void ht_voice_render_linear(HtVoiceBank *bank, float *lr, uint32_t frames
                  (0.35f + shape->filter_env);
         }
         {
-          float fe = shape->filter_env * (0.35f + bank->bus.env_amount * 0.95f) + lfo_cutoff;
+          /* Stronger filterEnv path — js/lyra_synth opens cutoff from envelope + LFO. */
+          float fe = shape->filter_env * (0.55f + bank->bus.env_amount * 1.15f) + lfo_cutoff * 1.35f;
           sample = ht_engine_sample(slot, lfo + pair, fe) * slot->level * lfo_level;
         }
         drum = slot->drum;
@@ -584,19 +622,16 @@ static void ht_voice_render_linear(HtVoiceBank *bank, float *lr, uint32_t frames
     }
 #endif
 #ifdef HT_STAGE_NATIVE
-    /* Dry court dominates; scatter/grain only tint. */
-    fx_l = court_l * 0.92f + scatter_l * 0.08f + grain_l * 0.06f;
-    fx_r = court_r * 0.92f + scatter_r * 0.08f + grain_r * 0.06f;
+    /* Match js/feedback_mix: dry court + scatter + granular delay return. */
+    fx_l = court_l * 0.7f + scatter_l * 0.28f + grain_l * 0.42f;
+    fx_r = court_r * 0.7f + scatter_r * 0.28f + grain_r * 0.42f;
 #else
     fx_l = court_l * 0.62f + scatter_l * 0.28f + grain_l * 0.55f;
     fx_r = court_r * 0.62f + scatter_r * 0.28f + grain_r * 0.55f;
 #endif
 #ifdef HT_STAGE_NATIVE
-    /* Tape armed only when recording; otherwise leave dry. */
-    if (bank->bus.tape_recording) {
-      fx_l = ht_tape_process(&bank->tape, fx_l);
-      fx_r = ht_tape_process(&bank->tape_r, fx_r);
-    }
+    fx_l = ht_tape_process(&bank->tape, fx_l);
+    fx_r = ht_tape_process(&bank->tape_r, fx_r);
 #else
     {
       float side;
@@ -609,7 +644,7 @@ static void ht_voice_render_linear(HtVoiceBank *bank, float *lr, uint32_t frames
 #endif
     /* Track reverb sends + a light post send (js/feedback_mix track.reverbOut). */
 #ifdef HT_STAGE_NATIVE
-    ht_reverb_process(&bank->reverb, rev_send_l + fx_l * 0.04f, rev_send_r + fx_r * 0.04f, &rev_l,
+    ht_reverb_process(&bank->reverb, rev_send_l + fx_l * 0.16f, rev_send_r + fx_r * 0.16f, &rev_l,
                       &rev_r);
 #else
     ht_reverb_process(&bank->reverb, rev_send_l + fx_l * 0.22f, rev_send_r + fx_r * 0.22f, &rev_l,
@@ -636,19 +671,20 @@ static void ht_voice_render_linear(HtVoiceBank *bank, float *lr, uint32_t frames
     }
 #endif
 #ifdef HT_STAGE_NATIVE
-    /* Dry-forward: skip ping when delay is parked (stage sets ping_delay=0). */
+    /* Stereo ping ≈ JS delayA/delayB with cross feedback (~0.2). */
     if (bank->ping_delay >= 64u) {
       uint32_t delay = bank->ping_delay;
       uint32_t read_l = (bank->ping_write + 48000u - delay) % 48000u;
       uint32_t read_r =
-          (bank->ping_write + 48000u - (uint32_t)(delay * 1.37f)) % 48000u;
+          (bank->ping_write + 48000u - (uint32_t)(delay * 1.17f)) % 48000u;
       float tap_l = bank->ping_l[read_l];
       float tap_r = bank->ping_r[read_r];
-      bank->ping_l[bank->ping_write] = fx_l * 0.2f + tap_r * 0.12f;
-      bank->ping_r[bank->ping_write] = fx_r * 0.2f + tap_l * 0.12f;
+      float fb = ht_clampf(bank->bus.feedback, 0.1f, 0.55f);
+      bank->ping_l[bank->ping_write] = fx_l * 0.55f + tap_r * fb * 0.85f;
+      bank->ping_r[bank->ping_write] = fx_r * 0.55f + tap_l * fb * 0.75f;
       bank->ping_write = (bank->ping_write + 1u) % 48000u;
-      out_l = (fx_l * 0.94f + tap_l * 0.1f) * bank->gain_now;
-      out_r = (fx_r * 0.94f + tap_r * 0.1f) * bank->gain_now;
+      out_l = (fx_l * 0.78f + tap_l * 0.42f) * bank->gain_now;
+      out_r = (fx_r * 0.78f + tap_r * 0.42f) * bank->gain_now;
     } else {
       out_l = fx_l * bank->gain_now;
       out_r = fx_r * bank->gain_now;

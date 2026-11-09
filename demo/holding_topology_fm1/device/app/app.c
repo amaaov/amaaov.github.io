@@ -224,6 +224,9 @@ static void pick_siteswap_phrase(uint32_t mix) {
   if (role == HT_PHRASE_THIRD) {
     append_siteswap_mark(generated_siteswap, (uint16_t)sizeof(generated_siteswap), '+');
     court.third_hand = 1;
+  } else if (role == HT_PHRASE_DROP) {
+    append_siteswap_mark(generated_siteswap, (uint16_t)sizeof(generated_siteswap), '-');
+    court.third_hand = 0;
   } else {
     court.third_hand = 0;
   }
@@ -590,45 +593,102 @@ static void siteswap_tick(void) {
   court.hand_style = active_hand_style;
   court.dwell_ratio = bias.dwell_ratio;
   court.hold_twos = 1;
-  if (ht_siteswap_schedule(active_siteswap, 1, (int16_t)(pattern_beat + 4), &schedule) != HT_SS_OK) {
+  if (ht_siteswap_schedule_playable(active_siteswap, 1, (int16_t)(pattern_beat + 16), &schedule) !=
+      HT_SS_OK) {
     pick_siteswap_phrase(seed ^ 0x51e51e51u ^ phrase_index);
     return;
   }
-  for (i = 0; i < schedule.event_count; i += 1) {
-    const HtSiteswapEvent *ev = &schedule.events[i];
-    float flight;
-    if (ev->height == 0) {
-      continue;
+  {
+    uint8_t ball_held[HT_SITESWAP_MAX_BALLS];
+    uint8_t ball_air[HT_SITESWAP_MAX_BALLS];
+    uint8_t ball_live[HT_SITESWAP_MAX_BALLS];
+    float dwell = bias.dwell_ratio > 0.05f ? bias.dwell_ratio : 0.5f;
+    for (i = 0; i < HT_SITESWAP_MAX_BALLS; i += 1) {
+      ball_held[i] = 0;
+      ball_air[i] = 0;
+      ball_live[i] = 0;
     }
-    flight = ev->hold ? 0.0f : (float)ev->height * (1.0f - bias.dwell_ratio);
-    if (ev->beat == (int16_t)pattern_beat && !ev->hold && ev->beat != last_throw_beat) {
-      HtModFactors edge = {0};
-      HtModVector burst;
-      last_throw_beat = ev->beat;
-      edge.state = last_occ == HT_OCC_EMPTY ? HT_OCC_MIXED : last_occ;
-      edge.object_count = schedule.ball_count;
-      edge.object_index = (uint8_t)(ev->height % 7);
-      edge.hand = ev->from_hand;
-      edge.dwell_phase = 0.0f;
-      edge.transition = HT_MOD_THROW;
-      burst = ht_mod_matrix_combine(&edge);
-      {
-        float midi = ht_scale_note(bias.scale_index, 48.0f, (uint8_t)(ev->height % 12), set.octave);
-        uint8_t vel = (uint8_t)(70 + burst.burst_gain * 40.0f);
-        ht_voice_note_on(&voices, midi, vel, ht_voice_pick_engine(seed, midi, 0));
+    for (i = 0; i < schedule.event_count; i += 1) {
+      const HtSiteswapEvent *ev = &schedule.events[i];
+      float flight;
+      float throw_time;
+      float next_throw;
+      float shannon;
+      if (ev->ball >= HT_SITESWAP_MAX_BALLS) {
+        continue;
+      }
+      if (ev->dump && pattern_beat >= (float)ev->beat + (float)(ev->height > 0 ? ev->height : 0)) {
+        continue;
+      }
+      if (ev->drop) {
+        if (pattern_beat >= (float)ev->beat) {
+          ball_live[ev->ball] = 1;
+          ball_held[ev->ball] = 0;
+          ball_air[ev->ball] = 0;
+        }
+        continue;
+      }
+      if (ev->height == 0) {
+        continue;
+      }
+      throw_time = (float)ev->beat;
+      next_throw = throw_time + (float)ev->height;
+      if (ev->hold) {
+        flight = 0.0f;
+      } else {
+        shannon = (float)ev->height - 2.0f * dwell;
+        {
+          float ceiling = (float)ev->height - 0.15f;
+          if (ceiling < 0.2f) {
+            ceiling = 0.2f;
+          }
+          flight = shannon >= 0.5f ? shannon : (ceiling < 0.5f ? ceiling : 0.5f);
+        }
+      }
+      if (ev->beat == (int16_t)pattern_beat && !ev->hold && !ev->parked && ev->beat != last_throw_beat) {
+        HtModFactors edge = {0};
+        HtModVector burst;
+        last_throw_beat = ev->beat;
+        edge.state = last_occ == HT_OCC_EMPTY ? HT_OCC_MIXED : last_occ;
+        edge.object_count = schedule.ball_count;
+        edge.object_index = (uint8_t)(ev->height % 7);
+        edge.hand = ev->from_hand;
+        edge.dwell_phase = 0.0f;
+        edge.transition = HT_MOD_THROW;
+        burst = ht_mod_matrix_combine(&edge);
+        {
+          float midi = ht_scale_note(bias.scale_index, 48.0f, (uint8_t)(ev->height % 12), set.octave);
+          uint8_t vel = (uint8_t)(70 + burst.burst_gain * 40.0f);
+          ht_voice_note_on(&voices, midi, vel, ht_voice_pick_engine(seed, midi, 0));
+        }
+      }
+      if (pattern_beat >= throw_time && pattern_beat < next_throw) {
+        ball_live[ev->ball] = 1;
+        if (!ev->hold && pattern_beat < throw_time + flight) {
+          ball_held[ev->ball] = 0;
+          ball_air[ev->ball] = 1;
+        } else {
+          ball_held[ev->ball] = 1;
+          ball_air[ev->ball] = 0;
+        }
       }
     }
-    if (pattern_beat >= (float)ev->beat && pattern_beat < (float)ev->beat + (ev->hold ? 1.0f : flight)) {
-      if (ev->hold || pattern_beat >= (float)ev->beat + flight) {
+    held = 0;
+    airborne = 0;
+    for (i = 0; i < HT_SITESWAP_MAX_BALLS; i += 1) {
+      if (!ball_live[i]) {
+        continue;
+      }
+      if (ball_held[i]) {
         held = (uint8_t)(held + 1);
-      } else {
+      } else if (ball_air[i]) {
         airborne = (uint8_t)(airborne + 1);
       }
     }
   }
   court.airborne_count = airborne;
   court.hand_hold_count = held;
-  sign = ht_occupancy_sign(held, airborne, schedule.ball_count);
+  sign = ht_occupancy_sign(held, airborne, (uint8_t)(held + airborne));
   factors.state = sign;
   factors.object_count = schedule.ball_count;
   factors.object_index = (uint8_t)((uint32_t)pattern_beat % 7u);

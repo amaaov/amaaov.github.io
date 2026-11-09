@@ -26,7 +26,8 @@ struct ContentView: View {
     }
     .focusable()
     .onTapGesture {
-      stage.chaos()
+      /* Click = next scene/sound; soft chaos stays on other keys. */
+      stage.newPatch()
     }
     .onKeyPress(phases: .down) { press in
       if press.key == .space {

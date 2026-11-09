@@ -31,8 +31,8 @@ int main(void) {
   expect_true("valid 531", ht_siteswap_valid("531"));
   expect_true("valid 531*", ht_siteswap_valid("531*"));
   expect_true("valid sync star", ht_siteswap_valid("(4x,2x)(2,4x)*"));
-  expect_true("valid third-hand mark", ht_siteswap_valid("555+"));
-  expect_true("valid sync add mark", ht_siteswap_valid("(4,2)+"));
+  expect_true("domain mark not cyclic-valid", !ht_siteswap_valid("555+"));
+  expect_true("sync add mark not cyclic-valid", !ht_siteswap_valid("(4,2)+"));
   expect_true("reject bounce", !ht_siteswap_valid("3B"));
   expect_true("reject pass", !ht_siteswap_valid("<3|3>"));
   expect_true("reject 76", !ht_siteswap_valid("76"));
@@ -40,6 +40,33 @@ int main(void) {
   expect_true("schedule 3", ht_siteswap_schedule("3", 1, 8, &schedule) == HT_SS_OK);
   expect_eq_u8("sched balls", schedule.ball_count, 3);
   expect_true("sched events", schedule.event_count > 0);
+  expect_true("cyclic 3", schedule.cyclic);
+
+  expect_true("playable third-hand",
+              ht_siteswap_schedule_playable("555+", 1, 16, &schedule) == HT_SS_OK);
+  {
+    int found = 0;
+    uint16_t i;
+    for (i = 0; i < schedule.event_count; i += 1) {
+      if (schedule.events[i].parked) {
+        found = 1;
+        break;
+      }
+    }
+    expect_true("third-hand parks", found);
+  }
+  expect_true("playable dump", ht_siteswap_schedule_playable("2-", 1, 8, &schedule) == HT_SS_OK);
+  {
+    int found = 0;
+    uint16_t i;
+    for (i = 0; i < schedule.event_count; i += 1) {
+      if (schedule.events[i].dump) {
+        found = 1;
+        break;
+      }
+    }
+    expect_true("dump mark", found);
+  }
 
   expect_true("parse R3", ht_siteswap_parse("R3", &pattern) == HT_SS_OK);
   expect_eq_u8("R start", pattern.start_hand, 1);

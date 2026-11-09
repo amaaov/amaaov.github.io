@@ -15,12 +15,29 @@ static const char *skip_space(const char *p) {
   return p;
 }
 
-/* Domain marks (+ add / - remove) are consumed so 555+ and (4,2)+ stay playable. */
-static const char *skip_domain_marks(const char *p) {
+/* Domain marks: + parks a held object, - drops/dumps one (holding topology). */
+static const char *parse_domain_marks(const char *p, uint8_t *add, uint8_t *remove) {
+  *add = 0;
+  *remove = 0;
   while (*p == '+' || *p == '-') {
+    if (*p == '+') {
+      if (*add < 15u) {
+        *add = (uint8_t)(*add + 1u);
+      }
+    } else if (*remove < 15u) {
+      *remove = (uint8_t)(*remove + 1u);
+    }
     p += 1;
   }
   return p;
+}
+
+static void bump_throw_marks(HtSiteswapThrow *thr, uint8_t add, uint8_t remove) {
+  if (!thr) {
+    return;
+  }
+  thr->add_after = (uint8_t)(thr->add_after + add);
+  thr->remove_after = (uint8_t)(thr->remove_after + remove);
 }
 
 static int solo_lab_reject(const char *source) {
@@ -52,11 +69,14 @@ static int parse_height(char c, uint8_t *out) {
 
 static const char *parse_throw(const char *p, int keep_crossing, HtSiteswapThrow *out) {
   uint8_t height;
+  uint8_t add = 0;
+  uint8_t remove = 0;
   p = skip_space(p);
   if (parse_height(*p, &height) != 0) {
     return NULL;
   }
   p += 1;
+  memset(out, 0, sizeof(*out));
   out->height = height;
   out->crossing = (uint8_t)(height % 2);
   if (*p == 'x' || *p == 'X') {
@@ -68,14 +88,35 @@ static const char *parse_throw(const char *p, int keep_crossing, HtSiteswapThrow
   if (*p == 'B' || *p == 'F' || *p == 'H') {
     return NULL;
   }
+  p = parse_domain_marks(p, &add, &remove);
+  out->add_after = add;
+  out->remove_after = remove;
   return p;
 }
 
 static const char *parse_hand_throws(const char *p, int keep_crossing, HtSiteswapThrow *buf,
-                                     uint8_t *count) {
+                                     uint8_t *count, uint8_t *add_before, uint8_t *remove_before) {
+  uint8_t lead_add = 0;
+  uint8_t lead_remove = 0;
   *count = 0;
+  if (add_before) {
+    *add_before = 0;
+  }
+  if (remove_before) {
+    *remove_before = 0;
+  }
+  p = skip_space(p);
+  p = parse_domain_marks(p, &lead_add, &lead_remove);
+  if (add_before) {
+    *add_before = lead_add;
+  }
+  if (remove_before) {
+    *remove_before = lead_remove;
+  }
   p = skip_space(p);
   if (*p == '[') {
+    uint8_t trail_add = 0;
+    uint8_t trail_remove = 0;
     p += 1;
     while (*p && *p != ']') {
       p = skip_space(p);
@@ -94,7 +135,9 @@ static const char *parse_hand_throws(const char *p, int keep_crossing, HtSiteswa
     if (*p != ']' || *count == 0) {
       return NULL;
     }
-    return p + 1;
+    p = parse_domain_marks(p + 1, &trail_add, &trail_remove);
+    bump_throw_marks(&buf[*count - 1], trail_add, trail_remove);
+    return p;
   }
   if (*count >= HT_SITESWAP_MAX_THROWS_PER_HAND) {
     return NULL;
@@ -112,11 +155,15 @@ static const char *parse_sync_pair(const char *p, HtSiteswapFrame *frame) {
   HtSiteswapThrow right[HT_SITESWAP_MAX_THROWS_PER_HAND];
   uint8_t left_count = 0;
   uint8_t right_count = 0;
+  uint8_t left_add = 0;
+  uint8_t left_remove = 0;
+  uint8_t right_add = 0;
+  uint8_t right_remove = 0;
   p = skip_space(p);
   if (*p != '(') {
     return NULL;
   }
-  p = parse_hand_throws(p + 1, 1, left, &left_count);
+  p = parse_hand_throws(p + 1, 1, left, &left_count, &left_add, &left_remove);
   if (!p) {
     return NULL;
   }
@@ -124,7 +171,7 @@ static const char *parse_sync_pair(const char *p, HtSiteswapFrame *frame) {
   if (*p != ',') {
     return NULL;
   }
-  p = parse_hand_throws(p + 1, 1, right, &right_count);
+  p = parse_hand_throws(p + 1, 1, right, &right_count, &right_add, &right_remove);
   if (!p) {
     return NULL;
   }
@@ -136,6 +183,8 @@ static const char *parse_sync_pair(const char *p, HtSiteswapFrame *frame) {
   frame->forced_hand = 255;
   frame->left_count = left_count;
   frame->right_count = right_count;
+  frame->add_before = (uint8_t)(left_add + right_add);
+  frame->remove_before = (uint8_t)(left_remove + right_remove);
   memcpy(frame->left, left, sizeof(HtSiteswapThrow) * left_count);
   memcpy(frame->right, right, sizeof(HtSiteswapThrow) * right_count);
   return p + 1;
@@ -204,12 +253,27 @@ HtSiteswapError ht_siteswap_parse(const char *source, HtSiteswapPattern *out) {
   }
   while (*p) {
     HtSiteswapFrame frame;
+    uint8_t pending_add = 0;
+    uint8_t pending_remove = 0;
     memset(&frame, 0, sizeof(frame));
     frame.forced_hand = 255;
     p = skip_space(p);
-    p = skip_domain_marks(p);
     if (!*p) {
       break;
+    }
+    if (*p == '+' || *p == '-') {
+      if (out->frame_count == 0) {
+        p = parse_domain_marks(p, &pending_add, &pending_remove);
+      } else {
+        uint8_t mark_add = 0;
+        uint8_t mark_remove = 0;
+        p = parse_domain_marks(p, &mark_add, &mark_remove);
+        out->frames[out->frame_count - 1].add_after =
+            (uint8_t)(out->frames[out->frame_count - 1].add_after + mark_add);
+        out->frames[out->frame_count - 1].remove_after =
+            (uint8_t)(out->frames[out->frame_count - 1].remove_after + mark_remove);
+        continue;
+      }
     }
     if (out->frame_count >= HT_SITESWAP_MAX_FRAMES) {
       return HT_SS_ERR_OVERFLOW;
@@ -224,7 +288,8 @@ HtSiteswapError ht_siteswap_parse(const char *source, HtSiteswapPattern *out) {
         frame.duration = 1;
         p += 1;
       }
-      p = skip_domain_marks(p);
+      frame.add_before = (uint8_t)(frame.add_before + pending_add);
+      frame.remove_before = (uint8_t)(frame.remove_before + pending_remove);
       out->frames[out->frame_count++] = frame;
       continue;
     }
@@ -238,15 +303,18 @@ HtSiteswapError ht_siteswap_parse(const char *source, HtSiteswapPattern *out) {
     {
       HtSiteswapThrow throws[HT_SITESWAP_MAX_THROWS_PER_HAND];
       uint8_t count = 0;
-      p = parse_hand_throws(p, 0, throws, &count);
+      uint8_t lead_add = 0;
+      uint8_t lead_remove = 0;
+      p = parse_hand_throws(p, 0, throws, &count, &lead_add, &lead_remove);
       if (!p) {
         return HT_SS_ERR_PARSE;
       }
       frame.kind = 0;
       frame.duration = 1;
       frame.left_count = count;
+      frame.add_before = (uint8_t)(pending_add + lead_add);
+      frame.remove_before = (uint8_t)(pending_remove + lead_remove);
       memcpy(frame.left, throws, sizeof(HtSiteswapThrow) * count);
-      p = skip_domain_marks(p);
       out->frames[out->frame_count++] = frame;
     }
   }
@@ -389,6 +457,125 @@ static int landing_take(uint8_t *available, uint8_t *available_count, uint8_t *b
   return 1;
 }
 
+static void landing_pull(HandLanding *hand, uint8_t height, uint8_t ball) {
+  uint8_t idx;
+  uint8_t i;
+  if (height == 0 || height > HT_SITESWAP_MAX_DEPTH) {
+    return;
+  }
+  idx = (uint8_t)(height - 1);
+  for (i = hand->counts[idx]; i > 0; i -= 1) {
+    if (hand->slots[idx][i - 1] == ball) {
+      memmove(&hand->slots[idx][i - 1], &hand->slots[idx][i],
+              (size_t)(hand->counts[idx] - i));
+      hand->counts[idx] = (uint8_t)(hand->counts[idx] - 1u);
+      return;
+    }
+  }
+}
+
+static int throw_has_domain(const HtSiteswapThrow *thr) {
+  return thr->add_after > 0 || thr->remove_after > 0;
+}
+
+static int frame_has_domain(const HtSiteswapFrame *frame) {
+  uint8_t i;
+  if (frame->add_before || frame->remove_before || frame->add_after || frame->remove_after) {
+    return 1;
+  }
+  for (i = 0; i < frame->left_count; i += 1) {
+    if (throw_has_domain(&frame->left[i])) {
+      return 1;
+    }
+  }
+  for (i = 0; i < frame->right_count; i += 1) {
+    if (throw_has_domain(&frame->right[i])) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int ht_siteswap_has_domain(const HtSiteswapPattern *pattern) {
+  uint8_t i;
+  if (!pattern) {
+    return 0;
+  }
+  for (i = 0; i < pattern->frame_count; i += 1) {
+    if (frame_has_domain(&pattern->frames[i])) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+static HtSiteswapError push_event(HtSiteswapEvent *events, uint16_t *event_count,
+                                  const HtSiteswapEvent *ev) {
+  if (*event_count >= HT_SITESWAP_MAX_EVENTS) {
+    return HT_SS_ERR_OVERFLOW;
+  }
+  events[(*event_count)++] = *ev;
+  return HT_SS_OK;
+}
+
+static HtSiteswapError park_added_object(HandLanding landing[2], uint8_t hand, int16_t beat,
+                                         uint8_t ball, HtSiteswapEvent *events,
+                                         uint16_t *event_count) {
+  HtSiteswapEvent ev;
+  memset(&ev, 0, sizeof(ev));
+  landing_push(&landing[hand], 1, ball);
+  ev.beat = beat;
+  ev.height = 1;
+  ev.ball = ball;
+  ev.from_hand = hand;
+  ev.to_hand = hand;
+  ev.hold = 1;
+  ev.parked = 1;
+  return push_event(events, event_count, &ev);
+}
+
+static HtSiteswapError apply_remove_marks(HandLanding landing[2], HtSiteswapEvent *events,
+                                          uint16_t event_count, uint8_t count) {
+  uint8_t n;
+  for (n = 0; n < count; n += 1) {
+    int16_t i;
+    HtSiteswapEvent *target = NULL;
+    for (i = (int16_t)event_count - 1; i >= 0; i -= 1) {
+      HtSiteswapEvent *ev = &events[i];
+      if (!ev->dump && !ev->drop && !ev->parked) {
+        target = ev;
+        break;
+      }
+    }
+    if (!target) {
+      return HT_SS_ERR_NO_PROP;
+    }
+    landing_pull(&landing[target->to_hand], target->height, target->ball);
+    if (target->hold) {
+      target->dump = 1;
+    } else {
+      target->drop = 1;
+    }
+  }
+  return HT_SS_OK;
+}
+
+static HtSiteswapError supply_or_intro(uint8_t *intro, uint8_t *intro_count, uint8_t *next_ball,
+                                       uint8_t *ball) {
+  if (intro_count && *intro_count > 0) {
+    *ball = intro[0];
+    memmove(intro, intro + 1, (size_t)(*intro_count - 1));
+    *intro_count -= 1;
+    return HT_SS_OK;
+  }
+  if (next_ball && *next_ball < HT_SITESWAP_MAX_BALLS) {
+    *ball = *next_ball;
+    *next_ball = (uint8_t)(*next_ball + 1u);
+    return HT_SS_OK;
+  }
+  return HT_SS_ERR_NO_PROP;
+}
+
 static void advance_hands(HandLanding landing[2], uint8_t available[2][HT_SITESWAP_MAX_BALLS],
                           uint8_t available_count[2]) {
   uint8_t hand;
@@ -407,8 +594,9 @@ static void advance_hands(HandLanding landing[2], uint8_t available[2][HT_SITESW
 static HtSiteswapError toss_hand(const HtSiteswapThrow *throws, uint8_t count, HandLanding landing[2],
                                  uint8_t available[2][HT_SITESWAP_MAX_BALLS],
                                  uint8_t available_count[2], uint8_t *intro, uint8_t *intro_count,
-                                 uint8_t throw_hand, int16_t beat, uint8_t hold_twos, int record,
-                                 HtSiteswapEvent *events, uint16_t *event_count) {
+                                 uint8_t *next_ball, uint8_t throw_hand, int16_t beat,
+                                 uint8_t hold_twos, int record, HtSiteswapEvent *events,
+                                 uint16_t *event_count) {
   uint8_t i;
   for (i = 0; i < count; i += 1) {
     uint8_t height = throws[i].height;
@@ -416,37 +604,118 @@ static HtSiteswapError toss_hand(const HtSiteswapThrow *throws, uint8_t count, H
     uint8_t ball;
     uint8_t catch_hand;
     uint8_t hold;
+    uint16_t recorded_at;
+    HtSiteswapError err;
     if (height == 0) {
       if (available_count[throw_hand] > 0) {
         return HT_SS_ERR_COLLISION;
       }
+      if (record) {
+        err = apply_remove_marks(landing, events, *event_count, throws[i].remove_after);
+        if (err != HT_SS_OK) {
+          return err;
+        }
+        {
+          uint8_t a;
+          for (a = 0; a < throws[i].add_after; a += 1) {
+            err = supply_or_intro(intro, intro_count, next_ball, &ball);
+            if (err != HT_SS_OK) {
+              return err;
+            }
+            err = park_added_object(landing, throw_hand, beat, ball, events, event_count);
+            if (err != HT_SS_OK) {
+              return err;
+            }
+          }
+        }
+      }
       continue;
     }
     if (!landing_take(available[throw_hand], &available_count[throw_hand], &ball)) {
-      if (*intro_count > 0) {
-        ball = intro[0];
-        memmove(intro, intro + 1, (size_t)(*intro_count - 1));
-        *intro_count -= 1;
-      } else {
-        return HT_SS_ERR_NO_PROP;
+      err = supply_or_intro(intro, intro_count, next_ball, &ball);
+      if (err != HT_SS_OK) {
+        return err;
       }
     }
     catch_hand = crossing ? (uint8_t)(1 - throw_hand) : throw_hand;
     hold = (uint8_t)(hold_twos && height == 2 && !crossing);
+    recorded_at = *event_count;
     if (record) {
-      if (*event_count >= HT_SITESWAP_MAX_EVENTS) {
-        return HT_SS_ERR_OVERFLOW;
+      HtSiteswapEvent ev;
+      memset(&ev, 0, sizeof(ev));
+      ev.beat = beat;
+      ev.height = height;
+      ev.ball = ball;
+      ev.from_hand = throw_hand;
+      ev.to_hand = catch_hand;
+      ev.hold = hold;
+      err = push_event(events, event_count, &ev);
+      if (err != HT_SS_OK) {
+        return err;
       }
-      events[*event_count].beat = beat;
-      events[*event_count].height = height;
-      events[*event_count].ball = ball;
-      events[*event_count].from_hand = throw_hand;
-      events[*event_count].to_hand = catch_hand;
-      events[*event_count].hold = hold;
-      events[*event_count].parked = 0;
-      *event_count += 1;
     }
     landing_push(&landing[catch_hand], height, ball);
+    if (record) {
+      err = apply_remove_marks(landing, events, *event_count, throws[i].remove_after);
+      if (err != HT_SS_OK) {
+        return err;
+      }
+      (void)recorded_at;
+      {
+        uint8_t a;
+        for (a = 0; a < throws[i].add_after; a += 1) {
+          err = supply_or_intro(intro, intro_count, next_ball, &ball);
+          if (err != HT_SS_OK) {
+            return err;
+          }
+          err = park_added_object(landing, throw_hand, beat, ball, events, event_count);
+          if (err != HT_SS_OK) {
+            return err;
+          }
+        }
+      }
+    }
+  }
+  return HT_SS_OK;
+}
+
+static HtSiteswapError apply_prelude(uint8_t available[2][HT_SITESWAP_MAX_BALLS],
+                                     uint8_t available_count[2], HandLanding landing[2],
+                                     HtSiteswapEvent *events, uint16_t *event_count, uint8_t hand,
+                                     int16_t beat, uint8_t add_count, uint8_t remove_count,
+                                     uint8_t *intro, uint8_t *intro_count, uint8_t *next_ball) {
+  uint8_t i;
+  HtSiteswapError err;
+  for (i = 0; i < add_count; i += 1) {
+    uint8_t ball;
+    err = supply_or_intro(intro, intro_count, next_ball, &ball);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+    if (available_count[hand] >= HT_SITESWAP_MAX_BALLS) {
+      return HT_SS_ERR_OVERFLOW;
+    }
+    available[hand][available_count[hand]++] = ball;
+  }
+  for (i = 0; i < remove_count; i += 1) {
+    uint8_t ball;
+    HtSiteswapEvent ev;
+    if (!landing_take(available[hand], &available_count[hand], &ball)) {
+      return HT_SS_ERR_NO_PROP;
+    }
+    memset(&ev, 0, sizeof(ev));
+    ev.beat = beat;
+    ev.height = 0;
+    ev.ball = ball;
+    ev.from_hand = hand;
+    ev.to_hand = hand;
+    ev.hold = 1;
+    ev.dump = 1;
+    err = push_event(events, event_count, &ev);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+    (void)landing;
   }
   return HT_SS_OK;
 }
@@ -454,38 +723,72 @@ static HtSiteswapError toss_hand(const HtSiteswapThrow *throws, uint8_t count, H
 static HtSiteswapError apply_beat(const HtSiteswapPattern *pattern, HandLanding landing[2],
                                   uint8_t available[2][HT_SITESWAP_MAX_BALLS],
                                   uint8_t available_count[2], uint8_t *intro, uint8_t *intro_count,
-                                  uint8_t throw_hand, int16_t beat, uint8_t hold_twos, int record,
-                                  HtSiteswapEvent *events, uint16_t *event_count) {
+                                  uint8_t *next_ball, uint8_t throw_hand, int16_t beat,
+                                  uint8_t hold_twos, int record, HtSiteswapEvent *events,
+                                  uint16_t *event_count) {
   const HtSiteswapFrame *frame = frame_at_beat(pattern, beat);
   HtSiteswapError err;
   uint8_t hand;
+  uint8_t domain_hand;
+  uint16_t recorded_before;
   if (!frame) {
     if (available_count[0] || available_count[1]) {
       return HT_SS_ERR_COLLISION;
     }
     return HT_SS_OK;
   }
+  domain_hand = frame->kind == 1 ? 1u : throw_hand;
+  recorded_before = *event_count;
+  if (record && (frame->add_before || frame->remove_before)) {
+    err = apply_prelude(available, available_count, landing, events, event_count, domain_hand, beat,
+                        frame->add_before, frame->remove_before, intro, intro_count, next_ball);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+  }
   if (frame->kind == 1) {
     err = toss_hand(frame->left, frame->left_count, landing, available, available_count, intro,
-                    intro_count, 0, beat, hold_twos, record, events, event_count);
+                    intro_count, next_ball, 0, beat, hold_twos, record, events, event_count);
     if (err != HT_SS_OK) {
       return err;
     }
     err = toss_hand(frame->right, frame->right_count, landing, available, available_count, intro,
-                    intro_count, 1, beat, hold_twos, record, events, event_count);
+                    intro_count, next_ball, 1, beat, hold_twos, record, events, event_count);
     if (err != HT_SS_OK) {
       return err;
     }
   } else {
     hand = (frame->forced_hand == 0 || frame->forced_hand == 1) ? frame->forced_hand : throw_hand;
     err = toss_hand(frame->left, frame->left_count, landing, available, available_count, intro,
-                    intro_count, hand, beat, hold_twos, record, events, event_count);
+                    intro_count, next_ball, hand, beat, hold_twos, record, events, event_count);
     if (err != HT_SS_OK) {
       return err;
     }
   }
   if (available_count[0] || available_count[1]) {
     return HT_SS_ERR_COLLISION;
+  }
+  if (record) {
+    uint16_t recorded_span = (uint16_t)(*event_count - recorded_before);
+    (void)recorded_span;
+    err = apply_remove_marks(landing, events, *event_count, frame->remove_after);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+    {
+      uint8_t a;
+      for (a = 0; a < frame->add_after; a += 1) {
+        uint8_t ball;
+        err = supply_or_intro(intro, intro_count, next_ball, &ball);
+        if (err != HT_SS_OK) {
+          return err;
+        }
+        err = park_added_object(landing, domain_hand, beat, ball, events, event_count);
+        if (err != HT_SS_OK) {
+          return err;
+        }
+      }
+    }
   }
   return HT_SS_OK;
 }
@@ -537,9 +840,13 @@ HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int1
     return HT_SS_ERR_EMPTY;
   }
   memset(out, 0, sizeof(*out));
+  out->break_beat = -1;
   err = ht_siteswap_parse(source, &pattern);
   if (err != HT_SS_OK) {
     return err;
+  }
+  if (ht_siteswap_has_domain(&pattern)) {
+    return HT_SS_ERR_INVALID;
   }
   balls_f = ht_siteswap_ball_count(&pattern);
   ball_count = (uint8_t)(balls_f + 0.5f);
@@ -558,8 +865,8 @@ HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int1
   }
   for (step = 0; step < 2000; step += 1) {
     advance_hands(landing, available, available_count);
-    err = apply_beat(&pattern, landing, available, available_count, intro, &intro_count, throw_hand,
-                     beat, hold_twos, init_complete, cycle, &cycle_count);
+    err = apply_beat(&pattern, landing, available, available_count, intro, &intro_count, NULL,
+                     throw_hand, beat, hold_twos, init_complete, cycle, &cycle_count);
     if (err != HT_SS_OK) {
       return err;
     }
@@ -589,6 +896,8 @@ HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int1
   out->cycle_length = cycle_length;
   out->timing = pattern.timing;
   out->start_hand = pattern.start_hand == 255 ? 0 : pattern.start_hand;
+  out->cyclic = 1;
+  out->break_beat = -1;
   for (i = 0; i < cycle_count; i += 1) {
     for (copy = -4; copy <= (until_beat / cycle_length) + 4; copy += 1) {
       int16_t absolute = (int16_t)(cycle[i].beat + copy * cycle_length);
@@ -618,12 +927,222 @@ int ht_siteswap_valid(const char *source) {
   if (ht_siteswap_parse(source, &pattern) != HT_SS_OK) {
     return 0;
   }
+  if (ht_siteswap_has_domain(&pattern)) {
+    return 0;
+  }
   balls = ht_siteswap_ball_count(&pattern);
   if (fabsf(balls - (float)(uint8_t)(balls + 0.5f)) > 0.001f || balls < 0.999f) {
     return 0;
   }
   return ht_siteswap_schedule(source, 1, (int16_t)(ht_siteswap_period(&pattern) * 4), &schedule) ==
          HT_SS_OK;
+}
+
+static int landing_pending(const HandLanding landing[2]) {
+  uint8_t hand;
+  uint8_t d;
+  for (hand = 0; hand < 2; hand += 1) {
+    for (d = 0; d < HT_SITESWAP_MAX_DEPTH; d += 1) {
+      if (landing[hand].counts[d] > 0) {
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
+static const HtSiteswapFrame *linear_frame_at(const HtSiteswapPattern *pattern, int16_t beat) {
+  uint8_t i;
+  int16_t offset = 0;
+  for (i = 0; i < pattern->frame_count; i += 1) {
+    const HtSiteswapFrame *frame = &pattern->frames[i];
+    if (beat == offset) {
+      return frame;
+    }
+    if (beat > offset && beat < offset + (int16_t)frame->duration) {
+      return NULL; /* suppressed sync beat */
+    }
+    offset = (int16_t)(offset + frame->duration);
+  }
+  return (const HtSiteswapFrame *)-1; /* past written period */
+}
+
+static HtSiteswapError apply_linear_frame(const HtSiteswapFrame *frame, HandLanding landing[2],
+                                          uint8_t available[2][HT_SITESWAP_MAX_BALLS],
+                                          uint8_t available_count[2], uint8_t *next_ball,
+                                          uint8_t throw_hand, int16_t beat, uint8_t hold_twos,
+                                          HtSiteswapEvent *events, uint16_t *event_count) {
+  HtSiteswapError err;
+  uint8_t hand;
+  uint8_t domain_hand = frame->kind == 1 ? 1u : throw_hand;
+  uint8_t a;
+  err = apply_prelude(available, available_count, landing, events, event_count, domain_hand, beat,
+                      frame->add_before, frame->remove_before, NULL, NULL, next_ball);
+  if (err != HT_SS_OK) {
+    return err;
+  }
+  if (frame->kind == 1) {
+    err = toss_hand(frame->left, frame->left_count, landing, available, available_count, NULL, NULL,
+                    next_ball, 0, beat, hold_twos, 1, events, event_count);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+    err = toss_hand(frame->right, frame->right_count, landing, available, available_count, NULL,
+                    NULL, next_ball, 1, beat, hold_twos, 1, events, event_count);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+  } else {
+    hand = (frame->forced_hand == 0 || frame->forced_hand == 1) ? frame->forced_hand : throw_hand;
+    err = toss_hand(frame->left, frame->left_count, landing, available, available_count, NULL, NULL,
+                    next_ball, hand, beat, hold_twos, 1, events, event_count);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+  }
+  if (available_count[0] || available_count[1]) {
+    return HT_SS_ERR_COLLISION;
+  }
+  err = apply_remove_marks(landing, events, *event_count, frame->remove_after);
+  if (err != HT_SS_OK) {
+    return err;
+  }
+  for (a = 0; a < frame->add_after; a += 1) {
+    uint8_t ball;
+    err = supply_or_intro(NULL, NULL, next_ball, &ball);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+    err = park_added_object(landing, domain_hand, beat, ball, events, event_count);
+    if (err != HT_SS_OK) {
+      return err;
+    }
+  }
+  return HT_SS_OK;
+}
+
+static void abandon_available(uint8_t available[2][HT_SITESWAP_MAX_BALLS],
+                              uint8_t available_count[2], int16_t beat, HtSiteswapEvent *events,
+                              uint16_t *event_count) {
+  uint8_t hand;
+  for (hand = 0; hand < 2; hand += 1) {
+    while (available_count[hand] > 0) {
+      uint8_t ball;
+      HtSiteswapEvent ev;
+      if (!landing_take(available[hand], &available_count[hand], &ball)) {
+        break;
+      }
+      memset(&ev, 0, sizeof(ev));
+      ev.beat = beat;
+      ev.height = 1;
+      ev.ball = ball;
+      ev.from_hand = hand;
+      ev.to_hand = hand;
+      ev.drop = 1;
+      ev.failed_catch = 1;
+      if (push_event(events, event_count, &ev) != HT_SS_OK) {
+        return;
+      }
+    }
+  }
+}
+
+static HtSiteswapError schedule_episode(const char *source, uint8_t hold_twos, int16_t until_beat,
+                                        HtSiteswapSchedule *out) {
+  HtSiteswapPattern pattern;
+  HtSiteswapError err;
+  HandLanding landing[2];
+  uint8_t available[2][HT_SITESWAP_MAX_BALLS];
+  uint8_t available_count[2];
+  uint8_t next_ball = 0;
+  uint8_t throw_hand = 1;
+  int16_t beat = 0;
+  int step;
+  uint8_t period;
+  uint16_t i;
+  int16_t last_beat = 0;
+
+  memset(out, 0, sizeof(*out));
+  out->break_beat = -1;
+  err = ht_siteswap_parse(source, &pattern);
+  if (err != HT_SS_OK) {
+    return err;
+  }
+  period = ht_siteswap_period(&pattern);
+  out->period = period;
+  out->timing = pattern.timing;
+  out->start_hand = pattern.start_hand == 255 ? 0 : pattern.start_hand;
+  out->cyclic = 0;
+  memset(landing, 0, sizeof(landing));
+  for (step = 0; step < 512; step += 1) {
+    const HtSiteswapFrame *frame;
+    advance_hands(landing, available, available_count);
+    frame = linear_frame_at(&pattern, beat);
+    if (frame == (const HtSiteswapFrame *)-1) {
+      if (!(available_count[0] || available_count[1] || landing_pending(landing))) {
+        break;
+      }
+      if (available_count[0] || available_count[1]) {
+        out->break_beat = beat;
+        abandon_available(available, available_count, beat, out->events, &out->event_count);
+        break;
+      }
+      if (beat > (int16_t)period + 32) {
+        out->break_beat = beat;
+        break;
+      }
+    } else if (frame == NULL) {
+      if (available_count[0] || available_count[1]) {
+        out->break_beat = beat;
+        abandon_available(available, available_count, beat, out->events, &out->event_count);
+        break;
+      }
+    } else {
+      err = apply_linear_frame(frame, landing, available, available_count, &next_ball, throw_hand,
+                               beat, hold_twos, out->events, &out->event_count);
+      if (err != HT_SS_OK) {
+        out->break_beat = beat;
+        abandon_available(available, available_count, beat, out->events, &out->event_count);
+        break;
+      }
+    }
+    beat = (int16_t)(beat + 1);
+    throw_hand = (uint8_t)(1 - throw_hand);
+    if (beat > until_beat + 48) {
+      break;
+    }
+  }
+  for (i = 0; i < out->event_count; i += 1) {
+    int16_t end = (int16_t)(out->events[i].beat + (out->events[i].height > 0 ? out->events[i].height : 1));
+    if (end > last_beat) {
+      last_beat = end;
+    }
+    if (out->events[i].height > out->highest) {
+      out->highest = out->events[i].height;
+    }
+    if (out->events[i].ball + 1u > out->ball_count) {
+      out->ball_count = (uint8_t)(out->events[i].ball + 1u);
+    }
+  }
+  if (next_ball > out->ball_count) {
+    out->ball_count = next_ball;
+  }
+  if (out->ball_count < 1u) {
+    out->ball_count = 1u;
+  }
+  out->cycle_length = (uint8_t)(last_beat > 0 ? (last_beat > 255 ? 255 : last_beat) : 1);
+  if (out->break_beat >= 0 && out->break_beat + 1 > out->cycle_length) {
+    out->cycle_length = (uint8_t)(out->break_beat + 1 > 255 ? 255 : out->break_beat + 1);
+  }
+  return HT_SS_OK;
+}
+
+HtSiteswapError ht_siteswap_schedule_playable(const char *source, uint8_t hold_twos,
+                                              int16_t until_beat, HtSiteswapSchedule *out) {
+  if (ht_siteswap_valid(source)) {
+    return ht_siteswap_schedule(source, hold_twos, until_beat, out);
+  }
+  return schedule_episode(source, hold_twos, until_beat, out);
 }
 
 static uint32_t gen_rand(uint32_t *state) {
@@ -769,17 +1288,22 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
   for (tries = 0; tries < 24u; tries += 1) {
     candidate[0] = 0;
     if (family == HT_SS_FAMILY_SHOWER) {
-      uint8_t delta = (uint8_t)(1u + (gen_rand(&state) % 4u));
+      uint8_t delta = (uint8_t)(1u + (gen_rand(&state) % 5u));
       int high = (int)n + (int)delta;
       int low = (int)n - (int)delta;
+      uint16_t len = 0;
       if (high % 2 == 0) {
         high += 1;
         low = (int)(2u * n) - high;
       }
       if (low >= 0 && high <= 35) {
-        uint16_t len = 0;
         append_char(candidate, sizeof candidate, &len, height_char((uint8_t)high));
         append_char(candidate, sizeof candidate, &len, height_char((uint8_t)low));
+        /* Longer shower cycles (JS doubles high/low when delta >= 2). */
+        if (delta >= 2u && (gen_rand(&state) & 1u)) {
+          append_char(candidate, sizeof candidate, &len, height_char((uint8_t)high));
+          append_char(candidate, sizeof candidate, &len, height_char((uint8_t)low));
+        }
       }
     } else if (family == HT_SS_FAMILY_BOX) {
       uint8_t max_spread = n / 2u;
@@ -788,7 +1312,7 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
       uint8_t low = even_height((int)(2u * n) - (int)high);
       if (low >= 2u) {
         uint16_t len = 0;
-        uint8_t shape = (uint8_t)(gen_rand(&state) & 3u);
+        uint8_t shape = (uint8_t)(gen_rand(&state) % 5u);
         if (shape == 0u) {
           append_char(candidate, sizeof candidate, &len, '(');
           append_char(candidate, sizeof candidate, &len, height_char(high));
@@ -797,7 +1321,15 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
           append_char(candidate, sizeof candidate, &len, height_char(low));
           append_char(candidate, sizeof candidate, &len, 'x');
           append_char(candidate, sizeof candidate, &len, ')');
-        } else {
+        } else if (shape == 1u) {
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(low));
+          append_char(candidate, sizeof candidate, &len, 'x');
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(high));
+          append_char(candidate, sizeof candidate, &len, 'x');
+          append_char(candidate, sizeof candidate, &len, ')');
+        } else if (shape == 2u) {
           append_char(candidate, sizeof candidate, &len, '(');
           append_char(candidate, sizeof candidate, &len, height_char(high));
           append_char(candidate, sizeof candidate, &len, 'x');
@@ -809,49 +1341,129 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
           append_char(candidate, sizeof candidate, &len, ',');
           append_char(candidate, sizeof candidate, &len, height_char(low));
           append_char(candidate, sizeof candidate, &len, 'x');
+          append_char(candidate, sizeof candidate, &len, ')');
+        } else if (shape == 3u) {
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(high));
+          append_char(candidate, sizeof candidate, &len, 'x');
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(low));
+          append_char(candidate, sizeof candidate, &len, 'x');
+          append_char(candidate, sizeof candidate, &len, ')');
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(low));
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(high));
+          append_char(candidate, sizeof candidate, &len, ')');
+        } else {
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(high));
+          append_char(candidate, sizeof candidate, &len, 'x');
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(low));
+          append_char(candidate, sizeof candidate, &len, ')');
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(low));
+          append_char(candidate, sizeof candidate, &len, 'x');
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(high));
           append_char(candidate, sizeof candidate, &len, ')');
         }
       }
     } else if (family == HT_SS_FAMILY_COLUMNS) {
-      uint8_t column = even_height((int)(2u + (gen_rand(&state) % (n + 3u))));
+      uint8_t column = even_height((int)(2u + (gen_rand(&state) % (n + 4u))));
       int held = (int)(4u * n) - 2 * (int)column;
       if (held >= 0 && held <= 35 && (held % 2) == 0) {
         uint16_t len = 0;
-        uint8_t hold_left = (uint8_t)(gen_rand(&state) & 1u);
-        append_char(candidate, sizeof candidate, &len, '(');
-        append_char(candidate, sizeof candidate, &len, height_char(column));
-        append_char(candidate, sizeof candidate, &len, ',');
-        append_char(candidate, sizeof candidate, &len, height_char(column));
-        append_char(candidate, sizeof candidate, &len, ')');
-        append_char(candidate, sizeof candidate, &len, '(');
-        if (hold_left) {
-          append_char(candidate, sizeof candidate, &len, '0');
+        uint8_t shape = (uint8_t)(gen_rand(&state) % 6u);
+        uint8_t c = column;
+        uint8_t h = (uint8_t)held;
+        if (shape == 0u || shape == 1u) {
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(c));
           append_char(candidate, sizeof candidate, &len, ',');
-          append_char(candidate, sizeof candidate, &len, height_char((uint8_t)held));
+          append_char(candidate, sizeof candidate, &len, height_char(c));
+          append_char(candidate, sizeof candidate, &len, ')');
+          append_char(candidate, sizeof candidate, &len, '(');
+          if (shape == 0u) {
+            append_char(candidate, sizeof candidate, &len, height_char(h));
+            append_char(candidate, sizeof candidate, &len, ',');
+            append_char(candidate, sizeof candidate, &len, '0');
+          } else {
+            append_char(candidate, sizeof candidate, &len, '0');
+            append_char(candidate, sizeof candidate, &len, ',');
+            append_char(candidate, sizeof candidate, &len, height_char(h));
+          }
+          append_char(candidate, sizeof candidate, &len, ')');
+        } else if (shape == 2u || shape == 3u) {
+          append_char(candidate, sizeof candidate, &len, '(');
+          if (shape == 2u) {
+            append_char(candidate, sizeof candidate, &len, height_char(h));
+            append_char(candidate, sizeof candidate, &len, ',');
+            append_char(candidate, sizeof candidate, &len, '0');
+          } else {
+            append_char(candidate, sizeof candidate, &len, '0');
+            append_char(candidate, sizeof candidate, &len, ',');
+            append_char(candidate, sizeof candidate, &len, height_char(h));
+          }
+          append_char(candidate, sizeof candidate, &len, ')');
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(c));
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(c));
+          append_char(candidate, sizeof candidate, &len, ')');
         } else {
-          append_char(candidate, sizeof candidate, &len, height_char((uint8_t)held));
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(c));
+          append_char(candidate, sizeof candidate, &len, ',');
+          append_char(candidate, sizeof candidate, &len, height_char(h));
+          append_char(candidate, sizeof candidate, &len, ')');
+          append_char(candidate, sizeof candidate, &len, '(');
+          append_char(candidate, sizeof candidate, &len, height_char(c));
           append_char(candidate, sizeof candidate, &len, ',');
           append_char(candidate, sizeof candidate, &len, '0');
+          append_char(candidate, sizeof candidate, &len, ')');
         }
-        append_char(candidate, sizeof candidate, &len, ')');
       }
     } else if (family == HT_SS_FAMILY_FOUNTAIN) {
       uint8_t high = even_height((int)n + (int)(n & 1u));
       uint8_t low = even_height((int)(2u * n) - (int)high);
       uint16_t len = 0;
-      append_char(candidate, sizeof candidate, &len, '(');
-      append_char(candidate, sizeof candidate, &len, height_char(high));
-      append_char(candidate, sizeof candidate, &len, ',');
-      append_char(candidate, sizeof candidate, &len, height_char((n % 2u) == 0u ? high : low));
-      append_char(candidate, sizeof candidate, &len, ')');
+      uint8_t shape = (uint8_t)(gen_rand(&state) % 4u);
+      if ((n % 2u) == 0u && shape == 3u) {
+        append_char(candidate, sizeof candidate, &len, '(');
+        append_char(candidate, sizeof candidate, &len, height_char(n));
+        append_char(candidate, sizeof candidate, &len, ',');
+        append_char(candidate, sizeof candidate, &len, height_char(n));
+        append_char(candidate, sizeof candidate, &len, ')');
+      } else {
+        append_char(candidate, sizeof candidate, &len, '(');
+        append_char(candidate, sizeof candidate, &len, height_char(high));
+        append_char(candidate, sizeof candidate, &len, ',');
+        append_char(candidate, sizeof candidate, &len, height_char(low));
+        append_char(candidate, sizeof candidate, &len, ')');
+        if (shape >= 1u) {
+          append_char(candidate, sizeof candidate, &len, '(');
+          if (shape == 1u) {
+            append_char(candidate, sizeof candidate, &len, height_char(low));
+            append_char(candidate, sizeof candidate, &len, ',');
+            append_char(candidate, sizeof candidate, &len, height_char(high));
+          } else {
+            append_char(candidate, sizeof candidate, &len, height_char(high));
+            append_char(candidate, sizeof candidate, &len, ',');
+            append_char(candidate, sizeof candidate, &len, height_char(low));
+          }
+          append_char(candidate, sizeof candidate, &len, ')');
+        }
+      }
     } else if (family == HT_SS_FAMILY_MULTIPLEX) {
-      /* Period-2 multiplex+singleton: high+low+rest = 2*n. */
       uint8_t high = (uint8_t)(2u + (gen_rand(&state) % (n + 3u)));
       uint8_t low = (uint8_t)(gen_rand(&state) % (high < 1u ? 1u : high));
       int rest = (int)(2u * n) - (int)high - (int)low;
       uint16_t len = 0;
+      uint8_t shape = (uint8_t)(gen_rand(&state) % 3u);
       if (rest >= 0 && rest <= 35) {
-        if ((gen_rand(&state) & 1u) == 0u) {
+        if (shape == 0u) {
           append_char(candidate, sizeof candidate, &len, '[');
           append_char(candidate, sizeof candidate, &len, height_char(high));
           append_char(candidate, sizeof candidate, &len, height_char(low));
@@ -865,7 +1477,6 @@ HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_coun
           append_char(candidate, sizeof candidate, &len, ']');
         }
       } else {
-        /* Period-1 multiplex packet: high+low = n. */
         high = (uint8_t)(1u + (gen_rand(&state) % n));
         low = (uint8_t)(n - high);
         append_char(candidate, sizeof candidate, &len, '[');

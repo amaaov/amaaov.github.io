@@ -36,6 +36,8 @@ typedef enum HtSiteswapTiming {
 typedef struct HtSiteswapThrow {
   uint8_t height;
   uint8_t crossing; /* 1 = crosses */
+  uint8_t add_after; /* siteswap + after this throw → park held object */
+  uint8_t remove_after; /* siteswap - after this throw → drop/dump */
 } HtSiteswapThrow;
 
 typedef struct HtSiteswapFrame {
@@ -44,6 +46,10 @@ typedef struct HtSiteswapFrame {
   uint8_t forced_hand; /* 0/1 or 255 = none */
   uint8_t left_count;
   uint8_t right_count;
+  uint8_t add_before;
+  uint8_t remove_before;
+  uint8_t add_after;
+  uint8_t remove_after;
   HtSiteswapThrow left[HT_SITESWAP_MAX_THROWS_PER_HAND];
   HtSiteswapThrow right[HT_SITESWAP_MAX_THROWS_PER_HAND];
 } HtSiteswapFrame;
@@ -63,6 +69,9 @@ typedef struct HtSiteswapEvent {
   uint8_t to_hand;
   uint8_t hold;
   uint8_t parked; /* 1 → hold from siteswap + (third hand add) */
+  uint8_t drop; /* 1 → abandoned flight (− mark / failed catch) */
+  uint8_t dump; /* 1 → held object removed after hold (− on a 2) */
+  uint8_t failed_catch;
 } HtSiteswapEvent;
 
 typedef struct HtSiteswapSchedule {
@@ -72,6 +81,8 @@ typedef struct HtSiteswapSchedule {
   uint8_t cycle_length;
   HtSiteswapTiming timing;
   uint8_t start_hand;
+  uint8_t cyclic; /* 1 → repeating siteswap; 0 → linear episode (marks / breaks) */
+  int16_t break_beat; /* -1 when unbroken */
   uint16_t event_count;
   HtSiteswapEvent events[HT_SITESWAP_MAX_EVENTS];
 } HtSiteswapSchedule;
@@ -100,9 +111,13 @@ typedef struct HtSiteswapGenParams {
 HtSiteswapError ht_siteswap_parse(const char *source, HtSiteswapPattern *out);
 uint8_t ht_siteswap_period(const HtSiteswapPattern *pattern);
 float ht_siteswap_ball_count(const HtSiteswapPattern *pattern);
+int ht_siteswap_has_domain(const HtSiteswapPattern *pattern);
 int ht_siteswap_valid(const char *source);
 HtSiteswapError ht_siteswap_schedule(const char *source, uint8_t hold_twos, int16_t until_beat,
                                      HtSiteswapSchedule *out);
+/* Cyclic when valid; else linear episode with +/− parks, drops, and breaks (JS schedulePlayable). */
+HtSiteswapError ht_siteswap_schedule_playable(const char *source, uint8_t hold_twos,
+                                              int16_t until_beat, HtSiteswapSchedule *out);
 /* Parametric family construction (heights from object_count + seed) — no pattern shelf. */
 HtSiteswapError ht_siteswap_construct_family(uint8_t family, uint8_t object_count, uint32_t seed,
                                              char *out, uint16_t cap);
