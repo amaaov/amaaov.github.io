@@ -25,6 +25,9 @@ Thematic pairs with essays on this site — probabilistic media, inner formation
 
 ## Pages
 
+- [The Digital Within the Living](https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living.html) ([md](https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living.md)): The digital world as a human creation within the living world, and the consequences of clearing land and maintaining software.
+- [Цифровое внутри живого](https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living_ru.html) ([md](https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living_ru.md)): Цифровой мир как результат деятельности людей в живом мире. О последствиях расчистки земли и сопровождения программ.
+- [Digitaalinen elävässä maailmassa](https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living_fi.html) ([md](https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living_fi.md)): Digitaalinen maailma ihmisten luomuksena elävässä maailmassa sekä maan siistimisen ja ohjelmistojen ylläpidon seuraukset.
 - [Home](https://amaaov.github.io/): Contact, internet evidence, and profiles
 - [Articles](https://amaaov.github.io/pages.html): Full published pages index (essays, programmes, lyrics)
 - [Collective Direction and the Generic Machine](https://amaaov.github.io/pages/20261111170000_collective_direction_generic_machine.html) ([md](https://amaaov.github.io/pages/20261111170000_collective_direction_generic_machine.md)): One year after collective awareness: intention compression, diffs beside tickets, and whole-product ownership under generative production

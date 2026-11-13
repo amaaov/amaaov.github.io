@@ -5,10 +5,20 @@
     <description>amaaov public page: explore my values and commitments, work-time topics, and after-work interests. Join me in problem-solving, engineering, and creative performances.</description>
     <link>https://amaaov.github.io/</link>
     <language>en</language>
-    <lastBuildDate>Sat, 07 Nov 2026 12:45:40 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 13 Nov 2026 07:19:45 +0000</lastBuildDate>
     <atom:link href="https://amaaov.github.io/feed.xml" rel="self" type="application/rss/xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
 
+    <item>
+      <title>The Digital Within the Living</title>
+      <description>The digital world as a human creation within the living world, and the consequences of clearing land and maintaining software.</description>
+      <link>https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living.html</link>
+      <guid>https://amaaov.github.io/pages/20261112101938_the_digital_within_the_living.html</guid>
+      <pubDate>Thu, 12 Nov 2026 09:27:49 +0000</pubDate>
+      <category>essay</category>
+      <category>urban nature</category>
+      <category>software maintenance</category>
+    </item>
     <item>
       <title>Спонтанность и афезис</title>
       <description>Программирование как обработанный ввод, асимметричная петля влияния и право оставить следующий ход другому.</description>
