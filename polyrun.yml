@@ -1,0 +1,15 @@
+version: 1
+
+workers: 2
+
+partition:
+  paths_file: spec/spec_paths.txt
+  paths_build:
+    all_glob: spec/usr/**/*_spec.rb
+
+suites:
+  analysis:
+    partition:
+      paths_file: spec/analysis_paths.txt
+      paths_build:
+        all_glob: spec/pages/**/*_test.rb

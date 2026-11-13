@@ -1,0 +1,2 @@
+spec/usr/scripts/article_delivery_spec.rb
+spec/usr/scripts/github_user_activity_spec.rb
