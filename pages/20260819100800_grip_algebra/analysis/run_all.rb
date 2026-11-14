@@ -3,14 +3,21 @@ require "fileutils"
 require "tmpdir"
 
 analysis_directory = __dir__
+repo_root = File.expand_path("../../..", analysis_directory)
 ENV["JULIA_DEPOT_PATH"] ||= File.join(Dir.tmpdir, "grip-algebra-julia-depot")
 test_steps = [
-  ["Ruby tests", [RbConfig.ruby, File.join(analysis_directory, "ruby/test/run.rb")]],
+  [
+    "Ruby tests",
+    [
+      "bundle", "exec", "polyrun", "--suite", "analysis", "parallel-minitest", "--",
+      "bundle", "exec", "ruby", "-I", ".", "-rminitest/autorun"
+    ]
+  ],
   ["Julia tests", ["julia", "--startup-file=no", "--check-bounds=yes", File.join(analysis_directory, "julia/test/runtests.jl")]]
 ]
 test_steps.each do |label, command|
   puts "\n#{label}"
-  abort "#{label} failed" unless system(*command, chdir: analysis_directory)
+  abort "#{label} failed" unless system(*command, chdir: repo_root)
 end
 
 generators = [
